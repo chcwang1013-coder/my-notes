@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>光子積體電路 · 互動知識庫</title>
+<style>
+  :root{
+    --bg:#eef6f9; --bg2:#ffffff; --panel:#ffffff; --panel2:#f1f8fb;
+    --line:#d5e5ec; --text:#123039; --muted:#4d6b76; --dim:#8aa4ae;
+    --cyan:#0891b2; --green:#059669; --amber:#d97706; --purple:#7c3aed; --pink:#e11d48;
+    --accent:#0e9bc4;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:
+      radial-gradient(1100px 420px at 50% -120px, rgba(14,155,196,.14), transparent 70%),
+      linear-gradient(180deg,#f6fbfd 0%,#e9f3f7 100%);
+    color:var(--text);font-family:'PingFang TC','Microsoft JhengHei','Helvetica Neue',system-ui,sans-serif;
+    line-height:1.75;overflow:hidden}
+  header{position:fixed;top:0;left:0;right:0;height:60px;z-index:20;
+    display:flex;align-items:center;gap:16px;padding:0 20px;
+    background:rgba(255,255,255,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  header::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;
+    background:linear-gradient(90deg,#e11d48,#d97706,#eab308,#059669,#0891b2,#4f46e5,#7c3aed);opacity:.85}
+  header h1{font-size:18px;margin:0;font-weight:800;letter-spacing:.5px;white-space:nowrap}
+  header h1 .em{color:var(--accent)}
+  .search{flex:1;max-width:340px;position:relative}
+  .search input{width:100%;padding:8px 12px 8px 34px;border-radius:10px;
+    border:1px solid var(--line);background:var(--panel);color:var(--text);font-size:14px;outline:none}
+  .search input:focus{border-color:var(--accent)}
+  .search svg{position:absolute;left:10px;top:9px;opacity:.6}
+  .tabs{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+  .tabs button{padding:8px 14px;border-radius:10px;border:1px solid var(--line);
+    background:var(--panel);color:var(--muted);font-size:13.5px;cursor:pointer;transition:.15s;font-family:inherit}
+  .tabs button:hover{color:var(--text);border-color:var(--accent)}
+  .tabs button.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700;box-shadow:0 2px 10px rgba(14,155,196,.35)}
+  .wrap{position:fixed;top:60px;left:0;right:0;bottom:0;display:flex}
+  aside{width:290px;flex:none;overflow-y:auto;padding:16px 10px 60px;
+    border-right:1px solid var(--line);background:rgba(255,255,255,.55)}
+  .cat{margin:10px 8px 4px;font-size:12px;font-weight:700;letter-spacing:1px;color:var(--dim)}
+  .navlink{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:8px;
+    color:var(--muted);cursor:pointer;font-size:14px;transition:.12s}
+  .navlink:hover{background:var(--panel);color:var(--text)}
+  .navlink.active{background:var(--panel2);color:#123039;font-weight:700;box-shadow:inset 3px 0 0 var(--accent)}
+  .navlink .dot{width:8px;height:8px;border-radius:50%;flex:none}
+  .navlink small{color:var(--dim);font-size:10.5px;margin-left:auto;text-align:right}
+  main{flex:1;overflow-y:auto;padding:38px 46px 90px;scroll-behavior:smooth}
+  .note{max-width:820px;margin:0 auto;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .crumbs{font-size:13px;color:var(--dim);margin-bottom:10px}
+  .crumbs .tag{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11.5px;font-weight:700;margin-right:6px}
+  h2.title{font-size:29px;margin:2px 0 4px;font-weight:800}
+  .en{color:var(--muted);font-size:15px;margin-bottom:18px;letter-spacing:.5px}
+  .callout{background:linear-gradient(180deg,rgba(34,211,238,.12),rgba(34,211,238,.03));
+    border-left:3px solid var(--accent);border-radius:8px;padding:12px 16px;margin:18px 0;color:#123039}
+  .callout b{color:#0e5a6b}
+  main h3{font-size:18px;margin:26px 0 8px;color:#123039;border-bottom:1px solid var(--line);padding-bottom:6px}
+  main p{margin:10px 0}
+  main ul{margin:10px 0;padding-left:22px}
+  main li{margin:5px 0}
+  .diagram{width:100%;border-radius:12px;border:1px solid var(--line);margin:16px 0;background:#fff;display:block;box-shadow:0 2px 12px rgba(18,48,57,.06)}
+  .formula{font-family:'Cambria Math',Georgia,serif;font-size:18px;text-align:center;
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin:16px 0;color:var(--text)}
+  .eqcard{background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid var(--line);border-radius:14px;
+    padding:18px 20px;margin:18px 0;box-shadow:0 3px 14px rgba(18,48,57,.06)}
+  .eqcard .eqt{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--accent);text-align:center;margin-bottom:2px}
+  .eqcard .eq{font-family:'Cambria Math','Times New Roman',Georgia,serif;font-size:32px;text-align:center;
+    color:#123039;margin:6px 0 16px;line-height:1.35}
+  .eqcard .eq i{font-style:italic}
+  .eqcard .eq sub{font-size:.6em;vertical-align:-.25em} .eqcard .eq sup{font-size:.6em;vertical-align:.5em}
+  .eqcard .lg{display:grid;gap:8px}
+  .eqcard .row{display:flex;gap:14px;align-items:baseline;padding:9px 14px;background:#fff;border:1px solid var(--line);border-radius:10px}
+  .eqcard .s{font-family:'Cambria Math','Times New Roman',Georgia,serif;font-style:italic;font-weight:800;
+    font-size:20px;min-width:58px;text-align:center;flex:none}
+  .eqcard .s sub{font-size:.6em;vertical-align:-.2em}
+  .eqcard .m{font-size:13.5px;color:#2b4a53;line-height:1.6}
+  .eqcard .m b{color:#123039}
+  .eqcard .u{display:inline-block;margin-left:8px;font-size:11.5px;color:#5b8090;background:#eef6f9;
+    border:1px solid var(--line);border-radius:20px;padding:1px 9px}
+  .eqcard .cap{font-size:12.5px;color:var(--dim);text-align:center;margin-top:12px}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 12px;text-align:left}
+  th{background:#e4f1f5;color:#123039}
+  td{background:rgba(14,32,41,.5)}
+  a.wl{color:var(--accent);cursor:pointer;text-decoration:none;border-bottom:1px dashed rgba(34,211,238,.5)}
+  a.wl:hover{color:#0b5566;background:rgba(14,155,196,.14);border-radius:3px}
+  .related{margin-top:34px;padding-top:16px;border-top:1px solid var(--line)}
+  .related .cat{margin-left:0}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .pathrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:16px 0 8px}
+  .stage{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:24px;background:#fff;
+    border:1px solid var(--line);cursor:pointer;font-weight:700;color:#123039;transition:.15s;box-shadow:0 1px 6px rgba(18,48,57,.05)}
+  .stage:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(18,48,57,.12);border-color:var(--accent)}
+  .stage .d{width:10px;height:10px;border-radius:50%;flex:none}
+  .pathrow .arrow{color:var(--dim);font-weight:800;font-size:16px}
+  .catgroup{margin:14px 0}
+  .catgroup .cl{font-size:12.5px;font-weight:800;letter-spacing:.5px;margin-bottom:7px;display:flex;align-items:center;gap:7px}
+  .catgroup .cl .d{width:9px;height:9px;border-radius:50%}
+  .chip{padding:6px 14px;border-radius:20px;background:var(--panel);border:1px solid var(--line);
+    color:var(--muted);cursor:pointer;font-size:13.5px;transition:.12s}
+  .chip:hover{background:var(--accent);color:#04222a;border-color:var(--accent)}
+  .nav-btns{display:flex;justify-content:space-between;margin-top:26px;gap:10px}
+  .nav-btns button{flex:1;padding:12px;border-radius:10px;border:1px solid var(--line);
+    background:var(--panel);color:var(--muted);cursor:pointer;text-align:left;font-family:inherit;transition:.12s}
+  .nav-btns button:hover{border-color:var(--accent);color:#0e5a6b;background:#f0f9fc}
+  .nav-btns small{display:block;color:var(--dim);font-size:11px}
+  .kbox{background:linear-gradient(180deg,rgba(52,211,153,.12),rgba(52,211,153,.03));
+    border:1px solid rgba(52,211,153,.35);border-radius:12px;padding:14px 18px;margin:22px 0}
+  .kbox .kt{font-weight:800;color:var(--green);font-size:14px;margin-bottom:6px}
+  .kbox ul{margin:4px 0 0;padding-left:20px} .kbox li{margin:3px 0}
+  .collap{border:1px solid var(--line);border-radius:10px;margin:12px 0;overflow:hidden;background:rgba(14,32,41,.4)}
+  .collap>summary{cursor:pointer;padding:12px 16px;font-weight:700;color:#123039;list-style:none;display:flex;align-items:center;gap:8px}
+  .collap>summary::-webkit-details-marker{display:none}
+  .collap>summary::before{content:'▸';color:var(--accent);transition:.2s;display:inline-block}
+  .collap[open]>summary::before{transform:rotate(90deg)}
+  .collap>summary:hover{background:var(--panel)}
+  .collap .body{padding:2px 18px 16px;color:#2b4a53}
+  .collap.myth>summary{color:#be123c}.collap.myth>summary::before{color:var(--pink)}
+  .collap.fact>summary{color:#047857}.collap.fact>summary::before{color:var(--green)}
+  .myth-row{display:flex;gap:10px;margin:10px 0}
+  .myth-row .x{color:var(--pink);font-weight:800;flex:none}.myth-row .o{color:var(--green);font-weight:800;flex:none}
+  .hero{text-align:center;padding:14px 0 10px}
+  .hero .big{font-size:40px;font-weight:800;margin:12px 0 4px}
+  .hero .sub{color:var(--muted);max-width:640px;margin:0 auto 8px}
+  .stats{display:flex;gap:12px;justify-content:center;margin:22px 0;flex-wrap:wrap}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 20px;text-align:center}
+  .stat b{font-size:24px;display:block;color:var(--accent)} .stat span{font-size:12px;color:var(--dim)}
+  #graphView,#demoView,#meshView{flex:1;position:relative;display:none}
+  #demoView,#meshView{overflow-y:auto;padding:24px 30px 80px}
+  #graph{width:100%;height:100%;display:block;cursor:grab}
+  .legend{position:absolute;top:16px;left:16px;background:rgba(255,255,255,.9);border:1px solid var(--line);
+    border-radius:10px;padding:12px 14px;font-size:13px;backdrop-filter:blur(6px);box-shadow:0 2px 12px rgba(18,48,57,.08)}
+  .legend div{display:flex;align-items:center;gap:8px;margin:4px 0;color:var(--muted)}
+  .legend i{width:11px;height:11px;border-radius:50%;display:inline-block}
+  .hint{position:absolute;bottom:16px;right:18px;color:var(--dim);font-size:12px}
+  .gnode{cursor:pointer}.gnode text{font-size:12px;fill:var(--text);pointer-events:none;font-family:inherit}
+  .gnode circle{transition:r .15s}
+  .gedge{stroke:#b7d3dd;stroke-width:1.4}.gedge.hl{stroke:var(--accent);stroke-width:2.6}
+  /* demo */
+  .demo{max-width:900px;margin:0 auto}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;margin:18px 0;box-shadow:0 4px 20px rgba(18,48,57,.06)}
+  .panel h3{margin:0 0 4px;color:#123039;font-size:18px;border:none}
+  .panel .d{color:var(--dim);font-size:13px;margin-bottom:12px}
+  .controls{display:flex;flex-wrap:wrap;gap:20px;align-items:center;margin-top:14px}
+  .controls label{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:6px;min-width:190px}
+  .controls input[type=range]{accent-color:var(--accent)}
+  .controls .val{color:var(--accent);font-weight:700}
+  .controls button{padding:9px 16px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);color:var(--text);cursor:pointer;font-family:inherit}
+  .controls button:hover{border-color:var(--accent)}
+  canvas.cv{width:100%;border-radius:12px;background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid var(--line);display:block}
+  .bars{display:flex;gap:18px;margin-top:14px}
+  .bar{flex:1;text-align:center}
+  .bar .track{height:120px;background:var(--panel2);border-radius:8px;position:relative;overflow:hidden;border:1px solid var(--line)}
+  .bar .fill{position:absolute;bottom:0;left:0;right:0;transition:height .08s}
+  .bar .lbl{font-size:13px;color:var(--muted);margin-top:6px}
+  .bar .pct{font-weight:800;color:#123039}
+  svg#mesh{width:100%;height:auto;background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid var(--line);border-radius:12px}
+  .cpl{cursor:pointer}
+  .chartbox{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;margin:16px 0;box-shadow:0 2px 12px rgba(18,48,57,.05)}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:#b7d3dd;border-radius:6px}
+  @media(max-width:720px){aside{position:fixed;z-index:15;height:100%;transform:translateX(-100%);transition:.25s}
+    aside.open{transform:none}main{padding:24px 18px 80px}.search{max-width:none}header h1{font-size:14px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>💡 <span class="em">光子</span>積體電路</h1>
+  <div class="search">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8fbccb" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input id="search" placeholder="搜尋知識點…（Enter 開啟）" autocomplete="off">
+  </div>
+  <div class="tabs">
+    <button id="tabNotes" class="active">📖 筆記</button>
+    <button id="tabGraph">🕸️ 關係圖譜</button>
+    <button id="tabDemo">🔬 互動元件</button>
+    <button id="tabMesh">🔀 可程式化網格</button>
+  </div>
+</header>
+<div class="wrap">
+  <aside id="sidebar"></aside>
+  <main id="main"></main>
+  <div id="graphView"><svg id="graph"></svg><div class="legend" id="legend"></div>
+    <div class="hint">拖曳節點 · 點擊開啟筆記 · 移入高亮關聯</div></div>
+  <div id="demoView"></div>
+  <div id="meshView"></div>
+</div>
+<script>
+const CATS={
+ "基礎":{name:"基礎與動機",raw:"#22d3ee"},
+ "被動":{name:"被動元件",raw:"#34d399"},
+ "主動":{name:"主動元件",raw:"#fbbf24"},
+ "程式":{name:"可程式化光子",raw:"#a78bfa"},
+ "應用":{name:"應用與生態",raw:"#fb7185"}
+};
+function L(id){return '<a class="wl" data-id="'+id+'">'+id+'</a>';}
+const NOTES=[
+{id:"光子積體電路",en:"Photonic Integrated Circuit (PIC)",cat:"基礎",html:
+ '<div class="callout"><b>一句話：</b>把桌上型光學（光纖、透鏡、分光鏡）的功能<b>整合到一塊晶片上</b>，讓光在微米級的'+L("波導")+'中被產生、導引、調變、偵測——就像電子 IC 整合電晶體。</div>'+
+ '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgMzYwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZjhmY2ZlIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZWFmM2Y3Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJjaGlwIiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlZWY3ZmEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9IndnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMCI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMwODkxYjIiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwNTk2NjkiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9Imx6IiBjeD0iNTAlIiBjeT0iNDAlIiByPSI2MCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmI3MTg1Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZTExZDQ4Ii8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjM2MCIgZmlsbD0idXJsKCNiZykiLz4KICA8dGV4dCB4PSIzNCIgeT0iNDIiIGZpbGw9IiMxMjMwMzkiIGZvbnQtc2l6ZT0iMjAiIGZvbnQtd2VpZ2h0PSI3MDAiPuefveWFieWtkOaZtueJh++8muS4gOaineWFieeahOaXheeoi+OAgEFuYXRvbXkgb2YgYSBTaWxpY29uIFBob3RvbmljIENoaXA8L3RleHQ+CgogIDxyZWN0IHg9IjQwIiB5PSI3MCIgd2lkdGg9IjgyMCIgaGVpZ2h0PSIyNTAiIHJ4PSIxNiIgZmlsbD0idXJsKCNjaGlwKSIgc3Ryb2tlPSIjY2ZlM2VhIiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjYwIiB5PSI5OCIgZmlsbD0iIzhhYTRhZSIgZm9udC1zaXplPSIxMiI+55+95pm254mH77yIU09J77yJPC90ZXh0PgoKICA8cGF0aCBkPSJNIDEyMCAyMDAgSCA3ODAiIGZpbGw9Im5vbmUiIHN0cm9rZT0idXJsKCN3ZykiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CgogIDxjaXJjbGUgY3g9IjExMCIgY3k9IjIwMCIgcj0iMTYiIGZpbGw9InVybCgjbHopIi8+CiAgPHRleHQgeD0iMTEwIiB5PSIyNTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNlMTFkNDgiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI3MDAiPumbt+WwhDwvdGV4dD4KICA8dGV4dCB4PSIxMTAiIHk9IjI2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2IwNmE3OCIgZm9udC1zaXplPSIxMCI+TGFzZXLvvIjlpJbmjqXvvIk8L3RleHQ+CgogIDxnPgogICAgPHJlY3QgeD0iMTc2IiB5PSIxODYiIHdpZHRoPSIzMCIgaGVpZ2h0PSIyOCIgcng9IjMiIGZpbGw9IiNlYWY2ZjkiIHN0cm9rZT0iIzA4OTFiMiIvPgogICAgPGxpbmUgeDE9IjE4MiIgeTE9IjE4OCIgeDI9IjE4MiIgeTI9IjIxMiIgc3Ryb2tlPSIjMDg5MWIyIi8+PGxpbmUgeDE9IjE4OCIgeTE9IjE4OCIgeDI9IjE4OCIgeTI9IjIxMiIgc3Ryb2tlPSIjMDg5MWIyIi8+CiAgICA8bGluZSB4MT0iMTk0IiB5MT0iMTg4IiB4Mj0iMTk0IiB5Mj0iMjEyIiBzdHJva2U9IiMwODkxYjIiLz48bGluZSB4MT0iMjAwIiB5MT0iMTg4IiB4Mj0iMjAwIiB5Mj0iMjEyIiBzdHJva2U9IiMwODkxYjIiLz4KICAgIDx0ZXh0IHg9IjE5MSIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMGU1YTZiIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNzAwIj7lhYnmn7XogKblkIjlmag8L3RleHQ+CiAgICA8dGV4dCB4PSIxOTEiIHk9IjE2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZiOThhNCIgZm9udC1zaXplPSIxMCI+R3JhdGluZyBDb3VwbGVyPC90ZXh0PgogIDwvZz4KCiAgPGc+CiAgICA8cmVjdCB4PSIzMDAiIHk9IjE3NiIgd2lkdGg9IjkwIiBoZWlnaHQ9IjQ4IiByeD0iNiIgZmlsbD0iI2VlZmFmNCIgc3Ryb2tlPSIjMDU5NjY5Ii8+CiAgICA8cGF0aCBkPSJNIDMwMCAyMDAgcSAyMiAtMjAgNDUgMCBxIDIyIDIwIDQ1IDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA1OTY2OSIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgICA8cmVjdCB4PSIzMzIiIHk9IjE3MiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjgiIHJ4PSIyIiBmaWxsPSIjZDk3NzA2Ii8+CiAgICA8dGV4dCB4PSIzNDUiIHk9IjE1MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzBhNzM1MCIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCI+6Kq/6K6K5ZmoIE1aTTwvdGV4dD4KICAgIDx0ZXh0IHg9IjM0NSIgeT0iMTY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNWY5Yzg0IiBmb250LXNpemU9IjEwIj7lr6vlhaXos4fmlpk8L3RleHQ+CiAgPC9nPgoKICA8Zz4KICAgIDxjaXJjbGUgY3g9IjUwMCIgY3k9IjE3NiIgcj0iMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgICA8dGV4dCB4PSI1MDAiIHk9IjI0OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzBlNWE2YiIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCI+55Kw5b2i6Kun5oyv5ZmoPC90ZXh0PgogICAgPHRleHQgeD0iNTAwIiB5PSIyNjQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2Yjk4YTQiIGZvbnQtc2l6ZT0iMTAiPuazoumVt+a/vuazoiAvIFdETTwvdGV4dD4KICA8L2c+CgogIDxnPgogICAgPHJlY3QgeD0iNTk2IiB5PSIxOTIiIHdpZHRoPSIyNiIgaGVpZ2h0PSIxNiIgcng9IjMiIGZpbGw9IiNkOTc3MDYiLz4KICAgIDx0ZXh0IHg9IjYwOSIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjYTE1YzA2IiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNzAwIj7nm7jkvY3lmag8L3RleHQ+CiAgICA8dGV4dCB4PSI2MDkiIHk9IjE2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2I1ODU0OSIgZm9udC1zaXplPSIxMCI+54ax5YWJ6Kq/6KunPC90ZXh0PgogIDwvZz4KCiAgPGc+CiAgICA8cmVjdCB4PSI3MDAiIHk9IjE4NCIgd2lkdGg9IjM0IiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0iI2YzZWZmZSIgc3Ryb2tlPSIjN2MzYWVkIi8+CiAgICA8cGF0aCBkPSJNIDcwNiAyMTYgTCA3MTcgMTkwIEwgNzI4IDIxNiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjN2MzYWVkIiBzdHJva2Utd2lkdGg9IjIiLz4KICAgIDx0ZXh0IHg9IjcxNyIgeT0iMjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNWIzMGIwIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNzAwIj7lhYnlgbXmuKzlmag8L3RleHQ+CiAgICA8dGV4dCB4PSI3MTciIHk9IjI2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzhhN2JjMCIgZm9udC1zaXplPSIxMCI+R2Ugwrcg6K6A5Zue6Zu7PC90ZXh0PgogIDwvZz4KCiAgPHBhdGggZD0iTSA3ODAgMjAwIEggODIwIiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWRhc2hhcnJheT0iMyAzIi8+CiAgPHRleHQgeD0iODM1IiB5PSIyMDQiIGZpbGw9IiNhMTVjMDYiIGZvbnQtc2l6ZT0iMTIiPumbu+ioiuiZnzwvdGV4dD4KCiAgPHRleHQgeD0iNjAiIHk9IjMwOCIgZmlsbD0iIzhhYTRhZSIgZm9udC1zaXplPSIxMSI+5YWJ77ya6Zu35bCEIOKGkiDpgLLmmbbniYcg4oaSIOiqv+iuiu+8iOWvq+izh+aWme+8ieKGkiDmv77ms6Ig4oaSIOWBtea4rO+8iOiugOWbnumbu++8iTwvdGV4dD4KPC9zdmc+Cg==" alt="矽光子晶片概觀">'+
+ '<h3>與電子 IC 的類比</h3><table><tr><th>電子 IC</th><th>光子 IC</th></tr>'+
+ '<tr><td>電子在金屬導線中流動</td><td>光子在'+L("波導")+'中傳播</td></tr>'+
+ '<tr><td>電晶體</td><td>'+L("調變器")+'、'+L("相位器")+'</td></tr>'+
+ '<tr><td>電阻/電容</td><td>'+L("環形諧振器")+'、'+L("方向耦合器與分光器")+'</td></tr>'+
+ '<tr><td>打線/銲墊</td><td>'+L("光柵耦合器與邊緣耦合")+'</td></tr></table>'+
+ '<h3>為什麼重要</h3><p>把一整套光學系統從光學桌縮到指甲大小，體積、成本、穩定度大幅改善，是資料中心光收發、光達、量子與光學運算的關鍵，並最終走向 '+L("可程式化光子電路")+'。</p>'},
+{id:"為什麼要用光子",en:"Electrons vs Photons",cat:"基礎",html:
+ '<div class="callout"><b>一句話：</b>光子在<b>頻寬、傳輸損耗、抗干擾、平行度</b>上有電子難以匹敵的優勢，因此在通訊與部分運算中，用光取代或輔助電特別有價值。</div>'+
+ '<h3>光子的優勢</h3><ul><li><b>超高頻寬</b>：光載波約 200 THz，單一波導可用 WDM 同時傳多通道。</li>'+
+ '<li><b>低損耗</b>：光纖每公里僅約 0.2 dB；晶片'+L("波導")+'約 1–2 dB/cm。</li>'+
+ '<li><b>無電阻發熱、無電磁串擾</b>。</li><li><b>天生平行</b>：不同波長/模態同時載資料 → 適合'+L("應用領域")+'的矩陣運算。</li></ul>'+
+ '<h3>光子的挑戰</h3><ul><li>不易「儲存」、不易做強交互作用（邏輯運算難）。</li>'+
+ '<li>'+L("光源與雷射整合")+'：矽不發光。</li><li>元件尺寸受波長限制。</li></ul>'+
+ '<h3>白話</h3><p>電子擅長運算與儲存，光子擅長搬運與傳輸。現代趨勢是<b>電光協同</b>：用光搬高頻寬資料，用電做邏輯。</p>'},
+{id:"矽光子技術",en:"Silicon Photonics",cat:"基礎",html:
+ '<div class="callout"><b>一句話：</b>用<b>矽</b>作光子電路材料，並借成熟的 <b>CMOS 製程</b>大量精密製造'+L("光子積體電路")+'——目前最主流的 PIC 平台。</div>'+
+ '<h3>為什麼選矽</h3><ul><li><b>CMOS 相容</b>：沿用電子晶圓廠設備，低成本、可量產。</li>'+
+ '<li><b>高折射率對比</b>：矽 n≈3.48 vs 氧化矽 n≈1.44，光被緊緊侷限，'+L("波導")+'可做次微米、彎曲半徑僅數 µm。</li>'+
+ '<li>對 1310/1550 nm 電信波長透明。</li></ul>'+
+ '<h3>SOI 平台</h3><ul><li>標準結構：<b>220 nm</b> 矽層 + 約 <b>2 µm</b> 埋氧層（BOX）。</li>'+
+ '<li>埋氧層提供垂直光侷限；元件用光刻與乾蝕刻定義。</li></ul>'+
+ '<h3>先天限制</h3><p>矽<b>不會發光</b>（間接能隙），需 '+L("光源與雷射整合")+'；強調變靠 '+L("調變器")+' 的載子色散，效率有限。</p>'},
+{id:"光子電路的複雜度擴展",en:"Scaling Complexity",cat:"基礎",html:
+ '<div class="callout"><b>一句話：</b>就像電子 IC 靠標準製程讓電晶體數量指數成長，光子電路也在提高<b>單晶片的元件數量與功能複雜度</b>——這是本演講的核心敘事。</div>'+
+ '<h3>擴展的來源</h3><ul><li>元件庫標準化（'+L("製程與代工")+'的 PDK）：波導、耦合器、調變器都成為可調用的積木。</li><li>設計自動化與模擬工具成熟。</li></ul>'+
+ '<h3>瓶頸（與電子不同）</h3><ul><li>元件尺寸受<b>波長</b>限制，難持續微縮。</li>'+
+ '<li>每個可調元件都要電控與供電（見'+L("相位器")+'），控制與散熱成瓶頸。</li><li>光學損耗沿路徑累積。</li></ul>'+
+ '<h3>一條出路：可重構</h3><p>與其為每個功能做專用晶片，不如做一顆通用、可重新配置的晶片 → 這正是 '+L("可程式化光子電路")+' 的動機。</p>'},
+{id:"波導",en:"Waveguide",cat:"被動",html:
+ '<div class="callout"><b>一句話：</b>光子電路的「導線」：用高折射率的矽芯與低折射率的氧化矽包覆，靠全內反射把光侷限在數百奈米寬的通道中傳播。</div>'+
+ '<h3>關鍵物理</h3><ul><li><b>折射率對比</b>：矽 3.48 / 氧化矽 1.44，對比極高 → 光被緊緊侷限。</li>'+
+ '<li><b>模態 mode</b>：截面內場分布；夠窄則單模。</li>'+
+ '<li><b>有效折射率 n_eff</b>：決定相位速度；<b>群折射率 n_g</b> 決定訊號速度，影響'+L("環形諧振器")+'。</li></ul>'+
+ '<h3>型式與規格（220 nm SOI）</h3><ul><li><b>條形（strip）</b>：約 500 nm 寬×220 nm 高，單模，彎曲半徑可小到 ~5 µm。</li>'+
+ '<li><b>脊形（rib）</b>：部分蝕刻、低損耗，常用於'+L("調變器")+'。</li>'+
+ '<li><b>傳播損耗</b>：矽條形波導約 1–2 dB/cm（側壁散射為主）。</li></ul>'+
+ '<p>光要先「被關進」波導才能被後續元件操控——這是所有 PIC 的地基。進出晶片靠 '+L("光柵耦合器與邊緣耦合")+'。</p>'},
+{id:"光柵耦合器與邊緣耦合",en:"Fiber Coupling",cat:"被動",html:
+ '<div class="callout"><b>一句話：</b>讓光在<b>光纖與晶片'+L("波導")+'之間</b>進出的介面。難點：光纖模場（~10 µm）與波導模場（次微米）差距極大，需模態轉換。</div>'+
+ '<h3>兩大方式</h3><ul><li><b>光柵耦合器</b>：在波導上刻週期光柵，把近垂直入射的光繞射進波導。可放晶片任意位置、方便晶圓級測試；但有波長/偏振依賴，效率約 −1～−3 dB。</li>'+
+ '<li><b>邊緣耦合</b>：晶片邊緣用倒錐把模場放大匹配光纖。頻寬大、偏振不敏感、損耗低；但只能在邊緣、需切割端面。</li></ul>'+
+ '<p>耦合損耗常是系統損耗大戶，直接影響 '+L("挑戰")+' 中的損耗預算。這是光子晶片的「打線銲墊」。</p>'},
+{id:"方向耦合器與分光器",en:"Coupler / Splitter",cat:"被動",html:
+ '<div class="callout"><b>一句話：</b>把光<b>分開或合併</b>的基本元件，是'+L("馬赫-曾德干涉儀")+'、'+L("環形諧振器")+'、'+L("可調基本單元")+'的核心零件。</div>'+
+ '<h3>常見型式</h3><ul><li><b>方向耦合器</b>：兩條'+L("波導")+'靠近，消逝場耦合，功率週期性在兩波導間轉移；比例由間距與長度決定。</li>'+
+ '<li><b>多模干涉器 MMI</b>：自我成像做 1×2、2×2 分光，對製程誤差不敏感、頻寬大。</li>'+
+ '<li><b>Y 分支</b>：最簡單的 1×2 等分。</li></ul>'+
+ '<h3>cross 與 bar</h3><p>2×2 耦合器有兩極端：<b>bar 直通</b>與 <b>cross 交叉</b>。把耦合設成可調，就成了 '+L("可調基本單元")+'，是 '+L("光子網格")+' 的基礎。</p>'},
+{id:"馬赫-曾德干涉儀",en:"Mach-Zehnder Interferometer (MZI)",cat:"被動",html:
+ '<div class="callout"><b>一句話：</b>把光分成兩臂、在一臂加<b>可調相位差</b>、再合併干涉。輸出功率隨相位在兩埠間切換——PIC 中最通用的「開關與可調元件」。</div>'+
+ '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgMzQwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiZzIiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2Y4ZmNmZSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2VhZjNmNyIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0id2cyIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMCI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMwODkxYjIiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwNTk2NjkiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI5MDAiIGhlaWdodD0iMzQwIiBmaWxsPSJ1cmwoI2JnMikiLz4KICA8dGV4dCB4PSIzNCIgeT0iNDIiIGZpbGw9IiMxMjMwMzkiIGZvbnQtc2l6ZT0iMjAiIGZvbnQtd2VpZ2h0PSI3MDAiPummrOi1q+KAk+abvuW+t+W5sua2ieWEgCBNWknvvJrnlKjnm7jkvY3lt67mjqfliLblhYk8L3RleHQ+CgogIDx0ZXh0IHg9IjYwIiB5PSIxODAiIHRleHQtYW5jaG9yPSJlbmQiIGZpbGw9IiMwZTVhNmIiIGZvbnQtc2l6ZT0iMTMiPui8uOWFpTwvdGV4dD4KICA8cGF0aCBkPSJNIDcwIDE3NSBIIDE5MCIgc3Ryb2tlPSJ1cmwoI3dnMikiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CgogIDxyZWN0IHg9IjE5MCIgeT0iMTUwIiB3aWR0aD0iMzQiIGhlaWdodD0iNTAiIHJ4PSI2IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiMwNTk2NjkiLz4KICA8dGV4dCB4PSIyMDciIHk9IjIyOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzVmOWM4NCIgZm9udC1zaXplPSIxMCI+5YiG5YWJPC90ZXh0PgoKICA8cGF0aCBkPSJNIDIyNCAxNjUgQyAyNzAgMTIwLCA0NzAgMTIwLCA1MTYgMTIwIiBzdHJva2U9InVybCgjd2cyKSIgc3Ryb2tlLXdpZHRoPSI1IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNIDIyNCAxODUgQyAyNzAgMjMwLCA0NzAgMjMwLCA1MTYgMjMwIiBzdHJva2U9InVybCgjd2cyKSIgc3Ryb2tlLXdpZHRoPSI1IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KCiAgPHJlY3QgeD0iMzMwIiB5PSIxMDgiIHdpZHRoPSI2MCIgaGVpZ2h0PSIyNCIgcng9IjUiIGZpbGw9IiNkOTc3MDYiLz4KICA8dGV4dCB4PSIzNjAiIHk9IjEyNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCI+55u45L2NIM+GPC90ZXh0PgogIDx0ZXh0IHg9IjM2MCIgeT0iOTYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNhMTVjMDYiIGZvbnQtc2l6ZT0iMTEiPuWPr+iqv+ebuOS9jeWZqDwvdGV4dD4KCiAgPHRleHQgeD0iMzYwIiB5PSIyNTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2Yjk4YTQiIGZvbnQtc2l6ZT0iMTEiPuWPg+iAg+iHgjwvdGV4dD4KCiAgPHJlY3QgeD0iNTE2IiB5PSI5NSIgd2lkdGg9IjM0IiBoZWlnaHQ9IjE1MCIgcng9IjYiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZT0iIzA1OTY2OSIvPgogIDx0ZXh0IHg9IjUzMyIgeT0iMjY4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNWY5Yzg0IiBmb250LXNpemU9IjEwIj7lkIjlhYkgwrcg5bmy5raJPC90ZXh0PgoKICA8cGF0aCBkPSJNIDU1MCAxMjAgSCA3MDAiIHN0cm9rZT0idXJsKCN3ZzIpIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0gNTUwIDIzMCBIIDcwMCIgc3Ryb2tlPSJ1cmwoI3dnMikiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHRleHQgeD0iNzEyIiB5PSIxMTIiIGZpbGw9IiMwZTVhNmIiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiPui8uOWHuiBB77yIYmFy77yJPC90ZXh0PgogIDx0ZXh0IHg9IjcxMiIgeT0iMTI4IiBmaWxsPSIjNmI5OGE0IiBmb250LXNpemU9IjExIj5QIOKInSBjb3PCsijPhi8yKTwvdGV4dD4KICA8dGV4dCB4PSI3MTIiIHk9IjIyNCIgZmlsbD0iIzBhNzM1MCIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCI+6Ly45Ye6IELvvIhjcm9zc++8iTwvdGV4dD4KICA8dGV4dCB4PSI3MTIiIHk9IjI0MCIgZmlsbD0iIzZiOThhNCIgZm9udC1zaXplPSIxMSI+UCDiiJ0gc2luwrIoz4YvMik8L3RleHQ+CgogIDx0ZXh0IHg9IjYwIiB5PSIzMTUiIGZpbGw9IiM4YWE0YWUiIGZvbnQtc2l6ZT0iMTIiPuaUueiuiuebuOS9jSDPhu+8jOWFieWwseWcqOWFqeWAi+i8uOWHuuWfoOS5i+mWk+WIh+aPm+KAlOKAlOmAmeWwseaYr+WFiemWi+mXnOOAgeiqv+iuiuWZqOiIh+WPr+eoi+W8j+WMlue2suagvOeahOWfuuacrOWOn+eQhuOAgjwvdGV4dD4KPC9zdmc+Cg==" alt="MZI 原理">'+
+ '<h3>運作</h3><ul><li>輸入經'+L("方向耦合器與分光器")+'分成兩臂。</li><li>一臂加'+L("相位器")+'造成相位差 Δφ。</li><li>第二耦合器合併干涉。</li></ul>'+
+ '<div class="eqcard"><div class="eqt">輸出功率</div>'+
+  '<div class="eq"><i style="color:#0ea5e9">P</i><sub style="color:#0ea5e9">out</sub> ∝ <span style="color:#8b5cf6">cos²</span>(<span style="color:#f59e0b">Δφ</span> ⁄ 2)</div>'+
+  '<div class="lg">'+
+   '<div class="row"><div class="s" style="color:#0ea5e9">P<sub>out</sub></div><div class="m"><b>輸出光功率</b>：某個輸出埠測到的光強度<span class="u">相對值 0–1</span></div></div>'+
+   '<div class="row"><div class="s" style="color:#f59e0b">Δφ</div><div class="m"><b>兩臂相位差</b>：上、下兩條路徑累積的相位差，由'+L("相位器")+'控制<span class="u">rad 弧度</span></div></div>'+
+   '<div class="row"><div class="s" style="color:#8b5cf6">cos²</div><div class="m"><b>干涉關係</b>：相位差每變化 π，輸出就在「全亮 ↔ 全暗」之間切換一次</div></div>'+
+  '</div><div class="cap">另一個輸出埠為 sin²(Δφ/2)；兩埠功率相加恆為 1（能量守恆）。</div></div>'+
+ '<p>相位差每變 π，輸出就在亮/暗間切換一次。可當光開關、'+L("調變器")+'（MZM）、可調分光器，也是 '+L("可調基本單元")+' 的骨幹。想親手玩？到上方「🔬 互動元件」拖動相位滑桿。</p>'},
+{id:"環形諧振器",en:"Ring Resonator",cat:"被動",html:
+ '<div class="callout"><b>一句話：</b>環形'+L("波導")+'靠近直波導，當波長讓環周長為整數個波長時發生<b>共振</b>，形成波長選擇性的濾波器、調變器或感測器。</div>'+
+ '<h3>關鍵參數</h3><ul><li><b>共振條件</b>：環周長 = 整數 × (波長 / n_eff)。</li>'+
+ '<li><b>自由頻譜範圍 FSR</b> ≈ λ² / (n_g·L)，環越小 FSR 越大。</li>'+
+ '<li><b>品質因子 Q</b>：越高線寬越窄、儲能越久、頻寬越小。</li></ul>'+
+ '<div class="eqcard"><div class="eqt">自由頻譜範圍</div>'+
+  '<div class="eq"><span style="color:#0ea5e9">FSR</span> ≈ <span style="color:#f59e0b">λ²</span> ⁄ (<span style="color:#10b981">n<sub>g</sub></span> · <span style="color:#8b5cf6">L</span>)</div>'+
+  '<div class="lg">'+
+   '<div class="row"><div class="s" style="color:#0ea5e9">FSR</div><div class="m"><b>自由頻譜範圍</b>：相鄰兩個共振波長的間距；環越小，FSR 越大<span class="u">nm</span></div></div>'+
+   '<div class="row"><div class="s" style="color:#f59e0b">λ</div><div class="m"><b>光的波長</b>：工作波長，例如 1550 nm<span class="u">nm</span></div></div>'+
+   '<div class="row"><div class="s" style="color:#10b981">n<sub>g</sub></div><div class="m"><b>群折射率</b>：'+L("波導")+'對「波包（訊號）」的等效折射率<span class="u">無單位</span></div></div>'+
+   '<div class="row"><div class="s" style="color:#8b5cf6">L</div><div class="m"><b>環的周長</b>：光在環中繞一圈的長度<span class="u">µm</span></div></div>'+
+  '</div></div>'+
+  '<div class="eqcard"><div class="eqt">共振條件</div>'+
+  '<div class="eq"><span style="color:#10b981">n<sub>eff</sub></span> · <span style="color:#8b5cf6">L</span> = <span style="color:#e11d48">m</span> · <span style="color:#f59e0b">λ</span></div>'+
+  '<div class="lg">'+
+   '<div class="row"><div class="s" style="color:#10b981">n<sub>eff</sub></div><div class="m"><b>有效折射率</b>：模態在'+L("波導")+'中「看到」的等效折射率<span class="u">無單位</span></div></div>'+
+   '<div class="row"><div class="s" style="color:#8b5cf6">L</div><div class="m"><b>環的周長</b><span class="u">µm</span></div></div>'+
+   '<div class="row"><div class="s" style="color:#e11d48">m</div><div class="m"><b>共振階數</b>：任一正整數（1, 2, 3…）；每個 m 對應一個共振峰<span class="u">整數</span></div></div>'+
+   '<div class="row"><div class="s" style="color:#f59e0b">λ</div><div class="m"><b>共振波長</b>：滿足此式的波長才會在環中共振<span class="u">nm</span></div></div>'+
+  '</div><div class="cap">環的「光程」剛好是整數個波長時，光才會建設性干涉、能量累積在環中。</div></div>'+
+ '<h3>用途</h3><ul><li>濾波器/WDM：挑出或丟棄特定波長。</li><li>'+L("調變器")+'（環調變器）：微調共振做強度調變，小又省電但<b>對溫度極敏感</b>。</li><li>感測：折射率變化 → 共振偏移。</li></ul>'+
+ '<p>它像「光的鞦韆」，只有對的節奏才會累積能量——代價是需要 '+L("相位器")+' 熱調諧校準。</p>'},
+{id:"相位器",en:"Phase Shifter",cat:"主動",html:
+ '<div class="callout"><b>一句話：</b>能<b>電控改變光相位</b>的元件，是所有可調光路（'+L("馬赫-曾德干涉儀")+'、'+L("環形諧振器")+'、'+L("可程式化光子電路")+'）的「旋鈕」。</div>'+
+ '<h3>主要機制</h3><table><tr><th>機制</th><th>原理</th><th>特點</th></tr>'+
+ '<tr><td>熱光</td><td>加熱改變矽折射率（dn/dT≈1.8e-4/K）</td><td>簡單、低損耗；慢(µs)、耗電、熱串擾</td></tr>'+
+ '<tr><td>電光/等離子色散</td><td>注入/耗盡載子</td><td>快(GHz)；有吸收損耗</td></tr>'+
+ '<tr><td>相變 PCM</td><td>材料態改變折射率</td><td><b>非揮發</b>；耐久待克服</td></tr>'+
+ '<tr><td>MEMS</td><td>機械移動</td><td>低靜態功耗；製程特殊</td></tr></table>'+
+ '<p>可程式化光子需<b>成百上千個</b>相位器，若用熱光，功耗與散熱會爆炸——這是 '+L("挑戰")+' 的核心。</p>'},
+{id:"調變器",en:"Modulator",cat:"主動",html:
+ '<div class="callout"><b>一句話：</b>把<b>高速電訊號寫進光</b>的元件——讓資料搭上光載波，是光通訊發射端核心。</div>'+
+ '<h3>矽的機制：等離子色散</h3><p>矽無強電光效應，靠改變自由載子濃度改變折射率。主流用<b>載子耗盡</b>（PN 反偏），速度可達數十 GHz。</p>'+
+ '<h3>兩大架構</h3><ul><li><b>馬赫–曾德調變器 MZM</b>：把'+L("相位器")+'放進'+L("馬赫-曾德干涉儀")+'臂中。頻寬大、耐溫、線性好；但體積大、驅動電壓較高。</li>'+
+ '<li><b>環調變器</b>：用'+L("環形諧振器")+'共振偏移做調變。小又省電；但頻寬窄、對溫度極敏感。</li></ul>'+
+ '<p>衡量：速率(Gb/s)、消光比、插入損耗、Vπ、能耗(fJ/bit)。它是 PIC 的「嘴巴」，對應接收端的 '+L("光偵測器")+'。</p>'},
+{id:"光偵測器",en:"Photodetector",cat:"主動",html:
+ '<div class="callout"><b>一句話：</b>把<b>光轉回電</b>的元件——光通訊接收端核心。吸收光子產生電子電洞對形成光電流。</div>'+
+ '<h3>矽的解法：鍺 Ge-on-Si</h3><ul><li>矽在 1310/1550 nm 幾乎不吸收（做'+L("波導")+'是優點、做偵測器是缺點）。</li>'+
+ '<li>在矽上磊晶生長<b>鍺</b>來吸收電信波長。</li>'+
+ '<li>典型：responsivity &gt; 0.8 A/W、頻寬 &gt; 50–65 GHz、暗電流數十 µA。</li></ul>'+
+ '<h3>關鍵指標</h3><p>響應度(A/W)、頻寬、暗電流；進階用 APD 內建增益提升靈敏度。它是 PIC 的「耳朵」，對應發射端 '+L("調變器")+'。</p>'},
+{id:"光源與雷射整合",en:"Laser Integration",cat:"主動",html:
+ '<div class="callout"><b>一句話：</b>矽是<b>間接能隙</b>、發光效率極差，做不出好雷射，因此「晶片上的光源」是矽光子最大的先天缺口。</div>'+
+ '<h3>三種策略</h3><ul><li><b>外接雷射（hybrid）</b>：雷射另做，光靠'+L("光柵耦合器與邊緣耦合")+'送進晶片。最成熟。</li>'+
+ '<li><b>異質整合</b>：把 <b>III-V（InP/GaAs）</b> 鍵合到矽上再共同加工，與波導緊耦合。</li>'+
+ '<li><b>異質磊晶</b>：直接在矽上長 III-V（如量子點雷射），良率是挑戰。</li></ul>'+
+ '<p>矽什麼都能做，就是自己不會發光——這是 '+L("挑戰")+' 中最硬的一環。</p>'},
+{id:"可程式化光子電路",en:"Programmable Photonic Circuits",cat:"程式",html:
+ '<div class="callout"><b>一句話：</b>用<b>同一片通用光子晶片</b>，靠軟體設定大量'+L("相位器")+'，就能實現多種功能，不必為每個應用重做專用晶片。這是 Bogaerts 等人 2020 <i>Nature</i> 論文的核心。</div>'+
+ '<h3>核心概念</h3><ul><li>由許多'+L("可調基本單元")+'連成'+L("光子網格")+'。</li>'+
+ '<li>調整每個單元的分光比與相位，就能把光路「重新佈線」。</li>'+
+ '<li>類比電子界的 <b>FPGA</b> → 又稱 '+L("Field-Programmable Photonic Array")+'。</li></ul>'+
+ '<h3>意義與代價</h3><ul><li>降低門檻：不用每功能都'+L("製程與代工")+'流片。</li>'+
+ '<li>可重構、自我校準，適應製程誤差。</li><li>代價：較高損耗、較大面積、較多控制通道（見'+L("挑戰")+'）。</li></ul>'+
+ '<p>想體驗「同一片硬體、不同佈線」？到上方「🔀 可程式化網格」點切換 cross/bar 看光如何改道。</p>'},
+{id:"可調基本單元",en:"Tunable Basic Unit (TBU)",cat:"程式",html:
+ '<div class="callout"><b>一句話：</b>'+L("光子網格")+'的最小積木：一個<b>可調 2×2 耦合器</b>，通常是兩個'+L("方向耦合器與分光器")+'夾一個'+L("相位器")+'（即一個'+L("馬赫-曾德干涉儀")+'）。</div>'+
+ '<h3>它能做什麼</h3><ul><li><b>bar 直通</b>、<b>cross 交叉</b>，或介於之間的<b>任意分光</b>並附加相位。</li></ul>'+
+ '<p>把許多 TBU 依規則連成'+L("光子網格")+'並個別設定，就能合成任意線性光學轉換（分光、路由、濾波、矩陣乘法）——這是 '+L("可程式化光子電路")+' 的硬體基礎。它像光路上的「可調道岔＋號誌」。</p>'},
+{id:"光子網格",en:"Photonic Mesh",cat:"程式",html:
+ '<div class="callout"><b>一句話：</b>由許多'+L("可調基本單元")+'規則連接成的網狀結構。設定每個單元就能把光任意佈線，實現'+L("可程式化光子電路")+'。</div>'+
+ '<h3>兩大拓撲</h3><ul><li><b>前饋網格（feed-forward）</b>：光單向通過，實現任意<b>么正矩陣</b>。Reck 三角形與 Clements 矩形是經典排列（後者更緊湊）。常用於'+L("應用領域")+'的神經網路/矩陣運算。</li>'+
+ '<li><b>循環網格（recirculating）</b>：光可回流成迴路，能做含回授的電路（濾波、延遲、'+L("環形諧振器")+'）。Bogaerts / Pérez–Capmany 推廣的<b>六角形網格</b>屬此類，通用性高。</li></ul>'+
+ '<p>前饋像單行道系統（適合矩陣乘法），六角形循環網格允許環路（更接近萬用）。皆受限於'+L("挑戰")+'的累積損耗與調諧功耗。</p>'},
+{id:"Field-Programmable Photonic Array",en:"FPPA · 光子 FPGA",cat:"程式",html:
+ '<div class="callout"><b>一句話：</b>「<b>光子版的 FPGA</b>」：一片由'+L("光子網格")+'構成、可反覆重新配置的通用光子晶片，靠「寫程式」設定各'+L("可調基本單元")+'即可改功能。</div>'+
+ '<h3>與電子 FPGA 類比</h3><table><tr><th>電子 FPGA</th><th>光子 FPPA</th></tr>'+
+ '<tr><td>可程式邏輯區塊 CLB</td><td>'+L("可調基本單元")+'</td></tr>'+
+ '<tr><td>可程式繞線</td><td>'+L("光子網格")+'的連接</td></tr>'+
+ '<tr><td>位元流配置</td><td>各'+L("相位器")+'的設定值</td></tr></table>'+
+ '<p>讓「設計光子電路」從硬體製造變成軟體配置，大幅縮短開發、降低門檻，一片晶片支援多種'+L("應用領域")+'。限制是通用性帶來的損耗、面積與控制複雜度（見'+L("挑戰")+'）。</p>'},
+{id:"應用領域",en:"Applications",cat:"應用",html:
+ '<div class="callout"><b>一句話：</b>'+L("光子積體電路")+'從最成熟的光通訊，延伸到運算、感測與量子等前沿。</div>'+
+ '<h3>主要應用</h3><ul><li><b>光通訊收發器</b>：最大宗。用'+L("調變器")+'＋'+L("光偵測器")+'做高速光收發，WDM 多波長並行。</li>'+
+ '<li><b>光學運算 / AI</b>：用'+L("光子網格")+'做<b>矩陣–向量乘法</b>，以光速低功耗跑神經網路（2017 MIT 示範）。</li>'+
+ '<li><b>微波光子</b>：用光處理高頻 RF（濾波、延遲、波束成形）。</li>'+
+ '<li><b>感測 / 光達</b>：晶片級光學相位陣列做固態光達；'+L("環形諧振器")+'做生化感測。</li>'+
+ '<li><b>量子光子</b>：用'+L("光子網格")+'操控光子量子位元。</li></ul>'+
+ '<p>許多應用能對映到'+L("可程式化光子電路")+'同一種通用網格，攤薄開發成本。</p>'},
+{id:"挑戰",en:"Challenges",cat:"應用",html:
+ '<div class="callout"><b>一句話：</b>PIC——尤其'+L("可程式化光子電路")+'——要大規模落地，仍面臨損耗、功耗、控制、面積與光源等瓶頸。</div>'+
+ '<div class="chartbox" id="chartbox"><canvas id="chart" width="760" height="300" style="width:100%;height:auto"></canvas></div>'+
+ '<h3>主要瓶頸</h3><ul><li><b>損耗累積</b>：每個彎折、耦合器、'+L("光柵耦合器與邊緣耦合")+'介面都損失功率，限制網格規模。</li>'+
+ '<li><b>調諧功耗與散熱</b>：上千個'+L("相位器")+'，熱光式會災難性耗電 → 推動 PCM/MEMS。</li>'+
+ '<li><b>控制與校準</b>：每個可調元件要獨立電控、對溫度/製程敏感。</li>'+
+ '<li><b>面積與密度</b>：受波長限制，難奈米化。</li><li><b>'+L("光源與雷射整合")+'</b>：矽不發光。</li></ul>'+
+ '<p>難點不在單一元件，而在「同時餵電、控溫、校準上千個可調元件還要壓低損耗」。</p>'},
+{id:"製程與代工",en:"Foundry & PDK",cat:"應用",html:
+ '<div class="callout"><b>一句話：</b>讓設計者不必自建無塵室，就能把'+L("光子積體電路")+'送到專業代工廠製造的生態；核心是標準化的 <b>製程設計套件（PDK）</b>。</div>'+
+ '<h3>關鍵組成</h3><ul><li><b>代工廠</b>：imec、AIM Photonics、GlobalFoundries 等，提供標準製程與多專案晶圓（MPW）共乘流片。</li>'+
+ '<li><b>PDK</b>：已量測、可靠的標準元件庫（'+L("波導")+'、耦合器、'+L("調變器")+'、'+L("光偵測器")+'…），像堆積木一樣組電路。</li>'+
+ '<li><b>設計自動化</b>：版圖、模擬、驗證工具。</li></ul>'+
+ '<p>這正是電子 IC 成功的模式——<b>設計與製造分離</b>。有穩定 PDK 才可能'+L("光子電路的複雜度擴展")+'，也是'+L("可程式化光子電路")+'能量產的前提。</p>'}
+];
+const EDGES=[
+ ["光子積體電路","波導"],["光子積體電路","為什麼要用光子"],["光子積體電路","矽光子技術"],
+ ["為什麼要用光子","矽光子技術"],["為什麼要用光子","應用領域"],
+ ["矽光子技術","光子電路的複雜度擴展"],["矽光子技術","製程與代工"],["矽光子技術","光源與雷射整合"],
+ ["光子電路的複雜度擴展","可程式化光子電路"],["光子電路的複雜度擴展","製程與代工"],
+ ["波導","光柵耦合器與邊緣耦合"],["波導","方向耦合器與分光器"],
+ ["方向耦合器與分光器","馬赫-曾德干涉儀"],["方向耦合器與分光器","可調基本單元"],
+ ["馬赫-曾德干涉儀","相位器"],["馬赫-曾德干涉儀","環形諧振器"],["馬赫-曾德干涉儀","調變器"],["馬赫-曾德干涉儀","可調基本單元"],
+ ["環形諧振器","相位器"],["環形諧振器","調變器"],
+ ["相位器","可調基本單元"],["相位器","挑戰"],
+ ["調變器","光偵測器"],["調變器","應用領域"],["光偵測器","應用領域"],
+ ["光源與雷射整合","光柵耦合器與邊緣耦合"],["光源與雷射整合","挑戰"],
+ ["可程式化光子電路","可調基本單元"],["可程式化光子電路","光子網格"],["可程式化光子電路","Field-Programmable Photonic Array"],
+ ["可調基本單元","光子網格"],["光子網格","Field-Programmable Photonic Array"],["光子網格","應用領域"],
+ ["Field-Programmable Photonic Array","應用領域"],["應用領域","可程式化光子電路"],["挑戰","製程與代工"]
+];
+const EXTRA={
+"光子積體電路":{take:["把桌上型光學整合到一塊晶片。","光在波導中被產生、導引、調變、偵測。","是通訊、運算、感測、量子的共同底層。"],
+ myth:[{q:"光子晶片就是把光纖繞在晶片上。",a:"是用微影刻出次微米波導與元件，密度與精度遠非繞光纖可比。"}],fact:"一顆現代矽光子收發晶片可整合上百個光學元件，面積僅數平方毫米。"},
+"為什麼要用光子":{take:["光子強在頻寬、低損耗、抗干擾、平行。","電子強在運算與儲存。","趨勢是電光協同，而非互相取代。"],
+ myth:[{q:"用光就能做出比 CPU 更快的通用電腦。",a:"光難做邏輯與記憶，目前主要加速『線性運算與資料搬移』，仍需搭配電子。"}],fact:"光纖每公里損耗約 0.2 dB；同樣距離的銅纜會衰減到幾乎無法使用。"},
+"矽光子技術":{take:["用 CMOS 製程做光路，低成本可量產。","高折射率對比讓波導又細又彎。","先天缺口：矽不會發光。"],
+ myth:[{q:"矽光子的晶片跟電子晶片是同一顆。",a:"多數是各自製造再共封裝（co-packaging），少數在同製程整合。"}],fact:"標準 SOI 平台的矽層只有 220 奈米厚——約頭髮直徑的三百分之一。"},
+"光子電路的複雜度擴展":{take:["光子在追趕電子 IC 的『可整合複雜度』。","元件受波長限制，難無限微縮。","可重構是突破專用晶片的一條路。"],
+ myth:[{q:"光子也有和電子一樣的莫爾定律。",a:"元件尺寸受波長限制，無法照電晶體那樣指數微縮，擴展方式不同。"}],fact:"單片可程式化光子晶片已能整合數百個可調單元。"},
+"波導":{take:["PIC 的『導線』，靠全內反射侷限光。","矽/氧化矽高對比 → 次微米、可急彎。","傳播損耗約 1–2 dB/cm。"],
+ myth:[{q:"波導越粗傳光越好。",a:"太粗會支援多模、造成干擾；通訊多用單模窄波導。"}],fact:"矽波導的彎曲半徑可小到約 5 µm，這是低對比材料（如玻璃）做不到的。"},
+"光柵耦合器與邊緣耦合":{take:["負責光在光纖與晶片間進出。","光柵：任意位置、方便測試、有波長依賴。","邊緣：低損耗寬頻、但只能在邊緣。"],
+ myth:[{q:"光進出晶片幾乎沒有損耗。",a:"耦合常是損耗大戶，每次進出可損失 1–3 dB。"}],fact:"最佳化的光柵耦合器效率可達約 80%（−1 dB），已接近邊緣耦合。"},
+"方向耦合器與分光器":{take:["分光/合光的基本元件。","靠間距與長度決定耦合比例。","cross/bar 是可程式化的基礎。"],
+ myth:[{q:"分光器就是把光能量憑空複製成兩份。",a:"是把同一份能量分配到兩路，總和守恆（理想無損）。"}],fact:"MMI 分光器利用『自我成像』效應，對製程誤差比方向耦合器更寬容。"},
+"馬赫-曾德干涉儀":{take:["分兩臂→加相位差→合併干涉。","輸出 ∝ cos²(Δφ/2)。","光開關、調變器、可調分光器的骨幹。"],
+ myth:[{q:"MZI 靠改變光的強度來運作。",a:"它改變的是『相位』，強度變化是干涉的結果。"}],fact:"只要 π 的相位差，MZI 的輸出就能從全亮切到全暗。"},
+"環形諧振器":{take:["波長選擇性元件（濾波/調變/感測）。","FSR ≈ λ²/(n_g·L)，環越小 FSR 越大。","對溫度極敏感，需熱校準。"],
+ myth:[{q:"環形諧振器對所有波長都有反應。",a:"只在滿足共振條件的離散波長才強耦合，其餘幾乎直通。"}],fact:"高 Q 微環能把光在環中『存』上數萬圈，等效路徑長達數公尺。"},
+"相位器":{take:["電控光相位的『旋鈕』。","熱光簡單但耗電、慢、會熱串擾。","PCM/MEMS 追求低功耗、非揮發。"],
+ myth:[{q:"相位器不用電就能維持設定。",a:"熱光式一斷電就歸零；要免供電得用非揮發的相變或 MEMS。"}],fact:"矽的熱光係數約 1.8×10⁻⁴/K——升溫幾十度就足以造成 π 相位差。"},
+"調變器":{take:["把電資料寫進光，發射端核心。","矽靠載子耗盡（等離子色散）。","MZM 穩健、環調變器精巧省電。"],
+ myth:[{q:"矽有很強的電光效應可直接調變。",a:"矽幾乎沒有線性電光效應，靠改變載子濃度間接調變，效率有限。"}],fact:"最先進的矽光調變器每位元能耗已低到 fJ（飛焦耳）等級。"},
+"光偵測器":{take:["把光轉回電，接收端核心。","矽不吸收電信波長，改用鍺。","響應度 >0.8 A/W、頻寬 >50 GHz。"],
+ myth:[{q:"矽自己就能當好的電信波長偵測器。",a:"矽在 1550 nm 幾乎透明，需磊晶生長鍺來吸收。"}],fact:"鍺原本是最早電晶體的材料，如今在矽光子裡負責『聽光』。"},
+"光源與雷射整合":{take:["矽間接能隙、不會發光。","主流：外接雷射或 III-V 異質整合。","是矽光子最大先天缺口。"],
+ myth:[{q:"既然做得出矽調變器，做矽雷射也不難。",a:"發光需要直接能隙，矽的間接能隙讓高效發光極其困難。"}],fact:"把 III-V 材料『鍵合』到矽晶圓上，是目前把雷射真正整合上晶片的主流路線。"},
+"可程式化光子電路":{take:["一片通用晶片、軟體決定功能。","由可調單元連成網格。","類比電子 FPGA。"],
+ myth:[{q:"可程式化晶片一定比專用晶片好。",a:"通用性換來更高損耗、面積與功耗；追求極致性能時專用晶片仍勝出。"}],fact:"Bogaerts 等人 2020 年在《Nature》系統性提出可程式化光子電路的架構藍圖。"},
+"可調基本單元":{take:["網格的最小積木：可調 2×2 耦合器。","可切 bar/cross 或任意分光。","本質是一個內含相位器的 MZI。"],
+ myth:[{q:"一個單元只能做開/關兩種狀態。",a:"它可連續設定任意分光比與相位，不只是二元開關。"}],fact:"用足夠多的可調單元，理論上能合成任意的線性光學（么正）轉換。"},
+"光子網格":{take:["可調單元連成的可重構網。","前饋網格做么正矩陣。","六角形循環網格更通用（含回授）。"],
+ myth:[{q:"任何網格都能做任何電路。",a:"前饋網格做不了含回授的濾波器；要迴路得用循環（如六角形）網格。"}],fact:"Clements 矩形網格比 Reck 三角形網格更緊湊、各路徑損耗更平均。"},
+"Field-Programmable Photonic Array":{take:["光子版 FPGA，可反覆重新配置。","設計從硬體製造變成軟體配置。","一片晶片支援多種應用。"],
+ myth:[{q:"FPPA 會完全取代所有專用光子晶片。",a:"更可能是互補：原型與中小量用 FPPA，大量高性能用專用晶片。"}],fact:"電子 FPGA 讓工程師不必開新晶片就能改電路——FPPA 想在光子界複製這件事。"},
+"應用領域":{take:["光通訊是最成熟的殺手級應用。","光學矩陣運算加速 AI。","還有微波光子、光達、量子。"],
+ myth:[{q:"光子晶片主要用來做光學電腦。",a:"目前商業主力是光通訊收發器；運算與量子仍在發展中。"}],fact:"2017 年 MIT 團隊用光子網格示範了以光執行神經網路的矩陣運算。"},
+"挑戰":{take:["損耗會沿路徑累積。","上千個相位器的功耗與校準最棘手。","光源整合仍是缺口。"],
+ myth:[{q:"只要製程進步，這些問題自然消失。",a:"損耗、調諧功耗、波長尺度限制是物理性的，需要架構與材料創新。"}],fact:"一個大型可程式化網格的『調諧功耗』，可能比它處理的訊號本身還耗電。",chart:"loss"},
+"製程與代工":{take:["設計與製造分離的生態。","PDK 提供標準元件積木。","是複雜度擴展與量產的制度基礎。"],
+ myth:[{q:"每家實驗室都得自己蓋無塵室做晶片。",a:"多專案晶圓（MPW）讓多個設計共乘一次流片，大幅攤薄成本。"}],fact:"imec 等代工廠的 MPW 服務，讓一所大學也能用得起矽光子流片。"}
+};
+/* ===== 側邊欄 ===== */
+const NById=Object.fromEntries(NOTES.map(n=>[n.id,n]));
+const sidebar=document.getElementById('sidebar');
+function buildSidebar(filter){
+ filter=(filter||'').trim();
+ let html='<div class="navlink" data-id="__home"><span class="dot" style="background:var(--accent)"></span>總覽首頁</div>';
+ for(const key of Object.keys(CATS)){
+  const items=NOTES.filter(n=>n.cat===key&&(!filter||n.id.includes(filter)||n.en.toLowerCase().includes(filter.toLowerCase())));
+  if(!items.length)continue;
+  html+='<div class="cat">'+CATS[key].name+'</div>';
+  for(const n of items)html+='<div class="navlink" data-id="'+n.id+'"><span class="dot" style="background:'+CATS[n.cat].raw+'"></span>'+n.id+'<small>'+n.en+'</small></div>';
+ }
+ sidebar.innerHTML=html;
+}
+/* ===== 筆記 ===== */
+const main=document.getElementById('main');
+let current=null;
+function neighborsOf(id){const s=new Set();EDGES.forEach(([a,b])=>{if(a===id)s.add(b);if(b===id)s.add(a);});return[...s];}
+function renderHome(){
+ current='__home';
+ main.innerHTML='<div class="note"><div class="hero"><div style="font-size:46px">💡</div>'+
+  '<div class="big">光子積體電路知識庫</div>'+
+  '<p class="sub">整理自 Wim Bogaerts（UGent-imec）的 webinar《Photonic ICs, Silicon Photonics & Programmable Photonics》。20 個知識點，從波導到可程式化光子網格，用雙向連結串成一張知識網。</p>'+
+  '<div class="stats"><div class="stat"><b>20</b><span>知識點</span></div><div class="stat"><b>36</b><span>關聯連結</span></div>'+
+  '<div class="stat"><b>2</b><span>互動模擬</span></div><div class="stat"><b>5</b><span>主題分區</span></div></div></div>'+
+  '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgMzYwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZjhmY2ZlIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZWFmM2Y3Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJjaGlwIiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlZWY3ZmEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9IndnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMCI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMwODkxYjIiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwNTk2NjkiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9Imx6IiBjeD0iNTAlIiBjeT0iNDAlIiByPSI2MCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmI3MTg1Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZTExZDQ4Ii8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjM2MCIgZmlsbD0idXJsKCNiZykiLz4KICA8dGV4dCB4PSIzNCIgeT0iNDIiIGZpbGw9IiMxMjMwMzkiIGZvbnQtc2l6ZT0iMjAiIGZvbnQtd2VpZ2h0PSI3MDAiPuefveWFieWtkOaZtueJh++8muS4gOaineWFieeahOaXheeoi+OAgEFuYXRvbXkgb2YgYSBTaWxpY29uIFBob3RvbmljIENoaXA8L3RleHQ+CgogIDxyZWN0IHg9IjQwIiB5PSI3MCIgd2lkdGg9IjgyMCIgaGVpZ2h0PSIyNTAiIHJ4PSIxNiIgZmlsbD0idXJsKCNjaGlwKSIgc3Ryb2tlPSIjY2ZlM2VhIiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjYwIiB5PSI5OCIgZmlsbD0iIzhhYTRhZSIgZm9udC1zaXplPSIxMiI+55+95pm254mH77yIU09J77yJPC90ZXh0PgoKICA8cGF0aCBkPSJNIDEyMCAyMDAgSCA3ODAiIGZpbGw9Im5vbmUiIHN0cm9rZT0idXJsKCN3ZykiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CgogIDxjaXJjbGUgY3g9IjExMCIgY3k9IjIwMCIgcj0iMTYiIGZpbGw9InVybCgjbHopIi8+CiAgPHRleHQgeD0iMTEwIiB5PSIyNTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNlMTFkNDgiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI3MDAiPumbt+WwhDwvdGV4dD4KICA8dGV4dCB4PSIxMTAiIHk9IjI2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2IwNmE3OCIgZm9udC1zaXplPSIxMCI+TGFzZXLvvIjlpJbmjqXvvIk8L3RleHQ+CgogIDxnPgogICAgPHJlY3QgeD0iMTc2IiB5PSIxODYiIHdpZHRoPSIzMCIgaGVpZ2h0PSIyOCIgcng9IjMiIGZpbGw9IiNlYWY2ZjkiIHN0cm9rZT0iIzA4OTFiMiIvPgogICAgPGxpbmUgeDE9IjE4MiIgeTE9IjE4OCIgeDI9IjE4MiIgeTI9IjIxMiIgc3Ryb2tlPSIjMDg5MWIyIi8+PGxpbmUgeDE9IjE4OCIgeTE9IjE4OCIgeDI9IjE4OCIgeTI9IjIxMiIgc3Ryb2tlPSIjMDg5MWIyIi8+CiAgICA8bGluZSB4MT0iMTk0IiB5MT0iMTg4IiB4Mj0iMTk0IiB5Mj0iMjEyIiBzdHJva2U9IiMwODkxYjIiLz48bGluZSB4MT0iMjAwIiB5MT0iMTg4IiB4Mj0iMjAwIiB5Mj0iMjEyIiBzdHJva2U9IiMwODkxYjIiLz4KICAgIDx0ZXh0IHg9IjE5MSIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMGU1YTZiIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNzAwIj7lhYnmn7XogKblkIjlmag8L3RleHQ+CiAgICA8dGV4dCB4PSIxOTEiIHk9IjE2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZiOThhNCIgZm9udC1zaXplPSIxMCI+R3JhdGluZyBDb3VwbGVyPC90ZXh0PgogIDwvZz4KCiAgPGc+CiAgICA8cmVjdCB4PSIzMDAiIHk9IjE3NiIgd2lkdGg9IjkwIiBoZWlnaHQ9IjQ4IiByeD0iNiIgZmlsbD0iI2VlZmFmNCIgc3Ryb2tlPSIjMDU5NjY5Ii8+CiAgICA8cGF0aCBkPSJNIDMwMCAyMDAgcSAyMiAtMjAgNDUgMCBxIDIyIDIwIDQ1IDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA1OTY2OSIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgICA8cmVjdCB4PSIzMzIiIHk9IjE3MiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjgiIHJ4PSIyIiBmaWxsPSIjZDk3NzA2Ii8+CiAgICA8dGV4dCB4PSIzNDUiIHk9IjE1MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzBhNzM1MCIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCI+6Kq/6K6K5ZmoIE1aTTwvdGV4dD4KICAgIDx0ZXh0IHg9IjM0NSIgeT0iMTY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNWY5Yzg0IiBmb250LXNpemU9IjEwIj7lr6vlhaXos4fmlpk8L3RleHQ+CiAgPC9nPgoKICA8Zz4KICAgIDxjaXJjbGUgY3g9IjUwMCIgY3k9IjE3NiIgcj0iMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgICA8dGV4dCB4PSI1MDAiIHk9IjI0OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzBlNWE2YiIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCI+55Kw5b2i6Kun5oyv5ZmoPC90ZXh0PgogICAgPHRleHQgeD0iNTAwIiB5PSIyNjQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2Yjk4YTQiIGZvbnQtc2l6ZT0iMTAiPuazoumVt+a/vuazoiAvIFdETTwvdGV4dD4KICA8L2c+CgogIDxnPgogICAgPHJlY3QgeD0iNTk2IiB5PSIxOTIiIHdpZHRoPSIyNiIgaGVpZ2h0PSIxNiIgcng9IjMiIGZpbGw9IiNkOTc3MDYiLz4KICAgIDx0ZXh0IHg9IjYwOSIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjYTE1YzA2IiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNzAwIj7nm7jkvY3lmag8L3RleHQ+CiAgICA8dGV4dCB4PSI2MDkiIHk9IjE2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2I1ODU0OSIgZm9udC1zaXplPSIxMCI+54ax5YWJ6Kq/6KunPC90ZXh0PgogIDwvZz4KCiAgPGc+CiAgICA8cmVjdCB4PSI3MDAiIHk9IjE4NCIgd2lkdGg9IjM0IiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0iI2YzZWZmZSIgc3Ryb2tlPSIjN2MzYWVkIi8+CiAgICA8cGF0aCBkPSJNIDcwNiAyMTYgTCA3MTcgMTkwIEwgNzI4IDIxNiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjN2MzYWVkIiBzdHJva2Utd2lkdGg9IjIiLz4KICAgIDx0ZXh0IHg9IjcxNyIgeT0iMjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNWIzMGIwIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNzAwIj7lhYnlgbXmuKzlmag8L3RleHQ+CiAgICA8dGV4dCB4PSI3MTciIHk9IjI2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzhhN2JjMCIgZm9udC1zaXplPSIxMCI+R2Ugwrcg6K6A5Zue6Zu7PC90ZXh0PgogIDwvZz4KCiAgPHBhdGggZD0iTSA3ODAgMjAwIEggODIwIiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWRhc2hhcnJheT0iMyAzIi8+CiAgPHRleHQgeD0iODM1IiB5PSIyMDQiIGZpbGw9IiNhMTVjMDYiIGZvbnQtc2l6ZT0iMTIiPumbu+ioiuiZnzwvdGV4dD4KCiAgPHRleHQgeD0iNjAiIHk9IjMwOCIgZmlsbD0iIzhhYTRhZSIgZm9udC1zaXplPSIxMSI+5YWJ77ya6Zu35bCEIOKGkiDpgLLmmbbniYcg4oaSIOiqv+iuiu+8iOWvq+izh+aWme+8ieKGkiDmv77ms6Ig4oaSIOWBtea4rO+8iOiugOWbnumbu++8iTwvdGV4dD4KPC9zdmc+Cg==" alt="矽光子晶片概觀">'+
+  '<h3>建議閱讀路徑</h3>'+
+  '<div class="pathrow">'+Object.keys(CATS).map((key,i)=>{const first=NOTES.find(n=>n.cat===key).id;
+    return (i>0?'<span class="arrow">→</span>':'')+'<span class="stage" data-id="'+first+'"><span class="d" style="background:'+CATS[key].raw+'"></span>'+CATS[key].name+'</span>';}).join('')+'</div>'+
+  '<p style="color:var(--muted);font-size:14px">點上方階段可直接跳到該分區第一篇；或從下方各主題任選。建議從 '+L("光子積體電路")+' 開始，一路讀到 '+L("Field-Programmable Photonic Array")+'。</p>'+
+  Object.keys(CATS).map(key=>{const items=NOTES.filter(n=>n.cat===key);
+    return '<div class="catgroup"><div class="cl" style="color:'+CATS[key].raw+'"><span class="d" style="background:'+CATS[key].raw+'"></span>'+CATS[key].name+'</div><div class="chips">'+items.map(n=>'<span class="chip" data-id="'+n.id+'">'+n.id+'</span>').join('')+'</div></div>';}).join('')+
+  '</div>';
+ syncActive();
+}
+function renderNote(id){
+ const n=NById[id];if(!n){renderHome();return;}
+ current=id;const idx=NOTES.findIndex(x=>x.id===id);const prev=NOTES[idx-1],next=NOTES[idx+1];const nb=neighborsOf(id);
+ let html='<div class="note"><div class="crumbs"><span class="tag" style="background:'+CATS[n.cat].raw+'33;color:'+CATS[n.cat].raw+'">'+CATS[n.cat].name+'</span></div>'+
+  '<h2 class="title">'+n.id+'</h2><div class="en">'+n.en+'</div>'+n.html;
+ const ex=EXTRA[id];
+ if(ex){
+  if(ex.take)html+='<div class="kbox"><div class="kt">🎯 重點回顧</div><ul>'+ex.take.map(t=>'<li>'+t+'</li>').join('')+'</ul></div>';
+  if(ex.myth)html+='<details class="collap myth"><summary>💡 常見誤解</summary><div class="body">'+ex.myth.map(m=>'<div class="myth-row"><span class="x">✗</span><div>'+m.q+'</div></div><div class="myth-row"><span class="o">✓</span><div>'+m.a+'</div></div>').join('')+'</div></details>';
+  if(ex.fact)html+='<details class="collap fact"><summary>🔎 冷知識</summary><div class="body"><p>'+ex.fact+'</p></div></details>';
+ }
+ if(nb.length)html+='<div class="related"><div class="cat">關聯概念</div><div class="chips">'+nb.map(x=>'<span class="chip" data-id="'+x+'">'+x+'</span>').join('')+'</div></div>';
+ html+='<div class="nav-btns">'+(prev?'<button data-id="'+prev.id+'"><small>← 上一篇</small>'+prev.id+'</button>':'<button disabled style="opacity:.3"><small>—</small>第一篇</button>')+
+  (next?'<button data-id="'+next.id+'" style="text-align:right"><small>下一篇 →</small>'+next.id+'</button>':'<button disabled style="opacity:.3;text-align:right"><small>—</small>最後一篇</button>')+'</div></div>';
+ main.innerHTML=html;main.scrollTop=0;
+ if(ex&&ex.chart)drawChart(ex.chart);
+ syncActive();
+}
+function open(id){if(id==='__home')renderHome();else renderNote(id);showNotes();}
+function syncActive(){document.querySelectorAll('.navlink').forEach(el=>el.classList.toggle('active',el.dataset.id===current));}
+document.body.addEventListener('click',e=>{const t=e.target.closest('[data-id]');if(t)open(t.dataset.id);});
+/* ===== 搜尋 ===== */
+const search=document.getElementById('search');
+search.addEventListener('input',()=>buildSidebar(search.value));
+search.addEventListener('keydown',e=>{if(e.key==='Enter'){const f=search.value.trim().toLowerCase();const hit=NOTES.find(n=>n.id.includes(search.value.trim())||n.en.toLowerCase().includes(f));if(hit)open(hit.id);}});
+/* ===== 分頁 ===== */
+const tabNotes=document.getElementById('tabNotes'),tabGraph=document.getElementById('tabGraph'),tabDemo=document.getElementById('tabDemo'),tabMesh=document.getElementById('tabMesh');
+const graphView=document.getElementById('graphView'),demoView=document.getElementById('demoView'),meshView=document.getElementById('meshView');
+const allTabs=[tabNotes,tabGraph,tabDemo,tabMesh];
+function setTab(b){allTabs.forEach(x=>x.classList.toggle('active',x===b));}
+function hideAll(){main.style.display='none';graphView.style.display='none';demoView.style.display='none';meshView.style.display='none';}
+function showNotes(){setTab(tabNotes);hideAll();main.style.display='';}
+function showGraph(){setTab(tabGraph);hideAll();graphView.style.display='block';startGraph();}
+function showDemo(){setTab(tabDemo);hideAll();demoView.style.display='block';startDemo();}
+function showMesh(){setTab(tabMesh);hideAll();meshView.style.display='block';startMesh();}
+tabNotes.onclick=showNotes;tabGraph.onclick=showGraph;tabDemo.onclick=showDemo;tabMesh.onclick=showMesh;
+/* ===== 圖表 ===== */
+function drawChart(kind){
+ const cv=document.getElementById('chart');if(!cv)return;const ctx=cv.getContext('2d'),W=cv.width,H=cv.height,P=44;
+ ctx.clearRect(0,0,W,H);
+ document.getElementById('chartbox').querySelector('.ct')&&0;
+ if(kind==='loss'){
+  const box=document.getElementById('chartbox');
+  if(!box.dataset.t){box.insertAdjacentHTML('afterbegin','<div style="font-weight:700;color:#123039;margin-bottom:2px">典型損耗來源（示意）</div><div style="color:#8aa4ae;font-size:12px;margin-bottom:8px">每經過一個環節，光功率就少一截——網格越大累積越多</div>');box.dataset.t=1;}
+  const data=[['光纖耦合',2.5,'#0891b2'],['每 cm 波導',1.5,'#059669'],['每個彎折',0.05,'#059669'],['每個耦合器',0.1,'#d97706'],['每個相位器',0.3,'#7c3aed']];
+  const max=2.6,bw=(W-P-20)/data.length;
+  ctx.strokeStyle='#cfe0e7';ctx.beginPath();ctx.moveTo(P,10);ctx.lineTo(P,H-P);ctx.lineTo(W-10,H-P);ctx.stroke();
+  data.forEach((d,i)=>{const h=(H-P-16)*Math.min(1,d[1]/max);const x=P+14+i*bw;const y=(H-P)-h;
+   ctx.fillStyle=d[2];ctx.fillRect(x,y,bw*0.55,h);
+   ctx.fillStyle='#123039';ctx.textAlign='center';ctx.font='11px sans-serif';ctx.fillText(d[0],x+bw*0.28,H-P+16);
+   ctx.fillStyle='#4d6b76';ctx.fillText(d[1]+' dB',x+bw*0.28,y-6);});
+ }
+}
+/* ===== 力導向關係圖譜 ===== */
+const svg=document.getElementById('graph');const SVGNS='http://www.w3.org/2000/svg';
+let G={nodes:[],edges:[],started:false,raf:null};
+function buildLegend(){document.getElementById('legend').innerHTML=Object.keys(CATS).map(k=>'<div><i style="background:'+CATS[k].raw+'"></i>'+CATS[k].name+'</div>').join('');}
+function startGraph(){
+ if(G.started)return;G.started=true;buildLegend();
+ const W=svg.clientWidth||900,H=svg.clientHeight||600;
+ const deg={};EDGES.forEach(([a,b])=>{deg[a]=(deg[a]||0)+1;deg[b]=(deg[b]||0)+1;});
+ G.nodes=NOTES.map((n,i)=>({id:n.id,cat:n.cat,x:W/2+Math.cos(i/NOTES.length*6.283)*240+(Math.random()-.5)*40,y:H/2+Math.sin(i/NOTES.length*6.283)*190+(Math.random()-.5)*40,vx:0,vy:0,r:8+(deg[n.id]||1)*1.5}));
+ const pos=Object.fromEntries(G.nodes.map(n=>[n.id,n]));
+ while(svg.firstChild)svg.removeChild(svg.firstChild);
+ const gE=document.createElementNS(SVGNS,'g'),gN=document.createElementNS(SVGNS,'g');svg.appendChild(gE);svg.appendChild(gN);
+ G.edges=EDGES.map(([a,b])=>{const l=document.createElementNS(SVGNS,'line');l.setAttribute('class','gedge');gE.appendChild(l);return{a,b,el:l};});
+ G.nodes.forEach(n=>{
+  const g=document.createElementNS(SVGNS,'g');g.setAttribute('class','gnode');g.dataset.id=n.id;
+  const c=document.createElementNS(SVGNS,'circle');c.setAttribute('r',n.r);c.setAttribute('fill',CATS[n.cat].raw);c.setAttribute('stroke','#ffffff');c.setAttribute('stroke-width','2.5');
+  const t=document.createElementNS(SVGNS,'text');t.setAttribute('text-anchor','middle');t.setAttribute('dy',-n.r-6);t.textContent=n.id;
+  g.appendChild(c);g.appendChild(t);gN.appendChild(g);n.el=g;
+  g.addEventListener('mouseenter',()=>highlight(n.id,true));g.addEventListener('mouseleave',()=>highlight(n.id,false));
+  let moved=false,down=false,ox,oy;
+  g.addEventListener('pointerdown',ev=>{down=true;moved=false;n.fixed=true;const p=toSvg(ev);ox=p.x-n.x;oy=p.y-n.y;g.setPointerCapture(ev.pointerId);});
+  g.addEventListener('pointermove',ev=>{if(!down)return;const p=toSvg(ev);n.x=p.x-ox;n.y=p.y-oy;n.vx=0;n.vy=0;moved=true;});
+  g.addEventListener('pointerup',()=>{down=false;n.fixed=false;if(!moved)open(n.id);});
+ });
+ gloop(pos,W,H);
+}
+function toSvg(ev){const r=svg.getBoundingClientRect();return{x:ev.clientX-r.left,y:ev.clientY-r.top};}
+function highlight(id,on){const nb=new Set(neighborsOf(id));nb.add(id);
+ G.nodes.forEach(n=>{n.el.style.opacity=on?(nb.has(n.id)?1:.2):1;});
+ G.edges.forEach(e=>{const rel=(e.a===id||e.b===id);e.el.classList.toggle('hl',on&&rel);e.el.style.opacity=on?(rel?1:.12):1;});}
+function gloop(pos,W,H){const KR=5200,KS=0.012,L0=118,DA=0.86,GR=0.008;
+ function step(){const ns=G.nodes;
+  for(let i=0;i<ns.length;i++){const a=ns[i];if(a.fixed)continue;let fx=0,fy=0;
+   for(let j=0;j<ns.length;j++){if(i===j)continue;const b=ns[j];let dx=a.x-b.x,dy=a.y-b.y,d2=dx*dx+dy*dy+.01,d=Math.sqrt(d2);const f=KR/d2;fx+=dx/d*f;fy+=dy/d*f;}
+   fx+=(W/2-a.x)*GR;fy+=(H/2-a.y)*GR;a.vx=(a.vx+fx)*DA;a.vy=(a.vy+fy)*DA;}
+  EDGES.forEach(([ai,bi])=>{const a=pos[ai],b=pos[bi];let dx=b.x-a.x,dy=b.y-a.y,d=Math.sqrt(dx*dx+dy*dy)+.01;const f=(d-L0)*KS,ux=dx/d,uy=dy/d;if(!a.fixed){a.vx+=ux*f;a.vy+=uy*f;}if(!b.fixed){b.vx-=ux*f;b.vy-=uy*f;}});
+  ns.forEach(n=>{if(n.fixed)return;n.x+=n.vx;n.y+=n.vy;n.x=Math.max(n.r+40,Math.min(W-n.r-40,n.x));n.y=Math.max(n.r+30,Math.min(H-n.r-20,n.y));});
+  G.edges.forEach(e=>{const a=pos[e.a],b=pos[e.b];e.el.setAttribute('x1',a.x);e.el.setAttribute('y1',a.y);e.el.setAttribute('x2',b.x);e.el.setAttribute('y2',b.y);});
+  ns.forEach(n=>n.el.setAttribute('transform','translate('+n.x+','+n.y+')'));
+  G.raf=requestAnimationFrame(step);}
+ step();}
+/* ===== 互動元件：MZI + 環形諧振器 ===== */
+let demoBuilt=false,demoRAF=null,mzi={phi:Math.PI/2},ring={u:0.35};
+function startDemo(){
+ if(!demoBuilt){
+  demoView.innerHTML='<div class="demo">'+
+   '<div class="panel"><h3>① 馬赫–曾德干涉儀 MZI</h3><div class="d">拖動相位 φ，看光如何在兩個輸出埠之間切換。輸出功率 = cos²(φ/2) 與 sin²(φ/2)。</div>'+
+    '<canvas id="mziCv" class="cv" width="860" height="240"></canvas>'+
+    '<div class="controls"><label>相位差 φ = <span class="val" id="phiV">90°</span><input type="range" id="phi" min="0" max="360" value="90"></label>'+
+    '<button id="phiSweep">▶ 自動掃描</button></div>'+
+    '<div class="bars"><div class="bar"><div class="track"><div class="fill" id="barA" style="background:linear-gradient(#22d3ee,#0891b2)"></div></div><div class="lbl">輸出 A（bar）<span class="pct" id="pctA"></span></div></div>'+
+    '<div class="bar"><div class="track"><div class="fill" id="barB" style="background:linear-gradient(#34d399,#059669)"></div></div><div class="lbl">輸出 B（cross）<span class="pct" id="pctB"></span></div></div></div></div>'+
+   '<div class="panel"><h3>② 環形諧振器：WDM 分波器（Add-Drop）</h3><div class="d">五個不同波長（顏色）的光同時在匯流波導上跑。調整環的共振波長，被選中的那一色會被「取出」到 Drop 埠，其餘直接通過——這就是光通訊裡挑波長的關鍵。</div>'+
+    '<canvas id="ringCv" class="cv" width="860" height="320"></canvas>'+
+    '<div class="controls"><label>環的共振波長 λ<input type="range" id="wl" min="0" max="1000" value="500"></label>'+
+    '<button id="wlSweep">▶ 自動掃描</button><span id="ringSel" style="color:var(--muted);font-size:13px;font-weight:600"></span></div></div></div>';
+  const phi=document.getElementById('phi');
+  phi.oninput=()=>{mzi.phi=(+phi.value)*Math.PI/180;document.getElementById('phiV').textContent=phi.value+'°';};
+  const wl=document.getElementById('wl');wl.oninput=()=>{ring.u=(+wl.value)/1000;};
+  document.getElementById('phiSweep').onclick=()=>{mzi.sweep=!mzi.sweep;};
+  document.getElementById('wlSweep').onclick=()=>{ring.sweep=!ring.sweep;};
+  demoBuilt=true;
+ }
+ cancelAnimationFrame(demoRAF);demoLoop();
+}
+const WDM=[{u:0.12,c:'#e11d48',n:'λ1'},{u:0.31,c:'#ea580c',n:'λ2'},{u:0.5,c:'#059669',n:'λ3'},{u:0.69,c:'#0891b2',n:'λ4'},{u:0.88,c:'#7c3aed',n:'λ5'}];
+function dropStrength(chU,resU){const w=0.06;return 1/(1+Math.pow((chU-resU)/w,2));}
+function ringT(u){let dip=0;WDM.forEach(ch=>{dip+=0.9*dropStrength(ch.u,u);});return Math.max(0.04,1-Math.min(1,dip));}
+let demoT=0;
+function demoLoop(){
+ demoT+=0.05;
+ if(mzi.sweep){mzi.phi=(mzi.phi+0.02)%(2*Math.PI);const dg=Math.round(mzi.phi*180/Math.PI);const el=document.getElementById('phi');if(el){el.value=dg;document.getElementById('phiV').textContent=dg+'°';}}
+ if(ring.sweep){ring.u=(ring.u+0.003)%1;const el=document.getElementById('wl');if(el)el.value=Math.round(ring.u*1000);}
+ drawMZI();drawRing();
+ demoRAF=requestAnimationFrame(demoLoop);
+}
+function pathStroke(ctx,builder,color,w,glow){ctx.save();ctx.strokeStyle=color;ctx.lineWidth=w;ctx.lineCap='round';ctx.lineJoin='round';if(glow){ctx.shadowColor=color;ctx.shadowBlur=glow;}ctx.beginPath();builder();ctx.stroke();ctx.restore();}
+function glowDot(ctx,x,y,r,color,glow){ctx.save();ctx.fillStyle=color;ctx.shadowColor=color;ctx.shadowBlur=glow||8;ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fill();ctx.restore();}
+function drawMZI(){
+ const cv=document.getElementById('mziCv');if(!cv)return;const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;
+ ctx.clearRect(0,0,W,H);
+ const pA=Math.cos(mzi.phi/2)**2,pB=Math.sin(mzi.phi/2)**2;
+ const yTop=72,yBot=176,xIn=48,xS=200,xC=648,xOut=812;
+ const GUIDE='#cfe3ea', LIT='#0ea5e9', A='#0891b2', B='#0d9488';
+ const bIn=()=>{ctx.moveTo(xIn,124);ctx.lineTo(xS,124);};
+ const armT=()=>{ctx.moveTo(xS,124);ctx.bezierCurveTo(xS+44,124,xS+44,yTop,xS+96,yTop);ctx.lineTo(xC-96,yTop);};
+ const armB=()=>{ctx.moveTo(xS,124);ctx.bezierCurveTo(xS+44,124,xS+44,yBot,xS+96,yBot);ctx.lineTo(xC-96,yBot);};
+ const cmT=()=>{ctx.moveTo(xC-96,yTop);ctx.bezierCurveTo(xC-44,yTop,xC-44,124,xC,124);};
+ const cmB=()=>{ctx.moveTo(xC-96,yBot);ctx.bezierCurveTo(xC-44,yBot,xC-44,124,xC,124);};
+ const oT=()=>{ctx.moveTo(xC,124);ctx.bezierCurveTo(xC+44,124,xC+44,yTop,xC+96,yTop);ctx.lineTo(xOut,yTop);};
+ const oB=()=>{ctx.moveTo(xC,124);ctx.bezierCurveTo(xC+44,124,xC+44,yBot,xC+96,yBot);ctx.lineTo(xOut,yBot);};
+ // 導波基線（灰）
+ [bIn,armT,armB,cmT,cmB,oT,oB].forEach(b=>pathStroke(ctx,b,GUIDE,7,0));
+ // 耦合器方塊
+ ctx.fillStyle='#eef7fa';ctx.strokeStyle='#b9d4dd';ctx.lineWidth=1.5;
+ [[xS-6,'分光'],[xC-6,'合光']].forEach(c=>{ctx.beginPath();ctx.roundRect(c[0]-10,96,20,56,5);ctx.fill();ctx.stroke();});
+ // 光核心（輸入與兩臂全亮）
+ [bIn,armT,armB].forEach(b=>pathStroke(ctx,b,LIT,3.2,9));
+ // 合光/輸出（亮度=功率）
+ pathStroke(ctx,cmT,LIT,3.2,9);pathStroke(ctx,cmB,LIT,3.2,9);
+ ctx.globalAlpha=0.22+0.78*pA;pathStroke(ctx,oT,A,3+2.5*pA,6+8*pA);ctx.globalAlpha=1;
+ ctx.globalAlpha=0.22+0.78*pB;pathStroke(ctx,oB,B,3+2.5*pB,6+8*pB);ctx.globalAlpha=1;
+ // 相位器（上臂，暖色帶光暈）
+ ctx.save();ctx.shadowColor='#f59e0b';ctx.shadowBlur=12;ctx.fillStyle='#f59e0b';ctx.beginPath();ctx.roundRect(376,yTop-11,72,22,6);ctx.fill();ctx.restore();
+ ctx.fillStyle='#3a2600';ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.fillText('相位 φ',412,yTop+4);
+ // 流動光子脈衝
+ for(let i=0;i<9;i++){const t=((demoT*0.5+i/9)%1);
+  const xa=xS+96+(xC-96-(xS+96))*t;glowDot(ctx,xa,yTop,2.4,'#38bdf8',9);
+  const xb=xS+96+(xC-96-(xS+96))*t;glowDot(ctx,xb,yBot,2.4,'#38bdf8',9);
+  const xo=xC+96+(xOut-(xC+96))*t;if(pA>0.02)glowDot(ctx,xo,yTop,2.4,'#22b8e6',7*pA+3);
+  const xo2=xC+96+(xOut-(xC+96))*t;if(pB>0.02)glowDot(ctx,xo2,yBot,2.4,'#10b3a3',7*pB+3);}
+ // 標籤
+ ctx.fillStyle='#4d6b76';ctx.font='12px sans-serif';ctx.textAlign='left';ctx.fillText('雷射輸入',xIn-4,112);
+ ctx.textAlign='right';ctx.fillStyle=A;ctx.fillText('輸出 A（bar）',xOut,yTop-12);ctx.fillStyle=B;ctx.fillText('輸出 B（cross）',xOut,yBot+24);
+ document.getElementById('barA').style.height=(pA*100)+'%';document.getElementById('barB').style.height=(pB*100)+'%';
+ document.getElementById('pctA').textContent=Math.round(pA*100)+'%';document.getElementById('pctB').textContent=Math.round(pB*100)+'%';
+}
+function drawRing(){
+ const cv=document.getElementById('ringCv');if(!cv)return;const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;
+ ctx.clearRect(0,0,W,H);
+ const xL=48,xR=812,rr=44,cx=430,busY=70,dropY=busY+2*rr,cyR=busY+rr;
+ const GUIDE='#cfe3ea';
+ // 匯流(bus, 上) 與 Drop(下) 波導
+ pathStroke(ctx,()=>{ctx.moveTo(xL,busY);ctx.lineTo(xR,busY);},GUIDE,6,0);
+ pathStroke(ctx,()=>{ctx.moveTo(xL,dropY);ctx.lineTo(xR,dropY);},GUIDE,6,0);
+ // 各通道被 drop 的強度；找出最強者
+ let sel=WDM[0],selS=0;WDM.forEach(ch=>{const s=dropStrength(ch.u,ring.u);if(s>selS){selS=s;sel=ch;}});
+ // 環（基線 + 選中色發亮）
+ pathStroke(ctx,()=>ctx.arc(cx,cyR,rr,0,7),GUIDE,6,0);
+ if(selS>0.06)pathStroke(ctx,()=>ctx.arc(cx,cyR,rr,0,7),sel.c,3+3*selS,6+14*selS);
+ // 環中旋轉光點（選中色）
+ if(selS>0.1)for(let i=0;i<10;i++){const a=demoT*1.4+i/10*6.283;glowDot(ctx,cx+Math.cos(a)*rr,cyR+Math.sin(a)*rr,2.2,sel.c,8*selS);}
+ // WDM 光子脈衝：沿 bus 前進，被選中者轉入 Drop
+ WDM.forEach((ch,ci)=>{const s=dropStrength(ch.u,ring.u),dropped=s>0.5;
+  for(let i=0;i<3;i++){let t=((demoT*0.45+ci*0.13+i/3)%1);const x=xL+t*(xR-xL);let y=busY;
+   if(dropped&&x>cx-rr){const q=Math.min(1,(x-(cx-rr))/(2*rr));y=busY+q*(dropY-busY);}
+   glowDot(ctx,x,y,2.3,ch.c,7);}
+ });
+ // 埠標籤
+ ctx.font='12px sans-serif';ctx.fillStyle='#4d6b76';ctx.textAlign='left';ctx.fillText('多波長輸入 →',xL,busY-12);
+ ctx.textAlign='right';ctx.fillText('→ Through（通過）',xR,busY-12);ctx.fillStyle=sel.c;ctx.fillText('→ Drop（取出 '+sel.n+'）',xR,dropY+22);
+ // 頻譜圖（Through）
+ const px=60,py=224,pw=752,ph=76;
+ ctx.strokeStyle='#dbe8ee';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(px,py+ph);ctx.lineTo(px+pw,py+ph);ctx.stroke();
+ ctx.fillStyle='#8aa4ae';ctx.font='11px sans-serif';ctx.textAlign='left';ctx.fillText('Through 穿透率',px,py-6);ctx.textAlign='right';ctx.fillText('波長 λ →',px+pw,py+ph+15);
+ // 通道彩色刻度
+ WDM.forEach(ch=>{const x=px+pw*ch.u;ctx.strokeStyle=ch.c;ctx.globalAlpha=.5;ctx.beginPath();ctx.moveTo(x,py);ctx.lineTo(x,py+ph);ctx.stroke();ctx.globalAlpha=1;
+  ctx.fillStyle=ch.c;ctx.textAlign='center';ctx.fillText(ch.n,x,py+ph+15);});
+ // Through 曲線
+ ctx.strokeStyle='#0891b2';ctx.lineWidth=2;ctx.beginPath();
+ for(let i=0;i<=pw;i++){const u=i/pw;const t=ringT(u);const x=px+i,y=py+ph-(ph-6)*t;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.stroke();
+ // 目前共振位置
+ const mx=px+pw*ring.u;ctx.strokeStyle='rgba(217,119,6,.7)';ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(mx,py-2);ctx.lineTo(mx,py+ph);ctx.stroke();ctx.setLineDash([]);
+ glowDot(ctx,mx,py+ph-(ph-6)*ringT(ring.u),4,'#d97706',6);
+ const selEl=document.getElementById('ringSel');if(selEl)selEl.innerHTML='目前取出：<span style="color:'+sel.c+'">●</span> '+sel.n;
+}
+/* ===== 可程式化網格：點擊 cross/bar 為光佈線 ===== */
+const meshSvg=document.getElementById('meshView');
+let mesh={built:false,rows:5,stages:8,state:{},input:0,raf:null,dash:0};
+function couplerAt(s,row){ // 該 stage 是否有涉及 row 的耦合器；回傳 topRow 或 null
+ const even=(s%2===0);const pairsTop=even?[0,2]:[1,3];
+ for(const tr of pairsTop){if(tr>mesh.rows-2)continue;if(row===tr||row===tr+1)return tr;}
+ return null;
+}
+function buildMesh(){
+ const S=mesh.stages,R=mesh.rows;
+ const W=880,H=340,x0=96,x1=W-88,y0=52,gap=(H-2*y0)/(R-1),dx=(x1-x0)/S;
+ mesh.target=Math.floor(Math.random()*R);
+ let el='<div class="demo"><div class="panel"><h3>🔀 可程式化光子網格 · 佈線挑戰</h3>'+
+  '<div class="d">同一片硬體、不同佈線。點每個耦合器切換 <b style="color:#0891b2">bar 直通</b> ／ <b style="color:#d97706">cross 交叉</b>，點左側圓點選輸入位置，把光導到目標輸出埠。</div>'+
+  '<div id="meshStatus" style="font-weight:700;margin:6px 0 10px;font-size:15px"></div>'+
+  '<svg id="mesh" viewBox="0 0 '+W+' '+H+'">'+
+   '<defs><linearGradient id="beam" x1="0" y1="0" x2="1" y2="0">'+
+   '<stop offset="0%" stop-color="#e11d48"/><stop offset="25%" stop-color="#ea580c"/><stop offset="50%" stop-color="#059669"/><stop offset="75%" stop-color="#0891b2"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient>'+
+   '<filter id="soft"><feGaussianBlur stdDeviation="3.5"/></filter></defs>';
+ for(let r=0;r<R;r++){const y=y0+r*gap;el+='<line x1="'+x0+'" y1="'+y+'" x2="'+x1+'" y2="'+y+'" stroke="#cfe3ea" stroke-width="3"/>';}
+ for(let r=0;r<R;r++){const y=y0+r*gap;el+='<circle class="inport" data-row="'+r+'" cx="'+(x0-28)+'" cy="'+y+'" r="9" fill="#fff" stroke="#0891b2" stroke-width="2.5" style="cursor:pointer"/>';}
+ for(let s=0;s<S;s++){const even=(s%2===0);const pairsTop=even?[0,2]:[1,3];const xc=x0+(s+0.5)*dx;
+  pairsTop.forEach(tr=>{if(tr>R-2)return;const yt=y0+tr*gap,yb=y0+(tr+1)*gap;const key=s+'_'+tr;if(!(key in mesh.state))mesh.state[key]='bar';
+   el+='<g class="cpl" data-key="'+key+'" data-xc="'+xc+'" data-yt="'+yt+'" data-yb="'+yb+'">'+
+    '<rect x="'+(xc-19)+'" y="'+(yt-4)+'" width="38" height="'+(yb-yt+8)+'" rx="8" fill="#ffffff" stroke="#cfe3ea" stroke-width="1.5"/>'+
+    '<path class="ico" fill="none" stroke-width="3" stroke-linecap="round"/></g>';});}
+ el+='<polyline id="lightglow" fill="none" stroke="#7dd3fc" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" opacity="0.5" filter="url(#soft)"/>';
+ el+='<polyline id="lightpath" fill="none" stroke="url(#beam)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>';
+ for(let r=0;r<R;r++){const y=y0+r*gap;el+='<text class="outlbl" data-row="'+r+'" x="'+(x1+12)+'" y="'+(y+4)+'" fill="#8aa4ae" font-size="13">out '+r+'</text>';}
+ el+='</svg><div class="controls"><button id="meshChallenge">🎯 新挑戰</button><button id="meshRand">🎲 隨機佈線</button><button id="meshReset">↻ 全部直通</button>'+
+  '<span style="color:var(--dim);font-size:12px">耦合器內若畫 ╳ 就是交叉、‖ 就是直通——正是可程式化光子「改設定＝改電路」。</span></div></div></div>';
+ meshSvg.innerHTML=el;
+ meshSvg.querySelectorAll('.cpl').forEach(g=>g.addEventListener('click',()=>{const k=g.dataset.key;mesh.state[k]=mesh.state[k]==='bar'?'cross':'bar';redrawMesh();}));
+ meshSvg.querySelectorAll('.inport').forEach(c=>c.addEventListener('click',()=>{mesh.input=+c.dataset.row;redrawMesh();}));
+ document.getElementById('meshChallenge').onclick=()=>{do{mesh.target=Math.floor(Math.random()*R);}while(mesh.target===mesh.out);Object.keys(mesh.state).forEach(k=>mesh.state[k]=Math.random()<.45?'cross':'bar');redrawMesh();};
+ document.getElementById('meshRand').onclick=()=>{Object.keys(mesh.state).forEach(k=>mesh.state[k]=Math.random()<.5?'cross':'bar');redrawMesh();};
+ document.getElementById('meshReset').onclick=()=>{Object.keys(mesh.state).forEach(k=>mesh.state[k]='bar');redrawMesh();};
+ mesh.geo={W,H,x0,x1,y0,gap,dx,S,R};
+ mesh.built=true;
+ redrawMesh();
+}
+function redrawMesh(){
+ const{x0,x1,y0,gap,dx,S,R}=mesh.geo;
+ // 耦合器外觀 + 內部路由圖示
+ meshSvg.querySelectorAll('.cpl').forEach(g=>{const st=mesh.state[g.dataset.key];const rect=g.querySelector('rect'),ico=g.querySelector('.ico');
+  const xc=+g.dataset.xc,yt=+g.dataset.yt,yb=+g.dataset.yb,xl=xc-13,xr=xc+13;
+  if(st==='cross'){rect.setAttribute('fill','#fff7ed');rect.setAttribute('stroke','#f59e0b');ico.setAttribute('stroke','#d97706');
+   ico.setAttribute('d','M'+xl+','+yt+' L'+xr+','+yb+' M'+xl+','+yb+' L'+xr+','+yt);}
+  else{rect.setAttribute('fill','#fff');rect.setAttribute('stroke','#cfe3ea');ico.setAttribute('stroke','#0891b2');
+   ico.setAttribute('d','M'+xl+','+yt+' L'+xr+','+yt+' M'+xl+','+yb+' L'+xr+','+yb);}});
+ meshSvg.querySelectorAll('.inport').forEach(c=>{const on=(+c.dataset.row===mesh.input);c.setAttribute('fill',on?'#0891b2':'#fff');});
+ // 追蹤光路
+ let row=mesh.input;const pts=[[x0-28,y0+row*gap],[x0,y0+row*gap]];
+ for(let s=0;s<S;s++){const xc=x0+(s+0.5)*dx;const tr=couplerAt(s,row);
+  pts.push([xc-13,y0+row*gap]);
+  if(tr!==null&&mesh.state[s+'_'+tr]==='cross'){row=(row===tr)?tr+1:tr;}
+  pts.push([xc+13,y0+row*gap]);}
+ pts.push([x1,y0+row*gap]);
+ mesh.out=row;const pstr=pts.map(p=>p[0]+','+p[1]).join(' ');
+ document.getElementById('lightpath').setAttribute('points',pstr);
+ document.getElementById('lightglow').setAttribute('points',pstr);
+ // 輸出標籤：目標 + 命中
+ const hit=(mesh.out===mesh.target);
+ meshSvg.querySelectorAll('.outlbl').forEach(t=>{const r=+t.dataset.row;
+  if(r===mesh.target){t.setAttribute('fill',hit?'#059669':'#d97706');t.textContent=(hit?'✓ ':'🎯 ')+'out '+r;}
+  else{t.setAttribute('fill',r===mesh.out?'#0891b2':'#8aa4ae');t.textContent='out '+r;}});
+ const st=document.getElementById('meshStatus');
+ if(st)st.innerHTML=hit?'<span style="color:#059669">✓ 成功！光已佈線到 out '+mesh.target+' 🎉　按「🎯 新挑戰」再來一題</span>'
+   :'<span style="color:#123039">🎯 目標：把光從 in '+mesh.input+' 導到 <b style="color:#d97706">out '+mesh.target+'</b>（目前到 out '+mesh.out+'）</span>';
+}
+function startMesh(){
+ if(!mesh.built)buildMesh();
+ cancelAnimationFrame(mesh.raf);
+ (function anim(){const lp=document.getElementById('lightpath');if(lp){mesh.dash=(mesh.dash+1.4)%24;lp.setAttribute('stroke-dasharray','12 8');lp.setAttribute('stroke-dashoffset',-mesh.dash);}mesh.raf=requestAnimationFrame(anim);})();
+}
+/* ===== 啟動 ===== */
+buildSidebar();renderHome();
+</script>
+</body>
+</html>

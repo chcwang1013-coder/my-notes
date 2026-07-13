@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>互動知識庫</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100vh;font-family:'PingFang TC','Microsoft JhengHei','Helvetica Neue',system-ui,sans-serif;
+    background:radial-gradient(1100px 500px at 50% -100px,rgba(14,155,196,.16),transparent 70%),linear-gradient(180deg,#f6fbfd,#e9f3f7);
+    color:#123039;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:8px}
+  h1{font-size:34px;font-weight:800;letter-spacing:.5px;text-align:center}
+  .sub{color:#4d6b76;text-align:center;max-width:560px;margin-bottom:26px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px;width:100%;max-width:760px}
+  a.card{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid #d5e5ec;border-radius:18px;
+    padding:26px;box-shadow:0 4px 20px rgba(18,48,57,.07);transition:.18s;position:relative;overflow:hidden}
+  a.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px}
+  a.card.p::before{background:linear-gradient(#0891b2,#059669)}
+  a.card.b::before{background:linear-gradient(#7aa6ff,#ffb03a)}
+  a.card:hover{transform:translateY(-5px);box-shadow:0 14px 34px rgba(18,48,57,.15);border-color:#0e9bc4}
+  .ic{font-size:40px;margin-bottom:10px}
+  .card h2{font-size:21px;margin-bottom:6px}
+  .card p{color:#4d6b76;font-size:14px;line-height:1.6}
+  .go{margin-top:14px;color:#0e9bc4;font-weight:700;font-size:14px}
+  footer{margin-top:34px;color:#8aa4ae;font-size:12.5px;text-align:center}
+</style>
+</head>
+<body>
+  <h1>🔬 互動知識庫</h1>
+  <p class="sub">整理自 YouTube 影片的互動式學習網站，含雙向連結筆記、關係圖譜與互動模擬。</p>
+  <div class="cards">
+    <a class="card p" href="photonics.html">
+      <div class="ic">💡</div>
+      <h2>光子積體電路</h2>
+      <p>矽光子與可程式化光子：從波導、MZI、環形諧振器到可程式化光子網格，含 WDM 分波與佈線挑戰互動。</p>
+      <div class="go">進入網站 →</div>
+    </a>
+    <a class="card b" href="blackhole.html">
+      <div class="ic">🕳️</div>
+      <h2>黑洞知識庫</h2>
+      <p>從相對論、恆星死亡到霍金輻射與資訊悖論，含關係圖譜、真實黑洞案例與互動模擬。</p>
+      <div class="go">進入網站 →</div>
+    </a>
+  </div>
+  <footer>以 HTML 打造 · 可離線瀏覽 · 由 Cowork 協助製作</footer>
+</body>
+</html>

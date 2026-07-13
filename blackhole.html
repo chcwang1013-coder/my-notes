@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>黑洞知識庫 · 互動筆記</title>
+<style>
+  :root{
+    --bg:#070912; --bg2:#0e1226; --panel:#121834; --panel2:#171d3e;
+    --line:#28305c; --text:#eaf0ff; --muted:#9fb4e6; --dim:#6f7fb0;
+    --cyan:#4dd2ff; --amber:#ffb03a; --purple:#a78bfa; --red:#ff6b6b;
+    --accent:#7aa6ff;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:radial-gradient(120% 90% at 50% 0%,#141a33 0%,#070912 60%);
+    color:var(--text);font-family:'PingFang TC','Microsoft JhengHei','Helvetica Neue',system-ui,sans-serif;
+    line-height:1.75;overflow:hidden}
+
+  /* Header */
+  header{position:fixed;top:0;left:0;right:0;height:60px;z-index:20;
+    display:flex;align-items:center;gap:16px;padding:0 20px;
+    background:rgba(10,13,28,.82);backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line)}
+  header h1{font-size:18px;margin:0;font-weight:800;letter-spacing:.5px;white-space:nowrap}
+  header h1 .em{color:var(--accent)}
+  .search{flex:1;max-width:360px;position:relative}
+  .search input{width:100%;padding:8px 12px 8px 34px;border-radius:10px;
+    border:1px solid var(--line);background:var(--panel);color:var(--text);font-size:14px;outline:none}
+  .search input:focus{border-color:var(--accent)}
+  .search svg{position:absolute;left:10px;top:9px;opacity:.6}
+  .tabs{display:flex;gap:6px;margin-left:auto}
+  .tabs button{padding:8px 16px;border-radius:10px;border:1px solid var(--line);
+    background:var(--panel);color:var(--muted);font-size:14px;cursor:pointer;transition:.15s;font-family:inherit}
+  .tabs button:hover{color:var(--text);border-color:var(--accent)}
+  .tabs button.active{background:var(--accent);color:#08122c;border-color:var(--accent);font-weight:700}
+
+  /* Layout */
+  .wrap{position:fixed;top:60px;left:0;right:0;bottom:0;display:flex}
+  /* Sidebar */
+  aside{width:280px;flex:none;overflow-y:auto;padding:16px 10px 60px;
+    border-right:1px solid var(--line);background:rgba(12,16,34,.5)}
+  .cat{margin:6px 8px 4px;font-size:12px;font-weight:700;letter-spacing:1px;
+    color:var(--dim);text-transform:uppercase}
+  .navlink{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:8px;
+    color:var(--muted);cursor:pointer;font-size:14.5px;transition:.12s}
+  .navlink:hover{background:var(--panel);color:var(--text)}
+  .navlink.active{background:var(--panel2);color:#fff;font-weight:700}
+  .navlink .dot{width:8px;height:8px;border-radius:50%;flex:none}
+  .navlink small{color:var(--dim);font-size:11px;margin-left:auto}
+
+  /* Content */
+  main{flex:1;overflow-y:auto;padding:38px 46px 90px;scroll-behavior:smooth}
+  .note{max-width:820px;margin:0 auto;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .crumbs{font-size:13px;color:var(--dim);margin-bottom:10px}
+  .crumbs .tag{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11.5px;
+    font-weight:700;margin-right:6px}
+  h2.title{font-size:30px;margin:2px 0 4px;font-weight:800}
+  .en{color:var(--muted);font-size:15px;margin-bottom:18px;letter-spacing:.5px}
+  .callout{background:linear-gradient(180deg,rgba(122,166,255,.12),rgba(122,166,255,.04));
+    border-left:3px solid var(--accent);border-radius:8px;padding:12px 16px;margin:18px 0;color:#dbe6ff}
+  .callout b{color:#fff}
+  main h3{font-size:19px;margin:26px 0 8px;color:#fff;border-bottom:1px solid var(--line);padding-bottom:6px}
+  main p{margin:10px 0}
+  main ul{margin:10px 0;padding-left:22px}
+  main li{margin:5px 0}
+  .diagram{width:100%;border-radius:12px;border:1px solid var(--line);margin:16px 0;background:#070912;display:block}
+  .formula{font-family:'Cambria Math',Georgia,serif;font-size:20px;text-align:center;
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;margin:16px 0;color:#eaf0ff}
+  .eqcard{background:linear-gradient(180deg,#121a3a,#0d1228);border:1px solid var(--line);border-radius:14px;
+    padding:18px 20px;margin:18px 0}
+  .eqcard .eqt{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--accent);text-align:center;margin-bottom:2px}
+  .eqcard .eq{font-family:'Cambria Math','Times New Roman',Georgia,serif;font-size:30px;text-align:center;
+    color:#eaf0ff;margin:6px 0 16px;line-height:1.4}
+  .eqcard .eq i{font-style:italic}
+  .eqcard .eq sub{font-size:.6em;vertical-align:-.25em} .eqcard .eq sup{font-size:.6em;vertical-align:.5em}
+  .eqcard .lg{display:grid;gap:8px}
+  .eqcard .row{display:flex;gap:14px;align-items:baseline;padding:9px 14px;background:#0e1330;border:1px solid var(--line);border-radius:10px}
+  .eqcard .s{font-family:'Cambria Math','Times New Roman',Georgia,serif;font-style:italic;font-weight:800;
+    font-size:20px;min-width:64px;text-align:center;flex:none}
+  .eqcard .s sub{font-size:.6em;vertical-align:-.2em}
+  .eqcard .m{font-size:13.5px;color:#c6d2f2;line-height:1.6} .eqcard .m b{color:#fff}
+  .eqcard .u{display:inline-block;margin-left:8px;font-size:11.5px;color:#9fb4e6;background:#171d3e;
+    border:1px solid var(--line);border-radius:20px;padding:1px 9px}
+  .eqcard .cap{font-size:12.5px;color:var(--dim);text-align:center;margin-top:12px}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14.5px}
+  th,td{border:1px solid var(--line);padding:8px 12px;text-align:left}
+  th{background:var(--panel2);color:#fff}
+  td{background:rgba(18,24,52,.4)}
+  a.wl{color:var(--accent);cursor:pointer;text-decoration:none;border-bottom:1px dashed rgba(122,166,255,.5)}
+  a.wl:hover{color:#fff;background:rgba(122,166,255,.15);border-radius:3px}
+  .related{margin-top:34px;padding-top:16px;border-top:1px solid var(--line)}
+  .related .cat{margin-left:0}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .pathrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:16px 0 8px}
+  .stage{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:24px;background:var(--panel2);
+    border:1px solid var(--line);cursor:pointer;font-weight:700;color:#fff;transition:.15s}
+  .stage:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:0 6px 16px rgba(0,0,0,.4)}
+  .stage .d{width:10px;height:10px;border-radius:50%;flex:none}
+  .pathrow .arrow{color:var(--dim);font-weight:800;font-size:16px}
+  .catgroup{margin:14px 0}
+  .catgroup .cl{font-size:12.5px;font-weight:800;letter-spacing:.5px;margin-bottom:7px;display:flex;align-items:center;gap:7px}
+  .catgroup .cl .d{width:9px;height:9px;border-radius:50%}
+  .chip{padding:6px 14px;border-radius:20px;background:var(--panel);border:1px solid var(--line);
+    color:var(--muted);cursor:pointer;font-size:13.5px;transition:.12s}
+  .chip:hover{background:var(--accent);color:#08122c;border-color:var(--accent)}
+  .nav-btns{display:flex;justify-content:space-between;margin-top:26px;gap:10px}
+  .nav-btns button{flex:1;padding:12px;border-radius:10px;border:1px solid var(--line);
+    background:var(--panel);color:var(--muted);cursor:pointer;text-align:left;font-family:inherit;transition:.12s}
+  .nav-btns button:hover{border-color:var(--accent);color:#fff}
+  .nav-btns small{display:block;color:var(--dim);font-size:11px}
+
+  /* Home */
+  .hero{text-align:center;padding:20px 0 10px}
+  .hero .big{font-size:44px;font-weight:800;margin:6px 0}
+  .hero .sub{color:var(--muted);max-width:620px;margin:0 auto 8px}
+  .stats{display:flex;gap:14px;justify-content:center;margin:22px 0}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 22px;text-align:center}
+  .stat b{font-size:26px;display:block;color:var(--accent)}
+  .stat span{font-size:12px;color:var(--dim)}
+
+  /* Graph */
+  #graphView{flex:1;position:relative;display:none}
+  #graph{width:100%;height:100%;display:block;cursor:grab}
+  #graph:active{cursor:grabbing}
+  .legend{position:absolute;top:16px;left:16px;background:rgba(12,16,34,.8);
+    border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:13px;backdrop-filter:blur(6px)}
+  .legend div{display:flex;align-items:center;gap:8px;margin:4px 0;color:var(--muted)}
+  .legend i{width:11px;height:11px;border-radius:50%;display:inline-block}
+  .hint{position:absolute;bottom:16px;right:18px;color:var(--dim);font-size:12px}
+  .gnode{cursor:pointer}
+  .gnode text{font-size:12.5px;fill:var(--text);pointer-events:none;font-family:inherit}
+  .gnode circle{transition:r .15s}
+  .gedge{stroke:#34406e;stroke-width:1.4}
+  .gedge.hl{stroke:var(--accent);stroke-width:2.4}
+
+  /* 重點回顧 */
+  .kbox{background:linear-gradient(180deg,rgba(255,176,58,.12),rgba(255,176,58,.03));
+    border:1px solid rgba(255,176,58,.35);border-radius:12px;padding:14px 18px;margin:22px 0}
+  .kbox .kt{font-weight:800;color:var(--amber);font-size:14px;margin-bottom:6px;letter-spacing:.5px}
+  .kbox ul{margin:4px 0 0;padding-left:20px}
+  .kbox li{margin:3px 0}
+  /* 摺疊區 */
+  .collap{border:1px solid var(--line);border-radius:10px;margin:12px 0;overflow:hidden;background:rgba(18,24,52,.35)}
+  .collap>summary{cursor:pointer;padding:12px 16px;font-weight:700;color:#fff;list-style:none;
+    display:flex;align-items:center;gap:8px;user-select:none;transition:.12s}
+  .collap>summary::-webkit-details-marker{display:none}
+  .collap>summary::before{content:'▸';color:var(--accent);transition:.2s;display:inline-block}
+  .collap[open]>summary::before{transform:rotate(90deg)}
+  .collap>summary:hover{background:var(--panel)}
+  .collap .body{padding:2px 18px 16px;color:#d7e1ff}
+  .collap .body p{margin:8px 0}
+  .collap.myth>summary{color:#ffb0c4} .collap.myth>summary::before{color:#ff6b6b}
+  .collap.fact>summary{color:#b9ffd8} .collap.fact>summary::before{color:#38d39f}
+  .collap.math>summary{color:#c9c2ff} .collap.math>summary::before{color:#a78bfa}
+  .myth-row{display:flex;gap:10px;margin:10px 0}
+  .myth-row .x{color:#ff6b6b;font-weight:800;flex:none}
+  .myth-row .o{color:#38d39f;font-weight:800;flex:none}
+  /* 案例卡 */
+  .cases{max-width:1000px;margin:0 auto;padding:10px 0 60px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin:22px 0}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:0;overflow:hidden;
+    transition:.18s;position:relative}
+  .card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 10px 30px rgba(0,0,0,.4)}
+  .card .top{height:130px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .card .body{padding:16px 18px}
+  .card h4{margin:0 0 2px;font-size:19px;color:#fff}
+  .card .sub{color:var(--muted);font-size:12.5px;margin-bottom:10px}
+  .card .row{display:flex;justify-content:space-between;padding:5px 0;border-top:1px solid var(--line);font-size:13.5px}
+  .card .row span:first-child{color:var(--dim)} .card .row span:last-child{color:#eaf0ff;font-weight:600;text-align:right}
+  .card .badge{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.55);color:#fff;
+    font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid rgba(255,255,255,.2)}
+  /* 動畫黑洞 */
+  .bh{position:relative;width:var(--s,150px);height:var(--s,150px);margin:0 auto}
+  .bh .disk{position:absolute;inset:0;border-radius:50%;
+    background:conic-gradient(from 0deg,#ff5e3a,#ffb03a,#fff2b0,#ffb03a,#ff5e3a,#ff5e3a);
+    filter:blur(2px);animation:spin 6s linear infinite;
+    -webkit-mask:radial-gradient(closest-side,transparent 52%,#000 54%,#000 86%,transparent 92%);
+    mask:radial-gradient(closest-side,transparent 52%,#000 54%,#000 86%,transparent 92%);
+    transform:rotateX(72deg)}
+  .bh .core{position:absolute;top:50%;left:50%;width:52%;height:52%;transform:translate(-50%,-50%);
+    border-radius:50%;background:radial-gradient(circle,#000 60%,#1a1030 100%);
+    box-shadow:0 0 34px 6px rgba(122,166,255,.5),inset 0 0 20px #000;z-index:2}
+  @keyframes spin{to{transform:rotateX(72deg) rotate(360deg)}}
+  /* 模擬 */
+  #simView,#casesView{flex:1;overflow-y:auto;display:none;padding:24px 30px 80px}
+  #simWrap{max-width:920px;margin:0 auto}
+  #simCanvas{width:100%;height:460px;border-radius:16px;border:1px solid var(--line);
+    background:radial-gradient(circle at 50% 45%,#141a33,#070912);display:block;cursor:crosshair}
+  .controls{display:flex;flex-wrap:wrap;gap:18px;align-items:center;margin:16px 0;
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 18px}
+  .controls label{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:6px;min-width:160px}
+  .controls input[type=range]{accent-color:var(--accent)}
+  .controls .val{color:var(--accent);font-weight:700}
+  .controls button{padding:9px 16px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);
+    color:var(--text);cursor:pointer;font-family:inherit}
+  .controls button:hover{border-color:var(--accent)}
+  /* 圖表 */
+  .chartbox{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin:16px 0}
+  .chartbox .ct{font-weight:700;color:#fff;margin-bottom:4px;font-size:15px}
+  .chartbox .cd{color:var(--dim);font-size:12px;margin-bottom:8px}
+
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:#2a3363;border-radius:6px}
+  ::-webkit-scrollbar-track{background:transparent}
+
+  @media(max-width:720px){
+    aside{position:fixed;z-index:15;height:100%;transform:translateX(-100%);transition:.25s}
+    aside.open{transform:none}
+    main{padding:24px 18px 80px}
+    .search{max-width:none}
+    header h1{font-size:15px}
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>🕳️ <span class="em">黑洞</span>知識庫</h1>
+  <div class="search">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9fb4e6" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input id="search" placeholder="搜尋知識點…（按 Enter 開啟）" autocomplete="off">
+  </div>
+  <div class="tabs">
+    <button id="tabNotes" class="active">📖 筆記</button>
+    <button id="tabGraph">🕸️ 關係圖譜</button>
+    <button id="tabCases">🌌 真實案例</button>
+    <button id="tabSim">🌀 互動模擬</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <aside id="sidebar"></aside>
+  <main id="main"></main>
+  <div id="graphView">
+    <svg id="graph"></svg>
+    <div class="legend" id="legend"></div>
+    <div class="hint">拖曳節點可移動 · 點擊開啟筆記 · 滑鼠移入高亮關聯</div>
+  </div>
+  <div id="casesView"></div>
+  <div id="simView"></div>
+</div>
+
+<script>
+/* ============ 資料 ============ */
+const CATS = {
+  "基礎": {name:"前置物理基礎", color:"var(--cyan)", raw:"#4dd2ff"},
+  "恆星": {name:"恆星與緻密天體", color:"var(--amber)", raw:"#ffb03a"},
+  "結構": {name:"黑洞結構", color:"var(--purple)", raw:"#a78bfa"},
+  "量子": {name:"熱力學與量子效應", color:"var(--red)", raw:"#ff6b6b"}
+};
+function L(id){return '<a class="wl" data-id="'+id+'">'+id+'</a>';}
+
+const NOTES = [
+{id:"狹義相對論", en:"Special Relativity", cat:"基礎", html:
+  '<div class="callout"><b>一句話：</b>愛因斯坦 1905 年提出，指出<b>光速對所有觀察者都相同</b>，由此推導出時間與空間並非絕對，會隨運動狀態改變。</div>'+
+  '<h3>兩大基本假設</h3><ul><li><b>相對性原理</b>：所有等速運動的參考系，物理定律都一樣。</li>'+
+  '<li><b>光速不變</b>：真空中光速 c 對任何觀察者都是固定值，與光源或觀察者運動無關。</li></ul>'+
+  '<h3>關鍵推論</h3><ul><li><b>時間膨脹</b>：運動的時鐘走得比較慢。</li><li><b>長度收縮</b>：運動物體在運動方向上變短。</li>'+
+  '<li><b>質能等價</b>：質量與能量可以互換（見下方公式）。</li>'+
+  '<li><b>時空一體</b>：時間與三維空間合併成四維「時空」。</li></ul>'+
+  '<div class="eqcard"><div class="eqt">質能等價</div>'+
+   '<div class="eq"><i style="color:#7dd3fc">E</i> = <i style="color:#fbbf24">m</i><i style="color:#34d399">c</i><sup style="color:#34d399">2</sup></div>'+
+   '<div class="lg">'+
+    '<div class="row"><div class="s" style="color:#7dd3fc">E</div><div class="m"><b>能量</b>：物體蘊含的總能量<span class="u">焦耳 J</span></div></div>'+
+    '<div class="row"><div class="s" style="color:#fbbf24">m</div><div class="m"><b>質量</b>：物體的靜質量<span class="u">公斤 kg</span></div></div>'+
+    '<div class="row"><div class="s" style="color:#34d399">c</div><div class="m"><b>光速</b>：約 3×10⁸ m/s；平方後是極大的倍率<span class="u">m/s</span></div></div>'+
+   '</div><div class="cap">一點點質量，就等於巨大的能量——這是恆星發光與核反應的根源。</div></div>'+
+  '<h3>白話理解</h3><p>過去以為時間對每個人都一樣、空間是固定舞台。狹義相對論打破這點：時間和空間會隨你的運動伸縮，唯一不變的是光速。這是理解黑洞的第一塊基石，下一步是把重力也納入的 '+L("廣義相對論")+'。</p>'},
+
+{id:"廣義相對論", en:"General Relativity", cat:"基礎", html:
+  '<div class="callout"><b>一句話：</b>愛因斯坦 1915 年提出，把重力重新詮釋為<b>時空的彎曲</b>：物質告訴時空如何彎曲，彎曲的時空告訴物質如何運動。</div>'+
+  '<h3>核心觀念</h3><ul><li>重力不是一種力，而是質量造成的時空幾何彎曲。</li>'+
+  '<li>物體沿彎曲時空中「最直的路徑」運動，看起來就像被吸引。</li>'+
+  '<li>常見比喻：時空像一張橡皮床，放上重物就凹陷，滾過的球會被帶偏。</li></ul>'+
+  '<h3>重要預測（都已證實）</h3><ul><li>光線經過大質量天體會偏折（重力透鏡）。</li>'+
+  '<li>強重力場中時間走得更慢。</li><li>重力波（2015 年 LIGO 偵測到）。</li>'+
+  '<li><b>黑洞的存在</b>：時空可彎曲到連光都逃不出來。</li></ul>'+
+  '<h3>白話理解</h3><p>'+L("狹義相對論")+'處理等速運動，廣義相對論再把重力與加速度納進來。其數學核心是 '+L("愛因斯坦場方程式")+'，而 '+L("史瓦西度規")+' 正是這條方程式在黑洞情況下的精確解。</p>'},
+
+{id:"逃逸速度與黑洞", en:"Escape Velocity", cat:"基礎", html:
+  '<div class="callout"><b>一句話：</b>逃逸速度是擺脫一個天體重力所需的最低速度。當天體重到連逃逸速度都超過光速時，光都跑不掉——它就是黑洞。</div>'+
+  '<h3>重點</h3><ul><li>逃逸速度隨天體<b>質量越大、半徑越小</b>而越高。</li>'+
+  '<li>地球約 11.2 km/s；太陽表面約 618 km/s。</li>'+
+  '<li>把質量壓縮到某臨界半徑，逃逸速度達光速 c，光就無法脫離。這個半徑就是 '+L("史瓦西度規")+' 的史瓦西半徑。</li></ul>'+
+  '<h3>歷史小知識</h3><p>早在 18 世紀，米歇爾與拉普拉斯就用牛頓力學想像過「暗星」。這是黑洞概念的雛形，但嚴謹描述要等到 '+L("廣義相對論")+'。</p>'+
+  '<h3>白話理解</h3><p>把球往上丟得夠快就飛出地球，逃逸速度就是那個「夠快」的門檻。黑洞的極端在於它的門檻比光速還高，所以連光都被關在 '+L("事件視界")+' 裡。</p>'},
+
+{id:"恆星的演化與死亡", en:"Stellar Evolution", cat:"恆星", html:
+  '<div class="callout"><b>一句話：</b>恆星一生都在打一場拔河：向內的重力 vs 向外的核融合壓力。燃料耗盡、壓力輸掉，恆星就塌縮，並依質量走向不同結局。</div>'+
+  '<h3>恆星為何能穩定存在</h3><ul><li>核心核融合（氫→氦）釋放能量，產生向外輻射壓。</li>'+
+  '<li>向外壓力恰好抵抗向內重力，達成「流體靜力平衡」。</li></ul>'+
+  '<h3>死亡的關鍵：燃料耗盡</h3><p>核融合停止後，重力再無對手，核心開始塌縮，<b>最終命運由核心質量決定</b>：</p>'+
+  '<table><tr><th>核心殘骸質量</th><th>結局</th><th>靠什麼撐住</th></tr>'+
+  '<tr><td>&lt; 約 1.4 太陽質量</td><td>'+L("白矮星")+'</td><td>電子簡併壓力</td></tr>'+
+  '<tr><td>約 1.4 – 3 太陽質量</td><td>'+L("中子星")+'</td><td>中子簡併壓力</td></tr>'+
+  '<tr><td>&gt; 約 3 太陽質量</td><td>'+L("黑洞的形成")+'</td><td>沒有東西撐得住</td></tr></table>'+
+  '<p>上表的 1.4 即 '+L("錢德拉塞卡極限")+'。</p>'+
+  '<h3>白話理解</h3><p>恆星像一直在燒的爐子，火力把外殼頂住不讓它塌。燒完了就看它多重——不夠重的縮成白矮星或中子星停下；夠重的一路塌成黑洞。</p>'},
+
+{id:"白矮星", en:"White Dwarf", cat:"恆星", html:
+  '<div class="callout"><b>一句話：</b>中小質量恆星（如太陽）死亡後的緻密殘骸，靠<b>電子簡併壓力</b>對抗重力，不再核融合。</div>'+
+  '<h3>重點</h3><ul><li>質量約與太陽相當，體積卻只有地球大小 → 密度極高（一茶匙可達數噸）。</li>'+
+  '<li>支撐力來自電子簡併壓力（量子力學的包立不相容原理）。</li>'+
+  '<li>有質量上限 → '+L("錢德拉塞卡極限")+'（約 1.4 倍太陽質量）。</li>'+
+  '<li>沒有能量來源，會緩慢冷卻變暗。</li></ul>'+
+  '<h3>白話理解</h3><p>太陽這種恆星燒完後，外層飄散成行星狀星雲，核心縮成一顆熾熱餘燼。撐住它的不是燃燒，而是電子「擠不動了」的量子效應。但這抵抗有極限——正是通往 '+L("中子星")+' 與黑洞的分水嶺。</p>'},
+
+{id:"錢德拉塞卡極限", en:"Chandrasekhar Limit", cat:"恆星", html:
+  '<div class="callout"><b>一句話：</b>'+L("白矮星")+'能靠電子簡併壓力支撐的<b>質量上限，約 1.4 倍太陽質量</b>。超過就會塌縮成中子星或引發超新星。</div>'+
+  '<h3>重點</h3><ul><li>由印度天文物理學家錢德拉塞卡於 1930 年代提出，1983 年獲諾貝爾物理獎。</li>'+
+  '<li>數值約 <b>1.4 M☉</b>（太陽質量）。</li>'+
+  '<li>物理意義：質量太大時電子被壓到接近光速，簡併壓力再也無法抵抗重力。</li></ul>'+
+  '<h3>為什麼重要</h3><p>它是恆星殘骸命運的第一道門檻：低於此 → 穩定的 '+L("白矮星")+'；超過此 → 走向 '+L("中子星")+' 甚至 '+L("黑洞的形成")+'。</p>'},
+
+{id:"奧本海默極限", en:"Oppenheimer–Volkoff (TOV) Limit", cat:"恆星", html:
+  '<div class="callout"><b>一句話：</b>'+L("中子星")+'能靠中子簡併壓力支撐的<b>質量上限，約 2–3 倍太陽質量</b>。超過此值就沒有任何已知力量能抵抗重力，塌縮成黑洞。</div>'+
+  '<h3>重點</h3><ul><li>全名<b>托爾曼–歐本海默–沃爾科夫極限（TOV Limit）</b>，常簡稱奧本海默極限。</li>'+
+  '<li>1939 年由歐本海默與沃爾科夫在托爾曼的基礎上算出。</li>'+
+  '<li>數值約 <b>2–3 M☉</b>（現代多落在 2.2–2.9 M☉），實際值與中子星內部物態方程有關，尚未完全確定。</li>'+
+  '<li>它是中子星版的 '+L("錢德拉塞卡極限")+'：後者是白矮星的上限。</li></ul>'+
+  '<h3>兩大質量門檻對照</h3><table><tr><th>極限</th><th>適用天體</th><th>約略值</th><th>超過後</th></tr>'+
+  '<tr><td>'+L("錢德拉塞卡極限")+'</td><td>'+L("白矮星")+'</td><td>~1.4 M☉</td><td>塌縮成中子星</td></tr>'+
+  '<tr><td>奧本海默極限</td><td>'+L("中子星")+'</td><td>~2–3 M☉</td><td>塌縮成黑洞</td></tr></table>'+
+  '<h3>白話理解</h3><p>它是恆星殘骸命運的<b>最後一道門檻</b>：低於此 → 穩定的中子星；超過此 → 沒有任何簡併壓力撐得住，直接走向 '+L("黑洞的形成")+'。</p>'},
+
+{id:"中子星", en:"Neutron Star", cat:"恆星", html:
+  '<div class="callout"><b>一句話：</b>質量超過 '+L("錢德拉塞卡極限")+' 的核心塌縮殘骸，電子被壓進質子形成中子，整顆星幾乎由中子組成，靠<b>中子簡併壓力</b>支撐。</div>'+
+  '<h3>重點</h3><ul><li>約 1.4 倍太陽質量壓進直徑僅約 20 公里的球（一茶匙約十億噸）。</li>'+
+  '<li>支撐力來自中子簡併壓力。</li>'+
+  '<li>快速自轉、磁場極強，輻射束掃過地球即觀測為<b>脈衝星（Pulsar）</b>。</li>'+
+  '<li>也有質量上限 → '+L("奧本海默極限")+'（約 2–3 M☉），超過就再也撐不住 → '+L("黑洞的形成")+'。</li></ul>'+
+  '<h3>白話理解</h3><p>比白矮星更狠一級：連電子都被壓進原子核與質子合併成中子，整顆星像一個巨大的原子核。這是物質抵抗重力的最後一道防線。</p>'},
+
+{id:"黑洞的形成", en:"Black Hole Formation", cat:"恆星", html:
+  '<div class="callout"><b>一句話：</b>當核心殘骸重到連 '+L("中子星")+' 的簡併壓力都撐不住，塌縮再也無法停止，質量崩向中心，形成被 '+L("事件視界")+' 包圍、中心為 '+L("奇異點")+' 的黑洞。</div>'+
+  '<h3>形成路徑（恆星級黑洞）</h3><ul><li>大質量恆星（通常 &gt; 20–25 倍太陽質量）核燃料耗盡。</li>'+
+  '<li>核心塌縮引發超新星爆炸，外層被炸飛。</li>'+
+  '<li>剩下核心若超過中子星上限（'+L("奧本海默極限")+'，約 2–3 M☉），沒有力量能抵抗重力。</li>'+
+  '<li>物質塌向中心成 '+L("奇異點")+'，外圍形成 '+L("事件視界")+'。</li></ul>'+
+  '<h3>黑洞的種類（依質量）</h3><ul><li><b>恆星級</b>：數倍～數十倍太陽質量，來自恆星死亡。</li>'+
+  '<li><b>超大質量</b>：數百萬～數十億太陽質量，位於星系中心（如銀河系人馬座 A*）。</li>'+
+  '<li><b>中介質量</b>：介於兩者之間，較少見。</li></ul>'+
+  '<h3>白話理解</h3><p>黑洞不是被「創造」的東西，而是重力贏得徹底後的必然結果：沒有任何壓力頂得住，物質只能一路塌到底。</p>'},
+
+{id:"事件視界", en:"Event Horizon", cat:"結構", html:
+  '<div class="callout"><b>一句話：</b>黑洞的<b>有去無回邊界</b>：一旦越過，連光都無法逃出，外界也再收不到裡面任何訊息。</div>'+
+  '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5NDAgNTIwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPgogICAgPHJhZGlhbEdyYWRpZW50IGlkPSJiZyIgY3g9IjUwJSIgY3k9IjQ1JSIgcj0iNzUlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzE0MWEzMyIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwNzA5MTIiLz4KICAgIDwvcmFkaWFsR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImRpc2siIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmNWUzYSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjI1JSIgc3RvcC1jb2xvcj0iI2ZmYjAzYSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3RvcC1jb2xvcj0iI2ZmZjJiMCIvPgogICAgICA8c3RvcCBvZmZzZXQ9Ijc1JSIgc3RvcC1jb2xvcj0iI2ZmYjAzYSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZjVlM2EiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9ImhvbGUiIGN4PSI1MCUiIGN5PSI1MCUiIHI9IjUwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMwMDAwMDAiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSI4MiUiIHN0b3AtY29sb3I9IiMwMDAwMDAiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMWExMDMwIi8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgPHJhZGlhbEdyYWRpZW50IGlkPSJnbG93IiBjeD0iNTAlIiBjeT0iNTAlIiByPSI1MCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjOGZiNGZmIiBzdG9wLW9wYWNpdHk9IjAuOSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM4ZmI0ZmYiIHN0b3Atb3BhY2l0eT0iMCIvPgogICAgPC9yYWRpYWxHcmFkaWVudD4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0ic2luZyIgY3g9IjUwJSIgY3k9IjUwJSIgcj0iNTAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPgogICAgPC9yYWRpYWxHcmFkaWVudD4KICAgIDxmaWx0ZXIgaWQ9InNvZnQiPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjMiLz48L2ZpbHRlcj4KICA8L2RlZnM+CgogIDxyZWN0IHdpZHRoPSI5NDAiIGhlaWdodD0iNTIwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDwhLS0g5pif6bueIC0tPgogIDxnIGZpbGw9IiNmZmZmZmYiPgogICAgPGNpcmNsZSBjeD0iNzAiIGN5PSI2MCIgcj0iMS4zIiBvcGFjaXR5PSIuOCIvPjxjaXJjbGUgY3g9IjE1MCIgY3k9IjEyMCIgcj0iMSIgb3BhY2l0eT0iLjYiLz4KICAgIDxjaXJjbGUgY3g9Ijc2MCIgY3k9IjgwIiByPSIxLjQiIG9wYWNpdHk9Ii44NSIvPjxjaXJjbGUgY3g9IjgxMCIgY3k9IjE4MCIgcj0iMSIgb3BhY2l0eT0iLjUiLz4KICAgIDxjaXJjbGUgY3g9IjYwIiBjeT0iMzYwIiByPSIxLjIiIG9wYWNpdHk9Ii43Ii8+PGNpcmNsZSBjeD0iODAwIiBjeT0iNDIwIiByPSIxLjMiIG9wYWNpdHk9Ii43Ii8+CiAgICA8Y2lyY2xlIGN4PSIxMjAiIGN5PSI0NzAiIHI9IjEiIG9wYWNpdHk9Ii41Ii8+PGNpcmNsZSBjeD0iNzIwIiBjeT0iNDcwIiByPSIxIiBvcGFjaXR5PSIuNiIvPgogICAgPGNpcmNsZSBjeD0iNDMwIiBjeT0iNDAiIHI9IjEuMSIgb3BhY2l0eT0iLjYiLz4KICA8L2c+CgogIDwhLS0g5ZC456mN55ukIOW+jOe3oyAtLT4KICA8cGF0aCBkPSJNIDEzMCAyNjAgQSAzMDAgNzggMCAwIDEgNzMwIDI2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI2Rpc2spIiBzdHJva2Utd2lkdGg9IjI2IiBvcGFjaXR5PSIwLjk1Ii8+CiAgPCEtLSDkuovku7boppbnlYzlhYnmmoggLS0+CiAgPGNpcmNsZSBjeD0iNDMwIiBjeT0iMjYwIiByPSIxNTAiIGZpbGw9InVybCgjZ2xvdykiIGZpbHRlcj0idXJsKCNzb2Z0KSIvPgogIDwhLS0g5YWJ5a2Q55CDICjomZvnt5opIC0tPgogIDxjaXJjbGUgY3g9IjQzMCIgY3k9IjI2MCIgcj0iMTE4IiBmaWxsPSJub25lIiBzdHJva2U9IiM5ZmQwZmYiIHN0cm9rZS13aWR0aD0iMS42IiBzdHJva2UtZGFzaGFycmF5PSI1IDYiIG9wYWNpdHk9IjAuODUiLz4KICA8IS0tIOS6i+S7tuimlueVjCAo6buR55CDKSAtLT4KICA8Y2lyY2xlIGN4PSI0MzAiIGN5PSIyNjAiIHI9IjkyIiBmaWxsPSJ1cmwoI2hvbGUpIiBzdHJva2U9IiMzYTRhN2EiIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgPCEtLSDlkLjnqY3nm6Qg5YmN57ejICjok4vkvY/kuIvljYopIC0tPgogIDxwYXRoIGQ9Ik0gMTMwIDI2MCBBIDMwMCA3OCAwIDAgMCA3MzAgMjYwIiBmaWxsPSJub25lIiBzdHJva2U9InVybCgjZGlzaykiIHN0cm9rZS13aWR0aD0iMjYiIG9wYWNpdHk9IjAuOTgiLz4KICA8IS0tIOWlh+eVsOm7niAtLT4KICA8Y2lyY2xlIGN4PSI0MzAiIGN5PSIyNjAiIHI9IjI2IiBmaWxsPSJ1cmwoI3NpbmcpIi8+CiAgPGNpcmNsZSBjeD0iNDMwIiBjeT0iMjYwIiByPSIzLjUiIGZpbGw9IiNmZmZmZmYiLz4KCiAgPCEtLSDmqJnnsaQgLS0+CiAgPGcgc3Ryb2tlPSIjOGZhNmQ4IiBzdHJva2Utd2lkdGg9IjEuMiI+CiAgICA8bGluZSB4MT0iNDMwIiB5MT0iMjYwIiB4Mj0iNDMwIiB5Mj0iMTUwIi8+CiAgICA8bGluZSB4MT0iNTAwIiB5MT0iMjA1IiB4Mj0iNjQwIiB5Mj0iMTIwIi8+CiAgICA8bGluZSB4MT0iNTIyIiB5MT0iMjYwIiB4Mj0iNjYwIiB5Mj0iMjYwIi8+CiAgICA8bGluZSB4MT0iNzEwIiB5MT0iMjQ4IiB4Mj0iNzcwIiB5Mj0iMjEwIi8+CiAgPC9nPgogIDxnIGZpbGw9IiNlYWYwZmYiIGZvbnQtc2l6ZT0iMTciPgogICAgPHRleHQgeD0iNDMwIiB5PSIxNDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSI3MDAiPuWlh+eVsOm7njwvdGV4dD4KICAgIDx0ZXh0IHg9IjQzMCIgeT0iMTYwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjOWZiNGU2Ij5TaW5ndWxhcml0eeODu+WvhuW6pueEoemZkDwvdGV4dD4KCiAgICA8dGV4dCB4PSI2NDgiIHk9IjExMiIgZm9udC13ZWlnaHQ9IjcwMCI+5YWJ5a2Q55CDPC90ZXh0PgogICAgPHRleHQgeD0iNjQ4IiB5PSIxMzAiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM5ZmI0ZTYiPlBob3RvbiBTcGhlcmU8L3RleHQ+CgogICAgPHRleHQgeD0iNjY4IiB5PSIyNTYiIGZvbnQtd2VpZ2h0PSI3MDAiPuS6i+S7tuimlueVjDwvdGV4dD4KICAgIDx0ZXh0IHg9IjY2OCIgeT0iMjc0IiBmb250LXNpemU9IjEyIiBmaWxsPSIjOWZiNGU2Ij5FdmVudCBIb3Jpem9u44O75pyJ5Y6754Sh5ZuePC90ZXh0PgoKICAgIDx0ZXh0IHg9Ijc3NSIgeT0iMjA2IiBmb250LXdlaWdodD0iNzAwIj7lkLjnqY3nm6Q8L3RleHQ+CiAgICA8dGV4dCB4PSI3NzUiIHk9IjIyNCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzlmYjRlNiI+QWNjcmV0aW9uIERpc2s8L3RleHQ+CiAgPC9nPgoKICA8dGV4dCB4PSI0MCIgeT0iNDYiIGZpbGw9IiNmZmZmZmYiIGZvbnQtc2l6ZT0iMjAiIGZvbnQtd2VpZ2h0PSI3MDAiPum7kea0nue1kOani+WJlumdouWcluOAgEFuYXRvbXkgb2YgYSBCbGFjayBIb2xlPC90ZXh0Pgo8L3N2Zz4K" alt="黑洞結構剖面圖">'+
+  '<h3>重點</h3><ul><li>事件視界不是實體表面，而是時空中的數學邊界。</li>'+
+  '<li>其半徑就是 '+L("史瓦西度規")+' 的史瓦西半徑，與質量成正比。</li>'+
+  '<li>在視界處，'+L("逃逸速度與黑洞")+' 恰好等於光速。</li></ul>'+
+  '<h3>有趣的相對論效應</h3><ul><li><b>時間凍結</b>：從遠處看，物體掉向視界時會越來越慢、越來越紅，彷彿永遠停在邊界。</li>'+
+  '<li>對掉進去的人而言，卻能在有限時間內穿越視界。</li></ul>'+
+  '<h3>白話理解</h3><p>把事件視界想成一道「單向門」：進得去、出不來，門外的人永遠看不到門內。真正的極端在中心的 '+L("奇異點")+'。</p>'},
+
+{id:"奇異點", en:"Singularity", cat:"結構", html:
+  '<div class="callout"><b>一句話：</b>黑洞的中心點，所有質量集中於此，<b>密度與時空曲率變成無限大</b>，已知物理定律在此完全失效。</div>'+
+  '<h3>重點</h3><ul><li>是 '+L("廣義相對論")+' 方程式中「除以零」般的病態點——數值發散。</li>'+
+  '<li><b>潘洛斯奇異點定理</b>證明：合理條件下，黑洞內部奇異點的出現不可避免（潘洛斯獲 2020 諾貝爾物理獎）。</li>'+
+  '<li>它的存在通常被視為廣義相對論的極限訊號：要描述它需要尚未完成的「量子重力」理論。</li></ul>'+
+  '<h3>白話理解</h3><p>奇異點不是一顆「很小的球」，而是理論在該處算不下去了。它像地圖上的「此處未知」，被 '+L("事件視界")+' 包住，我們無法直接觀測。</p>'},
+
+{id:"史瓦西度規", en:"Schwarzschild Metric", cat:"結構", html:
+  '<div class="callout"><b>一句話：</b>'+L("愛因斯坦場方程式")+' 最早、最簡單的精確解，描述一個<b>不旋轉、不帶電、球對稱</b>質量周圍的時空幾何。由它可導出黑洞的史瓦西半徑。</div>'+
+  '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4NjAgNDAwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiZzMiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzBlMTIyNiIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzA3MDkxMiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0iZWFydGgiIGN4PSI0MCUiIGN5PSIzNSUiIHI9IjcwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM2ZmIxZmYiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMxYjNhNmIiLz4KICAgIDwvcmFkaWFsR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9InN1biIgY3g9IjQwJSIgY3k9IjM1JSIgcj0iNzAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZjBhOCIvPjxzdG9wIG9mZnNldD0iNjAlIiBzdG9wLWNvbG9yPSIjZmZiMDNhIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZTA2MjFhIi8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODYwIiBoZWlnaHQ9IjQwMCIgZmlsbD0idXJsKCNiZzMpIi8+CiAgPHRleHQgeD0iNDAiIHk9IjQ2IiBmaWxsPSIjZmZmZmZmIiBmb250LXNpemU9IjIwIiBmb250LXdlaWdodD0iNzAwIj7lj7Lnk6bopb/ljYrlvpHjgIBTY2h3YXJ6c2NoaWxkIFJhZGl1czwvdGV4dD4KICA8dGV4dCB4PSI0MCIgeT0iNzIiIGZpbGw9IiM5ZmI0ZTYiIGZvbnQtc2l6ZT0iMTMiPuaKiuaVtOWAi+WkqemrlOWjk+e4ruWIsOmAmeWAi+WNiuW+keWFp++8jOWwseacg+iuiuaIkOm7kea0nuOAgHJfcyA9IDJHTSAvIGPCsjwvdGV4dD4KCiAgPCEtLSDlnLDnkIMgLS0+CiAgPGc+CiAgICA8Y2lyY2xlIGN4PSIyMTAiIGN5PSIyMDAiIHI9IjcyIiBmaWxsPSJ1cmwoI2VhcnRoKSIvPgogICAgPHRleHQgeD0iMjEwIiB5PSIzMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNlYWYwZmYiIGZvbnQtc2l6ZT0iMTYiIGZvbnQtd2VpZ2h0PSI3MDAiPuWcsOeQgyBFYXJ0aDwvdGV4dD4KICAgIDx0ZXh0IHg9IjIxMCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOGFhMGQwIiBmb250LXNpemU9IjEyIj7ljYrlvpHntIQgNiwzNzEga208L3RleHQ+CiAgICA8IS0tIOeuremgrSAtLT4KICAgIDxwYXRoIGQ9Ik0gMzAwIDIwMCBMIDM3MiAyMDAiIHN0cm9rZT0iI2ZmY2Y1ZSIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI2EzKSIvPgogICAgPGNpcmNsZSBjeD0iMzkyIiBjeT0iMjAwIiByPSIyLjMiIGZpbGw9IiNmZmYiLz4KICAgIDx0ZXh0IHg9IjM5MiIgeT0iMjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjZmZjZjVlIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIj7iiYggOSBtbTwvdGV4dD4KICAgIDx0ZXh0IHg9IjM5MiIgeT0iMjcwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjYzliMDZhIiBmb250LXNpemU9IjExIj7kuIDpoYblvYjnj6DlpKflsI88L3RleHQ+CiAgPC9nPgoKICA8IS0tIOWkqumZvSAtLT4KICA8Zz4KICAgIDxjaXJjbGUgY3g9IjU5MCIgY3k9IjIwMCIgcj0iODAiIGZpbGw9InVybCgjc3VuKSIvPgogICAgPHRleHQgeD0iNTkwIiB5PSIzMDgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNlYWYwZmYiIGZvbnQtc2l6ZT0iMTYiIGZvbnQtd2VpZ2h0PSI3MDAiPuWkqumZvSBTdW48L3RleHQ+CiAgICA8dGV4dCB4PSI1OTAiIHk9IjMzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzhhYTBkMCIgZm9udC1zaXplPSIxMiI+5Y2K5b6R57SEIDY5NiwwMDAga208L3RleHQ+CiAgICA8cGF0aCBkPSJNIDY4MiAyMDAgTCA3NTQgMjAwIiBzdHJva2U9IiNmZmNmNWUiIHN0cm9rZS13aWR0aD0iMiIgbWFya2VyLWVuZD0idXJsKCNhMykiLz4KICAgIDxjaXJjbGUgY3g9Ijc3OCIgY3k9IjIwMCIgcj0iNiIgZmlsbD0iIzAwMCIgc3Ryb2tlPSIjN2FhNmZmIi8+CiAgICA8dGV4dCB4PSI3NzgiIHk9IjI1MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmY2Y1ZSIgZm9udC1zaXplPSIxNSIgZm9udC13ZWlnaHQ9IjcwMCI+4omIIDMga208L3RleHQ+CiAgICA8dGV4dCB4PSI3NzgiIHk9IjI3MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2M5YjA2YSIgZm9udC1zaXplPSIxMSI+5LiA5bqn5bCP5bGx5aSn5bCPPC90ZXh0PgogIDwvZz4KCiAgPGRlZnM+CiAgICA8bWFya2VyIGlkPSJhMyIgbWFya2VyV2lkdGg9IjEwIiBtYXJrZXJIZWlnaHQ9IjEwIiByZWZYPSI3IiByZWZZPSIzIiBvcmllbnQ9ImF1dG8iPjxwYXRoIGQ9Ik0wLDAgTDcsMyBMMCw2IFoiIGZpbGw9IiNmZmNmNWUiLz48L21hcmtlcj4KICA8L2RlZnM+Cjwvc3ZnPgo=" alt="史瓦西半徑比較">'+
+  '<h3>重點</h3><ul><li>由史瓦西於 1916 年——廣義相對論發表後僅數月——在一戰戰壕中求得。</li>'+
+  '<li><b>史瓦西半徑</b>：質量被壓到此半徑內就形成黑洞，即 '+L("事件視界")+' 的位置（公式見下方）。</li>'+
+  '<li>地球約 9 mm；太陽約 3 公里。</li>'+
+  '<li>描述最簡單的黑洞；旋轉黑洞需用克爾（Kerr）解。</li></ul>'+
+  '<div class="eqcard"><div class="eqt">史瓦西半徑</div>'+
+   '<div class="eq"><i style="color:#7dd3fc">r</i><sub style="color:#7dd3fc">s</sub> = 2<i style="color:#a78bfa">G</i><i style="color:#fbbf24">M</i> ⁄ <i style="color:#34d399">c</i><sup style="color:#34d399">2</sup></div>'+
+   '<div class="lg">'+
+    '<div class="row"><div class="s" style="color:#7dd3fc">r<sub>s</sub></div><div class="m"><b>史瓦西半徑</b>：事件視界的半徑；質量壓進此半徑內即成黑洞<span class="u">公尺 m</span></div></div>'+
+    '<div class="row"><div class="s" style="color:#a78bfa">G</div><div class="m"><b>重力常數</b>：牛頓萬有引力常數，約 6.67×10⁻¹¹<span class="u">N·m²/kg²</span></div></div>'+
+    '<div class="row"><div class="s" style="color:#fbbf24">M</div><div class="m"><b>天體質量</b>：越重，事件視界越大<span class="u">公斤 kg</span></div></div>'+
+    '<div class="row"><div class="s" style="color:#34d399">c</div><div class="m"><b>光速</b>：約 3×10⁸ m/s<span class="u">m/s</span></div></div>'+
+   '</div><div class="cap">地球的史瓦西半徑約 9 mm、太陽約 3 km。</div></div>'+
+  '<h3>白話理解</h3><p>史瓦西度規是「黑洞的第一張精確藍圖」：任何質量只要塞得夠小都能變黑洞，半徑由 2GM/c² 決定。</p>'},
+
+{id:"愛因斯坦場方程式", en:"Einstein Field Equations", cat:"結構", html:
+  '<div class="callout"><b>一句話：</b>'+L("廣義相對論")+' 的核心方程式，描述<b>物質與能量如何決定時空的彎曲</b>。物質告訴時空怎麼彎，時空告訴物質怎麼動。</div>'+
+  '<div class="eqcard"><div class="eqt">愛因斯坦場方程式</div>'+
+   '<div class="eq"><i style="color:#7dd3fc">G</i><sub style="color:#7dd3fc">μν</sub> + <span style="color:#fb7185">Λ</span><i style="color:#34d399">g</i><sub style="color:#34d399">μν</sub> = <span style="color:#c9b06a">(8π<i>G</i> ⁄ <i>c</i>⁴)</span> <i style="color:#fbbf24">T</i><sub style="color:#fbbf24">μν</sub></div>'+
+   '<div class="lg">'+
+    '<div class="row"><div class="s" style="color:#7dd3fc">G<sub>μν</sub></div><div class="m"><b>愛因斯坦張量</b>：描述時空的<b>彎曲程度</b>（幾何）——方程式的「左邊＝幾何」</div></div>'+
+    '<div class="row"><div class="s" style="color:#34d399">g<sub>μν</sub></div><div class="m"><b>度規張量</b>：定義時空中如何量測距離與時間，是時空幾何的基本描述</div></div>'+
+    '<div class="row"><div class="s" style="color:#fb7185">Λ</div><div class="m"><b>宇宙常數</b>：與暗能量、宇宙加速膨脹有關的項</div></div>'+
+    '<div class="row"><div class="s" style="color:#fbbf24">T<sub>μν</sub></div><div class="m"><b>能量–動量張量</b>：物質與能量的分布——方程式的「右邊＝物質」（來源）</div></div>'+
+    '<div class="row"><div class="s" style="color:#c9b06a">8π<i>G</i>/<i>c</i>⁴</div><div class="m"><b>耦合常數</b>：把「物質能量」換算成「時空曲率」的比例（G 為重力常數、c 為光速）</div></div>'+
+    '<div class="row"><div class="s">μν</div><div class="m"><b>指標</b>：μ、ν 各自跑遍時間與三個空間方向，代表這是一組 4×4 的張量方程式</div></div>'+
+   '</div><div class="cap">一句話：左邊的時空幾何，由右邊的物質與能量決定——「物質告訴時空怎麼彎，時空告訴物質怎麼動」。</div></div>'+
+  '<ul><li><b>左邊 G<sub>μν</sub></b>：時空的幾何與彎曲程度。</li>'+
+  '<li><b>右邊 T<sub>μν</sub></b>：物質與能量的分布（能量–動量張量）。</li>'+
+  '<li><b>Λ</b>：宇宙常數，與暗能量、宇宙加速膨脹有關。</li></ul>'+
+  '<h3>重點</h3><ul><li>一組非線性張量方程式，一般極難求解。</li>'+
+  '<li>特定對稱條件下才有精確解，最著名的就是 '+L("史瓦西度規")+'。</li>'+
+  '<li>它預言了黑洞、重力波與宇宙膨脹。</li></ul>'+
+  '<h3>白話理解</h3><p>不用會解它，只要抓住精神：這條方程式把「重力」翻譯成「幾何」。黑洞、'+L("奇異點")+'、'+L("事件視界")+' 全是它在極端情況下的解。</p>'},
+
+{id:"無毛定理", en:"No-hair Theorem", cat:"結構", html:
+  '<div class="callout"><b>一句話：</b>一個穩定黑洞<b>只由三個量完全決定：質量、電荷、角動量（自旋）</b>。其他一切資訊在形成黑洞後都「看不到」了。</div>'+
+  '<h3>三個特徵</h3><ul><li><b>質量</b> (Mass)</li><li><b>電荷</b> (Charge)</li><li><b>角動量／自旋</b> (Spin)</li></ul>'+
+  '<p>「無毛」是比喻：黑洞表面「光禿禿」，沒有其他可辨識的細節。</p>'+
+  '<h3>重點</h3><ul><li>由物理學家惠勒推廣此說法。</li>'+
+  '<li>兩個黑洞只要這三量相同就完全一樣，無法區分。</li>'+
+  '<li>這與 '+L("黑洞資訊悖論")+' 直接衝突：掉進去的東西只剩三個數字，原本的資訊去哪了？</li></ul>'+
+  '<h3>白話理解</h3><p>不管你丟進黑洞的是一本書、一顆星還是一台鋼琴，黑洞最後只「記得」總質量、總電荷、總自旋。這種極端失憶正是資訊悖論的火種。</p>'},
+
+{id:"黑洞熱力學", en:"Black Hole Thermodynamics", cat:"量子", html:
+  '<div class="callout"><b>一句話：</b>驚人的發現：黑洞的行為遵守與<b>熱力學定律</b>幾乎一樣的規則，代表黑洞其實有<b>溫度</b>和<b>熵</b>。</div>'+
+  '<h3>重點</h3><ul><li><b>貝根斯坦</b>提出黑洞應有熵，且熵正比於 '+L("事件視界")+' 的<b>表面積</b>（而非體積）。</li>'+
+  '<li><b>霍金</b>進一步證明黑洞有溫度，並會發出 '+L("霍金輻射")+'。</li></ul>'+
+  '<h3>四定律對應</h3><table><tr><th>黑洞</th><th>對應熱力學</th></tr>'+
+  '<tr><td>視界表面重力處處相同</td><td>第零定律：熱平衡溫度均勻</td></tr>'+
+  '<tr><td>質量變化 ↔ 能量守恆</td><td>第一定律</td></tr>'+
+  '<tr><td>視界面積永不減少</td><td>第二定律：熵永不減少</td></tr>'+
+  '<tr><td>無法把表面重力降到零</td><td>第三定律</td></tr></table>'+
+  '<h3>為什麼重要</h3><p>表面積 ↔ 熵的關係啟發了「全像原理」：三維空間資訊可能編碼在二維邊界上。溫度的存在意味黑洞會輻射、會蒸發，導向 '+L("黑洞蒸發")+' 與 '+L("黑洞資訊悖論")+'。</p>'},
+
+{id:"霍金輻射", en:"Hawking Radiation", cat:"量子", html:
+  '<div class="callout"><b>一句話：</b>霍金 1974 年提出：因量子效應，黑洞的 '+L("事件視界")+' 附近會<b>持續發出微弱輻射</b>，黑洞並非全黑，而會緩慢損失質量。</div>'+
+  '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4NjAgNDYwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiZzIiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzBlMTIyNiIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzA3MDkxMiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0iaG9sZTIiIGN4PSI1MCUiIGN5PSI1MCUiIHI9IjUwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMwMDAiLz48c3RvcCBvZmZzZXQ9Ijg4JSIgc3RvcC1jb2xvcj0iIzAwMCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzI0MTU0MCIvPgogICAgPC9yYWRpYWxHcmFkaWVudD4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0iaGFsbzIiIGN4PSI1MCUiIGN5PSI1MCUiIHI9IjUwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM3YWE2ZmYiIHN0b3Atb3BhY2l0eT0iLjgiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM3YWE2ZmYiIHN0b3Atb3BhY2l0eT0iMCIvPgogICAgPC9yYWRpYWxHcmFkaWVudD4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9Ijg2MCIgaGVpZ2h0PSI0NjAiIGZpbGw9InVybCgjYmcyKSIvPgoKICA8IS0tIOm7kea0nuWcqOW3piAtLT4KICA8Y2lyY2xlIGN4PSIyMjAiIGN5PSIyMzAiIHI9IjIzMCIgZmlsbD0idXJsKCNoYWxvMikiLz4KICA8Y2lyY2xlIGN4PSIyMjAiIGN5PSIyMzAiIHI9IjE3MCIgZmlsbD0idXJsKCNob2xlMikiIHN0cm9rZT0iIzNhNGE3YSIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8dGV4dCB4PSIxNTAiIHk9IjIzNSIgZmlsbD0iIzdmOTNjOCIgZm9udC1zaXplPSIxNSI+6buR5rSePC90ZXh0PgogIDx0ZXh0IHg9IjE0MCIgeT0iMjU1IiBmaWxsPSIjNWY3M2E4IiBmb250LXNpemU9IjExIj5CbGFjayBIb2xlPC90ZXh0PgoKICA8IS0tIOS6i+S7tuimlueVjOabsue3miAo5Y+z57ejKSAtLT4KICA8cGF0aCBkPSJNIDM5MCA0MCBBIDE3MCAxOTAgMCAwIDAgMzkwIDQyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOWZkMGZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1kYXNoYXJyYXk9IjYgNiIvPgogIDx0ZXh0IHg9IjQwMCIgeT0iNzAiIGZpbGw9IiM5ZmQwZmYiIGZvbnQtc2l6ZT0iMTMiPuS6i+S7tuimlueVjCBFdmVudCBIb3Jpem9uPC90ZXh0PgoKICA8IS0tIOiZm+eykuWtkOWwjSAo5Zyo6KaW55WM5LiKKSAtLT4KICA8IS0tIOWwjSAxIC0tPgogIDxjaXJjbGUgY3g9IjM4OCIgY3k9IjE4MCIgcj0iMTIiIGZpbGw9IiNmZjZiNmIiLz4KICA8dGV4dCB4PSIzODgiIHk9IjE4NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZiIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9IjcwMCI+KzwvdGV4dD4KICA8Y2lyY2xlIGN4PSIzNjAiIGN5PSIxNTAiIHI9IjEyIiBmaWxsPSIjNGRkMmZmIi8+CiAgPHRleHQgeD0iMzYwIiB5PSIxNTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiMwODIwMmIiIGZvbnQtc2l6ZT0iMTUiIGZvbnQtd2VpZ2h0PSI3MDAiPuKIkjwvdGV4dD4KICA8IS0tIOmAg+mAuOeuremgrSAtLT4KICA8cGF0aCBkPSJNIDQwMCAxNzYgQyA1MjAgMTUwIDYyMCAxMzAgNzIwIDEyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZjZjVlIiBzdHJva2Utd2lkdGg9IjIuNSIgbWFya2VyLWVuZD0idXJsKCNhcnIpIi8+CiAgPCEtLSDokL3lhaXnrq3poK0gLS0+CiAgPHBhdGggZD0iTSAzNTIgMTU4IEMgMzAwIDE3NSAyNzAgMTkwIDI1MCAyMDUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzhhYTBkMCIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI2FycjIpIi8+CgogIDxkZWZzPgogICAgPG1hcmtlciBpZD0iYXJyIiBtYXJrZXJXaWR0aD0iMTAiIG1hcmtlckhlaWdodD0iMTAiIHJlZlg9IjciIHJlZlk9IjMiIG9yaWVudD0iYXV0byI+PHBhdGggZD0iTTAsMCBMNywzIEwwLDYgWiIgZmlsbD0iI2ZmY2Y1ZSIvPjwvbWFya2VyPgogICAgPG1hcmtlciBpZD0iYXJyMiIgbWFya2VyV2lkdGg9IjEwIiBtYXJrZXJIZWlnaHQ9IjEwIiByZWZYPSI3IiByZWZZPSIzIiBvcmllbnQ9ImF1dG8iPjxwYXRoIGQ9Ik0wLDAgTDcsMyBMMCw2IFoiIGZpbGw9IiM4YWEwZDAiLz48L21hcmtlcj4KICA8L2RlZnM+CgogIDwhLS0g6YCD6YC457KS5a2QID0g6Ly75bCEICjmraPog73ph48pIC0tPgogIDxjaXJjbGUgY3g9IjcyNSIgY3k9IjExOCIgcj0iMTMiIGZpbGw9IiNmZjZiNmIiLz4KICA8dGV4dCB4PSI3MjUiIHk9IjEyNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZiIgZm9udC1zaXplPSIxNiIgZm9udC13ZWlnaHQ9IjcwMCI+KzwvdGV4dD4KICA8dGV4dCB4PSI2MjAiIHk9Ijk1IiBmaWxsPSIjZmZjZjVlIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIj7pgIPpgLgg4oaSIOmcjemHkei8u+WwhDwvdGV4dD4KICA8dGV4dCB4PSI2MjgiIHk9IjExNCIgZmlsbD0iI2M5YjA2YSIgZm9udC1zaXplPSIxMSI+5bi26LWw5q2j6IO96YeP77yM5oiQ54K66Ly75bCEPC90ZXh0PgoKICA8dGV4dCB4PSIxNTAiIHk9IjMzMCIgZmlsbD0iI2NmZTBmZiIgZm9udC1zaXplPSIxMiI+6JC95YWl55qE57KS5a2QPC90ZXh0PgogIDx0ZXh0IHg9IjE0MCIgeT0iMzQ4IiBmaWxsPSIjOGFhMGQwIiBmb250LXNpemU9IjExIj7mlJzosqDog73ph48g4oaSIOm7kea0nuizqumHj+a4m+WwkTwvdGV4dD4KCiAgPCEtLSDoqqrmmI4gLS0+CiAgPHRleHQgeD0iNDAiIHk9IjQwIiBmaWxsPSIjZmZmZmZmIiBmb250LXNpemU9IjIwIiBmb250LXdlaWdodD0iNzAwIj7pnI3ph5HovLvlsITjgIBIYXdraW5nIFJhZGlhdGlvbjwvdGV4dD4KICA8dGV4dCB4PSIzNjAiIHk9IjQxMCIgZmlsbD0iIzlmYjRlNiIgZm9udC1zaXplPSIxMyI+55yf56m66YeP5a2Q5ryy6JC955Si55Sf6Jmb57KS5a2Q5bCN77yM5LiA5YCL6JC95YWl44CB5LiA5YCL6YCD6YC4PC90ZXh0Pgo8L3N2Zz4K" alt="霍金輻射示意圖">'+
+  '<h3>機制（常見比喻）</h3><ul><li>真空並非空無一物，量子漲落不斷產生成對虛粒子。</li>'+
+  '<li>若這對粒子在視界邊緣生成，一個掉入、一個逃逸。</li>'+
+  '<li>逃逸者帶走能量成為輻射；為守恆，黑洞質量減少。</li></ul>'+
+  '<h3>重點</h3><ul><li>溫度與黑洞質量<b>成反比</b>：黑洞越小、溫度越高、輻射越強。</li>'+
+  '<li>恆星級以上黑洞溫度極低，目前偵測不到。</li>'+
+  '<li>證實了 '+L("黑洞熱力學")+' 中「黑洞有溫度」的預言。</li></ul>'+
+  '<h3>白話理解</h3><p>霍金指出黑洞會「漏」能量。長期累積會讓黑洞逐漸縮小、升溫，最終走向 '+L("黑洞蒸發")+'。它也讓 '+L("黑洞資訊悖論")+' 變得尖銳。</p>'},
+
+{id:"黑洞蒸發", en:"Black Hole Evaporation", cat:"量子", html:
+  '<div class="callout"><b>一句話：</b>因持續發出 '+L("霍金輻射")+'，黑洞會緩慢損失質量、不斷縮小，理論上最終將完全消失。</div>'+
+  '<h3>重點</h3><ul><li>蒸發是<b>加速失控</b>的過程：黑洞越小 → 溫度越高 → 輻射越強 → 縮得越快。</li>'+
+  '<li>蒸發時間極長：恆星級黑洞需約 10⁶⁷ 年，遠超宇宙年齡（約 138 億年）。</li>'+
+  '<li>質量越小蒸發越快；微型黑洞可能瞬間爆發性蒸發完畢。</li>'+
+  '<li>終點仍是謎：黑洞消失後掉進去的資訊會怎樣？ → '+L("黑洞資訊悖論")+'</li></ul>'+
+  '<h3>白話理解</h3><p>黑洞不是永恆的。它像一塊慢慢揮發的冰——只是大到要花遠比宇宙年齡還久的時間才蒸發乾淨。</p>'},
+
+{id:"黑洞資訊悖論", en:"Information Paradox", cat:"量子", html:
+  '<div class="callout"><b>一句話：</b>量子力學要求資訊永不消失，但黑洞經 '+L("霍金輻射")+' 完全 '+L("黑洞蒸發")+' 後，掉進去的資訊似乎徹底不見——這與量子力學根本原則衝突。</div>'+
+  '<h3>矛盾的兩方</h3><ul><li><b>量子力學</b>：資訊必須守恆（么正演化），原則上永遠可回溯。</li>'+
+  '<li><b>黑洞 + 霍金輻射</b>：由 '+L("無毛定理")+' 黑洞只剩三個量；霍金輻射看似純熱輻射、不帶原始資訊。蒸發完，資訊彷彿被摧毀。</li></ul>'+
+  '<h3>主要的可能解答</h3><ul><li><b>資訊藏在輻射裡</b>：霍金輻射以極隱微方式攜帶資訊（多數物理學家傾向此）。</li>'+
+  '<li><b>全像原理 / AdS-CFT</b>：資訊編碼在 '+L("事件視界")+' 的邊界上（源自弦論）。</li>'+
+  '<li><b>島嶼公式與頁曲線</b>：近年計算支持資訊守恆。</li>'+
+  '<li>霍金本人後來也改口，認為資訊並未真正遺失。</li></ul>'+
+  '<h3>為什麼重要</h3><p>它是量子力學與廣義相對論交鋒最激烈的戰場，被視為通往「量子重力」理論的關鍵線索。</p>'}
+];
+
+const EDGES = [
+  ["狹義相對論","廣義相對論"],["廣義相對論","愛因斯坦場方程式"],["愛因斯坦場方程式","史瓦西度規"],
+  ["廣義相對論","逃逸速度與黑洞"],["恆星的演化與死亡","白矮星"],["白矮星","錢德拉塞卡極限"],
+  ["恆星的演化與死亡","中子星"],["錢德拉塞卡極限","中子星"],["中子星","奧本海默極限"],
+  ["奧本海默極限","黑洞的形成"],["錢德拉塞卡極限","奧本海默極限"],
+  ["史瓦西度規","黑洞的形成"],["逃逸速度與黑洞","黑洞的形成"],["黑洞的形成","事件視界"],
+  ["黑洞的形成","奇異點"],["事件視界","無毛定理"],["事件視界","黑洞熱力學"],
+  ["黑洞熱力學","霍金輻射"],["霍金輻射","黑洞蒸發"],["無毛定理","黑洞資訊悖論"],
+  ["霍金輻射","黑洞資訊悖論"],["黑洞蒸發","黑洞資訊悖論"]
+];
+
+/* ============ 每篇補充：重點回顧 / 常見誤解 / 冷知識 / 圖表 ============ */
+const EXTRA = {
+"狹義相對論":{take:["光速不變是唯一的絕對，時間與空間反而是相對的。","高速運動會讓時間變慢、長度收縮。","E=mc² 說明質量本身就是濃縮的能量。"],
+  myth:[{q:"相對論說『一切都是相對的，沒有客觀事實』。",a:"恰恰相反——它建立在『光速與物理定律對所有人都相同』這個絕對基礎上。"}],
+  fact:"GPS 衛星必須同時修正狹義（速度）與廣義（重力）相對論效應，否則定位每天會偏差約 10 公里。"},
+"廣義相對論":{take:["重力＝時空彎曲，不是一種『力』。","質量越大，周圍時空凹陷越深。","已被重力透鏡、重力波與黑洞照片證實。"],
+  myth:[{q:"蘋果落地是因為地球在『拉』它。",a:"廣義相對論說蘋果只是沿著被地球彎曲的時空『走直線』而已。"}],
+  fact:"1919 年愛丁頓在日全食時觀測到星光被太陽偏折，一夜之間讓愛因斯坦成為世界名人。"},
+"逃逸速度與黑洞":{take:["逃逸速度取決於質量與半徑。","當逃逸速度 ≥ 光速，天體就成為黑洞。","牛頓力學的『暗星』是黑洞的粗略前身。"],
+  myth:[{q:"黑洞像吸塵器，會把周圍一切都吸進去。",a:"若把太陽換成同質量黑洞，地球軌道完全不變——只有非常靠近時才逃不掉。"}],
+  fact:"要把地球變成黑洞，得把整顆地球壓縮到一顆彈珠（約 9 mm）大小。",chart:"escape"},
+"恆星的演化與死亡":{take:["恆星是重力 vs 融合壓力的長期拔河。","結局由核心質量決定：白矮星／中子星／黑洞。","越重的恆星壽命越短、死得越壯烈。"],
+  myth:[{q:"越大的恆星活得越久。",a:"相反，質量越大燒得越快，大質量星壽命可能只有數百萬年。"}],
+  fact:"太陽約 50 億年後會膨脹成紅巨星，吞沒水星與金星，最後留下一顆白矮星。"},
+"白矮星":{take:["太陽級恆星的最終殘骸。","靠電子簡併壓力支撐，密度極高。","質量上限即錢德拉塞卡極限（約 1.4 M☉）。"],
+  myth:[{q:"白矮星還在燃燒發光。",a:"它已停止核融合，發光只是餘熱慢慢冷卻，過程長達數十億年。"}],
+  fact:"宇宙至今還沒有任何白矮星冷卻成『黑矮星』——因為時間根本還不夠久。"},
+"錢德拉塞卡極限":{take:["白矮星質量上限約 1.4 倍太陽質量。","超過就塌縮成中子星或引發 Ia 型超新星。","由基本物理常數精確導出。"],
+  myth:[{q:"這只是隨便估的近似值。",a:"它由基本物理常數推導而來，是天文學最重要的臨界質量之一。"}],
+  fact:"Ia 型超新星都在同一質量點爆炸、亮度一致，因此被當作測量宇宙距離的『標準燭光』。"},
+"中子星":{take:["電子被壓進質子形成中子。","一茶匙約十億噸，直徑僅約 20 km。","快速自轉時即觀測為脈衝星。"],
+  myth:[{q:"中子星就是很小的黑洞。",a:"不是，中子星仍有實體表面、會發光；黑洞則有事件視界、無表面。"}],
+  fact:"中子星表面重力約地球的兩千億倍，自轉最快可達每秒約 700 圈。"},
+"奧本海默極限":{take:["中子星質量上限約 2–3 M☉。","超過即塌縮成黑洞。","是中子星版的錢德拉塞卡極限。"],
+  myth:[{q:"這個數值早已被精確確定。",a:"它仍取決於中子星內部物態方程，是目前活躍的研究題目。"}],
+  fact:"2017 年 LIGO 偵測到的中子星合併（GW170817），產物質量正好落在此極限附近，可能生成了一個黑洞。"},
+"黑洞的形成":{take:["核心超過奧本海默極限就無法阻止塌縮。","恆星級來自超新星；超大質量位於星系中心。","黑洞是重力『徹底獲勝』的結果。"],
+  myth:[{q:"黑洞是宇宙中的一個『洞』或通道。",a:"它是一個極度緻密的天體，不是空間破洞（蟲洞是另一回事）。"}],
+  fact:"超大質量黑洞如何在早期宇宙就長到數十億太陽質量，至今仍是未解之謎。"},
+"事件視界":{take:["有去無回的邊界，並非實體表面。","半徑即史瓦西半徑，與質量成正比。","越過它，逃逸需要超過光速。"],
+  myth:[{q:"越過事件視界會立刻被壓扁。",a:"對超大型黑洞，越過視界的當下可能毫無感覺；真正致命的是接近中心的潮汐力。"}],
+  fact:"從外部看，掉入者會被『凍結』在視界上並逐漸變暗變紅，你永遠看不到他真正落入的瞬間。"},
+"奇異點":{take:["密度與時空曲率無限大的中心點。","廣義相對論在此完全失效。","需要量子重力理論才能描述。"],
+  myth:[{q:"奇異點是一個非常小的實體球。",a:"它是理論的破綻點（數值發散），並非一個有大小的物體。"}],
+  fact:"旋轉黑洞（克爾解）的奇異點在理論上是一個『環』，而不是一個點。"},
+"史瓦西度規":{take:["場方程式最早的精確解。","給出史瓦西半徑 r=2GM/c²。","描述不旋轉、不帶電的黑洞。"],
+  myth:[{q:"史瓦西半徑處物理定律會崩壞。",a:"那只是『座標奇異點』，換個座標就能消除；真正的奇異點在中心。"}],
+  fact:"史瓦西在一戰俄國前線的戰壕中算出此解，數月後便因病去世。"},
+"愛因斯坦場方程式":{take:["把重力翻譯成幾何。","左邊幾何＝右邊的物質與能量。","黑洞、重力波、宇宙膨脹都是它的解。"],
+  myth:[{q:"愛因斯坦一開始就相信黑洞存在。",a:"他其實對黑洞與奇異點抱持懷疑，一生都不太接受它們是真實天體。"}],
+  fact:"愛因斯坦為了讓宇宙保持靜態而加入宇宙常數 Λ，後稱『一生最大的錯誤』——但暗能量讓 Λ 又復活了。",
+  deep:{t:"為什麼這麼難解",h:"它其實是 10 條互相耦合的非線性偏微分方程。只有在高度對稱（如球對稱、均勻宇宙）的假設下才寫得出精確解，其餘幾乎都得靠超級電腦數值模擬。"}},
+"無毛定理":{take:["黑洞只由質量、電荷、自旋三者決定。","其他資訊在外部完全『看不到』。","與資訊悖論直接衝突。"],
+  myth:[{q:"黑洞真的完全沒有任何其他特徵。",a:"『無毛』是經典近似；量子層面可能存在攜帶資訊的『軟毛』(soft hair)。"}],
+  fact:"『無毛』(no hair) 這個說法當年讓一些期刊很為難，因為在某些語言直譯後有不雅聯想。"},
+"黑洞熱力學":{take:["黑洞竟然有溫度與熵。","熵正比於視界的『表面積』而非體積。","啟發了『全像原理』。"],
+  myth:[{q:"黑洞是絕對零度、毫無能量的死物。",a:"它有真實溫度、會輻射（雖極微弱），是不折不扣的熱力學物體。"}],
+  fact:"貝根斯坦提出黑洞有熵時，連霍金起初都反對；後來霍金的計算反而證明了它。"},
+"霍金輻射":{take:["黑洞會發出微弱的量子輻射。","溫度與質量成反比（越小越熱）。","讓黑洞得以緩慢損失質量。"],
+  myth:[{q:"逃出來的粒子是從黑洞『內部』跑出來的。",a:"沒有東西能從視界內逃出；輻射來自視界『外側』的量子場效應。"}],
+  fact:"一個太陽質量黑洞的霍金溫度僅約六千萬分之一 K，遠低於宇宙微波背景（2.7 K），所以它現在其實在『吸熱長大』而非蒸發。",chart:"tempmass"},
+"黑洞蒸發":{take:["黑洞因霍金輻射逐漸縮小。","越小蒸發越快，最後可能爆發。","恆星級黑洞需約 10⁶⁷ 年才蒸發完。"],
+  myth:[{q:"黑洞會在不久的將來蒸發消失。",a:"時間尺度遠遠超過宇宙年齡；只有假想的微型黑洞才會快速蒸發。"}],
+  fact:"若微型黑洞存在，其最後 0.1 秒可能釋放相當於數百萬顆核彈的能量。"},
+"黑洞資訊悖論":{take:["量子力學要求資訊永不消失。","但黑洞蒸發似乎摧毀了資訊。","是通往量子重力的關鍵線索。"],
+  myth:[{q:"這個悖論已經被完全解決了。",a:"近年（頁曲線、島嶼公式）有重大進展支持資訊守恆，但完整機制仍未定論。"}],
+  fact:"霍金曾與物理學家普雷斯基爾打賭『資訊會消失』；2004 年霍金認輸，送了對方一本棒球百科全書。"}
+};
+
+/* ============ 真實黑洞案例 ============ */
+const CASES = [
+{name:"人馬座 A*", en:"Sagittarius A* (Sgr A*)", type:"超大質量黑洞", color:"#ffb03a", badge:"銀河系中心",
+  rows:[["質量","約 430 萬 M☉"],["距離","約 27,000 光年"],["位置","銀河系正中心"],["首次成像","2022 年 · EHT"],["視界直徑","約 2,400 萬公里"]],
+  desc:"我們自家銀河系正中心的巨獸。科學家長年追蹤其周圍恆星（如 S2）的軌道，反推出它的質量；2022 年事件視界望遠鏡拍下了它的『陰影』。"},
+{name:"M87*", en:"Messier 87* (Virgo A)", type:"超大質量黑洞", color:"#ff6b6b", badge:"史上第一張黑洞照",
+  rows:[["質量","約 65 億 M☉"],["距離","約 5,500 萬光年"],["位置","室女座 M87 星系"],["首次成像","2019 年 · EHT"],["特徵","噴出約 5,000 光年的相對論性噴流"]],
+  desc:"人類史上第一張黑洞影像的主角。2019 年公布的那張橘紅色『甜甜圈』就是它的事件視界陰影，體積大到整個太陽系放進去都綽綽有餘。"},
+{name:"天鵝座 X-1", en:"Cygnus X-1", type:"恆星級黑洞", color:"#a78bfa", badge:"第一個公認的黑洞",
+  rows:[["質量","約 21 M☉"],["距離","約 7,000 光年"],["位置","天鵝座 · X 射線雙星"],["發現","1964 年"],["特徵","從藍超巨星伴星吸積、發出強 X 射線"]],
+  desc:"1964 年發現的強 X 射線源，是第一個被廣泛認定的黑洞。它正從一顆藍超巨星伴星吸取物質。霍金曾和索恩打賭它『不是』黑洞——後來認輸了。"}
+];
+
+/* ============ 建立側邊欄 ============ */
+const NById = Object.fromEntries(NOTES.map(n=>[n.id,n]));
+const sidebar = document.getElementById('sidebar');
+function catColor(c){return CATS[c].raw;}
+function buildSidebar(filter){
+  filter=(filter||'').trim();
+  let html='<div class="navlink" data-id="__home"><span class="dot" style="background:var(--accent)"></span>總覽首頁</div>';
+  for(const key of Object.keys(CATS)){
+    const items=NOTES.filter(n=>n.cat===key && (!filter || n.id.includes(filter) || n.en.toLowerCase().includes(filter.toLowerCase())));
+    if(!items.length) continue;
+    html+='<div class="cat">'+CATS[key].name+'</div>';
+    for(const n of items){
+      html+='<div class="navlink" data-id="'+n.id+'"><span class="dot" style="background:'+catColor(n.cat)+'"></span>'+n.id+'<small>'+n.en+'</small></div>';
+    }
+  }
+  sidebar.innerHTML=html;
+}
+
+/* ============ 渲染筆記 ============ */
+const main=document.getElementById('main');
+let current=null;
+function neighborsOf(id){
+  const s=new Set();
+  EDGES.forEach(([a,b])=>{if(a===id)s.add(b);if(b===id)s.add(a);});
+  return [...s];
+}
+function renderHome(){
+  current='__home';
+  main.innerHTML=
+   '<div class="note"><div class="hero">'+
+   '<div class="bh" style="--s:160px"><div class="disk"></div><div class="core"></div></div>'+
+   '<div class="big">黑洞知識庫</div>'+
+   '<p class="sub">整理自 YouTube《一小時略懂黑洞》，以「第二大腦」方式把 18 個知識點拆成互相連結的筆記。左側點選主題，或到上方切換「關係圖譜／真實案例／互動模擬」。</p>'+
+   '<div class="stats"><div class="stat"><b>18</b><span>知識點</span></div>'+
+   '<div class="stat"><b>22</b><span>關聯連結</span></div>'+
+   '<div class="stat"><b>3</b><span>真實案例</span></div>'+
+   '<div class="stat"><b>4</b><span>主題分區</span></div></div></div>'+
+   '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4NjAgNDcwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiZzQiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzBlMTIyNiIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzA3MDkxMiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0ibGluZTQiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIwIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzRkZDJmZiIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2ZmYjAzYSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9Ijg2MCIgaGVpZ2h0PSI0NzAiIGZpbGw9InVybCgjYmc0KSIvPgogIDx0ZXh0IHg9IjQwIiB5PSI0NiIgZmlsbD0iI2ZmZmZmZiIgZm9udC1zaXplPSIyMCIgZm9udC13ZWlnaHQ9IjcwMCI+6buR5rSe54mp55CG55m85bGV5pmC6ZaT6Lu444CAQSBUaW1lbGluZSBvZiBCbGFjayBIb2xlIFBoeXNpY3M8L3RleHQ+CgogIDwhLS0g5Li76Lu4IC0tPgogIDxsaW5lIHgxPSI3MCIgeTE9IjI0MCIgeDI9IjgwMCIgeTI9IjI0MCIgc3Ryb2tlPSJ1cmwoI2xpbmU0KSIgc3Ryb2tlLXdpZHRoPSI0Ii8+CgogIDwhLS0g56+A6bueIC0tPgogIDxnIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiNlYWYwZmYiPgogICAgPCEtLSAxOTE1IC0tPgogICAgPGNpcmNsZSBjeD0iMTIwIiBjeT0iMjQwIiByPSI3IiBmaWxsPSIjNGRkMmZmIi8+CiAgICA8bGluZSB4MT0iMTIwIiB5MT0iMjQwIiB4Mj0iMTIwIiB5Mj0iMTUwIiBzdHJva2U9IiMzYTRhN2EiLz4KICAgIDx0ZXh0IHg9IjEyMCIgeT0iMTQwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjNGRkMmZmIj4xOTE1PC90ZXh0PgogICAgPHRleHQgeD0iMTIwIiB5PSIxMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiPuW7o+e+qeebuOWwjeirljwvdGV4dD4KICAgIDx0ZXh0IHg9IjEyMCIgeT0iMTA0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjOWZiNGU2Ij7mhJvlm6Dmlq/lnaY8L3RleHQ+CgogICAgPCEtLSAxOTE2IC0tPgogICAgPGNpcmNsZSBjeD0iMjUwIiBjeT0iMjQwIiByPSI3IiBmaWxsPSIjNmFkMGZmIi8+CiAgICA8bGluZSB4MT0iMjUwIiB5MT0iMjQwIiB4Mj0iMjUwIiB5Mj0iMzAwIiBzdHJva2U9IiMzYTRhN2EiLz4KICAgIDx0ZXh0IHg9IjI1MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjNmFkMGZmIj4xOTE2PC90ZXh0PgogICAgPHRleHQgeD0iMjUwIiB5PSIzNDIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiPuWPsueTpuilv+W6puimjzwvdGV4dD4KICAgIDx0ZXh0IHg9IjI1MCIgeT0iMzU4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjOWZiNGU2Ij7pppblgIvpu5HmtJ7op6M8L3RleHQ+CgogICAgPCEtLSAxOTMwcyAtLT4KICAgIDxjaXJjbGUgY3g9IjM3MCIgY3k9IjI0MCIgcj0iNyIgZmlsbD0iIzhhYzZmMCIvPgogICAgPGxpbmUgeDE9IjM3MCIgeTE9IjI0MCIgeDI9IjM3MCIgeTI9IjE1MCIgc3Ryb2tlPSIjM2E0YTdhIi8+CiAgICA8dGV4dCB4PSIzNzAiIHk9IjE0MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzhhYzZmMCI+MTkzMHM8L3RleHQ+CiAgICA8dGV4dCB4PSIzNzAiIHk9IjEyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiI+6Yyi5b635ouJ5aGe5Y2h5qW16ZmQPC90ZXh0PgogICAgPHRleHQgeD0iMzcwIiB5PSIxMDQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiM5ZmI0ZTYiPueZveefruaYn+S4iumZkDwvdGV4dD4KCiAgICA8IS0tIDE5NjBzIC0tPgogICAgPGNpcmNsZSBjeD0iNDkwIiBjeT0iMjQwIiByPSI3IiBmaWxsPSIjYjBiOGUwIi8+CiAgICA8bGluZSB4MT0iNDkwIiB5MT0iMjQwIiB4Mj0iNDkwIiB5Mj0iMzAwIiBzdHJva2U9IiMzYTRhN2EiLz4KICAgIDx0ZXh0IHg9IjQ5MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjYjBiOGUwIj4xOTYwczwvdGV4dD4KICAgIDx0ZXh0IHg9IjQ5MCIgeT0iMzQyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIj7lpYfnlbDpu57lrprnkIY8L3RleHQ+CiAgICA8dGV4dCB4PSI0OTAiIHk9IjM1OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzlmYjRlNiI+5r2Y5rSb5pav44O75oOg5YuS5ZG95ZCNPC90ZXh0PgoKICAgIDwhLS0gMTk3NCAtLT4KICAgIDxjaXJjbGUgY3g9IjYxMCIgY3k9IjI0MCIgcj0iNyIgZmlsbD0iI2U2YjA2YSIvPgogICAgPGxpbmUgeDE9IjYxMCIgeTE9IjI0MCIgeDI9IjYxMCIgeTI9IjE1MCIgc3Ryb2tlPSIjM2E0YTdhIi8+CiAgICA8dGV4dCB4PSI2MTAiIHk9IjE0MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2U2YjA2YSI+MTk3NDwvdGV4dD4KICAgIDx0ZXh0IHg9IjYxMCIgeT0iMTIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIj7pnI3ph5HovLvlsIQ8L3RleHQ+CiAgICA8dGV4dCB4PSI2MTAiIHk9IjEwNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzlmYjRlNiI+6buR5rSe5pyD6JK455m8PC90ZXh0PgoKICAgIDwhLS0gMjAxNS8yMDE5IC0tPgogICAgPGNpcmNsZSBjeD0iNzQwIiBjeT0iMjQwIiByPSI3IiBmaWxsPSIjZmZiMDNhIi8+CiAgICA8bGluZSB4MT0iNzQwIiB5MT0iMjQwIiB4Mj0iNzQwIiB5Mj0iMzAwIiBzdHJva2U9IiMzYTRhN2EiLz4KICAgIDx0ZXh0IHg9Ijc0MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZiMDNhIj4yMDE1IC8gMjAxOTwvdGV4dD4KICAgIDx0ZXh0IHg9Ijc0MCIgeT0iMzQyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIj7ph43lipvms6Ljg7vpppblvLXpu5HmtJ7nhac8L3RleHQ+CiAgICA8dGV4dCB4PSI3NDAiIHk9IjM1OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzlmYjRlNiI+TElHT+ODu+S6i+S7tuimlueVjOacm+mBoOmPoTwvdGV4dD4KICA8L2c+CgogIDx0ZXh0IHg9IjcwIiB5PSI0MzAiIGZpbGw9IiM1ZjczYTgiIGZvbnQtc2l6ZT0iMTEiPuW+nueQhuirlumgkOiogOWIsOebtOaOpeingOa4rO+8jOi3qOi2iuS4gOS4lue0gDwvdGV4dD4KPC9zdmc+Cg==" alt="黑洞研究時間軸">'+
+   '<h3>建議閱讀路徑</h3>'+
+   '<div class="pathrow">'+Object.keys(CATS).map((key,i)=>{const first=NOTES.find(n=>n.cat===key).id;
+     return (i>0?'<span class="arrow">→</span>':'')+'<span class="stage" data-id="'+first+'"><span class="d" style="background:'+CATS[key].raw+'"></span>'+CATS[key].name+'</span>';}).join('')+'</div>'+
+   '<p style="color:var(--muted);font-size:14px">點上方階段可直接跳到該分區第一篇；或從下方各主題任選。建議從 '+L("狹義相對論")+' 開始，一路讀到 '+L("黑洞資訊悖論")+' 最順。</p>'+
+   Object.keys(CATS).map(key=>{const items=NOTES.filter(n=>n.cat===key);
+     return '<div class="catgroup"><div class="cl" style="color:'+CATS[key].raw+'"><span class="d" style="background:'+CATS[key].raw+'"></span>'+CATS[key].name+'</div><div class="chips">'+items.map(n=>'<span class="chip" data-id="'+n.id+'">'+n.id+'</span>').join('')+'</div></div>';}).join('')+
+   '</div>';
+  syncActive();
+}
+function renderNote(id){
+  const n=NById[id]; if(!n){renderHome();return;}
+  current=id;
+  const idx=NOTES.findIndex(x=>x.id===id);
+  const prev=NOTES[idx-1], next=NOTES[idx+1];
+  const nb=neighborsOf(id);
+  let html='<div class="note"><div class="crumbs"><span class="tag" style="background:'+catColor(n.cat)+'33;color:'+catColor(n.cat)+'">'+CATS[n.cat].name+'</span></div>'+
+    '<h2 class="title">'+n.id+'</h2><div class="en">'+n.en+'</div>'+n.html;
+  const ex=EXTRA[id];
+  if(ex){
+    if(ex.chart){html+='<div class="chartbox" id="chartbox"><canvas id="chart" width="760" height="300" style="width:100%;height:auto"></canvas></div>';}
+    if(ex.take){html+='<div class="kbox"><div class="kt">🎯 重點回顧</div><ul>'+ex.take.map(t=>'<li>'+t+'</li>').join('')+'</ul></div>';}
+    if(ex.myth){html+='<details class="collap myth"><summary>💡 常見誤解</summary><div class="body">'+
+      ex.myth.map(m=>'<div class="myth-row"><span class="x">✗</span><div>'+m.q+'</div></div><div class="myth-row"><span class="o">✓</span><div>'+m.a+'</div></div>').join('<hr style="border:none;border-top:1px solid var(--line);margin:6px 0">')+'</div></details>';}
+    if(ex.fact){html+='<details class="collap fact"><summary>🔭 冷知識</summary><div class="body"><p>'+ex.fact+'</p></div></details>';}
+    if(ex.deep){html+='<details class="collap math"><summary>📐 深入一點：'+ex.deep.t+'</summary><div class="body"><p>'+ex.deep.h+'</p></div></details>';}
+  }
+  if(nb.length){
+    html+='<div class="related"><div class="cat">關聯概念</div><div class="chips">'+
+      nb.map(x=>'<span class="chip" data-id="'+x+'">'+x+'</span>').join('')+'</div></div>';
+  }
+  html+='<div class="nav-btns">'+
+    (prev?'<button data-id="'+prev.id+'"><small>← 上一篇</small>'+prev.id+'</button>':'<button disabled style="opacity:.3"><small>—</small>已是第一篇</button>')+
+    (next?'<button data-id="'+next.id+'" style="text-align:right"><small>下一篇 →</small>'+next.id+'</button>':'<button disabled style="opacity:.3;text-align:right"><small>—</small>已是最後一篇</button>')+
+    '</div></div>';
+  main.innerHTML=html;
+  main.scrollTop=0;
+  if(ex&&ex.chart)drawChart(ex.chart);
+  syncActive();
+}
+function open(id){ if(id==='__home')renderHome(); else renderNote(id); showNotes(); }
+function syncActive(){
+  document.querySelectorAll('.navlink').forEach(el=>el.classList.toggle('active',el.dataset.id===current));
+}
+
+/* 事件委派：所有 data-id 點擊 */
+document.body.addEventListener('click',e=>{
+  const t=e.target.closest('[data-id]');
+  if(t){open(t.dataset.id);}
+});
+
+/* ============ 搜尋 ============ */
+const search=document.getElementById('search');
+search.addEventListener('input',()=>buildSidebar(search.value));
+search.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){
+    const f=search.value.trim().toLowerCase();
+    const hit=NOTES.find(n=>n.id.includes(search.value.trim())||n.en.toLowerCase().includes(f));
+    if(hit)open(hit.id);
+  }
+});
+
+/* ============ 分頁切換 ============ */
+const tabNotes=document.getElementById('tabNotes'), tabGraph=document.getElementById('tabGraph');
+const tabCases=document.getElementById('tabCases'), tabSim=document.getElementById('tabSim');
+const graphView=document.getElementById('graphView');
+const casesView=document.getElementById('casesView'), simView=document.getElementById('simView');
+const allTabs=[tabNotes,tabGraph,tabCases,tabSim];
+function setTab(btn){allTabs.forEach(b=>b.classList.toggle('active',b===btn));}
+function hideAll(){main.style.display='none';graphView.style.display='none';casesView.style.display='none';simView.style.display='none';}
+function showNotes(){setTab(tabNotes);hideAll();main.style.display='';}
+function showGraph(){setTab(tabGraph);hideAll();graphView.style.display='block';startGraph();}
+function showCases(){setTab(tabCases);hideAll();casesView.style.display='block';renderCases();}
+function showSim(){setTab(tabSim);hideAll();simView.style.display='block';startSim();}
+tabNotes.onclick=showNotes; tabGraph.onclick=showGraph; tabCases.onclick=showCases; tabSim.onclick=showSim;
+
+/* ============ 真實案例頁 ============ */
+let casesBuilt=false;
+function renderCases(){
+  if(casesBuilt)return; casesBuilt=true;
+  let html='<div class="cases"><h2 class="title">🌌 真實黑洞案例</h2>'+
+    '<p class="en">從理論到觀測——這些是人類真正「看見」或確認的黑洞</p>'+
+    '<div class="cards">';
+  CASES.forEach(c=>{
+    html+='<div class="card"><div class="top" style="background:radial-gradient(circle at 50% 60%,'+c.color+'55,#070912)">'+
+      '<div class="bh" style="--s:96px"><div class="disk" style="animation-duration:'+(4+Math.random()*3).toFixed(1)+'s"></div><div class="core"></div></div>'+
+      '<div class="badge">'+c.badge+'</div></div>'+
+      '<div class="body"><h4>'+c.name+'</h4><div class="sub">'+c.en+' · '+c.type+'</div>'+
+      c.rows.map(r=>'<div class="row"><span>'+r[0]+'</span><span>'+r[1]+'</span></div>').join('')+
+      '<p style="font-size:13.5px;color:var(--muted);margin:12px 0 0">'+c.desc+'</p></div></div>';
+  });
+  html+='</div>'+
+    '<div class="chartbox"><div class="ct">質量尺標（對數）</div><div class="cd">從太陽到超大質量黑洞，跨越 10 個數量級</div>'+
+    '<canvas id="massChart" width="900" height="240" style="width:100%;height:auto"></canvas></div>'+
+    '<p style="color:var(--dim);font-size:12px">資料：EHT、LIGO 與相關天文觀測（2019–2022）。數值為約略值。</p></div>';
+  casesView.innerHTML=html;
+  drawMassScale();
+}
+
+/* ============ 圖表 ============ */
+function drawChart(kind){
+  const cv=document.getElementById('chart'); if(!cv)return;
+  const ctx=cv.getContext('2d'),W=cv.width,H=cv.height,P=44;
+  ctx.clearRect(0,0,W,H);
+  ctx.strokeStyle='#28305c';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(P,10);ctx.lineTo(P,H-P);ctx.lineTo(W-10,H-P);ctx.stroke();
+  ctx.fillStyle='#9fb4e6';ctx.font='12px sans-serif';
+  if(kind==='tempmass'){
+    document.getElementById('chartbox').insertAdjacentHTML('afterbegin','<div class="ct">霍金溫度 vs 黑洞質量</div><div class="cd">質量越大，溫度越低（T ∝ 1/M）——大黑洞其實冰冷無比</div>');
+    ctx.save();ctx.translate(14,H/2);ctx.rotate(-Math.PI/2);ctx.textAlign='center';ctx.fillText('溫度（越上越熱）',0,0);ctx.restore();
+    ctx.textAlign='center';ctx.fillText('質量（越右越重）→',W/2,H-14);
+    ctx.strokeStyle='#ff6b6b';ctx.lineWidth=2.5;ctx.beginPath();
+    for(let i=0;i<=100;i++){const x=P+(W-P-10)*i/100;const m=0.04+i/100*3;const t=1/m;
+      const y=(H-P)-(H-P-16)*Math.min(1,t/25);if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}
+    ctx.stroke();
+    ctx.fillStyle='#ffcf5e';ctx.textAlign='left';ctx.fillText('微型黑洞：又小又燙 🔥',P+8,34);
+    ctx.textAlign='right';ctx.fillText('恆星/超大質量黑洞：巨大又冰冷 ❄',W-16,H-P-10);
+  } else if(kind==='escape'){
+    document.getElementById('chartbox').insertAdjacentHTML('afterbegin','<div class="ct">逃逸速度比較</div><div class="cd">達到光速（約 300,000 km/s）就成為黑洞</div>');
+    const data=[['地球',11.2,'#4dd2ff'],['木星',59.5,'#4dd2ff'],['太陽',618,'#ffb03a'],['白矮星',6000,'#ffb03a'],['中子星',150000,'#a78bfa'],['黑洞視界',300000,'#ff6b6b']];
+    const max=300000;const bw=(W-P-20)/data.length;
+    data.forEach((d,i)=>{const h=(H-P-20)*Math.pow(d[1]/max,0.28);const x=P+10+i*bw;const y=(H-P)-h;
+      ctx.fillStyle=d[2];ctx.fillRect(x,y,bw*0.6,h);
+      ctx.fillStyle='#eaf0ff';ctx.textAlign='center';ctx.font='11px sans-serif';
+      ctx.fillText(d[0],x+bw*0.3,H-P+16);
+      ctx.fillStyle='#9fb4e6';ctx.fillText(d[1]>=1000?(d[1]/1000)+'k':d[1],x+bw*0.3,y-6);});
+    ctx.fillStyle='#9fb4e6';ctx.textAlign='left';ctx.font='12px sans-serif';ctx.fillText('km/s（縮放後）',P,20);
+  }
+}
+function drawMassScale(){
+  const cv=document.getElementById('massChart'); if(!cv)return;
+  const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;
+  ctx.clearRect(0,0,W,H);
+  const items=[['太陽',1,'#ffd257'],['中子星',2,'#a78bfa'],['天鵝座 X-1',21,'#a78bfa'],
+    ['人馬座 A*',4.3e6,'#ffb03a'],['M87*',6.5e9,'#ff6b6b']];
+  const minL=0,maxL=10; const x0=90,x1=W-30,y=H/2;
+  ctx.strokeStyle='#28305c';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x0,y);ctx.lineTo(x1,y);ctx.stroke();
+  for(let e=0;e<=10;e+=2){const x=x0+(x1-x0)*(e-minL)/(maxL-minL);
+    ctx.strokeStyle='#1e2547';ctx.beginPath();ctx.moveTo(x,y-6);ctx.lineTo(x,y+6);ctx.stroke();
+    ctx.fillStyle='#6f7fb0';ctx.font='11px sans-serif';ctx.textAlign='center';ctx.fillText('10^'+e,x,y+24);}
+  ctx.fillStyle='#9fb4e6';ctx.textAlign='left';ctx.font='12px sans-serif';ctx.fillText('太陽質量（M☉，對數刻度）',x0,H-10);
+  items.forEach((it,i)=>{const lg=Math.log10(it[1]);const x=x0+(x1-x0)*(lg-minL)/(maxL-minL);
+    const up=i%2===0; const yy=up?y-38:y+40; const r=6+Math.min(10,lg);
+    ctx.fillStyle=it[2];ctx.beginPath();ctx.arc(x,y,Math.max(4,r*0.5),0,7);ctx.fill();
+    ctx.strokeStyle=it[2];ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,yy+(up?10:-10));ctx.stroke();
+    ctx.fillStyle='#eaf0ff';ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.fillText(it[0],x,yy);});
+}
+
+/* ============ 互動模擬：粒子落入黑洞 ============ */
+let simState={raf:null,built:false,particles:[],mass:30,cx:0,cy:0,heat:0,flashes:[]};
+function startSim(){
+  if(!simState.built){
+    simView.innerHTML='<div id="simWrap"><h2 class="title">🌀 互動模擬</h2>'+
+      '<p class="en">一束束光線被黑洞的重力彎折、旋入。拖曳滑桿改變黑洞質量，看發亮的事件視界與光子環如何變化。點畫面可射入新光束。</p>'+
+      '<canvas id="simCanvas"></canvas>'+
+      '<div class="controls">'+
+      '<label>黑洞質量 <span class="val" id="mval">30</span> M☉<input type="range" id="mass" min="5" max="100" value="30"></label>'+
+      '<label>光束數量 <span class="val" id="pval">260</span><input type="range" id="pcount" min="60" max="700" value="260"></label>'+
+      '<button id="resetSim">↻ 重設光束</button>'+
+      '<span style="color:var(--dim);font-size:12px">中央黑圓＝事件視界；外圈亮環＝光子環</span>'+
+      '</div>'+
+      '<div class="kbox"><div class="kt">🔎 觀察重點</div><ul>'+
+      '<li>光束一旦進入光子環範圍就註定被捕獲，螺旋墜入、無法再逃出——只有遠遠掠過的才能離開。</li>'+
+      '<li>質量越大，事件視界越大，光在更遠處就被吞沒。</li>'+
+      '<li>越多光被吞進去，事件視界與外圈光暈就越亮（吸積發光）；停止餵入則慢慢冷卻變暗。</li></ul></div></div>';
+    const cv=document.getElementById('simCanvas');
+    const mass=document.getElementById('mass'),pc=document.getElementById('pcount');
+    mass.oninput=()=>{simState.mass=+mass.value;document.getElementById('mval').textContent=mass.value;};
+    pc.oninput=()=>{document.getElementById('pval').textContent=pc.value;seedSim(+pc.value);};
+    document.getElementById('resetSim').onclick=()=>seedSim(+pc.value);
+    cv.addEventListener('click',e=>{const r=cv.getBoundingClientRect();
+      for(let k=0;k<12;k++)simState.particles.push(mkParticle(cv.width,cv.height,(e.clientX-r.left)*cv.width/r.width,(e.clientY-r.top)*cv.height/r.height));});
+    simState.built=true;
+    seedSim(260);
+    window.addEventListener('resize',resizeSim);
+  }
+  resizeSim(); cancelAnimationFrame(simState.raf); loopSim();
+}
+function resizeSim(){const cv=document.getElementById('simCanvas');if(!cv)return;
+  cv.width=cv.clientWidth;cv.height=460;simState.cx=cv.width/2;simState.cy=cv.height/2;}
+const LIGHT_COLS=[[190,224,255],[159,208,255],[122,166,255],[255,240,200],[255,255,255]];
+function mkParticle(W,H,x,y){
+  if(x===undefined){const edge=Math.floor(Math.random()*4);
+    x=edge===0?-10:edge===1?W+10:Math.random()*W; y=edge===2?-10:edge===3?H+10:Math.random()*H;}
+  const cx=W/2,cy=H/2;
+  // 瞄準中心並加一點切線偏移，讓光束彎折成弧、旋入（而非直直撞進去）
+  const ang=Math.atan2(cy-y,cx-x)+(Math.random()<.5?1:-1)*(0.12+Math.random()*0.28);
+  const sp=1.5+Math.random()*1.1; // 光束速度較快、較一致
+  const col=LIGHT_COLS[Math.floor(Math.random()*LIGHT_COLS.length)];
+  return {x,y,px:x,py:y,vx:Math.cos(ang)*sp,vy:Math.sin(ang)*sp,col};
+}
+function seedSim(n){const cv=document.getElementById('simCanvas');if(!cv)return;
+  simState.particles=[];for(let i=0;i<n;i++)simState.particles.push(mkParticle(cv.width||900,cv.height||460));}
+function loopSim(){
+  const cv=document.getElementById('simCanvas');if(!cv){return;}
+  const ctx=cv.getContext('2d'),W=cv.width,H=cv.height,cx=simState.cx,cy=simState.cy;
+  const rs=8+simState.mass*0.7;      // 事件視界半徑
+  const rph=rs*1.5;                  // 光子環（捕獲半徑）
+  const rcap=rph;                    // 進入此範圍就註定被捕獲
+
+  // 動態殘影：不清空，改鋪半透明底色 → 光束留下發光的軌跡
+  ctx.globalCompositeOperation='source-over';
+  ctx.fillStyle='rgba(7,9,18,0.22)';ctx.fillRect(0,0,W,H);
+
+  // 以加亮模式畫光，讓重疊處更亮
+  ctx.globalCompositeOperation='lighter';
+
+  // 吸積光暈（暖色，亮度隨吸收量 heat 增強）
+  const heat=simState.heat;
+  let ag=ctx.createRadialGradient(cx,cy,rs*0.9,cx,cy,rph*2.6);
+  ag.addColorStop(0,'rgba(255,150,60,'+(0.10+heat*0.28)+')');
+  ag.addColorStop(0.5,'rgba(255,110,80,'+(0.05+heat*0.16)+')');
+  ag.addColorStop(1,'rgba(120,160,255,0)');
+  ctx.fillStyle=ag;ctx.beginPath();ctx.arc(cx,cy,rph*2.6,0,7);ctx.fill();
+
+  let absorbedThisFrame=0;
+  // 光束
+  simState.particles.forEach(p=>{
+    const dx=cx-p.x,dy=cy-p.y,d2=dx*dx+dy*dy,d=Math.sqrt(d2)+.01;
+    // 重力（較強）
+    const f=190*simState.mass/d2;
+    p.vx+=dx/d*f*0.05; p.vy+=dy/d*f*0.05;
+    // 關鍵：靠近時能量耗散 → 軌道衰減、螺旋墜入，無法再逃出（越近耗散越強）
+    if(d<rcap*2.4){
+      const k=0.90+0.09*Math.min(1,d/(rcap*2.4)); // d 越小 k 越接近 0.90
+      p.vx*=k; p.vy*=k;
+    }
+    const v=Math.hypot(p.vx,p.vy),vmax=7; if(v>vmax){p.vx*=vmax/v;p.vy*=vmax/v;}
+    p.px=p.x; p.py=p.y; p.x+=p.vx; p.y+=p.vy;
+    // 越過事件視界 → 被吞沒、記一次吸收（觸發發亮）
+    if(d<rs){absorbedThisFrame++;simState.flashes.push({a:Math.atan2(p.py-cy,p.px-cx),life:1});Object.assign(p,mkParticle(W,H));return;}
+    if(p.x<-60||p.x>W+60||p.y<-60||p.y>H+60){Object.assign(p,mkParticle(W,H));return;}
+    // 越靠近越亮、越白
+    const glow=Math.min(1,rph*1.3/d);
+    const[r,g,b]=p.col;
+    const a=0.35+glow*0.6, lw=0.7+glow*1.8;
+    ctx.strokeStyle='rgba('+r+','+g+','+b+','+a+')';
+    ctx.lineWidth=lw;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(p.px,p.py);ctx.lineTo(p.x,p.y);ctx.stroke();
+    ctx.fillStyle='rgba('+r+','+g+','+b+','+(a*0.9)+')';
+    ctx.beginPath();ctx.arc(p.x,p.y,lw*0.7,0,7);ctx.fill();
+  });
+
+  // 更新「吸收熱度」：有光被吞就升溫，否則緩慢冷卻
+  simState.heat=Math.min(1, simState.heat*0.94 + absorbedThisFrame*0.05);
+
+  // 光子環：明亮發光的細環（亮度隨 heat 增強）
+  for(let i=0;i<3;i++){
+    ctx.strokeStyle='rgba(255,'+(200-i*30)+','+(150-i*40)+','+((0.45+heat*0.4)-i*0.13)+')';
+    ctx.lineWidth=(3-i)*2.2;ctx.beginPath();ctx.arc(cx,cy,rph,0,7);ctx.stroke();
+  }
+
+  // 吸收瞬間的亮閃（沿視界邊緣）
+  simState.flashes=simState.flashes.filter(fl=>{
+    fl.life-=0.05; if(fl.life<=0)return false;
+    const fx=cx+Math.cos(fl.a)*rs, fy=cy+Math.sin(fl.a)*rs;
+    const fg=ctx.createRadialGradient(fx,fy,0,fx,fy,rs*0.9);
+    fg.addColorStop(0,'rgba(255,240,200,'+(fl.life*0.9)+')');
+    fg.addColorStop(1,'rgba(255,200,120,0)');
+    ctx.fillStyle=fg;ctx.beginPath();ctx.arc(fx,fy,rs*0.9,0,7);ctx.fill();
+    return true;
+  });
+
+  // 回到正常模式畫實心事件視界（蓋住中央）
+  ctx.globalCompositeOperation='source-over';
+  // 視界外圈光暈（隨 heat 變亮變大）
+  const gr=rs*(1.22+heat*0.35);
+  let hg=ctx.createRadialGradient(cx,cy,rs*0.55,cx,cy,gr);
+  hg.addColorStop(0,'#000');hg.addColorStop(0.66,'#000');
+  hg.addColorStop(1,'rgba(255,'+(180+heat*50)+','+(90+heat*90)+','+(0.5+heat*0.45)+')');
+  ctx.fillStyle=hg;ctx.beginPath();ctx.arc(cx,cy,gr,0,7);ctx.fill();
+  // 純黑事件視界
+  ctx.fillStyle='#000';ctx.beginPath();ctx.arc(cx,cy,rs,0,7);ctx.fill();
+  // 視界亮邊（越多光被吞越白越亮）
+  ctx.strokeStyle='rgba(255,'+(224).toString()+','+Math.round(170+heat*80)+','+(0.9)+')';
+  ctx.lineWidth=2+heat*2.5;
+  ctx.beginPath();ctx.arc(cx,cy,rs,0,7);ctx.stroke();
+
+  // 標示
+  ctx.fillStyle='#cfe0ff';ctx.font='12px sans-serif';ctx.textAlign='center';
+  ctx.fillText('事件視界 r ≈ '+rs.toFixed(0),cx,cy+gr+16);
+  ctx.fillStyle='rgba(255,200,150,.85)';
+  ctx.fillText('光子環',cx+rph*0.72,cy-rph*0.72);
+
+  simState.raf=requestAnimationFrame(loopSim);
+}
+
+/* ============ 力導向關係圖譜 ============ */
+const svg=document.getElementById('graph');
+const SVGNS='http://www.w3.org/2000/svg';
+let G={nodes:[],edges:[],started:false,raf:null};
+function buildLegend(){
+  document.getElementById('legend').innerHTML=Object.keys(CATS).map(k=>
+    '<div><i style="background:'+CATS[k].raw+'"></i>'+CATS[k].name+'</div>').join('');
+}
+function startGraph(){
+  if(G.started){return;}
+  G.started=true; buildLegend();
+  const W=svg.clientWidth||900, H=svg.clientHeight||600;
+  const deg={}; EDGES.forEach(([a,b])=>{deg[a]=(deg[a]||0)+1;deg[b]=(deg[b]||0)+1;});
+  G.nodes=NOTES.map((n,i)=>({id:n.id,cat:n.cat,
+    x:W/2+Math.cos(i/NOTES.length*6.283)*220+(Math.random()-.5)*40,
+    y:H/2+Math.sin(i/NOTES.length*6.283)*180+(Math.random()-.5)*40,
+    vx:0,vy:0,r:9+(deg[n.id]||1)*1.6}));
+  const pos=Object.fromEntries(G.nodes.map(n=>[n.id,n]));
+  // 建立 DOM
+  while(svg.firstChild)svg.removeChild(svg.firstChild);
+  const gEdges=document.createElementNS(SVGNS,'g');
+  const gNodes=document.createElementNS(SVGNS,'g');
+  svg.appendChild(gEdges);svg.appendChild(gNodes);
+  G.edges=EDGES.map(([a,b])=>{
+    const l=document.createElementNS(SVGNS,'line');l.setAttribute('class','gedge');
+    l.dataset.a=a;l.dataset.b=b;gEdges.appendChild(l);return {a,b,el:l};
+  });
+  G.nodes.forEach(n=>{
+    const g=document.createElementNS(SVGNS,'g');g.setAttribute('class','gnode');g.dataset.id=n.id;
+    const c=document.createElementNS(SVGNS,'circle');c.setAttribute('r',n.r);
+    c.setAttribute('fill',CATS[n.cat].raw);c.setAttribute('stroke','#0a0d1c');c.setAttribute('stroke-width','2');
+    const t=document.createElementNS(SVGNS,'text');t.setAttribute('text-anchor','middle');
+    t.setAttribute('dy',-n.r-6);t.textContent=n.id;
+    g.appendChild(c);g.appendChild(t);gNodes.appendChild(g);n.el=g;n.circle=c;
+    // 互動
+    g.addEventListener('mouseenter',()=>highlight(n.id,true));
+    g.addEventListener('mouseleave',()=>highlight(n.id,false));
+    let moved=false,down=false,ox,oy;
+    g.addEventListener('pointerdown',ev=>{down=true;moved=false;n.fixed=true;
+      const p=toSvg(ev);ox=p.x-n.x;oy=p.y-n.y;g.setPointerCapture(ev.pointerId);});
+    g.addEventListener('pointermove',ev=>{if(!down)return;const p=toSvg(ev);
+      n.x=p.x-ox;n.y=p.y-oy;n.vx=0;n.vy=0;moved=true;});
+    g.addEventListener('pointerup',ev=>{down=false;n.fixed=false;
+      if(!moved)open(n.id);});
+  });
+  loop(pos,W,H);
+}
+function toSvg(ev){const r=svg.getBoundingClientRect();return {x:ev.clientX-r.left,y:ev.clientY-r.top};}
+function highlight(id,on){
+  const nb=new Set(neighborsOf(id));nb.add(id);
+  G.nodes.forEach(n=>{n.el.style.opacity=on?(nb.has(n.id)?1:.2):1;});
+  G.edges.forEach(e=>{const rel=(e.a===id||e.b===id);
+    e.el.classList.toggle('hl',on&&rel);
+    e.el.style.opacity=on?(rel?1:.12):1;});
+}
+function loop(pos,W,H){
+  const K_REP=5200, K_SPR=0.012, L0=120, DAMP=0.86, GRAV=0.008;
+  function step(){
+    const ns=G.nodes;
+    for(let i=0;i<ns.length;i++){
+      const a=ns[i]; if(a.fixed)continue;
+      let fx=0,fy=0;
+      for(let j=0;j<ns.length;j++){if(i===j)continue;const b=ns[j];
+        let dx=a.x-b.x,dy=a.y-b.y,d2=dx*dx+dy*dy+0.01,d=Math.sqrt(d2);
+        const f=K_REP/d2;fx+=dx/d*f;fy+=dy/d*f;}
+      fx+=(W/2-a.x)*GRAV;fy+=(H/2-a.y)*GRAV;
+      a.vx=(a.vx+fx)*DAMP;a.vy=(a.vy+fy)*DAMP;
+    }
+    EDGES.forEach(([ai,bi])=>{const a=pos[ai],b=pos[bi];
+      let dx=b.x-a.x,dy=b.y-a.y,d=Math.sqrt(dx*dx+dy*dy)+0.01;
+      const f=(d-L0)*K_SPR;const ux=dx/d,uy=dy/d;
+      if(!a.fixed){a.vx+=ux*f;a.vy+=uy*f;}
+      if(!b.fixed){b.vx-=ux*f;b.vy-=uy*f;}
+    });
+    ns.forEach(n=>{if(n.fixed)return;
+      n.x+=n.vx;n.y+=n.vy;
+      n.x=Math.max(n.r+40,Math.min(W-n.r-40,n.x));
+      n.y=Math.max(n.r+30,Math.min(H-n.r-20,n.y));
+    });
+    G.edges.forEach(e=>{const a=pos[e.a],b=pos[e.b];
+      e.el.setAttribute('x1',a.x);e.el.setAttribute('y1',a.y);
+      e.el.setAttribute('x2',b.x);e.el.setAttribute('y2',b.y);});
+    ns.forEach(n=>n.el.setAttribute('transform','translate('+n.x+','+n.y+')'));
+    G.raf=requestAnimationFrame(step);
+  }
+  step();
+}
+window.addEventListener('resize',()=>{if(G.started&&graphView.style.display==='block'){G.started=false;cancelAnimationFrame(G.raf);startGraph();}});
+
+/* ============ 啟動 ============ */
+buildSidebar();
+renderHome();
+</script>
+</body>
+</html>
