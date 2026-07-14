@@ -118,6 +118,7 @@
   .collap .body{padding:2px 18px 16px;color:#2b4a53}
   .collap.myth>summary{color:#be123c}.collap.myth>summary::before{color:var(--pink)}
   .collap.fact>summary{color:#047857}.collap.fact>summary::before{color:var(--green)}
+  .collap.deep>summary{color:#3730a3}.collap.deep>summary::before{color:#4f46e5}
   .myth-row{display:flex;gap:10px;margin:10px 0}
   .myth-row .x{color:var(--pink);font-weight:800;flex:none}.myth-row .o{color:var(--green);font-weight:800;flex:none}
   .hero{text-align:center;padding:14px 0 10px}
@@ -192,6 +193,7 @@ const CATS={
  "被動":{name:"被動元件",raw:"#34d399"},
  "主動":{name:"主動元件",raw:"#fbbf24"},
  "程式":{name:"可程式化光子",raw:"#a78bfa"},
+ "光通":{name:"光通訊應用",raw:"#4f46e5"},
  "應用":{name:"應用與生態",raw:"#fb7185"}
 };
 function L(id){return '<a class="wl" data-id="'+id+'">'+id+'</a>';}
@@ -332,6 +334,49 @@ const NOTES=[
  '<tr><td>可程式繞線</td><td>'+L("光子網格")+'的連接</td></tr>'+
  '<tr><td>位元流配置</td><td>各'+L("相位器")+'的設定值</td></tr></table>'+
  '<p>讓「設計光子電路」從硬體製造變成軟體配置，大幅縮短開發、降低門檻，一片晶片支援多種'+L("應用領域")+'。限制是通用性帶來的損耗、面積與控制複雜度（見'+L("挑戰")+'）。</p>'},
+{id:"分波多工",en:"WDM · Wavelength-Division Multiplexing",cat:"光通",html:
+ '<div class="callout"><b>一句話：</b>在同一條光纖裡<b>同時傳多個不同波長（顏色）的光</b>，每個波長是一條獨立通道——把一條路拓成多線道，讓單根光纖總容量倍增。</div>'+
+ '<h3>兩大類</h3><table><tr><th>類型</th><th>通道間距</th><th>通道數</th><th>用途</th></tr>'+
+ '<tr><td>CWDM 粗分波</td><td>20 nm</td><td>約 4–18</td><td>短距、低成本、免溫控</td></tr>'+
+ '<tr><td>DWDM 密分波</td><td>0.8 / 0.4 nm（100 / 50 GHz）</td><td>40–96+</td><td>長途、高容量、需精密控溫</td></tr></table>'+
+ '<p>DWDM 集中在 <b>C 波段（約 1530–1565 nm）</b>，因為這裡的摻鉺光纖放大器（EDFA）能一次放大所有通道。</p>'+
+ '<h3>晶片上怎麼做</h3><ul><li>用 '+L("環形諧振器")+' 陣列或陣列波導光柵（AWG）把各波長合進／分出同一條 '+L("波導")+'。</li>'+
+ '<li>每個微環對準一個通道，是矽光子 '+L("光收發器")+' 的主流做法；波長會隨溫度漂移，需 '+L("相位器")+' 熱鎖定。</li></ul>'+
+ '<p>把光纖想成高速公路，WDM 就是「用不同顏色的車道同時開車」。想看動畫？到「🔬 互動元件」的環形諧振器分波示範。</p>'},
+{id:"光收發器",en:"Optical Transceiver",cat:"光通",html:
+ '<div class="callout"><b>一句話：</b>把電訊號與光訊號<b>雙向互轉</b>的模組（發射 TX ＋接收 RX）——矽光子目前<b>最大的商業應用</b>。</div>'+
+ '<h3>內部組成</h3><ul><li><b>發射 TX</b>：'+L("光源與雷射整合")+' → '+L("調變器")+'（寫入資料）→ 驅動電路 → '+L("光柵耦合器與邊緣耦合")+'。</li>'+
+ '<li><b>接收 RX</b>：光進來 → '+L("光偵測器")+' → 跨阻放大器（TIA）→ 還原成電。</li>'+
+ '<li>常整合 '+L("分波多工")+' 合／分波器，一個模組處理多波長。</li></ul>'+
+ '<h3>規格演進（資料中心）</h3><table><tr><th>世代</th><th>總速率</th><th>常見做法</th></tr>'+
+ '<tr><td>400G</td><td>400 Gb/s</td><td>8×50G / 4×100G PAM4</td></tr>'+
+ '<tr><td>800G</td><td>800 Gb/s</td><td>8×100G / 4×200G PAM4</td></tr>'+
+ '<tr><td>1.6T</td><td>1.6 Tb/s</td><td>8×200G PAM4（單波長 200G）</td></tr></table>'+
+ '<p><b>PAM4</b>（四階振幅，一符號 2 位元）是短距主流；封裝多為 OSFP / QSFP-DD，功耗力求 &lt;25 W。距離代號：DR 500 m、FR 2 km、LR 10 km。長途則走 '+L("相干光通訊")+'。</p>'},
+{id:"相干光通訊",en:"Coherent Optical Communication",cat:"光通",html:
+ '<div class="callout"><b>一句話：</b>不只用「光的亮暗」，而是同時利用光的<b>振幅、相位、偏振</b>承載資訊，接收端用本地雷射＋DSP 還原——大幅提升每符號位元數與傳輸距離。</div>'+
+ '<h3>與強度調變（PAM4）的差別</h3><table><tr><th></th><th>強度調變 IM-DD</th><th>相干 Coherent</th></tr>'+
+ '<tr><td>維度</td><td>只有振幅</td><td>振幅＋相位＋兩偏振</td></tr>'+
+ '<tr><td>格式</td><td>PAM4</td><td>QPSK / 16QAM（DP-QAM）</td></tr>'+
+ '<tr><td>距離</td><td>短（機房內）</td><td>長途、超高容量</td></tr>'+
+ '<tr><td>複雜度</td><td>低、便宜</td><td>高，需強大 DSP</td></tr></table>'+
+ '<h3>核心概念</h3><ul><li><b>QAM</b>：在振幅×相位平面放多個星座點，一符號帶更多位元。</li>'+
+ '<li><b>偏振多工（DP）</b>：兩個垂直偏振各傳一路，容量加倍。</li>'+
+ '<li>需 IQ '+L("調變器")+'（多個 '+L("馬赫-曾德干涉儀")+' 組合）與平衡 '+L("光偵測器")+'——都是矽光子強項。近年 400ZR 把相干帶進資料中心互連。</li></ul>'},
+{id:"光子運算",en:"Photonic Computing",cat:"光通",html:
+ '<div class="callout"><b>一句話：</b>用光執行運算，尤其是 AI 最吃重的<b>矩陣–向量乘法</b>。光通過 '+L("光子網格")+' 時自然完成「相乘再相加」，以接近光速、極低能耗平行運算。</div>'+
+ '<h3>為什麼用光算 AI</h3><ul><li>神經網路核心是大量乘加（MAC）。</li>'+
+ '<li>光通過一組 '+L("可調基本單元")+' 組成的前饋 '+L("光子網格")+' 時，干涉會自動把輸入向量「乘上」網格代表的矩陣——<b>一次通過完成整個矩陣乘法</b>。</li>'+
+ '<li>不同 '+L("分波多工")+' 波長還能同時算多組資料。</li></ul>'+
+ '<h3>現況與限制</h3><p>2017 年 MIT 用可程式化網格示範以光跑神經網路；之後多家新創投入。限制：類比精度有限、光電轉換開銷、'+L("挑戰")+' 的校準成本——目前定位為「加速特定線性運算」，而非取代通用處理器。它與 '+L("光收發器")+' 共用同一套矽光子元件庫。</p>'},
+{id:"共封裝光學",en:"Co-packaged Optics (CPO)",cat:"光通",html:
+ '<div class="callout"><b>一句話：</b>把 '+L("光收發器")+' 從面板上的可插拔模組，<b>搬到緊貼交換晶片（ASIC）的同一封裝裡</b>，縮短電訊號路徑，解決資料中心「頻寬爆炸、功耗撞牆」。</div>'+
+ '<h3>為什麼需要</h3><ul><li>交換晶片頻寬每兩年翻倍（數十 Tb/s），但電訊號在 PCB 上跑越快越遠就越耗電、越衰減。</li>'+
+ '<li>把光引擎移到 ASIC 旁，電通道縮到最短，<b>每位元能耗大幅下降</b>。</li></ul>'+
+ '<h3>三種路線</h3><ul><li><b>可插拔</b>：目前主流，好維護，但較耗電。</li>'+
+ '<li><b>CPO 共封裝</b>：最省電、密度最高，但維修性與良率是挑戰。</li>'+
+ '<li><b>LPO 線性可插拔</b>：拿掉模組內 DSP、靠交換晶片直驅，省電又保留可插拔。</li></ul>'+
+ '<p>CPO 正需要矽光子的高整合度，把 '+L("調變器")+'、'+L("光偵測器")+'、'+L("分波多工")+' 密集整合，並用 '+L("光源與雷射整合")+' 外置光源統一供光。</p>'},
 {id:"應用領域",en:"Applications",cat:"應用",html:
  '<div class="callout"><b>一句話：</b>'+L("光子積體電路")+'從最成熟的光通訊，延伸到運算、感測與量子等前沿。</div>'+
  '<h3>主要應用</h3><ul><li><b>光通訊收發器</b>：最大宗。用'+L("調變器")+'＋'+L("光偵測器")+'做高速光收發，WDM 多波長並行。</li>'+
@@ -369,48 +414,73 @@ const EDGES=[
  ["光源與雷射整合","光柵耦合器與邊緣耦合"],["光源與雷射整合","挑戰"],
  ["可程式化光子電路","可調基本單元"],["可程式化光子電路","光子網格"],["可程式化光子電路","Field-Programmable Photonic Array"],
  ["可調基本單元","光子網格"],["光子網格","Field-Programmable Photonic Array"],["光子網格","應用領域"],
- ["Field-Programmable Photonic Array","應用領域"],["應用領域","可程式化光子電路"],["挑戰","製程與代工"]
+ ["Field-Programmable Photonic Array","應用領域"],["應用領域","可程式化光子電路"],["挑戰","製程與代工"],
+ ["環形諧振器","分波多工"],["相位器","分波多工"],["分波多工","光收發器"],["分波多工","相干光通訊"],["分波多工","應用領域"],
+ ["光收發器","調變器"],["光收發器","光偵測器"],["光收發器","光源與雷射整合"],["光收發器","相干光通訊"],["光收發器","共封裝光學"],["光收發器","應用領域"],
+ ["相干光通訊","馬赫-曾德干涉儀"],["相干光通訊","光偵測器"],
+ ["光子運算","光子網格"],["光子運算","可程式化光子電路"],["光子運算","應用領域"],
+ ["共封裝光學","光源與雷射整合"],["共封裝光學","挑戰"],["共封裝光學","光子電路的複雜度擴展"]
 ];
 const EXTRA={
-"光子積體電路":{take:["把桌上型光學整合到一塊晶片。","光在波導中被產生、導引、調變、偵測。","是通訊、運算、感測、量子的共同底層。"],
+"分波多工":{take:["一條光纖同時傳多個波長，容量＝通道數×每通道速率。","DWDM 50 GHz 間距、C 波段、可達 96+ 通道。","晶片上用微環或 AWG 做合／分波。"],
+ myth:[{q:"WDM 需要拉更多條光纖。",a:"正好相反——它讓『同一條』光纖承載更多容量，不必增加纖數。"}],
+ fact:"單芯光纖用 DWDM 可承載數十 Tb/s，等於同時傳送上千萬支高畫質影片。",
+ deep:"C 波段之所以是主流，是因為摻鉺光纖放大器（EDFA）能一次放大整段波長；每個 <a class='wl' data-id='環形諧振器'>微環</a> 對準一個通道，需 <a class='wl' data-id='相位器'>熱鎖定</a> 以免溫漂跑掉通道。"},
+"光收發器":{take:["電光雙向互轉的模組，矽光子最大商業應用。","800G / 1.6T 靠 PAM4（單波長 200G）。","封裝 OSFP / QSFP-DD，功耗力求 <25 W。"],
+ myth:[{q:"收發器裡一定有雷射晶片。",a:"雷射常是外接或異質整合，因為矽本身不發光。"}],
+ fact:"你每次看串流影片，資料都要穿過資料中心裡數以萬計的光收發器。",
+ deep:"距離代號 DR(500m)/FR(2km)/LR(10km)；短距用 PAM4 強度調變，長途改走 <a class='wl' data-id='相干光通訊'>相干（DP-QAM）</a>。矽光子把 <a class='wl' data-id='調變器'>調變器</a>、<a class='wl' data-id='光偵測器'>偵測器</a>、<a class='wl' data-id='分波多工'>WDM</a> 整合成一顆小晶片，是降本降耗的關鍵。"},
+"相干光通訊":{take:["用振幅＋相位＋偏振三維度承載資訊。","QAM 星座＋偏振多工大幅提升容量。","接收端需本地雷射與強大 DSP。"],
+ myth:[{q:"相干一定比 PAM4 更好。",a:"各有定位：短距 PAM4 便宜省電，長途／高容量才值得用複雜的相干。"}],
+ fact:"16QAM 一個符號帶 4 位元，加上雙偏振等於一次送 8 位元——比 OOK 的 1 位元密得多。",
+ deep:"需要 IQ <a class='wl' data-id='調變器'>調變器</a>（多個 <a class='wl' data-id='馬赫-曾德干涉儀'>MZI</a> 巢狀）與平衡 <a class='wl' data-id='光偵測器'>光偵測器</a>；近年 400ZR 標準把相干技術帶進資料中心互連。"},
+"光子運算":{take:["用光做 AI 的矩陣乘法。","光通過網格一次完成整個矩陣運算。","目前定位是加速線性運算，非通用電腦。"],
+ myth:[{q:"光子電腦即將取代 CPU/GPU。",a:"它擅長線性運算（如矩陣乘），但難做邏輯與記憶，短期是『加速器』而非取代。"}],
+ fact:"矩陣乘法是神經網路最耗算力的部分，用光做可趨近光速且幾乎不額外耗能。",
+ deep:"硬體就是 <a class='wl' data-id='光子網格'>前饋光子網格</a>（Clements/Reck）；不同 <a class='wl' data-id='分波多工'>波長</a> 可並行多組運算。限制在類比精度與光電轉換開銷（見 <a class='wl' data-id='挑戰'>挑戰</a>）。"},
+"共封裝光學":{take:["把光引擎搬到交換晶片旁，縮短電通道。","大幅降低每位元能耗。","可插拔 / CPO / LPO 三條路線。"],
+ myth:[{q:"CPO 只是把模組黏得近一點而已。",a:"關鍵在把耗電的長電通道換成極短連接，是為了突破功耗牆，牽涉封裝與良率的大改變。"}],
+ fact:"交換晶片頻寬已達數十 Tb/s，若仍用傳統可插拔，光模組的功耗會吃掉整台交換機一大半電力。",
+ deep:"LPO（線性可插拔）拿掉模組內 DSP、靠交換晶片直驅，是省電又保留可維護性的折衷；CPO 則需矽光子把 <a class='wl' data-id='調變器'>調變器</a>、<a class='wl' data-id='光偵測器'>偵測器</a>、<a class='wl' data-id='分波多工'>WDM</a> 高密度整合。"},
+"光子積體電路":{deep:"材料不只矽：SiN（超低損耗）、InP（含雷射）、鈮酸鋰薄膜（高速調變）常異質整合互補；現代晶片可整合數百至上千個元件。你上網、看影片的資料，多半經過資料中心裡的矽光子 <a class='wl' data-id='光收發器'>光收發器</a>。",take:["把桌上型光學整合到一塊晶片。","光在波導中被產生、導引、調變、偵測。","是通訊、運算、感測、量子的共同底層。"],
  myth:[{q:"光子晶片就是把光纖繞在晶片上。",a:"是用微影刻出次微米波導與元件，密度與精度遠非繞光纖可比。"}],fact:"一顆現代矽光子收發晶片可整合上百個光學元件，面積僅數平方毫米。"},
-"為什麼要用光子":{take:["光子強在頻寬、低損耗、抗干擾、平行。","電子強在運算與儲存。","趨勢是電光協同，而非互相取代。"],
+"為什麼要用光子":{deep:"單芯光纖經 <a class='wl' data-id='分波多工'>WDM</a> 可達數十 Tb/s；關鍵指標是每位元能耗（pJ/bit）——距離一拉長，光遠勝銅，這正是資料中心導入 <a class='wl' data-id='共封裝光學'>共封裝光學（CPO）</a> 的主因。",take:["光子強在頻寬、低損耗、抗干擾、平行。","電子強在運算與儲存。","趨勢是電光協同，而非互相取代。"],
  myth:[{q:"用光就能做出比 CPU 更快的通用電腦。",a:"光難做邏輯與記憶，目前主要加速『線性運算與資料搬移』，仍需搭配電子。"}],fact:"光纖每公里損耗約 0.2 dB；同樣距離的銅纜會衰減到幾乎無法使用。"},
-"矽光子技術":{take:["用 CMOS 製程做光路，低成本可量產。","高折射率對比讓波導又細又彎。","先天缺口：矽不會發光。"],
+"矽光子技術":{deep:"不只 220 nm，還有厚矽與 SiN 平台各為不同應用最佳化；矽熱光係數大是雙面刃——好調諧（<a class='wl' data-id='相位器'>相位器</a>）但易受溫度干擾，<a class='wl' data-id='環形諧振器'>微環</a> 尤需鎖溫。多家晶圓廠提供 <a class='wl' data-id='製程與代工'>MPW</a> 量產。",take:["用 CMOS 製程做光路，低成本可量產。","高折射率對比讓波導又細又彎。","先天缺口：矽不會發光。"],
  myth:[{q:"矽光子的晶片跟電子晶片是同一顆。",a:"多數是各自製造再共封裝（co-packaging），少數在同製程整合。"}],fact:"標準 SOI 平台的矽層只有 220 奈米厚——約頭髮直徑的三百分之一。"},
-"光子電路的複雜度擴展":{take:["光子在追趕電子 IC 的『可整合複雜度』。","元件受波長限制，難無限微縮。","可重構是突破專用晶片的一條路。"],
+"光子電路的複雜度擴展":{deep:"兩條擴展路線：<b>異質整合</b>（拼接不同材料的最佳元件）與 <b>可重構</b>（一片萬用晶片）。元件越多，晶圓級光學測試越關鍵；電光共整合（並排/堆疊封裝）則走向 <a class='wl' data-id='共封裝光學'>CPO</a>。",take:["光子在追趕電子 IC 的『可整合複雜度』。","元件受波長限制，難無限微縮。","可重構是突破專用晶片的一條路。"],
  myth:[{q:"光子也有和電子一樣的莫爾定律。",a:"元件尺寸受波長限制，無法照電晶體那樣指數微縮，擴展方式不同。"}],fact:"單片可程式化光子晶片已能整合數百個可調單元。"},
-"波導":{take:["PIC 的『導線』，靠全內反射侷限光。","矽/氧化矽高對比 → 次微米、可急彎。","傳播損耗約 1–2 dB/cm。"],
+"波導":{deep:"損耗主要來自側壁散射；相較之下 SiN 波導可低到 <0.1 dB/cm，適合長延遲線與高 Q 濾波。矽波導對 TE／TM 偏振行為不同，需偏振管理（<a class='wl' data-id='相干光通訊'>相干系統</a> 尤其在意）。",take:["PIC 的『導線』，靠全內反射侷限光。","矽/氧化矽高對比 → 次微米、可急彎。","傳播損耗約 1–2 dB/cm。"],
  myth:[{q:"波導越粗傳光越好。",a:"太粗會支援多模、造成干擾；通訊多用單模窄波導。"}],fact:"矽波導的彎曲半徑可小到約 5 µm，這是低對比材料（如玻璃）做不到的。"},
-"光柵耦合器與邊緣耦合":{take:["負責光在光纖與晶片間進出。","光柵：任意位置、方便測試、有波長依賴。","邊緣：低損耗寬頻、但只能在邊緣。"],
+"光柵耦合器與邊緣耦合":{deep:"光柵可設計成偏振分離光柵，一舉兩得；邊緣耦合搭懸空倒錐可達 <0.5 dB。光纖陣列（FA）的對準與封裝，是整個 <a class='wl' data-id='光收發器'>收發器</a> 成本的關鍵之一。",take:["負責光在光纖與晶片間進出。","光柵：任意位置、方便測試、有波長依賴。","邊緣：低損耗寬頻、但只能在邊緣。"],
  myth:[{q:"光進出晶片幾乎沒有損耗。",a:"耦合常是損耗大戶，每次進出可損失 1–3 dB。"}],fact:"最佳化的光柵耦合器效率可達約 80%（−1 dB），已接近邊緣耦合。"},
-"方向耦合器與分光器":{take:["分光/合光的基本元件。","靠間距與長度決定耦合比例。","cross/bar 是可程式化的基礎。"],
+"方向耦合器與分光器":{deep:"方向耦合器的耦合比會隨波長改變，寬頻應用（跨整個 <a class='wl' data-id='分波多工'>C 波段</a>）常改用 MMI；3 dB（五五分光）耦合器是 <a class='wl' data-id='馬赫-曾德干涉儀'>MZI</a> 與 <a class='wl' data-id='可調基本單元'>可調基本單元</a> 的標配。",take:["分光/合光的基本元件。","靠間距與長度決定耦合比例。","cross/bar 是可程式化的基礎。"],
  myth:[{q:"分光器就是把光能量憑空複製成兩份。",a:"是把同一份能量分配到兩路，總和守恆（理想無損）。"}],fact:"MMI 分光器利用『自我成像』效應，對製程誤差比方向耦合器更寬容。"},
-"馬赫-曾德干涉儀":{take:["分兩臂→加相位差→合併干涉。","輸出 ∝ cos²(Δφ/2)。","光開關、調變器、可調分光器的骨幹。"],
+"馬赫-曾德干涉儀":{deep:"關鍵指標 Vπ·L 越小越省電；多個 MZI 巢狀組合成 IQ 調變器即可產生 <a class='wl' data-id='相干光通訊'>QAM 星座</a>。MZM 大但耐溫、線性好，<a class='wl' data-id='環形諧振器'>環調變器</a> 小又省電但需鎖溫。",take:["分兩臂→加相位差→合併干涉。","輸出 ∝ cos²(Δφ/2)。","光開關、調變器、可調分光器的骨幹。"],
  myth:[{q:"MZI 靠改變光的強度來運作。",a:"它改變的是『相位』，強度變化是干涉的結果。"}],fact:"只要 π 的相位差，MZI 的輸出就能從全亮切到全暗。"},
-"環形諧振器":{take:["波長選擇性元件（濾波/調變/感測）。","FSR ≈ λ²/(n_g·L)，環越小 FSR 越大。","對溫度極敏感，需熱校準。"],
+"環形諧振器":{deep:"加/取埠（add-drop）結構是 <a class='wl' data-id='分波多工'>WDM</a> 合分波的基礎；高 Q（>10⁵）可做窄濾波與單分子級感測；實務用內建加熱器＋回饋電路把共振鎖在目標通道。",take:["波長選擇性元件（濾波/調變/感測）。","FSR ≈ λ²/(n_g·L)，環越小 FSR 越大。","對溫度極敏感，需熱校準。"],
  myth:[{q:"環形諧振器對所有波長都有反應。",a:"只在滿足共振條件的離散波長才強耦合，其餘幾乎直通。"}],fact:"高 Q 微環能把光在環中『存』上數萬圈，等效路徑長達數公尺。"},
-"相位器":{take:["電控光相位的『旋鈕』。","熱光簡單但耗電、慢、會熱串擾。","PCM/MEMS 追求低功耗、非揮發。"],
+"相位器":{deep:"效率指標 Pπ（造成 π 相位所需功率），熱光式典型數 mW～數十 mW；總功耗≈Pπ×元件數，是 <a class='wl' data-id='可程式化光子電路'>可程式化光子</a> 的散熱瓶頸，也是 PCM／MEMS 非揮發相位器的研究動機。速度：熱光 µs、電光 ns～ps。",take:["電控光相位的『旋鈕』。","熱光簡單但耗電、慢、會熱串擾。","PCM/MEMS 追求低功耗、非揮發。"],
  myth:[{q:"相位器不用電就能維持設定。",a:"熱光式一斷電就歸零；要免供電得用非揮發的相變或 MEMS。"}],fact:"矽的熱光係數約 1.8×10⁻⁴/K——升溫幾十度就足以造成 π 相位差。"},
-"調變器":{take:["把電資料寫進光，發射端核心。","矽靠載子耗盡（等離子色散）。","MZM 穩健、環調變器精巧省電。"],
+"調變器":{deep:"短距用 PAM4、長途用 <a class='wl' data-id='相干光通訊'>IQ 調變（DP-QAM）</a>；鈮酸鋰薄膜（TFLN）調變器頻寬可達 >100 GHz、Vπ 低；單波長 200G（100+ GBd PAM4）是 <a class='wl' data-id='光收發器'>800G／1.6T 模組</a> 的核心。",take:["把電資料寫進光，發射端核心。","矽靠載子耗盡（等離子色散）。","MZM 穩健、環調變器精巧省電。"],
  myth:[{q:"矽有很強的電光效應可直接調變。",a:"矽幾乎沒有線性電光效應，靠改變載子濃度間接調變，效率有限。"}],fact:"最先進的矽光調變器每位元能耗已低到 fJ（飛焦耳）等級。"},
-"光偵測器":{take:["把光轉回電，接收端核心。","矽不吸收電信波長，改用鍺。","響應度 >0.8 A/W、頻寬 >50 GHz。"],
+"光偵測器":{deep:"PIN＋TIA 用於高速短距；APD（雪崩）內建增益、靈敏度高，適合長距。<a class='wl' data-id='相干光通訊'>相干</a> 接收用『平衡光偵測器』成對接收，抵消共模雜訊並取出相位資訊。",take:["把光轉回電，接收端核心。","矽不吸收電信波長，改用鍺。","響應度 >0.8 A/W、頻寬 >50 GHz。"],
  myth:[{q:"矽自己就能當好的電信波長偵測器。",a:"矽在 1550 nm 幾乎透明，需磊晶生長鍺來吸收。"}],fact:"鍺原本是最早電晶體的材料，如今在矽光子裡負責『聽光』。"},
-"光源與雷射整合":{take:["矽間接能隙、不會發光。","主流：外接雷射或 III-V 異質整合。","是矽光子最大先天缺口。"],
+"光源與雷射整合":{deep:"DFB 提供穩定單一波長、可調雷射供 <a class='wl' data-id='分波多工'>DWDM</a> 選道；外置雷射光源（ELS）＋光纖供光是 <a class='wl' data-id='共封裝光學'>CPO</a> 常見架構（雷射壞了只換光源）；量子點雷射對溫度較不敏感。",take:["矽間接能隙、不會發光。","主流：外接雷射或 III-V 異質整合。","是矽光子最大先天缺口。"],
  myth:[{q:"既然做得出矽調變器，做矽雷射也不難。",a:"發光需要直接能隙，矽的間接能隙讓高效發光極其困難。"}],fact:"把 III-V 材料『鍵合』到矽晶圓上，是目前把雷射真正整合上晶片的主流路線。"},
-"可程式化光子電路":{take:["一片通用晶片、軟體決定功能。","由可調單元連成網格。","類比電子 FPGA。"],
+"可程式化光子電路":{deep:"兩大用途方向：訊號處理（可調濾波、延遲、波束成形）與 <a class='wl' data-id='光子運算'>線性運算／矩陣乘法</a>；自我配置（self-configuring）演算法能讓網格自動校準、逐一鎖定每個 <a class='wl' data-id='可調基本單元'>單元</a>，抵消製程誤差。",take:["一片通用晶片、軟體決定功能。","由可調單元連成網格。","類比電子 FPGA。"],
  myth:[{q:"可程式化晶片一定比專用晶片好。",a:"通用性換來更高損耗、面積與功耗；追求極致性能時專用晶片仍勝出。"}],fact:"Bogaerts 等人 2020 年在《Nature》系統性提出可程式化光子電路的架構藍圖。"},
-"可調基本單元":{take:["網格的最小積木：可調 2×2 耦合器。","可切 bar/cross 或任意分光。","本質是一個內含相位器的 MZI。"],
+"可調基本單元":{deep:"常見實作＝兩個 3 dB <a class='wl' data-id='方向耦合器與分光器'>耦合器</a> ＋兩個 <a class='wl' data-id='相位器'>相位器</a>（一調分光比、一調相位）；設定精度直接決定整個 <a class='wl' data-id='光子網格'>網格</a> 能實現的矩陣有多準。",take:["網格的最小積木：可調 2×2 耦合器。","可切 bar/cross 或任意分光。","本質是一個內含相位器的 MZI。"],
  myth:[{q:"一個單元只能做開/關兩種狀態。",a:"它可連續設定任意分光比與相位，不只是二元開關。"}],fact:"用足夠多的可調單元，理論上能合成任意的線性光學（么正）轉換。"},
-"光子網格":{take:["可調單元連成的可重構網。","前饋網格做么正矩陣。","六角形循環網格更通用（含回授）。"],
+"光子網格":{deep:"Clements 前饋網格實現 N 埠么正轉換約需 N²/2 個 <a class='wl' data-id='可調基本單元'>單元</a>，面積、損耗與控制通道隨規模快速上升；前饋做矩陣乘（<a class='wl' data-id='光子運算'>運算</a>），六角形循環網格允許迴路（濾波器、延遲線）。",take:["可調單元連成的可重構網。","前饋網格做么正矩陣。","六角形循環網格更通用（含回授）。"],
  myth:[{q:"任何網格都能做任何電路。",a:"前饋網格做不了含回授的濾波器；要迴路得用循環（如六角形）網格。"}],fact:"Clements 矩形網格比 Reck 三角形網格更緊湊、各路徑損耗更平均。"},
-"Field-Programmable Photonic Array":{take:["光子版 FPGA，可反覆重新配置。","設計從硬體製造變成軟體配置。","一片晶片支援多種應用。"],
+"Field-Programmable Photonic Array":{deep:"如同 FPGA 需要編譯器，FPPA 需工具把『想要的功能』換算成每個 <a class='wl' data-id='相位器'>相位器</a> 的設定值；目前規模遠小於電子 FPGA，殺手級方向是可重構的微波光子與 <a class='wl' data-id='光子運算'>光子運算</a>。",take:["光子版 FPGA，可反覆重新配置。","設計從硬體製造變成軟體配置。","一片晶片支援多種應用。"],
  myth:[{q:"FPPA 會完全取代所有專用光子晶片。",a:"更可能是互補：原型與中小量用 FPPA，大量高性能用專用晶片。"}],fact:"電子 FPGA 讓工程師不必開新晶片就能改電路——FPPA 想在光子界複製這件事。"},
-"應用領域":{take:["光通訊是最成熟的殺手級應用。","光學矩陣運算加速 AI。","還有微波光子、光達、量子。"],
+"應用領域":{deep:"光通訊主軸（最成熟）：<a class='wl' data-id='光收發器'>收發器</a>、<a class='wl' data-id='分波多工'>WDM</a>、<a class='wl' data-id='相干光通訊'>相干</a> 與資料中心的 <a class='wl' data-id='共封裝光學'>CPO</a>；感測：光達（OPA）、生醫、光纖陀螺儀；前沿：<a class='wl' data-id='光子運算'>光子運算</a> 與量子光子。",take:["光通訊是最成熟的殺手級應用。","光學矩陣運算加速 AI。","還有微波光子、光達、量子。"],
  myth:[{q:"光子晶片主要用來做光學電腦。",a:"目前商業主力是光通訊收發器；運算與量子仍在發展中。"}],fact:"2017 年 MIT 團隊用光子網格示範了以光執行神經網路的矩陣運算。"},
-"挑戰":{take:["損耗會沿路徑累積。","上千個相位器的功耗與校準最棘手。","光源整合仍是缺口。"],
+"挑戰":{deep:"損耗預算實例：含多次耦合、彎折與 <a class='wl' data-id='可調基本單元'>單元</a> 的長路徑很容易累積 10+ dB，得靠光放大或減級；大型網格上千 <a class='wl' data-id='相位器'>相位器</a> 的散熱與熱串擾是硬骨頭；資料中心 24/7、車規耐溫震的長期可靠度與標準化仍在建立。",take:["損耗會沿路徑累積。","上千個相位器的功耗與校準最棘手。","光源整合仍是缺口。"],
  myth:[{q:"只要製程進步，這些問題自然消失。",a:"損耗、調諧功耗、波長尺度限制是物理性的，需要架構與材料創新。"}],fact:"一個大型可程式化網格的『調諧功耗』，可能比它處理的訊號本身還耗電。",chart:"loss"},
-"製程與代工":{take:["設計與製造分離的生態。","PDK 提供標準元件積木。","是複雜度擴展與量產的制度基礎。"],
+"製程與代工":{deep:"PDK 持續擴充（從 <a class='wl' data-id='波導'>波導</a>、耦合器到 <a class='wl' data-id='調變器'>調變器</a>、<a class='wl' data-id='光偵測器'>偵測器</a>、AWG）；電光共整合（與 CMOS 3D 堆疊或並排封裝）是走向 <a class='wl' data-id='共封裝光學'>CPO</a> 的製造基礎；MPW 讓學界與新創也負擔得起流片。",take:["設計與製造分離的生態。","PDK 提供標準元件積木。","是複雜度擴展與量產的制度基礎。"],
  myth:[{q:"每家實驗室都得自己蓋無塵室做晶片。",a:"多專案晶圓（MPW）讓多個設計共乘一次流片，大幅攤薄成本。"}],fact:"imec 等代工廠的 MPW 服務，讓一所大學也能用得起矽光子流片。"}
 };
 /* ===== 側邊欄 ===== */
@@ -436,7 +506,7 @@ function renderHome(){
  main.innerHTML='<div class="note"><div class="hero"><div style="font-size:46px">💡</div>'+
   '<div class="big">光子積體電路知識庫</div>'+
   '<p class="sub">整理自 Wim Bogaerts（UGent-imec）的 webinar《Photonic ICs, Silicon Photonics & Programmable Photonics》。20 個知識點，從波導到可程式化光子網格，用雙向連結串成一張知識網。</p>'+
-  '<div class="stats"><div class="stat"><b>20</b><span>知識點</span></div><div class="stat"><b>36</b><span>關聯連結</span></div>'+
+  '<div class="stats"><div class="stat"><b>25</b><span>知識點</span></div><div class="stat"><b>55</b><span>關聯連結</span></div>'+
   '<div class="stat"><b>2</b><span>互動模擬</span></div><div class="stat"><b>5</b><span>主題分區</span></div></div></div>'+
   '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgMzYwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZjhmY2ZlIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZWFmM2Y3Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJjaGlwIiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlZWY3ZmEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9IndnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMCI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMwODkxYjIiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwNTk2NjkiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9Imx6IiBjeD0iNTAlIiBjeT0iNDAlIiByPSI2MCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmI3MTg1Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZTExZDQ4Ii8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjM2MCIgZmlsbD0idXJsKCNiZykiLz4KICA8dGV4dCB4PSIzNCIgeT0iNDIiIGZpbGw9IiMxMjMwMzkiIGZvbnQtc2l6ZT0iMjAiIGZvbnQtd2VpZ2h0PSI3MDAiPuefveWFieWtkOaZtueJh++8muS4gOaineWFieeahOaXheeoi+OAgEFuYXRvbXkgb2YgYSBTaWxpY29uIFBob3RvbmljIENoaXA8L3RleHQ+CgogIDxyZWN0IHg9IjQwIiB5PSI3MCIgd2lkdGg9IjgyMCIgaGVpZ2h0PSIyNTAiIHJ4PSIxNiIgZmlsbD0idXJsKCNjaGlwKSIgc3Ryb2tlPSIjY2ZlM2VhIiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjYwIiB5PSI5OCIgZmlsbD0iIzhhYTRhZSIgZm9udC1zaXplPSIxMiI+55+95pm254mH77yIU09J77yJPC90ZXh0PgoKICA8cGF0aCBkPSJNIDEyMCAyMDAgSCA3ODAiIGZpbGw9Im5vbmUiIHN0cm9rZT0idXJsKCN3ZykiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CgogIDxjaXJjbGUgY3g9IjExMCIgY3k9IjIwMCIgcj0iMTYiIGZpbGw9InVybCgjbHopIi8+CiAgPHRleHQgeD0iMTEwIiB5PSIyNTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNlMTFkNDgiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI3MDAiPumbt+WwhDwvdGV4dD4KICA8dGV4dCB4PSIxMTAiIHk9IjI2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2IwNmE3OCIgZm9udC1zaXplPSIxMCI+TGFzZXLvvIjlpJbmjqXvvIk8L3RleHQ+CgogIDxnPgogICAgPHJlY3QgeD0iMTc2IiB5PSIxODYiIHdpZHRoPSIzMCIgaGVpZ2h0PSIyOCIgcng9IjMiIGZpbGw9IiNlYWY2ZjkiIHN0cm9rZT0iIzA4OTFiMiIvPgogICAgPGxpbmUgeDE9IjE4MiIgeTE9IjE4OCIgeDI9IjE4MiIgeTI9IjIxMiIgc3Ryb2tlPSIjMDg5MWIyIi8+PGxpbmUgeDE9IjE4OCIgeTE9IjE4OCIgeDI9IjE4OCIgeTI9IjIxMiIgc3Ryb2tlPSIjMDg5MWIyIi8+CiAgICA8bGluZSB4MT0iMTk0IiB5MT0iMTg4IiB4Mj0iMTk0IiB5Mj0iMjEyIiBzdHJva2U9IiMwODkxYjIiLz48bGluZSB4MT0iMjAwIiB5MT0iMTg4IiB4Mj0iMjAwIiB5Mj0iMjEyIiBzdHJva2U9IiMwODkxYjIiLz4KICAgIDx0ZXh0IHg9IjE5MSIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMGU1YTZiIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNzAwIj7lhYnmn7XogKblkIjlmag8L3RleHQ+CiAgICA8dGV4dCB4PSIxOTEiIHk9IjE2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZiOThhNCIgZm9udC1zaXplPSIxMCI+R3JhdGluZyBDb3VwbGVyPC90ZXh0PgogIDwvZz4KCiAgPGc+CiAgICA8cmVjdCB4PSIzMDAiIHk9IjE3NiIgd2lkdGg9IjkwIiBoZWlnaHQ9IjQ4IiByeD0iNiIgZmlsbD0iI2VlZmFmNCIgc3Ryb2tlPSIjMDU5NjY5Ii8+CiAgICA8cGF0aCBkPSJNIDMwMCAyMDAgcSAyMiAtMjAgNDUgMCBxIDIyIDIwIDQ1IDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA1OTY2OSIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgICA8cmVjdCB4PSIzMzIiIHk9IjE3MiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjgiIHJ4PSIyIiBmaWxsPSIjZDk3NzA2Ii8+CiAgICA8dGV4dCB4PSIzNDUiIHk9IjE1MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzBhNzM1MCIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCI+6Kq/6K6K5ZmoIE1aTTwvdGV4dD4KICAgIDx0ZXh0IHg9IjM0NSIgeT0iMTY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNWY5Yzg0IiBmb250LXNpemU9IjEwIj7lr6vlhaXos4fmlpk8L3RleHQ+CiAgPC9nPgoKICA8Zz4KICAgIDxjaXJjbGUgY3g9IjUwMCIgY3k9IjE3NiIgcj0iMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgICA8dGV4dCB4PSI1MDAiIHk9IjI0OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzBlNWE2YiIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCI+55Kw5b2i6Kun5oyv5ZmoPC90ZXh0PgogICAgPHRleHQgeD0iNTAwIiB5PSIyNjQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2Yjk4YTQiIGZvbnQtc2l6ZT0iMTAiPuazoumVt+a/vuazoiAvIFdETTwvdGV4dD4KICA8L2c+CgogIDxnPgogICAgPHJlY3QgeD0iNTk2IiB5PSIxOTIiIHdpZHRoPSIyNiIgaGVpZ2h0PSIxNiIgcng9IjMiIGZpbGw9IiNkOTc3MDYiLz4KICAgIDx0ZXh0IHg9IjYwOSIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjYTE1YzA2IiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNzAwIj7nm7jkvY3lmag8L3RleHQ+CiAgICA8dGV4dCB4PSI2MDkiIHk9IjE2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2I1ODU0OSIgZm9udC1zaXplPSIxMCI+54ax5YWJ6Kq/6KunPC90ZXh0PgogIDwvZz4KCiAgPGc+CiAgICA8cmVjdCB4PSI3MDAiIHk9IjE4NCIgd2lkdGg9IjM0IiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0iI2YzZWZmZSIgc3Ryb2tlPSIjN2MzYWVkIi8+CiAgICA8cGF0aCBkPSJNIDcwNiAyMTYgTCA3MTcgMTkwIEwgNzI4IDIxNiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjN2MzYWVkIiBzdHJva2Utd2lkdGg9IjIiLz4KICAgIDx0ZXh0IHg9IjcxNyIgeT0iMjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNWIzMGIwIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNzAwIj7lhYnlgbXmuKzlmag8L3RleHQ+CiAgICA8dGV4dCB4PSI3MTciIHk9IjI2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzhhN2JjMCIgZm9udC1zaXplPSIxMCI+R2Ugwrcg6K6A5Zue6Zu7PC90ZXh0PgogIDwvZz4KCiAgPHBhdGggZD0iTSA3ODAgMjAwIEggODIwIiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWRhc2hhcnJheT0iMyAzIi8+CiAgPHRleHQgeD0iODM1IiB5PSIyMDQiIGZpbGw9IiNhMTVjMDYiIGZvbnQtc2l6ZT0iMTIiPumbu+ioiuiZnzwvdGV4dD4KCiAgPHRleHQgeD0iNjAiIHk9IjMwOCIgZmlsbD0iIzhhYTRhZSIgZm9udC1zaXplPSIxMSI+5YWJ77ya6Zu35bCEIOKGkiDpgLLmmbbniYcg4oaSIOiqv+iuiu+8iOWvq+izh+aWme+8ieKGkiDmv77ms6Ig4oaSIOWBtea4rO+8iOiugOWbnumbu++8iTwvdGV4dD4KPC9zdmc+Cg==" alt="矽光子晶片概觀">'+
   '<h3>建議閱讀路徑</h3>'+
@@ -458,6 +528,7 @@ function renderNote(id){
   if(ex.take)html+='<div class="kbox"><div class="kt">🎯 重點回顧</div><ul>'+ex.take.map(t=>'<li>'+t+'</li>').join('')+'</ul></div>';
   if(ex.myth)html+='<details class="collap myth"><summary>💡 常見誤解</summary><div class="body">'+ex.myth.map(m=>'<div class="myth-row"><span class="x">✗</span><div>'+m.q+'</div></div><div class="myth-row"><span class="o">✓</span><div>'+m.a+'</div></div>').join('')+'</div></details>';
   if(ex.fact)html+='<details class="collap fact"><summary>🔎 冷知識</summary><div class="body"><p>'+ex.fact+'</p></div></details>';
+  if(ex.deep)html+='<details class="collap deep"><summary>📐 深入補充</summary><div class="body">'+ex.deep+'</div></details>';
  }
  if(nb.length)html+='<div class="related"><div class="cat">關聯概念</div><div class="chips">'+nb.map(x=>'<span class="chip" data-id="'+x+'">'+x+'</span>').join('')+'</div></div>';
  html+='<div class="nav-btns">'+(prev?'<button data-id="'+prev.id+'"><small>← 上一篇</small>'+prev.id+'</button>':'<button disabled style="opacity:.3"><small>—</small>第一篇</button>')+
