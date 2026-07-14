@@ -81,8 +81,9 @@
   .eqcard .cap{font-size:12.5px;color:var(--dim);text-align:center;margin-top:12px}
   table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
   th,td{border:1px solid var(--line);padding:8px 12px;text-align:left}
-  th{background:#e4f1f5;color:#123039}
-  td{background:rgba(14,32,41,.5)}
+  th{background:#e4f1f5;color:#123039;font-weight:700}
+  td{background:#fbfeff;color:#2b4a53}
+  tr:nth-child(even) td{background:#f2f8fb}
   a.wl{color:var(--accent);cursor:pointer;text-decoration:none;border-bottom:1px dashed rgba(34,211,238,.5)}
   a.wl:hover{color:#0b5566;background:rgba(14,155,196,.14);border-radius:3px}
   .related{margin-top:34px;padding-top:16px;border-top:1px solid var(--line)}
@@ -329,6 +330,17 @@ const NOTES=[
  '<p>前饋像單行道系統（適合矩陣乘法），六角形循環網格允許環路（更接近萬用）。皆受限於'+L("挑戰")+'的累積損耗與調諧功耗。</p>'},
 {id:"Field-Programmable Photonic Array",en:"FPPA · 光子 FPGA",cat:"程式",html:
  '<div class="callout"><b>一句話：</b>「<b>光子版的 FPGA</b>」：一片由'+L("光子網格")+'構成、可反覆重新配置的通用光子晶片，靠「寫程式」設定各'+L("可調基本單元")+'即可改功能。</div>'+
+ '<svg class="diagram" viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg">'+
+  '<text x="20" y="26" fill="#123039" font-size="15" font-weight="700">動畫：同一片硬體，改設定就改功能</text>'+
+  '<line x1="120" y1="80" x2="600" y2="80" stroke="#cfe3ea" stroke-width="3"/><line x1="120" y1="140" x2="600" y2="140" stroke="#cfe3ea" stroke-width="3"/>'+
+  '<circle cx="112" cy="80" r="7" fill="#0891b2"/><text x="96" y="70" fill="#4d6b76" font-size="11" text-anchor="end">輸入</text>'+
+  '<polyline fill="none" stroke="#7dd3fc" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" opacity="0.5" points="112,80 290,80 330,80 600,80"><animate attributeName="points" dur="5s" repeatCount="indefinite" values="112,80 290,80 330,80 600,80; 112,80 290,80 330,140 600,140; 112,80 290,80 330,80 600,80"/></polyline>'+
+  '<polyline fill="none" stroke="#0891b2" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" points="112,80 290,80 330,80 600,80"><animate attributeName="points" dur="5s" repeatCount="indefinite" values="112,80 290,80 330,80 600,80; 112,80 290,80 330,140 600,140; 112,80 290,80 330,80 600,80"/></polyline>'+
+  '<rect x="286" y="64" width="48" height="92" rx="8" stroke-width="2" fill="#ffffff" stroke="#0891b2"><animate attributeName="fill" dur="5s" repeatCount="indefinite" values="#ffffff;#fff7ed;#ffffff"/><animate attributeName="stroke" dur="5s" repeatCount="indefinite" values="#0891b2;#f59e0b;#0891b2"/></rect>'+
+  '<text x="310" y="176" fill="#4d6b76" font-size="10" text-anchor="middle">可調耦合器</text>'+
+  '<text x="612" y="84" fill="#4d6b76" font-size="12">out A</text><text x="612" y="144" fill="#4d6b76" font-size="12">out B</text>'+
+  '<text x="360" y="40" fill="#8aa4ae" font-size="11">耦合器在 bar（藍）↔ cross（橙）間切換，光就改走不同輸出</text>'+
+  '</svg>'+
  '<h3>與電子 FPGA 類比</h3><table><tr><th>電子 FPGA</th><th>光子 FPPA</th></tr>'+
  '<tr><td>可程式邏輯區塊 CLB</td><td>'+L("可調基本單元")+'</td></tr>'+
  '<tr><td>可程式繞線</td><td>'+L("光子網格")+'的連接</td></tr>'+
@@ -336,6 +348,25 @@ const NOTES=[
  '<p>讓「設計光子電路」從硬體製造變成軟體配置，大幅縮短開發、降低門檻，一片晶片支援多種'+L("應用領域")+'。限制是通用性帶來的損耗、面積與控制複雜度（見'+L("挑戰")+'）。</p>'},
 {id:"分波多工",en:"WDM · Wavelength-Division Multiplexing",cat:"光通",html:
  '<div class="callout"><b>一句話：</b>在同一條光纖裡<b>同時傳多個不同波長（顏色）的光</b>，每個波長是一條獨立通道——把一條路拓成多線道，讓單根光纖總容量倍增。</div>'+
+ '<svg class="diagram" viewBox="0 0 720 210" xmlns="http://www.w3.org/2000/svg">'+
+  '<text x="20" y="24" fill="#123039" font-size="15" font-weight="700">動畫：五個波長合進同一條光纖</text>'+
+  '<rect x="330" y="40" width="46" height="150" rx="8" fill="#eef6f9" stroke="#b9d4dd"/><text x="353" y="204" fill="#4d6b76" font-size="11" text-anchor="middle">合波 MUX</text>'+
+  '<line x1="376" y1="115" x2="694" y2="115" stroke="#9fb8c2" stroke-width="6" stroke-linecap="round"/><text x="694" y="102" fill="#4d6b76" font-size="11" text-anchor="end">一條光纖 · 多波長並行</text>'+
+  '<g stroke-width="3" fill="none" opacity="0.3">'+
+   '<path d="M52,55 L322,55 C348,55 348,115 376,115" stroke="#e11d48"/><path d="M52,85 L322,85 C348,85 348,115 376,115" stroke="#ea580c"/>'+
+   '<path d="M52,115 L376,115" stroke="#059669"/><path d="M52,145 L322,145 C348,145 348,115 376,115" stroke="#0891b2"/>'+
+   '<path d="M52,175 L322,175 C348,175 348,115 376,115" stroke="#7c3aed"/></g>'+
+  '<g font-size="11" text-anchor="end">'+
+   '<text x="46" y="59" fill="#e11d48">λ1</text><text x="46" y="89" fill="#ea580c">λ2</text><text x="46" y="119" fill="#059669">λ3</text><text x="46" y="149" fill="#0891b2">λ4</text><text x="46" y="179" fill="#7c3aed">λ5</text></g>'+
+  '<circle r="4.5" fill="#e11d48"><animateMotion dur="2.6s" repeatCount="indefinite" begin="0s" path="M52,55 L322,55 C348,55 348,115 376,115 L694,115"/></circle>'+
+  '<circle r="4.5" fill="#ea580c"><animateMotion dur="2.6s" repeatCount="indefinite" begin="0.5s" path="M52,85 L322,85 C348,85 348,115 376,115 L694,115"/></circle>'+
+  '<circle r="4.5" fill="#059669"><animateMotion dur="2.6s" repeatCount="indefinite" begin="1s" path="M52,115 L376,115 L694,115"/></circle>'+
+  '<circle r="4.5" fill="#0891b2"><animateMotion dur="2.6s" repeatCount="indefinite" begin="1.5s" path="M52,145 L322,145 C348,145 348,115 376,115 L694,115"/></circle>'+
+  '<circle r="4.5" fill="#7c3aed"><animateMotion dur="2.6s" repeatCount="indefinite" begin="2s" path="M52,175 L322,175 C348,175 348,115 376,115 L694,115"/></circle>'+
+  '<circle r="4.5" fill="#e11d48"><animateMotion dur="2.6s" repeatCount="indefinite" begin="1.3s" path="M52,55 L322,55 C348,55 348,115 376,115 L694,115"/></circle>'+
+  '<circle r="4.5" fill="#059669"><animateMotion dur="2.6s" repeatCount="indefinite" begin="2.3s" path="M52,115 L376,115 L694,115"/></circle>'+
+  '<circle r="4.5" fill="#7c3aed"><animateMotion dur="2.6s" repeatCount="indefinite" begin="0.8s" path="M52,175 L322,175 C348,175 348,115 376,115 L694,115"/></circle>'+
+  '</svg>'+
  '<h3>兩大類</h3><table><tr><th>類型</th><th>通道間距</th><th>通道數</th><th>用途</th></tr>'+
  '<tr><td>CWDM 粗分波</td><td>20 nm</td><td>約 4–18</td><td>短距、低成本、免溫控</td></tr>'+
  '<tr><td>DWDM 密分波</td><td>0.8 / 0.4 nm（100 / 50 GHz）</td><td>40–96+</td><td>長途、高容量、需精密控溫</td></tr></table>'+
@@ -345,6 +376,19 @@ const NOTES=[
  '<p>把光纖想成高速公路，WDM 就是「用不同顏色的車道同時開車」。想看動畫？到「🔬 互動元件」的環形諧振器分波示範。</p>'},
 {id:"光收發器",en:"Optical Transceiver",cat:"光通",html:
  '<div class="callout"><b>一句話：</b>把電訊號與光訊號<b>雙向互轉</b>的模組（發射 TX ＋接收 RX）——矽光子目前<b>最大的商業應用</b>。</div>'+
+ '<svg class="diagram" viewBox="0 0 720 180" xmlns="http://www.w3.org/2000/svg">'+
+  '<text x="20" y="24" fill="#123039" font-size="15" font-weight="700">動畫：電 → 光 → 電</text>'+
+  '<path d="M30,110 h18 v-30 h22 v30 h22 v-30 h22 v30 h18" fill="none" stroke="#d97706" stroke-width="2.5"/><text x="30" y="140" fill="#a15c06" font-size="11">電訊號 1 0 1 1</text>'+
+  '<rect x="170" y="70" width="70" height="52" rx="8" fill="#eefaf4" stroke="#059669"/><text x="205" y="100" fill="#0a7350" font-size="11" text-anchor="middle">TX</text><text x="205" y="138" fill="#4d6b76" font-size="10" text-anchor="middle">雷射+調變器</text>'+
+  '<line x1="240" y1="96" x2="500" y2="96" stroke="#9fb8c2" stroke-width="6" stroke-linecap="round"/><text x="370" y="80" fill="#4d6b76" font-size="11" text-anchor="middle">光纖（光脈衝）</text>'+
+  '<rect x="500" y="70" width="70" height="52" rx="8" fill="#f3effe" stroke="#7c3aed"/><text x="535" y="100" fill="#5b30b0" font-size="11" text-anchor="middle">RX</text><text x="535" y="138" fill="#4d6b76" font-size="10" text-anchor="middle">光偵測器</text>'+
+  '<path d="M578,110 h18 v-30 h22 v30 h22 v-30 h22 v30 h8" fill="none" stroke="#d97706" stroke-width="2.5"/><text x="600" y="140" fill="#a15c06" font-size="11">電訊號 1 0 1 1</text>'+
+  '<g fill="#22b8e6">'+
+   '<circle r="5"><animateMotion dur="1.8s" repeatCount="indefinite" begin="0s" path="M245,96 L500,96"/></circle>'+
+   '<circle r="5"><animateMotion dur="1.8s" repeatCount="indefinite" begin="0.45s" path="M245,96 L500,96"/></circle>'+
+   '<circle r="5"><animateMotion dur="1.8s" repeatCount="indefinite" begin="0.9s" path="M245,96 L500,96"/></circle>'+
+   '<circle r="5"><animateMotion dur="1.8s" repeatCount="indefinite" begin="1.35s" path="M245,96 L500,96"/></circle></g>'+
+  '</svg>'+
  '<h3>內部組成</h3><ul><li><b>發射 TX</b>：'+L("光源與雷射整合")+' → '+L("調變器")+'（寫入資料）→ 驅動電路 → '+L("光柵耦合器與邊緣耦合")+'。</li>'+
  '<li><b>接收 RX</b>：光進來 → '+L("光偵測器")+' → 跨阻放大器（TIA）→ 還原成電。</li>'+
  '<li>常整合 '+L("分波多工")+' 合／分波器，一個模組處理多波長。</li></ul>'+
@@ -355,6 +399,24 @@ const NOTES=[
  '<p><b>PAM4</b>（四階振幅，一符號 2 位元）是短距主流；封裝多為 OSFP / QSFP-DD，功耗力求 &lt;25 W。距離代號：DR 500 m、FR 2 km、LR 10 km。長途則走 '+L("相干光通訊")+'。</p>'},
 {id:"相干光通訊",en:"Coherent Optical Communication",cat:"光通",html:
  '<div class="callout"><b>一句話：</b>不只用「光的亮暗」，而是同時利用光的<b>振幅、相位、偏振</b>承載資訊，接收端用本地雷射＋DSP 還原——大幅提升每符號位元數與傳輸距離。</div>'+
+ '<svg class="diagram" viewBox="0 0 720 250" xmlns="http://www.w3.org/2000/svg">'+
+  '<text x="20" y="24" fill="#123039" font-size="15" font-weight="700">動畫：16QAM 星座——一個符號帶 4 位元</text>'+
+  '<line x1="40" y1="135" x2="270" y2="135" stroke="#ccd9df" stroke-width="1.5"/><line x1="155" y1="30" x2="155" y2="240" stroke="#ccd9df" stroke-width="1.5"/>'+
+  '<text x="266" y="128" fill="#8aa4ae" font-size="11">I（同相）</text><text x="160" y="40" fill="#8aa4ae" font-size="11">Q（正交）</text>'+
+  '<g fill="#c3d3da">'+
+   '<circle cx="75" cy="55" r="4"/><circle cx="128" cy="55" r="4"/><circle cx="182" cy="55" r="4"/><circle cx="235" cy="55" r="4"/>'+
+   '<circle cx="75" cy="108" r="4"/><circle cx="128" cy="108" r="4"/><circle cx="182" cy="108" r="4"/><circle cx="235" cy="108" r="4"/>'+
+   '<circle cx="75" cy="162" r="4"/><circle cx="128" cy="162" r="4"/><circle cx="182" cy="162" r="4"/><circle cx="235" cy="162" r="4"/>'+
+   '<circle cx="75" cy="215" r="4"/><circle cx="128" cy="215" r="4"/><circle cx="182" cy="215" r="4"/><circle cx="235" cy="215" r="4"/></g>'+
+  '<line x1="155" y1="135" x2="235" y2="55" stroke="#0891b2" stroke-width="2"><animate attributeName="x2" dur="4s" calcMode="discrete" repeatCount="indefinite" values="235;75;182;128;235;75;182;128"/><animate attributeName="y2" dur="4s" calcMode="discrete" repeatCount="indefinite" values="55;215;108;162;215;55;215;108"/></line>'+
+  '<circle r="7" fill="#0891b2"><animate attributeName="cx" dur="4s" calcMode="discrete" repeatCount="indefinite" values="235;75;182;128;235;75;182;128"/><animate attributeName="cy" dur="4s" calcMode="discrete" repeatCount="indefinite" values="55;215;108;162;215;55;215;108"/></circle>'+
+  '<g font-size="13" fill="#2b4a53"><text x="330" y="70" font-weight="700" fill="#123039">同時用三個維度傳資訊</text>'+
+   '<text x="330" y="100"><tspan fill="#0891b2" font-weight="700">振幅</tspan>：向量離原點的長度</text>'+
+   '<text x="330" y="126"><tspan fill="#7c3aed" font-weight="700">相位</tspan>：向量的角度</text>'+
+   '<text x="330" y="152"><tspan fill="#e11d48" font-weight="700">偏振</tspan>：兩個垂直方向各傳一路（容量加倍）</text>'+
+   '<text x="330" y="192" font-size="12" fill="#4d6b76">16 個星座點 = 4 位元/符號；</text>'+
+   '<text x="330" y="212" font-size="12" fill="#4d6b76">相較之下 OOK 一次只傳 1 位元。</text></g>'+
+  '</svg>'+
  '<h3>與強度調變（PAM4）的差別</h3><table><tr><th></th><th>強度調變 IM-DD</th><th>相干 Coherent</th></tr>'+
  '<tr><td>維度</td><td>只有振幅</td><td>振幅＋相位＋兩偏振</td></tr>'+
  '<tr><td>格式</td><td>PAM4</td><td>QPSK / 16QAM（DP-QAM）</td></tr>'+
@@ -371,6 +433,24 @@ const NOTES=[
  '<h3>現況與限制</h3><p>2017 年 MIT 用可程式化網格示範以光跑神經網路；之後多家新創投入。限制：類比精度有限、光電轉換開銷、'+L("挑戰")+' 的校準成本——目前定位為「加速特定線性運算」，而非取代通用處理器。它與 '+L("光收發器")+' 共用同一套矽光子元件庫。</p>'},
 {id:"共封裝光學",en:"Co-packaged Optics (CPO)",cat:"光通",html:
  '<div class="callout"><b>一句話：</b>把 '+L("光收發器")+' 從面板上的可插拔模組，<b>搬到緊貼交換晶片（ASIC）的同一封裝裡</b>，縮短電訊號路徑，解決資料中心「頻寬爆炸、功耗撞牆」。</div>'+
+ '<svg class="diagram" viewBox="0 0 720 250" xmlns="http://www.w3.org/2000/svg">'+
+  '<text x="20" y="24" fill="#123039" font-size="15" font-weight="700">動畫：電訊號路徑，越短越省電</text>'+
+  '<text x="20" y="52" fill="#e11d48" font-size="12" font-weight="700">傳統可插拔：長電路徑</text>'+
+  '<rect x="40" y="66" width="70" height="40" rx="6" fill="#eef6f9" stroke="#b9d4dd"/><text x="75" y="90" fill="#4d6b76" font-size="11" text-anchor="middle">ASIC</text>'+
+  '<line x1="110" y1="86" x2="470" y2="86" stroke="#e11d48" stroke-width="4"/><text x="290" y="78" fill="#e11d48" font-size="10" text-anchor="middle">長電路徑（耗電）</text>'+
+  '<rect x="470" y="66" width="66" height="40" rx="6" fill="#f3effe" stroke="#7c3aed"/><text x="503" y="90" fill="#5b30b0" font-size="10" text-anchor="middle">光模組</text>'+
+  '<line x1="536" y1="86" x2="694" y2="86" stroke="#9fb8c2" stroke-width="6" stroke-linecap="round"/>'+
+  '<circle r="5" fill="#e11d48"><animateMotion dur="2.6s" repeatCount="indefinite" path="M110,86 L470,86"/></circle>'+
+  '<circle r="5" fill="#22b8e6"><animateMotion dur="1.6s" repeatCount="indefinite" path="M540,86 L694,86"/></circle>'+
+  '<text x="20" y="158" fill="#059669" font-size="12" font-weight="700">CPO 共封裝：電路徑極短</text>'+
+  '<rect x="40" y="172" width="70" height="40" rx="6" fill="#eef6f9" stroke="#b9d4dd"/><text x="75" y="196" fill="#4d6b76" font-size="11" text-anchor="middle">ASIC</text>'+
+  '<line x1="110" y1="192" x2="150" y2="192" stroke="#059669" stroke-width="4"/>'+
+  '<rect x="150" y="172" width="60" height="40" rx="6" fill="#f3effe" stroke="#7c3aed"/><text x="180" y="196" fill="#5b30b0" font-size="10" text-anchor="middle">光引擎</text>'+
+  '<line x1="210" y1="192" x2="694" y2="192" stroke="#9fb8c2" stroke-width="6" stroke-linecap="round"/><text x="450" y="184" fill="#4d6b76" font-size="10" text-anchor="middle">光纖（省下的都是電力）</text>'+
+  '<circle r="5" fill="#059669"><animateMotion dur="0.7s" repeatCount="indefinite" path="M110,192 L150,192"/></circle>'+
+  '<circle r="5" fill="#22b8e6"><animateMotion dur="2s" repeatCount="indefinite" begin="0s" path="M210,192 L694,192"/></circle>'+
+  '<circle r="5" fill="#22b8e6"><animateMotion dur="2s" repeatCount="indefinite" begin="1s" path="M210,192 L694,192"/></circle>'+
+  '</svg>'+
  '<h3>為什麼需要</h3><ul><li>交換晶片頻寬每兩年翻倍（數十 Tb/s），但電訊號在 PCB 上跑越快越遠就越耗電、越衰減。</li>'+
  '<li>把光引擎移到 ASIC 旁，電通道縮到最短，<b>每位元能耗大幅下降</b>。</li></ul>'+
  '<h3>三種路線</h3><ul><li><b>可插拔</b>：目前主流，好維護，但較耗電。</li>'+
