@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>半導體 · 互動知識庫</title>
+<style>
+  :root{
+    --bg:#eef6f9; --bg2:#ffffff; --panel:#ffffff; --panel2:#f1f8fb;
+    --line:#d5e5ec; --text:#123039; --muted:#4d6b76; --dim:#8aa4ae;
+    --cyan:#0891b2; --green:#059669; --amber:#d97706; --purple:#7c3aed; --pink:#e11d48;
+    --accent:#0e9bc4;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:
+      radial-gradient(1100px 420px at 50% -120px, rgba(14,155,196,.14), transparent 70%),
+      linear-gradient(180deg,#f6fbfd 0%,#e9f3f7 100%);
+    color:var(--text);font-family:'PingFang TC','Microsoft JhengHei','Helvetica Neue',system-ui,sans-serif;
+    line-height:1.75;overflow:hidden}
+  header{position:fixed;top:0;left:0;right:0;height:60px;z-index:20;
+    display:flex;align-items:center;gap:16px;padding:0 20px;
+    background:rgba(255,255,255,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  header::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;
+    background:linear-gradient(90deg,#e11d48,#d97706,#eab308,#059669,#0891b2,#4f46e5,#7c3aed);opacity:.85}
+  header h1{font-size:18px;margin:0;font-weight:800;letter-spacing:.5px;white-space:nowrap}
+  header h1 .em{color:var(--accent)}
+  .search{flex:1;max-width:340px;position:relative}
+  .search input{width:100%;padding:8px 12px 8px 34px;border-radius:10px;
+    border:1px solid var(--line);background:var(--panel);color:var(--text);font-size:14px;outline:none}
+  .search input:focus{border-color:var(--accent)}
+  .search svg{position:absolute;left:10px;top:9px;opacity:.6}
+  .tabs{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+  .tabs button{padding:8px 14px;border-radius:10px;border:1px solid var(--line);
+    background:var(--panel);color:var(--muted);font-size:13.5px;cursor:pointer;transition:.15s;font-family:inherit}
+  .tabs button:hover{color:var(--text);border-color:var(--accent)}
+  .tabs button.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700;box-shadow:0 2px 10px rgba(14,155,196,.35)}
+  .wrap{position:fixed;top:60px;left:0;right:0;bottom:0;display:flex}
+  aside{width:290px;flex:none;overflow-y:auto;padding:16px 10px 60px;
+    border-right:1px solid var(--line);background:rgba(255,255,255,.55)}
+  .cat{margin:10px 8px 4px;font-size:12px;font-weight:700;letter-spacing:1px;color:var(--dim)}
+  .navlink{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:8px;
+    color:var(--muted);cursor:pointer;font-size:14px;transition:.12s}
+  .navlink:hover{background:var(--panel);color:var(--text)}
+  .navlink.active{background:var(--panel2);color:#123039;font-weight:700;box-shadow:inset 3px 0 0 var(--accent)}
+  .navlink .dot{width:8px;height:8px;border-radius:50%;flex:none}
+  .navlink small{color:var(--dim);font-size:10.5px;margin-left:auto;text-align:right}
+  main{flex:1;overflow-y:auto;padding:38px 46px 90px;scroll-behavior:smooth}
+  .note{max-width:820px;margin:0 auto;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .crumbs{font-size:13px;color:var(--dim);margin-bottom:10px}
+  .crumbs .tag{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11.5px;font-weight:700;margin-right:6px}
+  h2.title{font-size:29px;margin:2px 0 4px;font-weight:800}
+  .en{color:var(--muted);font-size:15px;margin-bottom:18px;letter-spacing:.5px}
+  .callout{background:linear-gradient(180deg,rgba(34,211,238,.12),rgba(34,211,238,.03));
+    border-left:3px solid var(--accent);border-radius:8px;padding:12px 16px;margin:18px 0;color:#123039}
+  .callout b{color:#0e5a6b}
+  main h3{font-size:18px;margin:26px 0 8px;color:#123039;border-bottom:1px solid var(--line);padding-bottom:6px}
+  main p{margin:10px 0}
+  main ul{margin:10px 0;padding-left:22px}
+  main li{margin:5px 0}
+  .diagram{width:100%;border-radius:12px;border:1px solid var(--line);margin:16px 0;background:#fff;display:block;box-shadow:0 2px 12px rgba(18,48,57,.06)}
+  .formula{font-family:'Cambria Math',Georgia,serif;font-size:18px;text-align:center;
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin:16px 0;color:var(--text)}
+  .eqcard{background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid var(--line);border-radius:14px;
+    padding:18px 20px;margin:18px 0;box-shadow:0 3px 14px rgba(18,48,57,.06)}
+  .eqcard .eqt{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--accent);text-align:center;margin-bottom:2px}
+  .eqcard .eq{font-family:'Cambria Math','Times New Roman',Georgia,serif;font-size:32px;text-align:center;
+    color:#123039;margin:6px 0 16px;line-height:1.35}
+  .eqcard .eq i{font-style:italic}
+  .eqcard .eq sub{font-size:.6em;vertical-align:-.25em} .eqcard .eq sup{font-size:.6em;vertical-align:.5em}
+  .eqcard .lg{display:grid;gap:8px}
+  .eqcard .row{display:flex;gap:14px;align-items:baseline;padding:9px 14px;background:#fff;border:1px solid var(--line);border-radius:10px}
+  .eqcard .s{font-family:'Cambria Math','Times New Roman',Georgia,serif;font-style:italic;font-weight:800;
+    font-size:20px;min-width:58px;text-align:center;flex:none}
+  .eqcard .s sub{font-size:.6em;vertical-align:-.2em}
+  .eqcard .m{font-size:13.5px;color:#2b4a53;line-height:1.6}
+  .eqcard .m b{color:#123039}
+  .eqcard .u{display:inline-block;margin-left:8px;font-size:11.5px;color:#5b8090;background:#eef6f9;
+    border:1px solid var(--line);border-radius:20px;padding:1px 9px}
+  .eqcard .cap{font-size:12.5px;color:var(--dim);text-align:center;margin-top:12px}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 12px;text-align:left}
+  th{background:#e4f1f5;color:#123039;font-weight:700}
+  td{background:#fbfeff;color:#2b4a53}
+  tr:nth-child(even) td{background:#f2f8fb}
+  a.wl{color:var(--accent);cursor:pointer;text-decoration:none;border-bottom:1px dashed rgba(34,211,238,.5)}
+  a.wl:hover{color:#0b5566;background:rgba(14,155,196,.14);border-radius:3px}
+  .related{margin-top:34px;padding-top:16px;border-top:1px solid var(--line)}
+  .related .cat{margin-left:0}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .pathrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:16px 0 8px}
+  .stage{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:24px;background:#fff;
+    border:1px solid var(--line);cursor:pointer;font-weight:700;color:#123039;transition:.15s;box-shadow:0 1px 6px rgba(18,48,57,.05)}
+  .stage:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(18,48,57,.12);border-color:var(--accent)}
+  .stage .d{width:10px;height:10px;border-radius:50%;flex:none}
+  .pathrow .arrow{color:var(--dim);font-weight:800;font-size:16px}
+  .catgroup{margin:14px 0}
+  .catgroup .cl{font-size:12.5px;font-weight:800;letter-spacing:.5px;margin-bottom:7px;display:flex;align-items:center;gap:7px}
+  .catgroup .cl .d{width:9px;height:9px;border-radius:50%}
+  .chip{padding:6px 14px;border-radius:20px;background:var(--panel);border:1px solid var(--line);
+    color:var(--muted);cursor:pointer;font-size:13.5px;transition:.12s}
+  .chip:hover{background:var(--accent);color:#04222a;border-color:var(--accent)}
+  .nav-btns{display:flex;justify-content:space-between;margin-top:26px;gap:10px}
+  .nav-btns button{flex:1;padding:12px;border-radius:10px;border:1px solid var(--line);
+    background:var(--panel);color:var(--muted);cursor:pointer;text-align:left;font-family:inherit;transition:.12s}
+  .nav-btns button:hover{border-color:var(--accent);color:#0e5a6b;background:#f0f9fc}
+  .nav-btns small{display:block;color:var(--dim);font-size:11px}
+  .kbox{background:linear-gradient(180deg,rgba(52,211,153,.12),rgba(52,211,153,.03));
+    border:1px solid rgba(52,211,153,.35);border-radius:12px;padding:14px 18px;margin:22px 0}
+  .kbox .kt{font-weight:800;color:var(--green);font-size:14px;margin-bottom:6px}
+  .kbox ul{margin:4px 0 0;padding-left:20px} .kbox li{margin:3px 0}
+  .collap{border:1px solid var(--line);border-radius:10px;margin:12px 0;overflow:hidden;background:#f4fafc}
+  .collap>summary{cursor:pointer;padding:12px 16px;font-weight:700;color:#123039;list-style:none;display:flex;align-items:center;gap:8px}
+  .collap>summary::-webkit-details-marker{display:none}
+  .collap>summary::before{content:'▸';color:var(--accent);transition:.2s;display:inline-block}
+  .collap[open]>summary::before{transform:rotate(90deg)}
+  .collap>summary:hover{background:var(--panel)}
+  .collap .body{padding:2px 18px 16px;color:#2b4a53}
+  .collap.myth{background:#fff5f6}.collap.myth>summary{color:#be123c}.collap.myth>summary::before{color:var(--pink)}
+  .collap.fact{background:#f1fbf6}.collap.fact>summary{color:#047857}.collap.fact>summary::before{color:var(--green)}
+  .collap.deep{background:#f5f4fe}.collap.deep>summary{color:#3730a3}.collap.deep>summary::before{color:#4f46e5}
+  .collap>summary:hover{background:rgba(0,0,0,.03)}
+  .myth-row{display:flex;gap:10px;margin:10px 0}
+  .myth-row .x{color:var(--pink);font-weight:800;flex:none}.myth-row .o{color:var(--green);font-weight:800;flex:none}
+  .hero{text-align:center;padding:14px 0 10px}
+  .hero .big{font-size:40px;font-weight:800;margin:12px 0 4px}
+  .hero .sub{color:var(--muted);max-width:640px;margin:0 auto 8px}
+  .stats{display:flex;gap:12px;justify-content:center;margin:22px 0;flex-wrap:wrap}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 20px;text-align:center}
+  .stat b{font-size:24px;display:block;color:var(--accent)} .stat span{font-size:12px;color:var(--dim)}
+  #graphView,#demoView,#meshView{flex:1;position:relative;display:none}
+  #demoView,#meshView{overflow-y:auto;padding:24px 30px 80px}
+  #graph{width:100%;height:100%;display:block;cursor:grab}
+  .legend{position:absolute;top:16px;left:16px;background:rgba(255,255,255,.9);border:1px solid var(--line);
+    border-radius:10px;padding:12px 14px;font-size:13px;backdrop-filter:blur(6px);box-shadow:0 2px 12px rgba(18,48,57,.08)}
+  .legend div{display:flex;align-items:center;gap:8px;margin:4px 0;color:var(--muted)}
+  .legend i{width:11px;height:11px;border-radius:50%;display:inline-block}
+  .hint{position:absolute;bottom:16px;right:18px;color:var(--dim);font-size:12px}
+  .gnode{cursor:pointer}.gnode text{font-size:12px;fill:var(--text);pointer-events:none;font-family:inherit}
+  .gnode circle{transition:r .15s}
+  .gedge{stroke:#b7d3dd;stroke-width:1.4}.gedge.hl{stroke:var(--accent);stroke-width:2.6}
+  /* demo */
+  .demo{max-width:900px;margin:0 auto}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;margin:18px 0;box-shadow:0 4px 20px rgba(18,48,57,.06)}
+  .panel h3{margin:0 0 4px;color:#123039;font-size:18px;border:none}
+  .panel .d{color:var(--dim);font-size:13px;margin-bottom:12px}
+  .controls{display:flex;flex-wrap:wrap;gap:20px;align-items:center;margin-top:14px}
+  .controls label{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:6px;min-width:190px}
+  .controls input[type=range]{accent-color:var(--accent)}
+  .controls .val{color:var(--accent);font-weight:700}
+  .controls button{padding:9px 16px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);color:var(--text);cursor:pointer;font-family:inherit}
+  .controls button:hover{border-color:var(--accent)}
+  canvas.cv{width:100%;border-radius:12px;background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid var(--line);display:block}
+  .bars{display:flex;gap:18px;margin-top:14px}
+  .bar{flex:1;text-align:center}
+  .bar .track{height:120px;background:var(--panel2);border-radius:8px;position:relative;overflow:hidden;border:1px solid var(--line)}
+  .bar .fill{position:absolute;bottom:0;left:0;right:0;transition:height .08s}
+  .bar .lbl{font-size:13px;color:var(--muted);margin-top:6px}
+  .bar .pct{font-weight:800;color:#123039}
+  svg#mesh{width:100%;height:auto;background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid var(--line);border-radius:12px}
+  .cpl{cursor:pointer}
+  .chartbox{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;margin:16px 0;box-shadow:0 2px 12px rgba(18,48,57,.05)}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:#b7d3dd;border-radius:6px}
+  @media(max-width:720px){aside{position:fixed;z-index:15;height:100%;transform:translateX(-100%);transition:.25s}
+    aside.open{transform:none}main{padding:24px 18px 80px}.search{max-width:none}header h1{font-size:14px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>🔲 <span class="em">半導體</span>知識庫</h1>
+  <div class="search">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8fbccb" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input id="search" placeholder="搜尋知識點…（Enter 開啟）" autocomplete="off">
+  </div>
+  <div class="tabs">
+    <button id="tabNotes" class="active">📖 筆記</button>
+    <button id="tabGraph">🕸️ 關係圖譜</button>
+    <button id="tabDemo">🔬 互動</button>
+  </div>
+</header>
+<div class="wrap">
+  <aside id="sidebar"></aside>
+  <main id="main"></main>
+  <div id="graphView"><svg id="graph"></svg><div class="legend" id="legend"></div>
+    <div class="hint">拖曳節點 · 點擊開啟筆記 · 移入高亮關聯</div></div>
+  <div id="demoView"></div>
+</div>
+<script>
+const CATS={
+ "基礎":{name:"基礎與元件",raw:"#0891b2"},
+ "設計":{name:"設計與產業",raw:"#7c3aed"},
+ "製程":{name:"製程與微影",raw:"#059669"},
+ "封裝":{name:"先進封裝",raw:"#d97706"},
+ "應用":{name:"晶片應用",raw:"#e11d48"}
+};
+function L(id){return '<a class="wl" data-id="'+id+'">'+id+'</a>';}
+const NOTES=[
+{id:"半導體與PN接面",en:"Semiconductor & PN Junction",cat:"基礎",html:
+ '<div class="callout"><b>一句話：</b>半導體是可被控制的材料（矽）；加入微量雜質（摻雜）改變導電性，把兩種摻雜的矽接起來就成了單向導通的 PN 接面（二極體）——所有晶片的物理起點。</div>'+
+ '<h3>可控才是重點</h3><ul><li>能隙適中（矽約 1.1 eV），可用電/光/熱控制導不導電。</li><li>純矽幾乎不導電，靠摻雜才好用。</li></ul>'+
+ '<h3>摻雜與 PN 接面</h3><ul><li><b>N 型</b>摻磷（多電子）、<b>P 型</b>摻硼（多電洞）。</li><li>PN 接面順偏導通、反偏截止＝二極體；'+L("電晶體")+' 的源/汲極也是摻雜區。</li></ul>'+
+ '<p>製程上靠離子植入精準摻雜（見 '+L("沉積蝕刻與摻雜")+'）。這個「聽話的開關」正是 '+L("電晶體")+' 與數位世界的地基。</p>'},
+{id:"電晶體",en:"Transistor · BJT → MOSFET",cat:"基礎",html:
+ '<div class="callout"><b>一句話：</b>用小訊號控制大電流的開關。1947 年貝爾實驗室的 <b>BJT</b> 開啟半導體時代；更省電好整合的 <b>MOSFET</b> 成為數位晶片絕對主流。</div>'+
+ '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MjAgMjYwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZjhmY2ZlIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZWVmNmY5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjcyMCIgaGVpZ2h0PSIyNjAiIGZpbGw9InVybCgjYmcpIi8+CiAgPHRleHQgeD0iMjgiIHk9IjM0IiBmaWxsPSIjMTIzMDM5IiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIj5NT1NGRVQg57WQ5qeL77ya6Zu75aOT5o6n5Yi255qE5aWI57Gz57Sa6ZaL6ZecPC90ZXh0PgogIDwhLS0gc3Vic3RyYXRlIC0tPgogIDxyZWN0IHg9IjcwIiB5PSIxNTAiIHdpZHRoPSI1ODAiIGhlaWdodD0iODAiIGZpbGw9IiNlYWYzZjciIHN0cm9rZT0iI2I5ZDRkZCIvPgogIDx0ZXh0IHg9IjM2MCIgeT0iMjE1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOGFhNGFlIiBmb250LXNpemU9IjEyIj5QIOWei+efveWfuuadvyAoQm9keSk8L3RleHQ+CiAgPCEtLSBzb3VyY2UvZHJhaW4gLS0+CiAgPHJlY3QgeD0iMTEwIiB5PSIxNTAiIHdpZHRoPSIxMzAiIGhlaWdodD0iNDgiIGZpbGw9IiNiZmUwZWYiLz48cmVjdCB4PSI0ODAiIHk9IjE1MCIgd2lkdGg9IjEzMCIgaGVpZ2h0PSI0OCIgZmlsbD0iI2JmZTBlZiIvPgogIDx0ZXh0IHg9IjE3NSIgeT0iMTc4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMGU1YTZiIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIj7mupDmpbUgbis8L3RleHQ+CiAgPHRleHQgeD0iNTQ1IiB5PSIxNzgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiMwZTVhNmIiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiPuaxsualtSBuKzwvdGV4dD4KICA8IS0tIGNoYW5uZWwgLS0+CiAgPHJlY3QgeD0iMjQwIiB5PSIxNTAiIHdpZHRoPSIyNDAiIGhlaWdodD0iMTAiIGZpbGw9IiMyMmI4ZTYiIG9wYWNpdHk9IjAuNTUiLz4KICA8dGV4dCB4PSIzNjAiIHk9IjE3NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzA4OTFiMiIgZm9udC1zaXplPSIxMSI+6YCa6YGTIChDaGFubmVsKTwvdGV4dD4KICA8IS0tIG94aWRlICsgZ2F0ZSAtLT4KICA8cmVjdCB4PSIyNDAiIHk9IjE0MCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSIxMCIgZmlsbD0iI2U2ZGNiMCIvPgogIDx0ZXh0IHg9IjIzMCIgeT0iMTM4IiB0ZXh0LWFuY2hvcj0iZW5kIiBmaWxsPSIjOGE3YTNhIiBmb250LXNpemU9IjEwIj7msKfljJblsaQ8L3RleHQ+CiAgPHJlY3QgeD0iMjkwIiB5PSIxMDgiIHdpZHRoPSIxNDAiIGhlaWdodD0iMzAiIHJ4PSI0IiBmaWxsPSIjZjU5ZTBiIi8+CiAgPHRleHQgeD0iMzYwIiB5PSIxMjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiMzYTI2MDAiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSI3MDAiPumWmOaltSBHYXRlPC90ZXh0PgogIDwhLS0gZ2F0ZSB2b2x0YWdlIGFycm93IC0tPgogIDxsaW5lIHgxPSIzNjAiIHkxPSI4OCIgeDI9IjM2MCIgeTI9IjEwNiIgc3Ryb2tlPSIjZTExZDQ4IiBzdHJva2Utd2lkdGg9IjIiIG1hcmtlci1lbmQ9InVybCgjYSkiLz4KICA8dGV4dCB4PSIzNjgiIHk9Ijg2IiBmaWxsPSIjZTExZDQ4IiBmb250LXNpemU9IjEyIj5WZzwvdGV4dD4KICA8ZGVmcz48bWFya2VyIGlkPSJhIiBtYXJrZXJXaWR0aD0iOCIgbWFya2VySGVpZ2h0PSI4IiByZWZYPSI1IiByZWZZPSIzIiBvcmllbnQ9ImF1dG8iPjxwYXRoIGQ9Ik0wLDAgTDYsMyBMMCw2IFoiIGZpbGw9IiNlMTFkNDgiLz48L21hcmtlcj48L2RlZnM+CiAgPHRleHQgeD0iMjgiIHk9IjI1MCIgZmlsbD0iIzhhYTRhZSIgZm9udC1zaXplPSIxMSI+6ZaY5qW16Zu75aOTIFZnIOi2hemBjuiHqOeVjOmbu+WjkyBWdGjvvIzpgJrpgZPmhJ/mh4nlh7rovInlrZDvvIzmupDmpbXihpLmsbLmpbXlsI7pgJrvvIjplovvvJ0x77yJ44CCPC90ZXh0Pgo8L3N2Zz4K">'+
+ '<h3>從真空管到電晶體</h3><p>1947 年貝爾實驗室發明電晶體（BJT，1956 諾貝爾獎），取代又大又耗電的真空管，催生 '+L("積體電路與摩爾定律")+' 與 '+L("產業分工與晶片戰爭")+' 的矽谷。</p>'+
+ '<h3>BJT vs MOSFET</h3><table><tr><th></th><th>BJT</th><th>MOSFET</th></tr><tr><td>控制</td><td>電流</td><td>電壓</td></tr><tr><td>功耗</td><td>較高</td><td>低</td></tr><tr><td>用途</td><td>類比/功率/高頻</td><td>數位主流</td></tr></table>'+
+ '<p>MOSFET 閘極電壓超過 Vth 就導通（開＝1）；NMOS＋PMOS 組成低功耗 CMOS。想玩開關？到「🔬 互動」拉閘極電壓。要更快更省電就得做更小 → '+L("電晶體微縮")+'。</p>'},
+{id:"電晶體微縮",en:"FinFET → GAA → CFET",cat:"基礎",html:
+ '<div class="callout"><b>一句話：</b>為了在越小尺寸仍能好好「關掉」'+L("電晶體")+'，結構從平面 → <b>FinFET</b> → <b>GAA 奈米片</b> → 未來的 <b>CFET</b>（NMOS/PMOS 上下疊），都是讓閘極更能掌控通道。</div>'+
+ '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MjAgMjUwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZjhmY2ZlIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZWVmNmY5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjkyMCIgaGVpZ2h0PSIyNTAiIGZpbGw9InVybCgjYmcpIi8+CiAgPHRleHQgeD0iMjgiIHk9IjM0IiBmaWxsPSIjMTIzMDM5IiBmb250LXNpemU9IjE5IiBmb250LXdlaWdodD0iNzAwIj7pm7vmmbbpq5TntZDmp4vnmoTmvJTpgLLvvJrorpPplpjmpbXotorkvobotorog73jgIzmjozmjqfjgI3pgJrpgZM8L3RleHQ+CgogIDwhLS0gUGxhbmFyIC0tPgogIDxnPgogICAgPHRleHQgeD0iMTE1IiB5PSI3MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzA4OTFiMiIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9IjcwMCI+5bmz6Z2iIFBsYW5hcjwvdGV4dD4KICAgIDx0ZXh0IHg9IjExNSIgeT0iOTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM4YWE0YWUiIGZvbnQtc2l6ZT0iMTEiPumWmOalteWPquW+nuS4iuaWuSAxIOmdojwvdGV4dD4KICAgIDxyZWN0IHg9IjQ1IiB5PSIxNTAiIHdpZHRoPSIxNDAiIGhlaWdodD0iNDAiIGZpbGw9IiNlYWYzZjciIHN0cm9rZT0iI2I5ZDRkZCIvPgogICAgPHJlY3QgeD0iOTAiIHk9IjEzOCIgd2lkdGg9IjUwIiBoZWlnaHQ9IjEyIiBmaWxsPSIjMjJiOGU2IiBvcGFjaXR5PSIwLjciLz4KICAgIDxyZWN0IHg9Ijg1IiB5PSIxMTgiIHdpZHRoPSI2MCIgaGVpZ2h0PSIyMCIgcng9IjMiIGZpbGw9IiNmNTllMGIiLz4KICAgIDx0ZXh0IHg9IjExNSIgeT0iMTMyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjM2EyNjAwIiBmb250LXNpemU9IjEwIj5HYXRlPC90ZXh0PgogICAgPHRleHQgeD0iMTE1IiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM4YWE0YWUiIGZvbnQtc2l6ZT0iMTEiPn4yMDExIOWJjTwvdGV4dD4KICA8L2c+CiAgPCEtLSBGaW5GRVQgLS0+CiAgPGc+CiAgICA8dGV4dCB4PSIzNDUiIHk9IjcyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMDU5NjY5IiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iNzAwIj5GaW5GRVQg6bCt5byPPC90ZXh0PgogICAgPHRleHQgeD0iMzQ1IiB5PSI5MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzhhYTRhZSIgZm9udC1zaXplPSIxMSI+5LiJ6Z2i5YyF5L2P56uL6LW355qE6bCtPC90ZXh0PgogICAgPHJlY3QgeD0iMjc1IiB5PSIxNjAiIHdpZHRoPSIxNDAiIGhlaWdodD0iMzAiIGZpbGw9IiNlYWYzZjciIHN0cm9rZT0iI2I5ZDRkZCIvPgogICAgPHJlY3QgeD0iMzM1IiB5PSIxMTAiIHdpZHRoPSIyMCIgaGVpZ2h0PSI2MCIgZmlsbD0iIzIyYjhlNiIgb3BhY2l0eT0iMC43Ii8+CiAgICA8cGF0aCBkPSJNMzIwLDE1MCB2LTUyIGg1MCB2NTIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2Y1OWUwYiIgc3Ryb2tlLXdpZHRoPSIxMCIvPgogICAgPHRleHQgeD0iMzQ1IiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM4YWE0YWUiIGZvbnQtc2l6ZT0iMTEiPue0hCAyMiBubSDotbc8L3RleHQ+CiAgPC9nPgogIDwhLS0gR0FBIC0tPgogIDxnPgogICAgPHRleHQgeD0iNTc1IiB5PSI3MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzdjM2FlZCIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9IjcwMCI+R0FBIOWliOexs+eJhzwvdGV4dD4KICAgIDx0ZXh0IHg9IjU3NSIgeT0iOTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM4YWE0YWUiIGZvbnQtc2l6ZT0iMTEiPuWbm+mdouWFqOeSsOe5njwvdGV4dD4KICAgIDxyZWN0IHg9IjUwNSIgeT0iMTcwIiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZWFmM2Y3IiBzdHJva2U9IiNiOWQ0ZGQiLz4KICAgIDxyZWN0IHg9IjU0MCIgeT0iMTEyIiB3aWR0aD0iNzAiIGhlaWdodD0iNTIiIHJ4PSI2IiBmaWxsPSJub25lIiBzdHJva2U9IiNmNTllMGIiIHN0cm9rZS13aWR0aD0iOCIvPgogICAgPHJlY3QgeD0iNTQ4IiB5PSIxMjAiIHdpZHRoPSI1NCIgaGVpZ2h0PSI4IiBmaWxsPSIjMjJiOGU2Ii8+PHJlY3QgeD0iNTQ4IiB5PSIxMzQiIHdpZHRoPSI1NCIgaGVpZ2h0PSI4IiBmaWxsPSIjMjJiOGU2Ii8+PHJlY3QgeD0iNTQ4IiB5PSIxNDgiIHdpZHRoPSI1NCIgaGVpZ2h0PSI4IiBmaWxsPSIjMjJiOGU2Ii8+CiAgICA8dGV4dCB4PSI1NzUiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzhhYTRhZSIgZm9udC1zaXplPSIxMSI+MiBubSDkuJbku6M8L3RleHQ+CiAgPC9nPgogIDwhLS0gQ0ZFVCAtLT4KICA8Zz4KICAgIDx0ZXh0IHg9IjgwNSIgeT0iNzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNlMTFkNDgiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSI3MDAiPkNGRVQg5aCG55aKPC90ZXh0PgogICAgPHRleHQgeD0iODA1IiB5PSI5MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzhhYTRhZSIgZm9udC1zaXplPSIxMSI+Tk1PUy9QTU9TIOS4iuS4i+eWijwvdGV4dD4KICAgIDxyZWN0IHg9IjczNSIgeT0iMTc2IiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE2IiBmaWxsPSIjZWFmM2Y3IiBzdHJva2U9IiNiOWQ0ZGQiLz4KICAgIDxyZWN0IHg9Ijc2NSIgeT0iMTQwIiB3aWR0aD0iODAiIGhlaWdodD0iMzIiIHJ4PSI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNmNTllMGIiIHN0cm9rZS13aWR0aD0iNiIvPgogICAgPHJlY3QgeD0iNzcyIiB5PSIxNDgiIHdpZHRoPSI2NiIgaGVpZ2h0PSI3IiBmaWxsPSIjMjJiOGU2Ii8+PHJlY3QgeD0iNzcyIiB5PSIxNjAiIHdpZHRoPSI2NiIgaGVpZ2h0PSI3IiBmaWxsPSIjMjJiOGU2Ii8+CiAgICA8cmVjdCB4PSI3NjUiIHk9IjEwMCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZjU5ZTBiIiBzdHJva2Utd2lkdGg9IjYiLz4KICAgIDxyZWN0IHg9Ijc3MiIgeT0iMTA4IiB3aWR0aD0iNjYiIGhlaWdodD0iNyIgZmlsbD0iI2ZiNzE4NSIvPjxyZWN0IHg9Ijc3MiIgeT0iMTIwIiB3aWR0aD0iNjYiIGhlaWdodD0iNyIgZmlsbD0iI2ZiNzE4NSIvPgogICAgPHRleHQgeD0iODA1IiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM4YWE0YWUiIGZvbnQtc2l6ZT0iMTEiPue0hCAyMDI4K++8iEE377yJPC90ZXh0PgogIDwvZz4KICA8cGF0aCBkPSJNMjAwLDE1MCBoMzAgTTQzMCwxNTAgaDMwIE02NjAsMTUwIGgzMCIgc3Ryb2tlPSIjY2JkOGRlIiBzdHJva2Utd2lkdGg9IjIiIG1hcmtlci1lbmQ9InVybCgjYSkiLz4KICA8ZGVmcz48bWFya2VyIGlkPSJhIiBtYXJrZXJXaWR0aD0iOCIgbWFya2VySGVpZ2h0PSI4IiByZWZYPSI2IiByZWZZPSIzIiBvcmllbnQ9ImF1dG8iPjxwYXRoIGQ9Ik0wLDAgTDYsMyBMMCw2IFoiIGZpbGw9IiM5ZmI4YzIiLz48L21hcmtlcj48L2RlZnM+CiAgPHRleHQgeD0iMjgiIHk9IjIzOCIgZmlsbD0iIzhhYTRhZSIgZm9udC1zaXplPSIxMSI+6ZaY5qW177yI5qmZ77yJ5YyF6KaG6YCa6YGT77yI6JeN77yJ55qE6Z2i56mN6LaK5L6G6LaK5aSnIOKGkiDmvI/pm7votorlsJHjgIHotornnIHpm7s8L3RleHQ+Cjwvc3ZnPgo=">'+
+ '<h3>四代結構</h3><table><tr><th>結構</th><th>閘極包覆</th><th>年代</th></tr><tr><td>平面</td><td>1 面</td><td>~2011 前</td></tr><tr><td>FinFET</td><td>三面</td><td>約 22nm 起</td></tr><tr><td>GAA 奈米片</td><td>四面環繞</td><td>2nm（2025 量產）</td></tr><tr><td>CFET</td><td>上下堆疊</td><td>約 2028+（A7）</td></tr></table>'+
+ '<p>台積電 N2（2nm）2025 量產、首用 GAA；CFET 由 imec/台積電/Intel 研發，搭配 High-NA '+L("微影與EUV")+'。這是延續 '+L("積體電路與摩爾定律")+' 的關鍵。</p>'},
+{id:"積體電路與摩爾定律",en:"IC & Moore's Law",cat:"基礎",html:
+ '<div class="callout"><b>一句話：</b><b>積體電路（IC）</b> 把大量電晶體整合在同一晶片上並連好線；<b>摩爾定律</b> 是驅動它的節奏——單晶片電晶體數量約每兩年翻一倍。</div>'+
+ '<div class="chartbox" id="chartbox"><canvas id="chart" width="760" height="300" style="width:100%;height:auto"></canvas></div>'+
+ '<h3>整合的革命</h3><p>IC 之前電路要手工焊接（數量的暴政）；1958 Kilby、1959 Noyce 發明 IC，用一次微影整合在矽上。積體度：SSI→LSI→VLSI→今上百億顆 '+L("電晶體")+'。</p>'+
+ '<h3>為何越來越難</h3><p>尺寸逼近原子級、微影成本急升（'+L("微影與EUV")+'）。延續三路：新結構（'+L("電晶體微縮")+'）、新微影（EUV）、'+L("先進封裝與Chiplet")+'。登納德縮放放緩逼出 '+L("晶片種類CPU_GPU_AI")+'。</p>'},
+{id:"晶片設計與EDA",en:"Chip Design & EDA",cat:"設計",html:
+ '<div class="callout"><b>一句話：</b>數十億顆 '+L("電晶體")+' 只能靠 <b>EDA</b> 軟體設計、模擬、驗證；流程從規格到可製造版圖，最後下線交給晶圓廠。</div>'+
+ '<h3>EDA：晶片界的編譯器</h3><p>把設計抽象化，工程師用高階語言描述、工具自動轉成版圖。三大廠 Synopsys/Cadence/Siemens。</p>'+
+ '<h3>設計流程</h3><ul><li>規格 → RTL（Verilog）→ 邏輯合成 → 佈局繞線 → 驗證（時序/功耗/DRC/LVS）→ <b>下線</b> 產出 GDSII。</li></ul>'+
+ '<p>像蓋房子：訂需求→設計圖→施工藍圖→安全檢查→發包給 '+L("產業分工與晶片戰爭")+' 的晶圓廠。一次先進下線光罩費用可達數千萬美元。</p>'},
+{id:"產業分工與晶片戰爭",en:"Fabless/Foundry & Chip War",cat:"設計",html:
+ '<div class="callout"><b>一句話：</b>半導體把設計與製造分家（Fabless／Foundry）並全球分工；先進晶片是 AI 與國防命脈，供應鏈的咽喉點成了大國角力——即「晶片戰爭」。</div>'+
+ '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgMjMwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZjhmY2ZlIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZWVmNmY5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSIyMzAiIGZpbGw9InVybCgjYmcpIi8+CiAgPHRleHQgeD0iMjgiIHk9IjM0IiBmaWxsPSIjMTIzMDM5IiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIj7mmbbniYfkvpvmh4npj4joiIflkr3llonpu548L3RleHQ+CiAgPGcgZm9udC1zaXplPSIxMiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+CiAgICA8cmVjdCB4PSI0MCIgeT0iODAiIHdpZHRoPSIxMzAiIGhlaWdodD0iNTYiIHJ4PSI4IiBmaWxsPSIjZWVmNmY5IiBzdHJva2U9IiMwODkxYjIiLz48dGV4dCB4PSIxMDUiIHk9IjEwNCIgZmlsbD0iIzBlNWE2YiIgZm9udC13ZWlnaHQ9IjcwMCI+6Kit6KiIIEZhYmxlc3M8L3RleHQ+PHRleHQgeD0iMTA1IiB5PSIxMjIiIGZpbGw9IiM2Yjk4YTQiIGZvbnQtc2l6ZT0iMTAiPk52aWRpYSDCtyBBcHBsZTwvdGV4dD4KICAgIDxyZWN0IHg9IjIzMCIgeT0iODAiIHdpZHRoPSIxNTAiIGhlaWdodD0iNTYiIHJ4PSI4IiBmaWxsPSIjZmZmNWY2IiBzdHJva2U9IiNlMTFkNDgiIHN0cm9rZS13aWR0aD0iMiIvPjx0ZXh0IHg9IjMwNSIgeT0iMTAyIiBmaWxsPSIjYmUxMjNjIiBmb250LXdlaWdodD0iNzAwIj5FVVYg5pud5YWJ5qmfPC90ZXh0Pjx0ZXh0IHg9IjMwNSIgeT0iMTIwIiBmaWxsPSIjYzc2IiBmb250LXNpemU9IjEwIj5BU01M77yI542o5a6277yJ8J+UkTwvdGV4dD4KICAgIDxyZWN0IHg9IjQ0MCIgeT0iODAiIHdpZHRoPSIxNTAiIGhlaWdodD0iNTYiIHJ4PSI4IiBmaWxsPSIjZmZmNWY2IiBzdHJva2U9IiNlMTFkNDgiIHN0cm9rZS13aWR0aD0iMiIvPjx0ZXh0IHg9IjUxNSIgeT0iMTAyIiBmaWxsPSIjYmUxMjNjIiBmb250LXdlaWdodD0iNzAwIj7lhYjpgLLku6Plt6U8L3RleHQ+PHRleHQgeD0iNTE1IiB5PSIxMjAiIGZpbGw9IiNjNzYiIGZvbnQtc2l6ZT0iMTAiPuWPsOepjembuyBUU01DIPCflJE8L3RleHQ+CiAgICA8cmVjdCB4PSI2NTAiIHk9IjgwIiB3aWR0aD0iMTMwIiBoZWlnaHQ9IjU2IiByeD0iOCIgZmlsbD0iI2YzZWZmZSIgc3Ryb2tlPSIjN2MzYWVkIi8+PHRleHQgeD0iNzE1IiB5PSIxMDQiIGZpbGw9IiM1YjMwYjAiIGZvbnQtd2VpZ2h0PSI3MDAiPuWwgeijnea4rOippjwvdGV4dD48dGV4dCB4PSI3MTUiIHk9IjEyMiIgZmlsbD0iIzhhN2JjMCIgZm9udC1zaXplPSIxMCI+T1NBVDwvdGV4dD4KICA8L2c+CiAgPGcgc3Ryb2tlPSIjOWZiOGMyIiBzdHJva2Utd2lkdGg9IjEuOCIgbWFya2VyLWVuZD0idXJsKCNhKSI+PGxpbmUgeDE9IjE3MiIgeTE9IjEwOCIgeDI9IjIyNiIgeTI9IjEwOCIvPjxsaW5lIHgxPSIzODIiIHkxPSIxMDgiIHgyPSI0MzYiIHkyPSIxMDgiLz48bGluZSB4MT0iNTkyIiB5MT0iMTA4IiB4Mj0iNjQ2IiB5Mj0iMTA4Ii8+PC9nPgogIDxkZWZzPjxtYXJrZXIgaWQ9ImEiIG1hcmtlcldpZHRoPSI4IiBtYXJrZXJIZWlnaHQ9IjgiIHJlZlg9IjYiIHJlZlk9IjMiIG9yaWVudD0iYXV0byI+PHBhdGggZD0iTTAsMCBMNiwzIEwwLDYgWiIgZmlsbD0iIzlmYjhjMiIvPjwvbWFya2VyPjwvZGVmcz4KICA8dGV4dCB4PSIzMDUiIHk9IjE2NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2UxMWQ0OCIgZm9udC1zaXplPSIxMSI+8J+UkSA9IOmXnOmNteWSveWWie+8muWwkeaVuOS+m+aHieWVhuS4u+Wwju+8jOaIkOeCuuWcsOe3o+aUv+ayu+eEpum7njwvdGV4dD4KICA8dGV4dCB4PSIyOCIgeT0iMjAwIiBmaWxsPSIjOGFhNGFlIiBmb250LXNpemU9IjExIj7lh7rlj6PnrqHliLbjgIFDSElQUyDoo5zosrzjgIHkvpvmh4npj4jph43ntYTvvIzpg73lnI3nuZ7okZfpgJnlhanlgIvlkr3llonpu57lsZXplovjgII8L3RleHQ+Cjwvc3ZnPgo=">'+
+ '<h3>從矽谷到分工</h3><p>矽谷：蕭克利→八叛徒創快捷（Fairchild）→諾伊斯與摩爾創 Intel。三角色：<b>Fabless</b>（Nvidia/Apple 設計）、<b>Foundry</b>（台積電 代工）、<b>IDM</b>（Intel/三星）＋ OSAT 封測。</p>'+
+ '<h3>晶片戰爭：咽喉之爭</h3><ul><li>咽喉：'+L("微影與EUV")+' 曝光機由 ASML 獨家、先進製程由台積電主導。</li>'+
+ '<li>美國自 2022 出口管制（含 EUV/部分 DUV），施壓荷日跟進；《CHIPS 法案》補貼建廠；台積電赴美日德設廠。台灣掌握最先進製程＝「矽盾」。</li></ul>'+
+ '<p>需求引擎是 '+L("晶片種類CPU_GPU_AI")+' 的 AI 熱潮。</p>'},
+{id:"半導體製程與晶圓",en:"Fabrication & Wafer",cat:"製程",html:
+ '<div class="callout"><b>一句話：</b>把電路透過數百道重複工序一層層做在<b>矽晶圓</b>上，核心是循環「沉積 → 微影 → 蝕刻 → 摻雜」，像蓋奈米級多層建築。想看步驟？到「🔬 互動」的製程步驟。</div>'+
+ '<h3>晶圓：完美畫布</h3><p>高純度（9 個 9）單晶矽，柴可拉斯基法拉晶棒→切片拋光成鏡面。主流 300mm。缺陷直接影響良率。</p>'+
+ '<h3>循環四步＋前後段</h3><ul><li>'+L("沉積蝕刻與摻雜")+'（鋪材料/刻掉/摻雜）＋ '+L("微影與EUV")+'（印圖案）。</li>'+
+ '<li><b>前段 FEOL</b> 做 '+L("電晶體")+'；<b>後段 BEOL</b> 做多層金屬導線（十幾層）。完成後測試、'+L("先進封裝與Chiplet")+'。</li></ul>'+
+ '<p>一片晶圓要跑數週、上千道步驟，良率是成本關鍵。</p>'},
+{id:"微影與EUV",en:"Lithography & EUV",cat:"製程",html:
+ '<div class="callout"><b>一句話：</b>微影用光把電路「印」上晶圓，是決定電晶體多小的核心與瓶頸；<b>EUV（13.5nm）</b> 是 7nm 以下先進晶片的關鍵，由荷蘭 <b>ASML</b> 獨家。</div>'+
+ '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgMjEwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZjhmY2ZlIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZWVmNmY5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSIyMTAiIGZpbGw9InVybCgjYmcpIi8+CiAgPHRleHQgeD0iMjgiIHk9IjMyIiBmaWxsPSIjMTIzMDM5IiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIj7lvq7lvbHmtYHnqIvvvJrnlKjlhYnmiorpm7vot6/ljbDkuIrmmbblnJM8L3RleHQ+CiAgPGcgZm9udC1zaXplPSIxMSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+CiAgICA8IS0tIDEg5aGX5YWJ6Zi7IC0tPgogICAgPHJlY3QgeD0iNDAiIHk9IjExMCIgd2lkdGg9IjEyMCIgaGVpZ2h0PSIyMCIgZmlsbD0iI2VhZjNmNyIgc3Ryb2tlPSIjYjlkNGRkIi8+PHJlY3QgeD0iNDAiIHk9Ijk2IiB3aWR0aD0iMTIwIiBoZWlnaHQ9IjE0IiBmaWxsPSIjY2JiNmYwIi8+CiAgICA8dGV4dCB4PSIxMDAiIHk9Ijg2IiBmaWxsPSIjNmQzZmMwIiBmb250LXdlaWdodD0iNzAwIj7ikaAg5aGX5YWJ6Zi7PC90ZXh0PgogICAgPCEtLSAyIOabneWFiSjlhYnnvakpIC0tPgogICAgPHJlY3QgeD0iMjAwIiB5PSIxMTAiIHdpZHRoPSIxMjAiIGhlaWdodD0iMjAiIGZpbGw9IiNlYWYzZjciIHN0cm9rZT0iI2I5ZDRkZCIvPjxyZWN0IHg9IjIwMCIgeT0iOTYiIHdpZHRoPSIxMjAiIGhlaWdodD0iMTQiIGZpbGw9IiNjYmI2ZjAiLz4KICAgIDxyZWN0IHg9IjIwMCIgeT0iNjAiIHdpZHRoPSIxMjAiIGhlaWdodD0iMTAiIGZpbGw9IiMxMjMwMzkiLz48cmVjdCB4PSIyMzAiIHk9IjYwIiB3aWR0aD0iMTYiIGhlaWdodD0iMTAiIGZpbGw9IiNmOGZjZmUiLz48cmVjdCB4PSIyNzQiIHk9IjYwIiB3aWR0aD0iMTYiIGhlaWdodD0iMTAiIGZpbGw9IiNmOGZjZmUiLz4KICAgIDx0ZXh0IHg9IjI2MCIgeT0iNTIiIGZpbGw9IiMxMjMwMzkiIGZvbnQtd2VpZ2h0PSI3MDAiPuKRoSDmm53lhYnvvIjlhYnnvanvvIk8L3RleHQ+CiAgICA8bGluZSB4MT0iMjM4IiB5MT0iNzIiIHgyPSIyMzgiIHkyPSI5NCIgc3Ryb2tlPSIjZmJiZjI0IiBzdHJva2Utd2lkdGg9IjMiLz48bGluZSB4MT0iMjgyIiB5MT0iNzIiIHgyPSIyODIiIHkyPSI5NCIgc3Ryb2tlPSIjZmJiZjI0IiBzdHJva2Utd2lkdGg9IjMiLz4KICAgIDwhLS0gMyDpoa/lvbEgLS0+CiAgICA8cmVjdCB4PSIzNjAiIHk9IjExMCIgd2lkdGg9IjEyMCIgaGVpZ2h0PSIyMCIgZmlsbD0iI2VhZjNmNyIgc3Ryb2tlPSIjYjlkNGRkIi8+PHJlY3QgeD0iMzYwIiB5PSI5NiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjE0IiBmaWxsPSIjY2JiNmYwIi8+PHJlY3QgeD0iNDEwIiB5PSI5NiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjE0IiBmaWxsPSIjY2JiNmYwIi8+PHJlY3QgeD0iNDUwIiB5PSI5NiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjE0IiBmaWxsPSIjY2JiNmYwIi8+CiAgICA8dGV4dCB4PSI0MjAiIHk9Ijg2IiBmaWxsPSIjNmQzZmMwIiBmb250LXdlaWdodD0iNzAwIj7ikaIg6aGv5b2xPC90ZXh0PgogICAgPCEtLSA0IOidleWIuyAtLT4KICAgIDxyZWN0IHg9IjUyMCIgeT0iMTEwIiB3aWR0aD0iMTIwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZWFmM2Y3IiBzdHJva2U9IiNiOWQ0ZGQiLz4KICAgIDxyZWN0IHg9IjUyMCIgeT0iOTYiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxNCIgZmlsbD0iIzA1OTY2OSIgb3BhY2l0eT0iMC41Ii8+PHJlY3QgeD0iNjEwIiB5PSI5NiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjE0IiBmaWxsPSIjMDU5NjY5IiBvcGFjaXR5PSIwLjUiLz4KICAgIDx0ZXh0IHg9IjU4MCIgeT0iODYiIGZpbGw9IiMwYTczNTAiIGZvbnQtd2VpZ2h0PSI3MDAiPuKRoyDonZXliLs8L3RleHQ+CiAgICA8IS0tIDUg5Y675YWJ6Zi7IC0tPgogICAgPHJlY3QgeD0iNjgwIiB5PSIxMTAiIHdpZHRoPSIxMjAiIGhlaWdodD0iMjAiIGZpbGw9IiNlYWYzZjciIHN0cm9rZT0iI2I5ZDRkZCIvPgogICAgPHJlY3QgeD0iNjgwIiB5PSI5NiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjE0IiBmaWxsPSIjMDU5NjY5IiBvcGFjaXR5PSIwLjUiLz48cmVjdCB4PSI3NzAiIHk9Ijk2IiB3aWR0aD0iMzAiIGhlaWdodD0iMTQiIGZpbGw9IiMwNTk2NjkiIG9wYWNpdHk9IjAuNSIvPgogICAgPHRleHQgeD0iNzQwIiB5PSI4NiIgZmlsbD0iIzBhNzM1MCIgZm9udC13ZWlnaHQ9IjcwMCI+4pGkIOWOu+WFiemYu+KGkueVmeWcluahiDwvdGV4dD4KICA8L2c+CiAgPGcgc3Ryb2tlPSIjOWZiOGMyIiBzdHJva2Utd2lkdGg9IjEuNSIgbWFya2VyLWVuZD0idXJsKCNhKSI+PGxpbmUgeDE9IjE2NSIgeTE9IjExOCIgeDI9IjE5NSIgeTI9IjExOCIvPjxsaW5lIHgxPSIzMjUiIHkxPSIxMTgiIHgyPSIzNTUiIHkyPSIxMTgiLz48bGluZSB4MT0iNDg1IiB5MT0iMTE4IiB4Mj0iNTE1IiB5Mj0iMTE4Ii8+PGxpbmUgeDE9IjY0NSIgeTE9IjExOCIgeDI9IjY3NSIgeTI9IjExOCIvPjwvZz4KICA8ZGVmcz48bWFya2VyIGlkPSJhIiBtYXJrZXJXaWR0aD0iOCIgbWFya2VySGVpZ2h0PSI4IiByZWZYPSI2IiByZWZZPSIzIiBvcmllbnQ9ImF1dG8iPjxwYXRoIGQ9Ik0wLDAgTDYsMyBMMCw2IFoiIGZpbGw9IiM5ZmI4YzIiLz48L21hcmtlcj48L2RlZnM+CiAgPHRleHQgeD0iMjgiIHk9IjE5MCIgZmlsbD0iIzhhYTRhZSIgZm9udC1zaXplPSIxMSI+5LiJ6KaB57Sg77ya5YWJ6Zi75YqR77yI57Sr77yM5oSf5YWJ6Iac77yJ44CB5YWJ572p77yI6buR55m95qih5p2/77yJ44CB5pud5YWJ5qmf77yI5oqK5ZyW5qGI57iu5bCP5oqV5b2x77yJ44CCRVVWIOabneWFieapn+eUsSBBU01MIOeNqOWutuOAgjwvdGV4dD4KPC9zdmc+Cg==">'+
+ '<svg class="diagram" viewBox="0 0 720 190" xmlns="http://www.w3.org/2000/svg">'+'<text x="20" y="24" fill="#123039" font-size="15" font-weight="700">動畫：EUV 光源（雷射轟錫滴）</text>'+'<line x1="60" y1="90" x2="250" y2="90" stroke="#e11d48" stroke-width="2"/><text x="55" y="84" fill="#e11d48" font-size="11" text-anchor="end">雷射</text>'+'<circle cx="250" cy="90" r="9" fill="#fbbf24"/><circle cx="250" cy="90" r="9" fill="#fff2b0"><animate attributeName="r" values="9;22;9" dur="1.2s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0;1" dur="1.2s" repeatCount="indefinite"/></circle>'+'<text x="250" y="120" fill="#a15c06" font-size="11" text-anchor="middle">錫滴→電漿</text>'+'<path d="M600,40 A120,120 0 0,1 600,150" fill="none" stroke="#0891b2" stroke-width="6"/><text x="618" y="98" fill="#0e5a6b" font-size="11">反射鏡</text>'+'<circle r="4" fill="#7c3aed"><animateMotion dur="2s" repeatCount="indefinite" path="M260,90 L590,90 A120,120 0 0,1 470,150 L200,150"/></circle>'+'<circle r="4" fill="#7c3aed"><animateMotion dur="2s" begin="1s" repeatCount="indefinite" path="M260,90 L590,90 A120,120 0 0,1 470,150 L200,150"/></circle>'+'<rect x="150" y="150" width="120" height="12" rx="2" fill="#cfe3ea"/><text x="210" y="180" fill="#4d6b76" font-size="11" text-anchor="middle">晶圓</text>'+'</svg>'+
+ '<h3>三要素</h3><ul><li><b>光阻劑</b>（感光膜）、<b>光罩</b>（電路模板）、<b>曝光機</b>（把圖案縮小約 4 倍投影）。</li></ul>'+
+ '<h3>解析度看波長</h3><p>193nm DUV → 13.5nm EUV。EUV 難在：無材料能透射（改用反射鏡）、光源用雷射每秒 5 萬次轟錫滴、全程真空、上億美元。High-NA 用於 '+L("電晶體微縮")+' 的 A14/CFET；是 '+L("產業分工與晶片戰爭")+' 咽喉。</p>'},
+{id:"沉積蝕刻與摻雜",en:"Deposition · Etch · Implant",cat:"製程",html:
+ '<div class="callout"><b>一句話：</b>製程循環裡除了微影外的三大工藝：<b>薄膜沉積</b>（鋪材料）、<b>蝕刻</b>（刻掉多餘）、<b>離子植入</b>（局部摻雜），反覆搭配把 '+L("電晶體")+' 蓋出來。</div>'+
+ '<h3>薄膜沉積</h3><table><tr><th>方式</th><th>特點</th></tr><tr><td>CVD 化學氣相</td><td>均勻常用</td></tr><tr><td>PVD 物理氣相</td><td>常鍍金屬</td></tr><tr><td>ALD 原子層</td><td>一次一層原子</td></tr></table>'+
+ '<h3>蝕刻與離子植入</h3><ul><li><b>乾式(電漿)蝕刻</b>可做垂直深結構（刻 '+L("電晶體微縮")+' 的鰭）；濕式快又便宜但方向性差。</li>'+
+ '<li><b>離子植入</b>：加速離子射入矽，能量控深度、劑量控濃度，之後退火活化——做源/汲極與調 Vth。</li></ul>'+
+ '<p>與 '+L("微影與EUV")+' 反覆循環數百次，堆出整顆晶片。</p>'},
+{id:"先進封裝與Chiplet",en:"Advanced Packaging & Chiplet",cat:"封裝",html:
+ '<div class="callout"><b>一句話：</b>當微縮越來越難，改用<b>把多顆晶片高密度整合</b>提升效能——延續摩爾定律的另一條路。<b>Chiplet</b> 與台積電 <b>CoWoS</b> 是代表。</div>'+
+ '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MjAgMjMwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZjhmY2ZlIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZWVmNmY5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjcyMCIgaGVpZ2h0PSIyMzAiIGZpbGw9InVybCgjYmcpIi8+CiAgPHRleHQgeD0iMjgiIHk9IjMyIiBmaWxsPSIjMTIzMDM5IiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIj7lhYjpgLLlsIHoo53vvIhDb1dvU++8ie+8mumCj+i8r+aZtueJh+iIhyBIQk0g6LaF6L+R5pW05ZCIPC90ZXh0PgogIDwhLS0g5Z+65p2/IC0tPgogIDxyZWN0IHg9IjUwIiB5PSIxODUiIHdpZHRoPSI2MjAiIGhlaWdodD0iMjQiIHJ4PSIzIiBmaWxsPSIjZGZlOGVjIiBzdHJva2U9IiNiOWQ0ZGQiLz48dGV4dCB4PSIzNjAiIHk9IjIwMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzdmOTI5YiIgZm9udC1zaXplPSIxMSI+5bCB6KOd5Z+65p2/IFN1YnN0cmF0ZTwvdGV4dD4KICA8IS0tIOS4reS7i+WxpCAtLT4KICA8cmVjdCB4PSI3MCIgeT0iMTYwIiB3aWR0aD0iNTgwIiBoZWlnaHQ9IjI2IiByeD0iMiIgZmlsbD0iI2U0ZWVmMiIgc3Ryb2tlPSIjOWZiOGMyIi8+PHRleHQgeD0iMzYwIiB5PSIxNzgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM0ZDZiNzYiIGZvbnQtc2l6ZT0iMTEiPuefveS4reS7i+WxpCBJbnRlcnBvc2Vy77yI6LaF5a+G57ea6Lev77yJPC90ZXh0PgogIDwhLS0g6YKP6Lyv5pm254mHIC0tPgogIDxyZWN0IHg9IjI5MCIgeT0iOTYiIHdpZHRoPSIxNDAiIGhlaWdodD0iNjQiIHJ4PSI1IiBmaWxsPSIjZWVmNmY5IiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMiIvPjx0ZXh0IHg9IjM2MCIgeT0iMTMyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMGU1YTZiIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIj7pgo/ovK/mmbbniYc8L3RleHQ+PHRleHQgeD0iMzYwIiB5PSIxNTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2Yjk4YTQiIGZvbnQtc2l6ZT0iMTAiPkdQVSAvIFNvQzwvdGV4dD4KICA8IS0tIEhCTSDlt6YgLS0+CiAgPGc+PHJlY3QgeD0iMTIwIiB5PSI5NiIgd2lkdGg9IjEyMCIgaGVpZ2h0PSIxNCIgZmlsbD0iI2YzZWZmZSIgc3Ryb2tlPSIjN2MzYWVkIi8+PHJlY3QgeD0iMTIwIiB5PSIxMTQiIHdpZHRoPSIxMjAiIGhlaWdodD0iMTQiIGZpbGw9IiNmM2VmZmUiIHN0cm9rZT0iIzdjM2FlZCIvPjxyZWN0IHg9IjEyMCIgeT0iMTMyIiB3aWR0aD0iMTIwIiBoZWlnaHQ9IjE0IiBmaWxsPSIjZjNlZmZlIiBzdHJva2U9IiM3YzNhZWQiLz48cmVjdCB4PSIxMjAiIHk9IjE1MCIgd2lkdGg9IjEyMCIgaGVpZ2h0PSIxMCIgZmlsbD0iI2U3ZGRmOSIgc3Ryb2tlPSIjN2MzYWVkIi8+PHRleHQgeD0iMTgwIiB5PSI5MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzViMzBiMCIgZm9udC1zaXplPSIxMSIgZm9udC13ZWlnaHQ9IjcwMCI+SEJNIOWghueWijwvdGV4dD48L2c+CiAgPCEtLSBIQk0g5Y+zIC0tPgogIDxnPjxyZWN0IHg9IjQ4MCIgeT0iOTYiIHdpZHRoPSIxMjAiIGhlaWdodD0iMTQiIGZpbGw9IiNmM2VmZmUiIHN0cm9rZT0iIzdjM2FlZCIvPjxyZWN0IHg9IjQ4MCIgeT0iMTE0IiB3aWR0aD0iMTIwIiBoZWlnaHQ9IjE0IiBmaWxsPSIjZjNlZmZlIiBzdHJva2U9IiM3YzNhZWQiLz48cmVjdCB4PSI0ODAiIHk9IjEzMiIgd2lkdGg9IjEyMCIgaGVpZ2h0PSIxNCIgZmlsbD0iI2YzZWZmZSIgc3Ryb2tlPSIjN2MzYWVkIi8+PHJlY3QgeD0iNDgwIiB5PSIxNTAiIHdpZHRoPSIxMjAiIGhlaWdodD0iMTAiIGZpbGw9IiNlN2RkZjkiIHN0cm9rZT0iIzdjM2FlZCIvPjx0ZXh0IHg9IjU0MCIgeT0iOTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1YjMwYjAiIGZvbnQtc2l6ZT0iMTEiIGZvbnQtd2VpZ2h0PSI3MDAiPkhCTSDloIbnloo8L3RleHQ+PC9nPgogIDwhLS0gVFNWIGRvdHMgLS0+CiAgPGcgZmlsbD0iIzlhYTdiMCI+PGNpcmNsZSBjeD0iMTgwIiBjeT0iMTU2IiByPSIyIi8+PGNpcmNsZSBjeD0iMzYwIiBjeT0iMTU2IiByPSIyIi8+PGNpcmNsZSBjeD0iNTQwIiBjeT0iMTU2IiByPSIyIi8+PC9nPgogIDx0ZXh0IHg9IjI4IiB5PSIyMjIiIGZpbGw9IiM4YWE0YWUiIGZvbnQtc2l6ZT0iMTEiPjIuNUTvvJrlpJrpoYbmmbbniYfkuKbmjpLlnKjkuK3ku4vlsaTkuIrkupLpgKPvvJszRCDliYfnlKjnn73nqb/lrZTvvIhUU1bvvInlnoLnm7TloIbnlorvvIzpoLvlr6zpgZTmlbggVEIvc+OAgjwvdGV4dD4KPC9zdmc+Cg==">'+
+ '<svg class="diagram" viewBox="0 0 720 190" xmlns="http://www.w3.org/2000/svg">'+'<text x="20" y="24" fill="#123039" font-size="15" font-weight="700">動畫：邏輯晶片與 HBM 間高速資料流</text>'+'<rect x="60" y="140" width="600" height="26" rx="4" fill="#e4eef2" stroke="#b9d4dd"/><text x="360" y="183" fill="#4d6b76" font-size="11" text-anchor="middle">矽中介層 Interposer</text>'+'<rect x="300" y="84" width="120" height="56" rx="6" fill="#eef6f9" stroke="#0891b2" stroke-width="2"/><text x="360" y="116" fill="#0e5a6b" font-size="12" text-anchor="middle" font-weight="700">邏輯晶片</text>'+'<g><rect x="120" y="84" width="120" height="13" rx="2" fill="#f3effe" stroke="#7c3aed"/><rect x="120" y="100" width="120" height="13" rx="2" fill="#f3effe" stroke="#7c3aed"/><rect x="120" y="116" width="120" height="13" rx="2" fill="#f3effe" stroke="#7c3aed"/><text x="180" y="78" fill="#5b30b0" font-size="11" text-anchor="middle">HBM</text></g>'+'<g><rect x="480" y="84" width="120" height="13" rx="2" fill="#f3effe" stroke="#7c3aed"/><rect x="480" y="100" width="120" height="13" rx="2" fill="#f3effe" stroke="#7c3aed"/><rect x="480" y="116" width="120" height="13" rx="2" fill="#f3effe" stroke="#7c3aed"/><text x="540" y="78" fill="#5b30b0" font-size="11" text-anchor="middle">HBM</text></g>'+'<circle r="4.5" fill="#22b8e6"><animateMotion dur="1.3s" repeatCount="indefinite" path="M300,112 L240,112"/></circle>'+'<circle r="4.5" fill="#22b8e6"><animateMotion dur="1.3s" begin="0.4s" repeatCount="indefinite" path="M240,100 L300,100"/></circle>'+'<circle r="4.5" fill="#22b8e6"><animateMotion dur="1.3s" begin="0.2s" repeatCount="indefinite" path="M420,112 L480,112"/></circle>'+'<circle r="4.5" fill="#22b8e6"><animateMotion dur="1.3s" begin="0.7s" repeatCount="indefinite" path="M480,100 L420,100"/></circle>'+'</svg>'+
+ '<h3>三大手法</h3><ul><li><b>Chiplet</b>：把大晶片拆成小晶片再拼；良率高、可混搭製程（核心用 2nm、I/O 用成熟製程）、靠 UCIe 互連。</li>'+
+ '<li><b>2.5D</b>：並排在矽中介層上（CoWoS）；<b>3D</b>：垂直堆疊用 TSV 打通。</li></ul>'+
+ '<p>AI '+L("晶片種類CPU_GPU_AI")+' 要把運算晶片與大量 '+L("HBM")+' 超近整合，CoWoS 頻寬達數 TB/s，產能是 AI 供應瓶頸。</p>'},
+{id:"HBM",en:"High Bandwidth Memory",cat:"封裝",html:
+ '<div class="callout"><b>一句話：</b>把多顆 DRAM <b>垂直堆疊</b>、用 '+L("先進封裝與Chiplet")+' 的 TSV 打通，形成超寬資料通道。緊貼 '+L("晶片種類CPU_GPU_AI")+'，是 AI 餵飽資料的關鍵。</div>'+
+ '<h3>為什麼需要</h3><p>AI 瓶頸常是把資料搬進晶片的頻寬（記憶體牆）。HBM 把記憶體堆高、拉近、加寬通道。</p>'+
+ '<h3>現況</h3><ul><li><b>HBM3E</b>：每堆疊約 24GB、約 1.2 TB/s；Nvidia Blackwell 整體約 8 TB/s。</li><li><b>HBM4</b>：SK 海力士與台積電合作，約 2026 量產。</li></ul>'+
+ '<p>與 GPU 一起放上 '+L("先進封裝與Chiplet")+' 的 CoWoS 中介層。</p>'},
+{id:"晶片種類CPU_GPU_AI",en:"CPU / GPU / AI Accelerators",cat:"應用",html:
+ '<div class="callout"><b>一句話：</b><b>CPU</b> 少核強、擅長複雜通用；<b>GPU</b> 數千核、擅長平行（AI 主力）；<b>TPU 等 AI 加速器</b> 為特定運算特化、效能/功耗最高。現代常三者協同。</div>'+
+ '<h3>三者比較</h3><table><tr><th></th><th>CPU</th><th>GPU</th><th>AI 加速器</th></tr><tr><td>核心</td><td>少而強</td><td>多而平行</td><td>為任務特化</td></tr><tr><td>擅長</td><td>複雜邏輯</td><td>大規模平行</td><td>特定運算</td></tr><tr><td>比喻</td><td>博士</td><td>小學生人海</td><td>專用生產線</td></tr></table>'+
+ '<p>AI＝大量矩陣乘加，GPU 人海戰術完勝，成主力引擎（Nvidia Blackwell）；靠 '+L("HBM")+' 餵資料、'+L("先進封裝與Chiplet")+' 整合，CUDA 生態是護城河。TPU 用脈動陣列、手機 NPU 同類。需求驅動 '+L("產業分工與晶片戰爭")+'。</p>'}
+];
+const EDGES=[
+ ["半導體與PN接面","電晶體"],["電晶體","電晶體微縮"],["電晶體","積體電路與摩爾定律"],
+ ["電晶體微縮","積體電路與摩爾定律"],["電晶體微縮","微影與EUV"],
+ ["積體電路與摩爾定律","先進封裝與Chiplet"],["積體電路與摩爾定律","晶片種類CPU_GPU_AI"],
+ ["晶片設計與EDA","電晶體"],["晶片設計與EDA","產業分工與晶片戰爭"],["晶片設計與EDA","半導體製程與晶圓"],
+ ["產業分工與晶片戰爭","微影與EUV"],["產業分工與晶片戰爭","晶片種類CPU_GPU_AI"],
+ ["半導體製程與晶圓","半導體與PN接面"],["半導體製程與晶圓","微影與EUV"],["半導體製程與晶圓","沉積蝕刻與摻雜"],["半導體製程與晶圓","電晶體"],
+ ["微影與EUV","沉積蝕刻與摻雜"],
+ ["先進封裝與Chiplet","HBM"],["先進封裝與Chiplet","晶片種類CPU_GPU_AI"],["先進封裝與Chiplet","電晶體微縮"],
+ ["HBM","晶片種類CPU_GPU_AI"]
+];
+const EXTRA={
+"半導體與PN接面":{take:["半導體＝可控的材料（矽）。","摻雜(N/P)改變導電性。","PN 接面＝單向導通的二極體。"],
+ myth:[{q:"半導體就是『半導電』的固定材料。",a:"重點是『可被控制』——你叫它導它才導。"}],
+ fact:"純矽幾乎不導電，加入十億分之一等級的雜質後才變得好用。",
+ deep:"矽能隙約 1.1 eV、能長穩定 SiO₂ 絕緣層；導電性靠 <a class='wl' data-id='沉積蝕刻與摻雜'>離子植入</a> 精準摻雜。"},
+"電晶體":{take:["用小訊號控制大電流的開關。","BJT 開先河、MOSFET 成數位主流。","MOSFET 用電壓控制、省電易微縮。"],
+ myth:[{q:"電晶體是拿來『放大』的類比元件。",a:"數位晶片裡它主要當開關（開/關＝1/0）。"}],
+ fact:"一顆現代手機晶片的電晶體數量，比全世界人口還多好幾十倍。",
+ deep:"BJT 用電流控制較耗電、用於類比/功率；MOSFET 閘極電壓感應通道、NMOS+PMOS 組成 CMOS。越做越小走向 <a class='wl' data-id='電晶體微縮'>FinFET/GAA</a>。"},
+"電晶體微縮":{take:["平面→FinFET→GAA→CFET。","目的：讓閘極更能掌控通道、少漏電。","GAA 用於 2nm、CFET 是下一步。"],
+ myth:[{q:"nm 節點就是電晶體實際尺寸。",a:"現在的 nm 更像行銷代號，不等於任何實際物理長度。"}],
+ fact:"台積電 N2（2nm）於 2025 年量產，是它第一個用 GAA 奈米片的節點。",
+ deep:"閘極包覆面積越大、靜電控制越好、漏電越低；CFET 把 NMOS/PMOS 上下疊，靠 High-NA <a class='wl' data-id='微影與EUV'>EUV</a> 實現。"},
+"積體電路與摩爾定律":{take:["IC 把大量電晶體整合在一片晶片。","摩爾定律：約兩年翻倍，是產業目標。","純微縮越來越難，改走新結構/封裝。"],
+ myth:[{q:"摩爾定律是精確的物理定律。",a:"它是經驗觀察與產業目標，靠大量工程『刻意維持』。"}],
+ fact:"IC 由 Kilby(1958) 與 Noyce(1959) 發明；Kilby 於 2000 年獲諾貝爾獎。",
+ deep:"登納德縮放早已放緩，逼出多核與 <a class='wl' data-id='晶片種類CPU_GPU_AI'>GPU/加速器</a>；延續靠 <a class='wl' data-id='電晶體微縮'>GAA/CFET</a>、EUV 與 <a class='wl' data-id='先進封裝與Chiplet'>先進封裝</a>。",chart:"moore"},
+"晶片設計與EDA":{take:["數十億顆電晶體只能靠 EDA 設計。","流程：RTL→合成→佈局繞線→驗證→下線。","EDA 是半導體的軟體咽喉。"],
+ myth:[{q:"晶片是工程師一條條線畫的。",a:"現代晶片只能用 EDA 自動合成與繞線，人只描述高階意圖。"}],
+ fact:"一次先進製程的下線，光光罩費用就可能高達數千萬美元。",
+ deep:"三大廠 Synopsys/Cadence/Siemens；設計者用 RTL 描述行為，EDA 轉成邏輯閘、佈局繞線、驗證後交 <a class='wl' data-id='產業分工與晶片戰爭'>晶圓廠</a>。"},
+"產業分工與晶片戰爭":{take:["設計與製造分工（Fabless/Foundry）。","矽谷確立創業與人才流動文化。","EUV 與台積電是供應鏈咽喉，成地緣焦點。"],
+ myth:[{q:"晶片公司都自己蓋廠製造。",a:"多數是 Fabless，只設計、把製造外包給台積電這類代工廠。"}],
+ fact:"中國一度占 ASML 營收約三成，出口管制下預期降到約兩成。",
+ deep:"矽谷源自蕭克利→快捷→Intel；晶片戰爭圍繞 ASML 的 <a class='wl' data-id='微影與EUV'>EUV</a> 與台積電代工兩個咽喉，牽動出口管制、CHIPS 補貼與供應鏈重組。"},
+"半導體製程與晶圓":{take:["數百道工序做在矽晶圓上。","循環：沉積→微影→蝕刻→摻雜。","前段做電晶體、後段做金屬導線。"],
+ myth:[{q:"晶片是一次成形印出來的。",a:"是一層層反覆堆疊，一片晶圓要跑數週、上千道步驟。"}],
+ fact:"半導體級矽純度達 99.9999999%（9 個 9），比黃金純多了。",
+ deep:"晶圓用柴可拉斯基法拉單晶晶棒再切片拋光；後段金屬導線可達十幾層、攤平總長數十公里。良率是成本關鍵。"},
+"微影與EUV":{take:["用光把電路印上晶圓。","三要素：光阻、光罩、曝光機。","EUV 13.5nm、ASML 獨家、先進製程咽喉。"],
+ myth:[{q:"EUV 只是波長更短的普通紫外光機。",a:"它連玻璃都穿不過，得全用反射鏡、真空中、用雷射轟錫產生光源。"}],
+ fact:"EUV 光源靠每秒約 5 萬次用雷射打錫滴產生電漿，整機重數十噸、上億美元。",
+ deep:"解析度受波長限制：193nm DUV→13.5nm EUV；還有浸潤式、多重曝光、OPC。High-NA 用於 <a class='wl' data-id='電晶體微縮'>A14/CFET</a>。"},
+"沉積蝕刻與摻雜":{take:["沉積鋪材料、蝕刻刻掉、植入摻雜。","乾式蝕刻可做垂直深結構。","ALD 可原子級控厚度。"],
+ myth:[{q:"蝕刻就是用酸把材料泡掉。",a:"那是濕式；先進製程主流是乾式(電漿)蝕刻，能刻出筆直的 3D 結構。"}],
+ fact:"ALD 能把膜厚控制到單一原子層，用於先進電晶體的 High-k 閘極氧化層。",
+ deep:"CVD 化學反應、PVD 濺鍍、ALD 逐原子層；乾式蝕刻方向性佳；離子植入能量控深度、劑量控濃度後退火活化。與 <a class='wl' data-id='微影與EUV'>微影</a> 反覆循環。"},
+"先進封裝與Chiplet":{take:["把多晶片高密度整合。","Chiplet 拆大為小、CoWoS 超近整合。","延續摩爾定律的另一條路。"],
+ myth:[{q:"封裝只是把晶片包起來保護。",a:"先進封裝是效能關鍵——超近整合以提升頻寬、降功耗，遠不只保護殼。"}],
+ fact:"AI 熱潮下台積電 CoWoS 產能一度供不應求，成為 GPU 出貨瓶頸。",
+ deep:"Chiplet 良率高、可混搭製程、靠 UCIe 互連；2.5D 用中介層並排、3D 用 TSV 垂直堆疊。整合 <a class='wl' data-id='HBM'>HBM</a> 給 AI <a class='wl' data-id='晶片種類CPU_GPU_AI'>GPU</a>。"},
+"HBM":{take:["垂直堆疊 DRAM、TSV 打通。","突破記憶體牆、餵飽 AI 晶片。","HBM3E 每堆疊約 24GB。"],
+ myth:[{q:"HBM 就是比較快的普通記憶體。",a:"它是堆疊＋超寬介面的封裝級記憶體，緊貼運算晶片，頻寬遠非一般 DRAM 可比。"}],
+ fact:"Nvidia Blackwell 的 HBM3E 整體頻寬約 8 TB/s——相當於一秒搬完上千部藍光電影。",
+ deep:"多層 DRAM 用 TSV 堆疊，和 <a class='wl' data-id='晶片種類CPU_GPU_AI'>GPU</a> 一起放上 <a class='wl' data-id='先進封裝與Chiplet'>CoWoS</a> 中介層；HBM4 約 2026 量產。"},
+"晶片種類CPU_GPU_AI":{take:["CPU 少核強、GPU 多核平行、AI 加速器特化。","GPU 是 AI 主力引擎。","三者常協同（異質運算）。"],
+ myth:[{q:"GPU 只是拿來打電動的顯示卡。",a:"它的平行架構剛好極適合 AI 的矩陣運算，如今是資料中心 AI 的核心。"}],
+ fact:"一台 AI 伺服器可裝 8 顆頂級 GPU；深度學習訓練幾乎全靠 GPU 的矩陣乘加。",
+ deep:"CPU 像博士（複雜邏輯）、GPU 像小學生人海（平行）、TPU 像專用生產線（脈動陣列）；GPU 靠 <a class='wl' data-id='HBM'>HBM</a> 餵資料、<a class='wl' data-id='先進封裝與Chiplet'>CoWoS</a> 整合。"}
+};
+
+const NById=Object.fromEntries(NOTES.map(n=>[n.id,n]));
+const sidebar=document.getElementById('sidebar');
+function buildSidebar(filter){
+ filter=(filter||'').trim();
+ let html='<div class="navlink" data-id="__home"><span class="dot" style="background:var(--accent)"></span>總覽首頁</div>';
+ for(const key of Object.keys(CATS)){
+  const items=NOTES.filter(n=>n.cat===key&&(!filter||n.id.includes(filter)||n.en.toLowerCase().includes(filter.toLowerCase())));
+  if(!items.length)continue;
+  html+='<div class="cat">'+CATS[key].name+'</div>';
+  for(const n of items)html+='<div class="navlink" data-id="'+n.id+'"><span class="dot" style="background:'+CATS[n.cat].raw+'"></span>'+n.id+'<small>'+n.en+'</small></div>';
+ }
+ sidebar.innerHTML=html;
+}
+/* ===== 筆記 ===== */
+const main=document.getElementById('main');
+let current=null;
+function neighborsOf(id){const s=new Set();EDGES.forEach(([a,b])=>{if(a===id)s.add(b);if(b===id)s.add(a);});return[...s];}
+function renderHome(){
+ current='__home';
+ main.innerHTML='<div class="note"><div class="hero"><div style="font-size:46px">🔲</div>'+
+  '<div class="big">半導體知識庫</div>'+
+  '<p class="sub">整理自泛科學 PanSci《一小時略懂半導體》與《160 分鐘略懂晶片戰爭》。12 個主題，從一顆電晶體到一片晶片，涵蓋設計、製造、封裝、應用到產業與地緣政治。</p>'+
+  '<div class="stats"><div class="stat"><b>12</b><span>知識點</span></div><div class="stat"><b>22</b><span>關聯連結</span></div>'+
+  '<div class="stat"><b>2</b><span>互動模擬</span></div><div class="stat"><b>5</b><span>主題分區</span></div></div></div>'+
+  '<h3>建議閱讀路徑</h3>'+
+  '<div class="pathrow">'+Object.keys(CATS).map((key,i)=>{const first=NOTES.find(n=>n.cat===key).id;
+    return (i>0?'<span class="arrow">→</span>':'')+'<span class="stage" data-id="'+first+'"><span class="d" style="background:'+CATS[key].raw+'"></span>'+CATS[key].name+'</span>';}).join('')+'</div>'+
+  '<p style="color:var(--muted);font-size:14px">點上方階段可直接跳到該分區第一篇；或從下方各主題任選。建議從 '+L("半導體與PN接面")+' 開始，一路讀到 '+L("晶片種類CPU_GPU_AI")+'。</p>'+
+  Object.keys(CATS).map(key=>{const items=NOTES.filter(n=>n.cat===key);
+    return '<div class="catgroup"><div class="cl" style="color:'+CATS[key].raw+'"><span class="d" style="background:'+CATS[key].raw+'"></span>'+CATS[key].name+'</div><div class="chips">'+items.map(n=>'<span class="chip" data-id="'+n.id+'">'+n.id+'</span>').join('')+'</div></div>';}).join('')+
+  '</div>';
+ syncActive();
+}
+function renderNote(id){
+ const n=NById[id];if(!n){renderHome();return;}
+ current=id;const idx=NOTES.findIndex(x=>x.id===id);const prev=NOTES[idx-1],next=NOTES[idx+1];const nb=neighborsOf(id);
+ let html='<div class="note"><div class="crumbs"><span class="tag" style="background:'+CATS[n.cat].raw+'33;color:'+CATS[n.cat].raw+'">'+CATS[n.cat].name+'</span></div>'+
+  '<h2 class="title">'+n.id+'</h2><div class="en">'+n.en+'</div>'+n.html;
+ const ex=EXTRA[id];
+ if(ex){
+  if(ex.take)html+='<div class="kbox"><div class="kt">🎯 重點回顧</div><ul>'+ex.take.map(t=>'<li>'+t+'</li>').join('')+'</ul></div>';
+  if(ex.myth)html+='<details class="collap myth"><summary>💡 常見誤解</summary><div class="body">'+ex.myth.map(m=>'<div class="myth-row"><span class="x">✗</span><div>'+m.q+'</div></div><div class="myth-row"><span class="o">✓</span><div>'+m.a+'</div></div>').join('')+'</div></details>';
+  if(ex.fact)html+='<details class="collap fact"><summary>🔎 冷知識</summary><div class="body"><p>'+ex.fact+'</p></div></details>';
+  if(ex.deep)html+='<details class="collap deep"><summary>📐 深入補充</summary><div class="body">'+ex.deep+'</div></details>';
+ }
+ if(nb.length)html+='<div class="related"><div class="cat">關聯概念</div><div class="chips">'+nb.map(x=>'<span class="chip" data-id="'+x+'">'+x+'</span>').join('')+'</div></div>';
+ html+='<div class="nav-btns">'+(prev?'<button data-id="'+prev.id+'"><small>← 上一篇</small>'+prev.id+'</button>':'<button disabled style="opacity:.3"><small>—</small>第一篇</button>')+
+  (next?'<button data-id="'+next.id+'" style="text-align:right"><small>下一篇 →</small>'+next.id+'</button>':'<button disabled style="opacity:.3;text-align:right"><small>—</small>最後一篇</button>')+'</div></div>';
+ main.innerHTML=html;main.scrollTop=0;
+ if(ex&&ex.chart)drawChart(ex.chart);
+ syncActive();
+}
+function open(id){if(id==='__home')renderHome();else renderNote(id);showNotes();}
+function syncActive(){document.querySelectorAll('.navlink').forEach(el=>el.classList.toggle('active',el.dataset.id===current));}
+document.body.addEventListener('click',e=>{const t=e.target.closest('[data-id]');if(t)open(t.dataset.id);});
+/* ===== 搜尋 ===== */
+const search=document.getElementById('search');
+search.addEventListener('input',()=>buildSidebar(search.value));
+search.addEventListener('keydown',e=>{if(e.key==='Enter'){const f=search.value.trim().toLowerCase();const hit=NOTES.find(n=>n.id.includes(search.value.trim())||n.en.toLowerCase().includes(f));if(hit)open(hit.id);}});
+/* ===== 分頁 ===== */
+const tabNotes=document.getElementById('tabNotes'),tabGraph=document.getElementById('tabGraph'),tabDemo=document.getElementById('tabDemo');
+const graphView=document.getElementById('graphView'),demoView=document.getElementById('demoView');
+const allTabs=[tabNotes,tabGraph,tabDemo];
+function setTab(b){allTabs.forEach(x=>x.classList.toggle('active',x===b));}
+function hideAll(){main.style.display='none';graphView.style.display='none';demoView.style.display='none';}
+function showNotes(){setTab(tabNotes);hideAll();main.style.display='';}
+function showGraph(){setTab(tabGraph);hideAll();graphView.style.display='block';startGraph();}
+function showDemo(){setTab(tabDemo);hideAll();demoView.style.display='block';startDemo();startMesh();}
+tabNotes.onclick=showNotes;tabGraph.onclick=showGraph;tabDemo.onclick=showDemo;
+/* ===== 圖表 ===== */
+
+function drawChart(kind){
+ if(kind==='moore'){
+  const box=document.getElementById('chartbox');
+  if(box&&!box.dataset.t){box.insertAdjacentHTML('afterbegin','<div style="font-weight:700;color:#123039;margin-bottom:2px">摩爾定律：單晶片電晶體數量</div><div style="color:#8aa4ae;font-size:12px;margin-bottom:8px">縱軸為對數刻度——半世紀來近乎指數成長</div>');box.dataset.t=1;}
+  mooreChart(document.getElementById('chart'));
+ }
+}
+
+/* ===== 力導向關係圖譜 ===== */
+const svg=document.getElementById('graph');const SVGNS='http://www.w3.org/2000/svg';
+let G={nodes:[],edges:[],started:false,raf:null};
+function buildLegend(){document.getElementById('legend').innerHTML=Object.keys(CATS).map(k=>'<div><i style="background:'+CATS[k].raw+'"></i>'+CATS[k].name+'</div>').join('');}
+function startGraph(){
+ if(G.started)return;G.started=true;buildLegend();
+ const W=svg.clientWidth||900,H=svg.clientHeight||600;
+ const deg={};EDGES.forEach(([a,b])=>{deg[a]=(deg[a]||0)+1;deg[b]=(deg[b]||0)+1;});
+ G.nodes=NOTES.map((n,i)=>({id:n.id,cat:n.cat,x:W/2+Math.cos(i/NOTES.length*6.283)*240+(Math.random()-.5)*40,y:H/2+Math.sin(i/NOTES.length*6.283)*190+(Math.random()-.5)*40,vx:0,vy:0,r:8+(deg[n.id]||1)*1.5}));
+ const pos=Object.fromEntries(G.nodes.map(n=>[n.id,n]));
+ while(svg.firstChild)svg.removeChild(svg.firstChild);
+ const gE=document.createElementNS(SVGNS,'g'),gN=document.createElementNS(SVGNS,'g');svg.appendChild(gE);svg.appendChild(gN);
+ G.edges=EDGES.map(([a,b])=>{const l=document.createElementNS(SVGNS,'line');l.setAttribute('class','gedge');gE.appendChild(l);return{a,b,el:l};});
+ G.nodes.forEach(n=>{
+  const g=document.createElementNS(SVGNS,'g');g.setAttribute('class','gnode');g.dataset.id=n.id;
+  const c=document.createElementNS(SVGNS,'circle');c.setAttribute('r',n.r);c.setAttribute('fill',CATS[n.cat].raw);c.setAttribute('stroke','#ffffff');c.setAttribute('stroke-width','2.5');
+  const t=document.createElementNS(SVGNS,'text');t.setAttribute('text-anchor','middle');t.setAttribute('dy',-n.r-6);t.textContent=n.id;
+  g.appendChild(c);g.appendChild(t);gN.appendChild(g);n.el=g;
+  g.addEventListener('mouseenter',()=>highlight(n.id,true));g.addEventListener('mouseleave',()=>highlight(n.id,false));
+  let moved=false,down=false,ox,oy;
+  g.addEventListener('pointerdown',ev=>{down=true;moved=false;n.fixed=true;const p=toSvg(ev);ox=p.x-n.x;oy=p.y-n.y;g.setPointerCapture(ev.pointerId);});
+  g.addEventListener('pointermove',ev=>{if(!down)return;const p=toSvg(ev);n.x=p.x-ox;n.y=p.y-oy;n.vx=0;n.vy=0;moved=true;});
+  g.addEventListener('pointerup',()=>{down=false;n.fixed=false;if(!moved)open(n.id);});
+ });
+ gloop(pos,W,H);
+}
+function toSvg(ev){const r=svg.getBoundingClientRect();return{x:ev.clientX-r.left,y:ev.clientY-r.top};}
+function highlight(id,on){const nb=new Set(neighborsOf(id));nb.add(id);
+ G.nodes.forEach(n=>{n.el.style.opacity=on?(nb.has(n.id)?1:.2):1;});
+ G.edges.forEach(e=>{const rel=(e.a===id||e.b===id);e.el.classList.toggle('hl',on&&rel);e.el.style.opacity=on?(rel?1:.12):1;});}
+function gloop(pos,W,H){const KR=5200,KS=0.012,L0=118,DA=0.86,GR=0.008;
+ function step(){const ns=G.nodes;
+  for(let i=0;i<ns.length;i++){const a=ns[i];if(a.fixed)continue;let fx=0,fy=0;
+   for(let j=0;j<ns.length;j++){if(i===j)continue;const b=ns[j];let dx=a.x-b.x,dy=a.y-b.y,d2=dx*dx+dy*dy+.01,d=Math.sqrt(d2);const f=KR/d2;fx+=dx/d*f;fy+=dy/d*f;}
+   fx+=(W/2-a.x)*GR;fy+=(H/2-a.y)*GR;a.vx=(a.vx+fx)*DA;a.vy=(a.vy+fy)*DA;}
+  EDGES.forEach(([ai,bi])=>{const a=pos[ai],b=pos[bi];let dx=b.x-a.x,dy=b.y-a.y,d=Math.sqrt(dx*dx+dy*dy)+.01;const f=(d-L0)*KS,ux=dx/d,uy=dy/d;if(!a.fixed){a.vx+=ux*f;a.vy+=uy*f;}if(!b.fixed){b.vx-=ux*f;b.vy-=uy*f;}});
+  ns.forEach(n=>{if(n.fixed)return;n.x+=n.vx;n.y+=n.vy;n.x=Math.max(n.r+40,Math.min(W-n.r-40,n.x));n.y=Math.max(n.r+30,Math.min(H-n.r-20,n.y));});
+  G.edges.forEach(e=>{const a=pos[e.a],b=pos[e.b];e.el.setAttribute('x1',a.x);e.el.setAttribute('y1',a.y);e.el.setAttribute('x2',b.x);e.el.setAttribute('y2',b.y);});
+  ns.forEach(n=>n.el.setAttribute('transform','translate('+n.x+','+n.y+')'));
+  G.raf=requestAnimationFrame(step);}
+ step();}
+/* ===== 互動元件：MOSFET 開關 + 摩爾定律 ===== */
+let demoBuilt=false,demoRAF=null,mos={vg:0.9,t:0};
+function startDemo(){
+ if(!demoBuilt){
+  demoView.innerHTML='<div class="demo">'+
+   '<div class="panel"><h3>① MOSFET 開關</h3><div class="d">拉高閘極電壓，超過臨界電壓 Vth（約 0.5V）就會在通道感應出載子，電流從源極流到汲極（開＝1）；不足則斷（關＝0）。</div>'+
+    '<canvas id="mosCv" class="cv" width="820" height="300"></canvas>'+
+    '<div class="controls"><label>閘極電壓 Vg = <span class="val" id="vgV">0.90</span> V<input type="range" id="vg" min="0" max="150" value="90"></label>'+
+    '<span id="mosState" style="font-weight:700"></span></div></div>'+
+   '<div class="panel"><h3>② 摩爾定律</h3><div class="d">單晶片電晶體數量隨年份（對數）近乎指數成長。</div>'+
+    '<canvas id="mooreCv" class="cv" width="820" height="300"></canvas></div></div>';
+  const vg=document.getElementById('vg');
+  vg.oninput=()=>{mos.vg=(+vg.value)/100;document.getElementById('vgV').textContent=mos.vg.toFixed(2);};
+  demoBuilt=true;
+  mooreChart(document.getElementById('mooreCv'));
+ }
+ cancelAnimationFrame(demoRAF);mosLoop();
+}
+function mosLoop(){ mos.t+=0.05; drawMOS(); demoRAF=requestAnimationFrame(mosLoop); }
+function drawMOS(){
+ const cv=document.getElementById('mosCv'); if(!cv)return;
+ const ctx=cv.getContext('2d'),W=cv.width,H=cv.height; ctx.clearRect(0,0,W,H);
+ const Vth=0.5, on=mos.vg>Vth, drive=Math.max(0,Math.min(1,(mos.vg-Vth)/(1.5-Vth)));
+ const subY=175;
+ ctx.fillStyle='#eaf3f7';ctx.fillRect(80,subY,660,95);
+ ctx.fillStyle='#8aa4ae';ctx.font='12px sans-serif';ctx.textAlign='left';ctx.fillText('P 型矽基板 (Body)',96,subY+78);
+ ctx.fillStyle='#bfe0ef';ctx.fillRect(120,subY,130,52);ctx.fillRect(570,subY,130,52);
+ ctx.fillStyle='#0e5a6b';ctx.textAlign='center';ctx.font='12px sans-serif';ctx.fillText('源極 n+',185,subY+30);ctx.fillText('汲極 n+',635,subY+30);
+ ctx.fillStyle='#e6dcb0';ctx.fillRect(250,subY-8,320,8);
+ ctx.fillStyle= on? '#f59e0b':'#cabf94';ctx.fillRect(300,subY-36,220,28);
+ ctx.fillStyle= on? '#3a2600':'#5a5330';ctx.textAlign='center';ctx.fillText('閘極 Gate',410,subY-17);
+ if(on){ ctx.fillStyle='rgba(34,184,230,'+(0.25+0.6*drive)+')';ctx.fillRect(250,subY,320,10); }
+ if(on){ ctx.save();ctx.fillStyle='#0891b2';ctx.shadowColor='#22b8e6';ctx.shadowBlur=8;
+   const n=Math.round(4+drive*11);
+   for(let i=0;i<n;i++){ const t=((mos.t*(0.4+drive*1.2)+i/n)%1); const x=250+320*t; ctx.beginPath();ctx.arc(x,subY+5,3,0,7);ctx.fill(); } ctx.restore(); }
+ ctx.fillStyle='#8aa4ae';ctx.font='11px sans-serif';ctx.textAlign='center';ctx.fillText('Vth ≈ 0.5 V',410,subY+92);
+ const stt=document.getElementById('mosState');
+ if(stt) stt.innerHTML= on? '<span style="color:#059669">● 開 (1) — 電流導通</span>' : '<span style="color:#e11d48">● 關 (0) — 通道未形成</span>';
+}
+function mooreChart(cv){ if(!cv)return;
+ const ctx=cv.getContext('2d'),W=cv.width,H=cv.height,P=44; ctx.clearRect(0,0,W,H);
+ const data=[[1971,2300,'4004'],[1978,29000,'8086'],[1989,1200000,'486'],[1999,9500000,'P III'],[2006,291000000,'Core2'],[2012,1400000000,''],[2017,19000000000,''],[2023,100000000000,'AI 晶片']];
+ const x0=P+22,x1=W-18,y0=18,y1=H-P, yr0=1971,yr1=2023, lo=Math.log10(2000), hi=Math.log10(2e11);
+ const X=yr=>x0+(x1-x0)*(yr-yr0)/(yr1-yr0), Y=n=>y1-(y1-y0)*(Math.log10(n)-lo)/(hi-lo);
+ ctx.strokeStyle='#cfe0e7';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x0,y1);ctx.lineTo(x1,y1);ctx.stroke();
+ ctx.fillStyle='#8aa4ae';ctx.font='10px sans-serif';
+ [1e3,1e5,1e7,1e9,1e11].forEach(v=>{const y=Y(v);ctx.textAlign='right';ctx.fillText('10^'+Math.round(Math.log10(v)),x0-4,y+3);ctx.strokeStyle='#eef4f7';ctx.beginPath();ctx.moveTo(x0,y);ctx.lineTo(x1,y);ctx.stroke();});
+ ctx.textAlign='center';[1971,1990,2005,2023].forEach(yr=>ctx.fillText(yr,X(yr),y1+16));
+ ctx.strokeStyle='#0891b2';ctx.lineWidth=2.5;ctx.beginPath();
+ data.forEach((d,i)=>{const x=X(d[0]),y=Y(d[1]);i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();
+ data.forEach(d=>{const x=X(d[0]),y=Y(d[1]);ctx.fillStyle='#0891b2';ctx.beginPath();ctx.arc(x,y,4,0,7);ctx.fill();
+   if(d[2]){ctx.fillStyle='#4d6b76';ctx.textAlign='left';ctx.fillText(d[2],x+6,y-4);}});
+}
+
+/* ===== 製程步驟：一步步做出一顆 MOSFET ===== */
+let fab={built:false,step:0};
+const FAB_STEPS=[
+ {t:'① 晶圓基板',d:'從一片高純度單晶矽晶圓開始——一切的基底。'},
+ {t:'② 薄膜沉積',d:'在表面長出一層絕緣氧化層（如 SiO₂）。'},
+ {t:'③ 光刻（微影）',d:'塗上光阻，用光透過光罩把電路圖案投影上去。'},
+ {t:'④ 蝕刻',d:'把沒被光阻保護的氧化層刻掉，留下開口。'},
+ {t:'⑤ 離子植入',d:'把雜質精準打入源極/汲極區，形成 n+ 摻雜。'},
+ {t:'⑥ 沉積閘極與金屬',d:'長出閘極與金屬導線——一顆 MOSFET 完成！'}
+];
+function fabSVG(step){
+ const subY=150; let s='<svg viewBox="0 0 720 240" style="width:100%;background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid #d5e5ec;border-radius:12px">';
+ s+='<rect x="60" y="'+subY+'" width="600" height="66" rx="3" fill="#e7eef1" stroke="#b9d4dd"/><text x="360" y="'+(subY+42)+'" fill="#8aa4ae" font-size="12" text-anchor="middle">矽晶圓（P 型基板）</text>';
+ if(step>=1){ s+='<rect x="60" y="'+(subY-16)+'" width="600" height="16" fill="#e9e2c0" stroke="#c9bd85"/><text x="120" y="'+(subY-3)+'" fill="#8a7a3a" font-size="11">氧化層</text>'; }
+ if(step===2){ s+='<rect x="60" y="'+(subY-38)+'" width="600" height="22" fill="#cbb6f0" opacity="0.75"/><text x="360" y="'+(subY-44)+'" fill="#6d3fc0" font-size="11" text-anchor="middle">↓ 光阻＋光罩曝光 ↓</text>'; }
+ if(step>=3){ s+='<rect x="120" y="'+(subY-16)+'" width="120" height="16" fill="#eef7fa"/><rect x="480" y="'+(subY-16)+'" width="120" height="16" fill="#eef7fa"/>'; }
+ if(step>=4){ s+='<rect x="120" y="'+subY+'" width="120" height="40" fill="#bfe0ef"/><rect x="480" y="'+subY+'" width="120" height="40" fill="#bfe0ef"/><text x="180" y="'+(subY+25)+'" fill="#0e5a6b" font-size="12" text-anchor="middle">n+</text><text x="540" y="'+(subY+25)+'" fill="#0e5a6b" font-size="12" text-anchor="middle">n+</text>'; }
+ if(step>=5){ s+='<rect x="255" y="'+(subY-40)+'" width="210" height="22" rx="3" fill="#f59e0b"/><text x="360" y="'+(subY-24)+'" fill="#3a2600" font-size="12" text-anchor="middle" font-weight="700">閘極</text>'; s+='<rect x="150" y="'+(subY-40)+'" width="70" height="13" fill="#9aa7b0"/><rect x="500" y="'+(subY-40)+'" width="70" height="13" fill="#9aa7b0"/><text x="185" y="'+(subY-45)+'" fill="#6b7780" font-size="10" text-anchor="middle">金屬</text>'; }
+ s+='</svg>'; return s;
+}
+function renderFab(){
+ const st=FAB_STEPS[fab.step];
+ document.getElementById('fabDiagram').innerHTML=fabSVG(fab.step);
+ document.getElementById('fabTitle').textContent=st.t;
+ document.getElementById('fabDesc').textContent=st.d;
+ document.getElementById('fabProg').textContent=(fab.step+1)+' / '+FAB_STEPS.length;
+ document.getElementById('fabDots').innerHTML=FAB_STEPS.map((s,i)=>'<span style="width:11px;height:11px;border-radius:50%;display:inline-block;margin:0 4px;background:'+(i<=fab.step?'#059669':'#cfe3ea')+'"></span>').join('');
+}
+function startMesh(){
+ if(!fab.built){
+  demoView.insertAdjacentHTML('beforeend','<div class="demo"><div class="panel"><h3>🏭 製程步驟：一步步做出一顆電晶體</h3>'+
+   '<div class="d">半導體製程就是不斷循環「沉積 → 微影 → 蝕刻 → 摻雜」。按「下一步」看一顆 MOSFET 如何被層層造出來。</div>'+
+   '<div id="fabDiagram"></div>'+
+   '<div style="text-align:center;margin:12px 0" id="fabDots"></div>'+
+   '<div class="controls"><button id="fabPrev">← 上一步</button><button id="fabNext">下一步 →</button><button id="fabReset">↻ 重來</button><span class="val" id="fabProg"></span></div>'+
+   '<div class="kbox"><div class="kt" id="fabTitle"></div><div id="fabDesc" style="color:#2b4a53;margin-top:4px"></div></div>'+
+   '</div></div>');
+  document.getElementById('fabNext').onclick=()=>{if(fab.step<FAB_STEPS.length-1){fab.step++;renderFab();}};
+  document.getElementById('fabPrev').onclick=()=>{if(fab.step>0){fab.step--;renderFab();}};
+  document.getElementById('fabReset').onclick=()=>{fab.step=0;renderFab();};
+  fab.built=true;
+ }
+ renderFab();
+}
+
+/* ===== 啟動 ===== */
+buildSidebar();renderHome();
+</script>
+</body>
+</html>
