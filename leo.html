@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>低軌衛星 · 互動知識庫</title>
+<style>
+  :root{
+    --bg:#eef6f9; --bg2:#ffffff; --panel:#ffffff; --panel2:#f1f8fb;
+    --line:#d5e5ec; --text:#123039; --muted:#4d6b76; --dim:#8aa4ae;
+    --cyan:#0891b2; --green:#059669; --amber:#d97706; --purple:#7c3aed; --pink:#e11d48;
+    --accent:#0e9bc4;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:
+      radial-gradient(1100px 420px at 50% -120px, rgba(14,155,196,.14), transparent 70%),
+      linear-gradient(180deg,#f6fbfd 0%,#e9f3f7 100%);
+    color:var(--text);font-family:'PingFang TC','Microsoft JhengHei','Helvetica Neue',system-ui,sans-serif;
+    line-height:1.75;overflow:hidden}
+  header{position:fixed;top:0;left:0;right:0;height:60px;z-index:20;
+    display:flex;align-items:center;gap:16px;padding:0 20px;
+    background:rgba(255,255,255,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  header::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;
+    background:linear-gradient(90deg,#e11d48,#d97706,#eab308,#059669,#0891b2,#4f46e5,#7c3aed);opacity:.85}
+  header h1{font-size:18px;margin:0;font-weight:800;letter-spacing:.5px;white-space:nowrap}
+  header h1 .em{color:var(--accent)}
+  .search{flex:1;max-width:340px;position:relative}
+  .search input{width:100%;padding:8px 12px 8px 34px;border-radius:10px;
+    border:1px solid var(--line);background:var(--panel);color:var(--text);font-size:14px;outline:none}
+  .search input:focus{border-color:var(--accent)}
+  .search svg{position:absolute;left:10px;top:9px;opacity:.6}
+  .tabs{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+  .tabs button{padding:8px 14px;border-radius:10px;border:1px solid var(--line);
+    background:var(--panel);color:var(--muted);font-size:13.5px;cursor:pointer;transition:.15s;font-family:inherit}
+  .tabs button:hover{color:var(--text);border-color:var(--accent)}
+  .tabs button.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700;box-shadow:0 2px 10px rgba(14,155,196,.35)}
+  .wrap{position:fixed;top:60px;left:0;right:0;bottom:0;display:flex}
+  aside{width:290px;flex:none;overflow-y:auto;padding:16px 10px 60px;
+    border-right:1px solid var(--line);background:rgba(255,255,255,.55)}
+  .cat{margin:10px 8px 4px;font-size:12px;font-weight:700;letter-spacing:1px;color:var(--dim)}
+  .navlink{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:8px;
+    color:var(--muted);cursor:pointer;font-size:14px;transition:.12s}
+  .navlink:hover{background:var(--panel);color:var(--text)}
+  .navlink.active{background:var(--panel2);color:#123039;font-weight:700;box-shadow:inset 3px 0 0 var(--accent)}
+  .navlink .dot{width:8px;height:8px;border-radius:50%;flex:none}
+  .navlink small{color:var(--dim);font-size:10.5px;margin-left:auto;text-align:right}
+  main{flex:1;overflow-y:auto;padding:38px 46px 90px;scroll-behavior:smooth}
+  .note{max-width:820px;margin:0 auto;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .crumbs{font-size:13px;color:var(--dim);margin-bottom:10px}
+  .crumbs .tag{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11.5px;font-weight:700;margin-right:6px}
+  h2.title{font-size:29px;margin:2px 0 4px;font-weight:800}
+  .en{color:var(--muted);font-size:15px;margin-bottom:18px;letter-spacing:.5px}
+  .callout{background:linear-gradient(180deg,rgba(34,211,238,.12),rgba(34,211,238,.03));
+    border-left:3px solid var(--accent);border-radius:8px;padding:12px 16px;margin:18px 0;color:#123039}
+  .callout b{color:#0e5a6b}
+  main h3{font-size:18px;margin:26px 0 8px;color:#123039;border-bottom:1px solid var(--line);padding-bottom:6px}
+  main p{margin:10px 0}
+  main ul{margin:10px 0;padding-left:22px}
+  main li{margin:5px 0}
+  .diagram{width:100%;border-radius:12px;border:1px solid var(--line);margin:16px 0;background:#fff;display:block;box-shadow:0 2px 12px rgba(18,48,57,.06)}
+  .formula{font-family:'Cambria Math',Georgia,serif;font-size:18px;text-align:center;
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin:16px 0;color:var(--text)}
+  .eqcard{background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid var(--line);border-radius:14px;
+    padding:18px 20px;margin:18px 0;box-shadow:0 3px 14px rgba(18,48,57,.06)}
+  .eqcard .eqt{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--accent);text-align:center;margin-bottom:2px}
+  .eqcard .eq{font-family:'Cambria Math','Times New Roman',Georgia,serif;font-size:32px;text-align:center;
+    color:#123039;margin:6px 0 16px;line-height:1.35}
+  .eqcard .eq i{font-style:italic}
+  .eqcard .eq sub{font-size:.6em;vertical-align:-.25em} .eqcard .eq sup{font-size:.6em;vertical-align:.5em}
+  .eqcard .lg{display:grid;gap:8px}
+  .eqcard .row{display:flex;gap:14px;align-items:baseline;padding:9px 14px;background:#fff;border:1px solid var(--line);border-radius:10px}
+  .eqcard .s{font-family:'Cambria Math','Times New Roman',Georgia,serif;font-style:italic;font-weight:800;
+    font-size:20px;min-width:58px;text-align:center;flex:none}
+  .eqcard .s sub{font-size:.6em;vertical-align:-.2em}
+  .eqcard .m{font-size:13.5px;color:#2b4a53;line-height:1.6}
+  .eqcard .m b{color:#123039}
+  .eqcard .u{display:inline-block;margin-left:8px;font-size:11.5px;color:#5b8090;background:#eef6f9;
+    border:1px solid var(--line);border-radius:20px;padding:1px 9px}
+  .eqcard .cap{font-size:12.5px;color:var(--dim);text-align:center;margin-top:12px}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 12px;text-align:left}
+  th{background:#e4f1f5;color:#123039;font-weight:700}
+  td{background:#fbfeff;color:#2b4a53}
+  tr:nth-child(even) td{background:#f2f8fb}
+  a.wl{color:var(--accent);cursor:pointer;text-decoration:none;border-bottom:1px dashed rgba(34,211,238,.5)}
+  a.wl:hover{color:#0b5566;background:rgba(14,155,196,.14);border-radius:3px}
+  .related{margin-top:34px;padding-top:16px;border-top:1px solid var(--line)}
+  .related .cat{margin-left:0}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .pathrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:16px 0 8px}
+  .stage{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:24px;background:#fff;
+    border:1px solid var(--line);cursor:pointer;font-weight:700;color:#123039;transition:.15s;box-shadow:0 1px 6px rgba(18,48,57,.05)}
+  .stage:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(18,48,57,.12);border-color:var(--accent)}
+  .stage .d{width:10px;height:10px;border-radius:50%;flex:none}
+  .pathrow .arrow{color:var(--dim);font-weight:800;font-size:16px}
+  .catgroup{margin:14px 0}
+  .catgroup .cl{font-size:12.5px;font-weight:800;letter-spacing:.5px;margin-bottom:7px;display:flex;align-items:center;gap:7px}
+  .catgroup .cl .d{width:9px;height:9px;border-radius:50%}
+  .chip{padding:6px 14px;border-radius:20px;background:var(--panel);border:1px solid var(--line);
+    color:var(--muted);cursor:pointer;font-size:13.5px;transition:.12s}
+  .chip:hover{background:var(--accent);color:#04222a;border-color:var(--accent)}
+  .nav-btns{display:flex;justify-content:space-between;margin-top:26px;gap:10px}
+  .nav-btns button{flex:1;padding:12px;border-radius:10px;border:1px solid var(--line);
+    background:var(--panel);color:var(--muted);cursor:pointer;text-align:left;font-family:inherit;transition:.12s}
+  .nav-btns button:hover{border-color:var(--accent);color:#0e5a6b;background:#f0f9fc}
+  .nav-btns small{display:block;color:var(--dim);font-size:11px}
+  .kbox{background:linear-gradient(180deg,rgba(52,211,153,.12),rgba(52,211,153,.03));
+    border:1px solid rgba(52,211,153,.35);border-radius:12px;padding:14px 18px;margin:22px 0}
+  .kbox .kt{font-weight:800;color:var(--green);font-size:14px;margin-bottom:6px}
+  .kbox ul{margin:4px 0 0;padding-left:20px} .kbox li{margin:3px 0}
+  .collap{border:1px solid var(--line);border-radius:10px;margin:12px 0;overflow:hidden;background:#f4fafc}
+  .collap>summary{cursor:pointer;padding:12px 16px;font-weight:700;color:#123039;list-style:none;display:flex;align-items:center;gap:8px}
+  .collap>summary::-webkit-details-marker{display:none}
+  .collap>summary::before{content:'▸';color:var(--accent);transition:.2s;display:inline-block}
+  .collap[open]>summary::before{transform:rotate(90deg)}
+  .collap>summary:hover{background:var(--panel)}
+  .collap .body{padding:2px 18px 16px;color:#2b4a53}
+  .collap.myth{background:#fff5f6}.collap.myth>summary{color:#be123c}.collap.myth>summary::before{color:var(--pink)}
+  .collap.fact{background:#f1fbf6}.collap.fact>summary{color:#047857}.collap.fact>summary::before{color:var(--green)}
+  .collap.deep{background:#f5f4fe}.collap.deep>summary{color:#3730a3}.collap.deep>summary::before{color:#4f46e5}
+  .collap>summary:hover{background:rgba(0,0,0,.03)}
+  .myth-row{display:flex;gap:10px;margin:10px 0}
+  .myth-row .x{color:var(--pink);font-weight:800;flex:none}.myth-row .o{color:var(--green);font-weight:800;flex:none}
+  .hero{text-align:center;padding:14px 0 10px}
+  .hero .big{font-size:40px;font-weight:800;margin:12px 0 4px}
+  .hero .sub{color:var(--muted);max-width:640px;margin:0 auto 8px}
+  .stats{display:flex;gap:12px;justify-content:center;margin:22px 0;flex-wrap:wrap}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 20px;text-align:center}
+  .stat b{font-size:24px;display:block;color:var(--accent)} .stat span{font-size:12px;color:var(--dim)}
+  #graphView,#demoView,#meshView{flex:1;position:relative;display:none}
+  #demoView,#meshView{overflow-y:auto;padding:24px 30px 80px}
+  #graph{width:100%;height:100%;display:block;cursor:grab}
+  .legend{position:absolute;top:16px;left:16px;background:rgba(255,255,255,.9);border:1px solid var(--line);
+    border-radius:10px;padding:12px 14px;font-size:13px;backdrop-filter:blur(6px);box-shadow:0 2px 12px rgba(18,48,57,.08)}
+  .legend div{display:flex;align-items:center;gap:8px;margin:4px 0;color:var(--muted)}
+  .legend i{width:11px;height:11px;border-radius:50%;display:inline-block}
+  .hint{position:absolute;bottom:16px;right:18px;color:var(--dim);font-size:12px}
+  .gnode{cursor:pointer}.gnode text{font-size:12px;fill:var(--text);pointer-events:none;font-family:inherit}
+  .gnode circle{transition:r .15s}
+  .gedge{stroke:#b7d3dd;stroke-width:1.4}.gedge.hl{stroke:var(--accent);stroke-width:2.6}
+  /* demo */
+  .demo{max-width:900px;margin:0 auto}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;margin:18px 0;box-shadow:0 4px 20px rgba(18,48,57,.06)}
+  .panel h3{margin:0 0 4px;color:#123039;font-size:18px;border:none}
+  .panel .d{color:var(--dim);font-size:13px;margin-bottom:12px}
+  .controls{display:flex;flex-wrap:wrap;gap:20px;align-items:center;margin-top:14px}
+  .controls label{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:6px;min-width:190px}
+  .controls input[type=range]{accent-color:var(--accent)}
+  .controls .val{color:var(--accent);font-weight:700}
+  .controls button{padding:9px 16px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);color:var(--text);cursor:pointer;font-family:inherit}
+  .controls button:hover{border-color:var(--accent)}
+  canvas.cv{width:100%;border-radius:12px;background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid var(--line);display:block}
+  .bars{display:flex;gap:18px;margin-top:14px}
+  .bar{flex:1;text-align:center}
+  .bar .track{height:120px;background:var(--panel2);border-radius:8px;position:relative;overflow:hidden;border:1px solid var(--line)}
+  .bar .fill{position:absolute;bottom:0;left:0;right:0;transition:height .08s}
+  .bar .lbl{font-size:13px;color:var(--muted);margin-top:6px}
+  .bar .pct{font-weight:800;color:#123039}
+  svg#mesh{width:100%;height:auto;background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid var(--line);border-radius:12px}
+  .cpl{cursor:pointer}
+  .chartbox{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;margin:16px 0;box-shadow:0 2px 12px rgba(18,48,57,.05)}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:#b7d3dd;border-radius:6px}
+  @media(max-width:720px){aside{position:fixed;z-index:15;height:100%;transform:translateX(-100%);transition:.25s}
+    aside.open{transform:none}main{padding:24px 18px 80px}.search{max-width:none}header h1{font-size:14px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>🛰️ <span class="em">低軌衛星</span>知識庫</h1>
+  <div class="search">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8fbccb" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input id="search" placeholder="搜尋知識點…（Enter 開啟）" autocomplete="off">
+  </div>
+  <div class="tabs">
+    <button id="tabNotes" class="active">📖 筆記</button>
+    <button id="tabGraph">🕸️ 關係圖譜</button>
+    <button id="tabDemo">🔬 互動</button>
+  </div>
+</header>
+<div class="wrap">
+  <aside id="sidebar"></aside>
+  <main id="main"></main>
+  <div id="graphView"><svg id="graph"></svg><div class="legend" id="legend"></div>
+    <div class="hint">拖曳節點 · 點擊開啟筆記 · 移入高亮關聯</div></div>
+  <div id="demoView"></div>
+</div>
+<script>
+const CATS={
+ "原理":{name:"軌道與原理",raw:"#0891b2"},
+ "系統":{name:"系統與技術",raw:"#059669"},
+ "案例":{name:"實際案例",raw:"#d97706"},
+ "戰略":{name:"產業與戰略",raw:"#e11d48"},
+ "挑戰":{name:"挑戰",raw:"#7c3aed"}
+};
+function L(id){return '<a class="wl" data-id="'+id+'">'+id+'</a>';}
+const NOTES=[
+{id:"什麼是低軌衛星",en:"Low Earth Orbit (LEO)",cat:"原理",html:
+ '<div class="callout"><b>一句話：</b>低軌衛星運行在約 <b>160–2000 公里</b>（Starlink ~550）。離地面近 → 訊號來回快、延遲低，成為新一代衛星寬頻主力；代價是單顆覆蓋小，需<b>成千上萬顆</b>組星座。</div>'+
+ '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MjAgMzIwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0ic2t5IiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2VlZjRmYiIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2RmZWFmNiIvPjwvbGluZWFyR3JhZGllbnQ+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJlYXJ0aCIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM1YWEwZTAiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMyZjZiYjAiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNzIwIiBoZWlnaHQ9IjMyMCIgZmlsbD0idXJsKCNza3kpIi8+CiAgPHRleHQgeD0iMjgiIHk9IjMyIiBmaWxsPSIjMTIzMDM5IiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIj7ou4zpgZPpq5jluqbmr5TovIPvvIjnpLrmhI/vvIzpnZ7nrYnmr5TkvovvvIk8L3RleHQ+CiAgPCEtLSDlnLDooaggLS0+CiAgPHJlY3QgeD0iMCIgeT0iMjkyIiB3aWR0aD0iNzIwIiBoZWlnaHQ9IjI4IiBmaWxsPSJ1cmwoI2VhcnRoKSIvPgogIDx0ZXh0IHg9IjIwIiB5PSIzMTEiIGZpbGw9IiNlYWYzZmIiIGZvbnQtc2l6ZT0iMTIiPuWcsOeQg+ihqOmdojwvdGV4dD4KICA8IS0tIEdFTyAtLT4KICA8bGluZSB4MT0iNDAiIHkxPSI3MiIgeDI9IjY4MCIgeTI9IjcyIiBzdHJva2U9IiNlMTFkNDgiIHN0cm9rZS1kYXNoYXJyYXk9IjYgNiIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8Y2lyY2xlIGN4PSIzNjAiIGN5PSI3MiIgcj0iNyIgZmlsbD0iI2UxMWQ0OCIvPjxyZWN0IGN4PSIzNjAiIHg9IjM1MCIgeT0iNjAiIHdpZHRoPSIyMCIgaGVpZ2h0PSI2IiBmaWxsPSIjZTExZDQ4Ii8+CiAgPHRleHQgeD0iNTIiIHk9IjY2IiBmaWxsPSIjYmUxMjNjIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIj5HRU8g5ZCM5q2l6LuM6YGT44CAMzUsNzg2IGttPC90ZXh0Pjx0ZXh0IHg9IjUwMCIgeT0iNjYiIGZpbGw9IiNjNzYiIGZvbnQtc2l6ZT0iMTEiPuWwjeWcsOmdnOatoiDCtyDlu7bpgbLpq5goNjAwbXMrKTwvdGV4dD4KICA8IS0tIE1FTyAtLT4KICA8bGluZSB4MT0iNDAiIHkxPSIxNTAiIHgyPSI2ODAiIHkyPSIxNTAiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLWRhc2hhcnJheT0iNiA2IiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDxjaXJjbGUgY3g9IjMwMCIgY3k9IjE1MCIgcj0iNiIgZmlsbD0iI2Q5NzcwNiIvPgogIDx0ZXh0IHg9IjUyIiB5PSIxNDQiIGZpbGw9IiNhMTVjMDYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiPk1FTyDkuK3ou4zjgIB+MjAsMjAwIGttPC90ZXh0Pjx0ZXh0IHg9IjQ0MCIgeT0iMTQ0IiBmaWxsPSIjYjU4NTQ5IiBmb250LXNpemU9IjExIj5HUFMg5bCO6Iiq6KGb5pifPC90ZXh0PgogIDwhLS0gTEVPIC0tPgogIDxsaW5lIHgxPSI0MCIgeTE9IjI1MCIgeDI9IjY4MCIgeTI9IjI1MCIgc3Ryb2tlPSIjMDg5MWIyIiBzdHJva2UtZGFzaGFycmF5PSI0IDQiIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgPGcgZmlsbD0iIzA4OTFiMiI+PGNpcmNsZSBjeD0iMTgwIiBjeT0iMjUwIiByPSI1Ii8+PGNpcmNsZSBjeD0iMzAwIiBjeT0iMjUwIiByPSI1Ii8+PGNpcmNsZSBjeD0iNDIwIiBjeT0iMjUwIiByPSI1Ii8+PGNpcmNsZSBjeD0iNTQwIiBjeT0iMjUwIiByPSI1Ii8+PC9nPgogIDx0ZXh0IHg9IjUyIiB5PSIyNDQiIGZpbGw9IiMwZTVhNmIiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiPkxFTyDkvY7ou4zjgIB+MTYw4oCTMjAwMCBrbe+8iFN0YXJsaW5rIH41NTDvvIk8L3RleHQ+PHRleHQgeD0iNTYwIiB5PSIyNDQiIGZpbGw9IiM1Zjk3YTQiIGZvbnQtc2l6ZT0iMTEiPuS9juW7tumBsigyMOKAkzQwbXMpPC90ZXh0PgogIDx0ZXh0IHg9IjI4IiB5PSIyODYiIGZpbGw9IiM1YjdhOTIiIGZvbnQtc2l6ZT0iMTEiPui2iuS9jiDihpIg5bu26YGy6LaK5L2O44CB6KaG6JOL6LaK5bCP77yM6ZyA6KaB6LaK5aSa6KGb5pif57WE5oiQ5pif5bqn44CCPC90ZXh0Pgo8L3N2Zz4K">'+
+ '<h3>三種軌道</h3><table><tr><th>軌道</th><th>高度</th><th>特點</th></tr>'+
+ '<tr><td>LEO 低軌</td><td>160–2000 km</td><td>低延遲、覆蓋小、需大量衛星</td></tr>'+
+ '<tr><td>MEO 中軌</td><td>~20,200 km</td><td>GPS 導航</td></tr>'+
+ '<tr><td>GEO 同步</td><td>35,786 km</td><td>一顆覆蓋大半球、但延遲高</td></tr></table>'+
+ '<p>LEO 崛起靠<b>可重複使用火箭</b>大降發射成本＋<b>低延遲</b>（'+L("衛星通訊原理與延遲")+' 約 20–40 ms）。到「🔬 互動」拉高度看軌道週期與延遲怎麼變。</p>'},
+{id:"衛星通訊原理與延遲",en:"Latency",cat:"原理",html:
+ '<div class="callout"><b>一句話：</b>訊號<b>上行</b>送到衛星、<b>下行</b>傳回地面，以光速傳播——距離越近延遲越低。這是 '+L("什麼是低軌衛星")+' 相對 GEO 最大的優勢。</div>'+
+ '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MjAgMzIwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0ic2t5MiIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNlZWY0ZmIiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlMGVhZjYiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNzIwIiBoZWlnaHQ9IjMyMCIgZmlsbD0idXJsKCNza3kyKSIvPgogIDx0ZXh0IHg9IjI4IiB5PSIzMiIgZmlsbD0iIzEyMzAzOSIgZm9udC1zaXplPSIxOCIgZm9udC13ZWlnaHQ9IjcwMCI+5bu26YGy5q+U6LyD77yaTEVPIOi/keOAgUdFTyDpgaA8L3RleHQ+CiAgPHJlY3QgeD0iMCIgeT0iMjkyIiB3aWR0aD0iNzIwIiBoZWlnaHQ9IjI4IiBmaWxsPSIjMmY2YmIwIi8+CiAgPCEtLSDkvb/nlKjogIUgLS0+CiAgPGNpcmNsZSBjeD0iMTIwIiBjeT0iMjg2IiByPSI2IiBmaWxsPSIjMTIzMDM5Ii8+PHRleHQgeD0iMTIwIiB5PSIzMTIiIGZpbGw9IiNlYWYzZmIiIGZvbnQtc2l6ZT0iMTEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuWcsOmdoueUqOaItjwvdGV4dD4KICA8IS0tIExFTyDov5EgLS0+CiAgPGNpcmNsZSBjeD0iMzAwIiBjeT0iMjAwIiByPSI4IiBmaWxsPSIjMDg5MWIyIi8+PHJlY3QgeD0iMjg4IiB5PSIxOTYiIHdpZHRoPSIyNCIgaGVpZ2h0PSI2IiBmaWxsPSIjMDg5MWIyIi8+CiAgPHBhdGggZD0iTTEyNiwyODYgTDI5NiwyMDQiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIyIi8+PHBhdGggZD0iTTMwNCwyMDQgTDQ3MCwyODYiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtZGFzaGFycmF5PSIzIDMiLz4KICA8dGV4dCB4PSIzMDAiIHk9IjE4OCIgZmlsbD0iIzBlNWE2YiIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TEVPIH41NTAga208L3RleHQ+CiAgPHRleHQgeD0iMzAwIiB5PSIyNDAiIGZpbGw9IiMwODkxYjIiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuS+huWbniB+MjDigJM0MCBtcyDimqE8L3RleHQ+CiAgPCEtLSBHRU8g6YGgIC0tPgogIDxjaXJjbGUgY3g9IjU2MCIgY3k9IjcwIiByPSI4IiBmaWxsPSIjZTExZDQ4Ii8+PHJlY3QgeD0iNTQ4IiB5PSI2NiIgd2lkdGg9IjI0IiBoZWlnaHQ9IjYiIGZpbGw9IiNlMTFkNDgiLz4KICA8cGF0aCBkPSJNMTI2LDI4NiBMNTU2LDc0IiBzdHJva2U9IiNlMTFkNDgiIHN0cm9rZS13aWR0aD0iMiIvPgogIDx0ZXh0IHg9IjU2MCIgeT0iNTgiIGZpbGw9IiNiZTEyM2MiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI3MDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkdFTyAzNSw3ODYga208L3RleHQ+CiAgPHRleHQgeD0iNDcwIiB5PSIxNTAiIGZpbGw9IiNlMTFkNDgiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiPuS+huWbniA2MDAgbXMg5Lul5LiKIPCfkKI8L3RleHQ+CiAgPHRleHQgeD0iMjgiIHk9IjI4NiIgZmlsbD0iIzViN2E5MiIgZm9udC1zaXplPSIxMSI+6KiK6Jmf5Lul5YWJ6YCf5YKz5pKt77yM6Led6Zui5bCx5piv5bu26YGy4oCU4oCU6YCZ5pivIExFTyDpq5TpqZfpgaDli50gR0VPIOeahOmXnOmNteOAgjwvdGV4dD4KPC9zdmc+Cg==">'+
+ '<h3>延遲從哪來</h3><ul><li><b>傳播延遲</b>＝距離÷光速（LEO/GEO 的關鍵差異）。</li><li><b>處理與排隊延遲</b>。</li></ul>'+
+ '<h3>數字感</h3><ul><li><b>LEO ~550km</b>：來回約 <b>20–40 ms</b>，接近地面寬頻。</li><li><b>GEO 35786km</b>：光走一趟就 ~120ms，來回加處理 <b>600ms+</b>。</li></ul>'+
+ '<p>低延遲才能順暢視訊、遊戲、遠端操作——這是 LEO 挑戰地面網路的核心。太空中怎麼傳 → '+L("星間雷射鏈路")+'。</p>'},
+{id:"衛星星座與全球覆蓋",en:"Constellation & Coverage",cat:"系統",html:
+ '<div class="callout"><b>一句話：</b>單顆 LEO 只覆蓋一小塊、且以 ~7.5 km/s 高速掠過，所以要用<b>成千上萬顆、分布多個軌道面</b>組成星座，讓地球任一點<b>隨時有衛星在頭頂</b>。</div>'+
+ '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MjAgMzAwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0ic2t5MyIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNlZWY0ZmIiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNkZmVhZjYiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNzIwIiBoZWlnaHQ9IjMwMCIgZmlsbD0idXJsKCNza3kzKSIvPgogIDx0ZXh0IHg9IjI4IiB5PSIzMiIgZmlsbD0iIzEyMzAzOSIgZm9udC1zaXplPSIxOCIgZm9udC13ZWlnaHQ9IjcwMCI+5pif5bqn6IiH6KaG6JOL77ya5LiA5aSn576k6KGb5pif5o6l5Yqb6KaG6JOL5Zyw6Z2iPC90ZXh0PgogIDwhLS0g5Zyw55CD5bynIC0tPgogIDxwYXRoIGQ9Ik0tNDAsMzYwIEE1NjAsNTYwIDAgMCwxIDc2MCwzNjAiIGZpbGw9IiMyZjZiYjAiLz4KICA8cGF0aCBkPSJNLTQwLDM2MCBBNTYwLDU2MCAwIDAsMSA3NjAsMzYwIiBmaWxsPSJub25lIiBzdHJva2U9IiM3ZmIwZTAiIHN0cm9rZS13aWR0aD0iMiIvPgogIDwhLS0g6KGb5pif5byn5LiK5LiA5o6SIC0tPgogIDxnPgogICAgPGcgZmlsbD0iIzA4OTFiMiI+PGNpcmNsZSBjeD0iMTUwIiBjeT0iMTIwIiByPSI2Ii8+PGNpcmNsZSBjeD0iMjkwIiBjeT0iOTUiIHI9IjYiLz48Y2lyY2xlIGN4PSI0MzAiIGN5PSI5NSIgcj0iNiIvPjxjaXJjbGUgY3g9IjU3MCIgY3k9IjEyMCIgcj0iNiIvPjwvZz4KICAgIDwhLS0g6KaG6JOL6YyQIC0tPgogICAgPHBhdGggZD0iTTE1MCwxMjYgTDExMCwyMDUgTDE5MCwyMDUgWiIgZmlsbD0iIzA4OTFiMiIgb3BhY2l0eT0iMC4xNSIvPgogICAgPHBhdGggZD0iTTI5MCwxMDEgTDI1MCwxOTUgTDMzMCwxOTUgWiIgZmlsbD0iIzA4OTFiMiIgb3BhY2l0eT0iMC4xNSIvPgogICAgPHBhdGggZD0iTTQzMCwxMDEgTDM5MCwxOTUgTDQ3MCwxOTUgWiIgZmlsbD0iIzA4OTFiMiIgb3BhY2l0eT0iMC4xNSIvPgogICAgPHBhdGggZD0iTTU3MCwxMjYgTDUzMCwyMDUgTDYxMCwyMDUgWiIgZmlsbD0iIzA4OTFiMiIgb3BhY2l0eT0iMC4xNSIvPgogIDwvZz4KICA8IS0tIOenu+WLleaWueWQkSAtLT4KICA8cGF0aCBkPSJNNjAwLDg4IGg0MCIgc3Ryb2tlPSIjMDg5MWIyIiBzdHJva2Utd2lkdGg9IjIiIG1hcmtlci1lbmQ9InVybCgjYSkiLz4KICA8ZGVmcz48bWFya2VyIGlkPSJhIiBtYXJrZXJXaWR0aD0iOCIgbWFya2VySGVpZ2h0PSI4IiByZWZYPSI2IiByZWZZPSIzIiBvcmllbnQ9ImF1dG8iPjxwYXRoIGQ9Ik0wLDAgTDYsMyBMMCw2IFoiIGZpbGw9IiMwODkxYjIiLz48L21hcmtlcj48L2RlZnM+CiAgPHRleHQgeD0iNjAwIiB5PSI4MCIgZmlsbD0iIzA4OTFiMiIgZm9udC1zaXplPSIxMSI+6KGb5pif6auY6YCf56e75YuVIH43LjUga20vczwvdGV4dD4KICA8IS0tIGhhbmRvdmVyIC0tPgogIDx0ZXh0IHg9IjM2MCIgeT0iMjQ1IiBmaWxsPSIjMGU1YTZiIiBmb250LXNpemU9IjEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iNzAwIj7pmqjmkq3kuqTmjqXvvIhIYW5kb3Zlcu+8ie+8muWJjeS4gOmhhumjm+i1sOOAgeW+jOS4gOmhhuijnOS4iu+8jOmAo+e3muS4jeS4reaWtzwvdGV4dD4KICA8dGV4dCB4PSIyOCIgeT0iMjg1IiBmaWxsPSIjNWI3YTkyIiBmb250LXNpemU9IjExIj7pnIDopoHmiJDljYPkuIrokKzpoYbjgIHliIbluIPlpJrlgIvou4zpgZPpnaLvvIzmiY3og73orpPlnLDpnaLku7vkuIDpu57pmqjmmYLmnInooZvmmJ/lnKjpoK3poILjgII8L3RleHQ+Cjwvc3ZnPgo=">'+
+ '<svg class="diagram" viewBox="0 0 720 180" xmlns="http://www.w3.org/2000/svg">'+'<text x="20" y="24" fill="#123039" font-size="15" font-weight="700">動畫：隨播交接（衛星掠過，波束換星）</text>'+'<rect x="0" y="160" width="720" height="20" fill="#2f6bb0"/><circle cx="360" cy="162" r="5" fill="#123039"/><text x="360" y="156" fill="#0e5a6b" font-size="10" text-anchor="middle">用戶</text>'+'<g fill="#0891b2"><circle cx="120" cy="70" r="6"><animate attributeName="opacity" values="1;1;0.3" dur="4s" repeatCount="indefinite"/></circle></g>'+'<line x1="360" y1="160" x2="120" y2="74" stroke="#0891b2" stroke-width="3"><animate attributeName="opacity" values="1;1;0" dur="4s" repeatCount="indefinite"/></line>'+'<circle r="6" fill="#059669"><animateMotion dur="4s" repeatCount="indefinite" path="M120,70 L620,70"/></circle>'+'<line x1="360" y1="160" x2="430" y2="70" stroke="#059669" stroke-width="3"><animate attributeName="opacity" values="0;0;1;1" dur="4s" repeatCount="indefinite"/></line>'+'<text x="360" y="120" fill="#4d6b76" font-size="11" text-anchor="middle">前一顆飛走、下一顆接上 → 連線不中斷</text>'+'</svg>'+
+ '<h3>隨播交接 Handover</h3><p>頭頂衛星飛走、下一顆接上，連線須<b>無縫切換</b>（像手機在基地台間漫遊，只是基地台在天上高速跑）。靠 '+L("相控陣天線與用戶終端")+' 電子波束追蹤與瞬間換星。</p>'+
+ '<p>Starlink 規劃約 12000 顆、分多個殼層（540/550/570 km、傾角 53°）。衛星越多覆蓋越好，但 '+L("挑戰與爭議")+' 的太空垃圾/頻譜壓力也越大。</p>'},
+{id:"相控陣天線與用戶終端",en:"Phased Array Antenna",cat:"系統",html:
+ '<div class="callout"><b>一句話：</b>因衛星快速掠過，用戶天線要即時追蹤。<b>相控陣天線</b> 用一整片天線單元、靠電子調相位「轉」波束——<b>不用機械轉動</b>就能追星、瞬間 '+L("衛星星座與全球覆蓋")+'。</div>'+
+ '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MjAgMzAwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0ic2t5NCIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNlZWY0ZmIiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlMGVhZjYiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNzIwIiBoZWlnaHQ9IjMwMCIgZmlsbD0idXJsKCNza3k0KSIvPgogIDx0ZXh0IHg9IjI4IiB5PSIzMiIgZmlsbD0iIzEyMzAzOSIgZm9udC1zaXplPSIxOCIgZm9udC13ZWlnaHQ9IjcwMCI+55u45o6n6Zmj5aSp57ea77ya55So6Zu75a2Q5rOi5p2f6L+96JGX6KGb5pif6LeRPC90ZXh0PgogIDwhLS0g5YWp6aGG6KGb5pifIC0tPgogIDxnIGZpbGw9IiMwODkxYjIiPjxjaXJjbGUgY3g9IjIzMCIgY3k9IjgwIiByPSI3Ii8+PGNpcmNsZSBjeD0iNTIwIiBjeT0iNzAiIHI9IjciLz48L2c+CiAgPHJlY3QgeD0iMjE4IiB5PSI3NiIgd2lkdGg9IjI0IiBoZWlnaHQ9IjYiIGZpbGw9IiMwODkxYjIiLz48cmVjdCB4PSI1MDgiIHk9IjY2IiB3aWR0aD0iMjQiIGhlaWdodD0iNiIgZmlsbD0iIzA4OTFiMiIvPgogIDx0ZXh0IHg9IjIzMCIgeT0iNjYiIGZpbGw9IiMwZTVhNmIiIGZvbnQtc2l6ZT0iMTEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuihm+aYnyBB77yI6L+96Lmk5Lit77yJPC90ZXh0PgogIDx0ZXh0IHg9IjUyMCIgeT0iNTYiIGZpbGw9IiM4YWE0YWUiIGZvbnQtc2l6ZT0iMTEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuihm+aYnyBC77yI5Y2z5bCH5Lqk5o6l77yJPC90ZXh0PgogIDwhLS0g55u45o6n6Zmj6Z2i5p2/IC0tPgogIDxyZWN0IHg9IjMwMCIgeT0iMjM1IiB3aWR0aD0iMTIwIiBoZWlnaHQ9IjE4IiByeD0iMyIgZmlsbD0iIzEyMzAzOSIvPgogIDxnIGZpbGw9IiM0ZGQyZmYiPjxjaXJjbGUgY3g9IjMxMiIgY3k9IjI0NCIgcj0iMi41Ii8+PGNpcmNsZSBjeD0iMzI2IiBjeT0iMjQ0IiByPSIyLjUiLz48Y2lyY2xlIGN4PSIzNDAiIGN5PSIyNDQiIHI9IjIuNSIvPjxjaXJjbGUgY3g9IjM1NCIgY3k9IjI0NCIgcj0iMi41Ii8+PGNpcmNsZSBjeD0iMzY4IiBjeT0iMjQ0IiByPSIyLjUiLz48Y2lyY2xlIGN4PSIzODIiIGN5PSIyNDQiIHI9IjIuNSIvPjxjaXJjbGUgY3g9IjM5NiIgY3k9IjI0NCIgcj0iMi41Ii8+PGNpcmNsZSBjeD0iNDEwIiBjeT0iMjQ0IiByPSIyLjUiLz48L2c+CiAgPHRleHQgeD0iMzYwIiB5PSIyNzUiIGZpbGw9IiM0ZDZiNzYiIGZvbnQtc2l6ZT0iMTEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuebuOaOp+mZo+W5s+adv++8iOeEoemcgOi9ieWLle+8iTwvdGV4dD4KICA8IS0tIOS4u+azouadn+WIsCBBIC0tPgogIDxwYXRoIGQ9Ik0zNjAsMjM1IEwyMzUsODgiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIxMCIgb3BhY2l0eT0iMC4yNSIvPgogIDxwYXRoIGQ9Ik0zNjAsMjM1IEwyMzIsODQiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPCEtLSDomZvnt5rms6LmnZ/liLAgQiAtLT4KICA8cGF0aCBkPSJNMzYwLDIzNSBMNTE2LDc2IiBzdHJva2U9IiM4YWE0YWUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWRhc2hhcnJheT0iNCA0Ii8+CiAgPHRleHQgeD0iMTIwIiB5PSIxNTAiIGZpbGw9IiMwODkxYjIiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI3MDAiPuiqv+aVtOWQhOWWruWFg+ebuOS9jSDihpIg5rOi5p2f556s6ZaT5oyH5ZCRPC90ZXh0PgogIDx0ZXh0IHg9IjI4IiB5PSIyODgiIGZpbGw9IiM1YjdhOTIiIGZvbnQtc2l6ZT0iMTEiPuaUueiuiuebuOS9jeaYr+mbu+WtkOeerOmWk+WujOaIkO+8jOWPr+mrmOmAn+i/vei5pOOAgeeEoee4q+aPm+aYn++8jOmChOiDveWQjOaZguW9ouaIkOWkmumBk+azouadn+OAgjwvdGV4dD4KPC9zdmc+Cg==">'+
+ '<h3>怎麼運作</h3><ul><li>成百上千個小天線單元組成平板。</li><li>調整每個單元<b>相位</b>就能讓合成波束指向任意方向（beamforming），電子瞬間完成。</li></ul>'+
+ '<p>Starlink 的「碟子」其實是相控陣平板，自動對準與交接，比傳統馬達碟型更快、可平放（車/船/飛機）。這也是 '+L("產業鏈與台廠商機")+' 的切入重點。</p>'},
+{id:"星間雷射鏈路",en:"Laser Inter-Satellite Links",cat:"系統",html:
+ '<div class="callout"><b>一句話：</b>衛星之間用<b>雷射</b>直接互連，把星座在太空中連成<b>骨幹網</b>，資料可在天上「跳衛星」傳很遠，<b>不必每步都落回地面</b>。</div>'+
+ '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MjAgMzAwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0ic2t5NSIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNlZWY0ZmIiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNkZmVhZjYiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNzIwIiBoZWlnaHQ9IjMwMCIgZmlsbD0idXJsKCNza3k1KSIvPgogIDx0ZXh0IHg9IjI4IiB5PSIzMiIgZmlsbD0iIzEyMzAzOSIgZm9udC1zaXplPSIxOCIgZm9udC13ZWlnaHQ9IjcwMCI+5pif6ZaT6Zu35bCE6Y+I6Lev77ya5aSq56m65Lit55qE6aqo5bm557ayPC90ZXh0PgogIDxwYXRoIGQ9Ik0tNDAsNDIwIEE2MjAsNjIwIDAgMCwxIDc2MCw0MjAiIGZpbGw9IiMyZjZiYjAiLz4KICA8IS0tIOihm+aYn+e+pCAtLT4KICA8ZyBmaWxsPSIjMDg5MWIyIj48Y2lyY2xlIGN4PSIxMjAiIGN5PSIxMjAiIHI9IjciLz48Y2lyY2xlIGN4PSIyNzAiIGN5PSI5MCIgcj0iNyIvPjxjaXJjbGUgY3g9IjQzMCIgY3k9IjkwIiByPSI3Ii8+PGNpcmNsZSBjeD0iNTgwIiBjeT0iMTIwIiByPSI3Ii8+PC9nPgogIDwhLS0g6Zu35bCE6Y+I6LevIC0tPgogIDxnIHN0cm9rZT0iI2UxMWQ0OCIgc3Ryb2tlLXdpZHRoPSIyIj4KICAgIDxsaW5lIHgxPSIxMjciIHkxPSIxMjAiIHgyPSIyNjMiIHkyPSI5MyIvPjxsaW5lIHgxPSIyNzciIHkxPSI5MCIgeDI9IjQyMyIgeTI9IjkwIi8+PGxpbmUgeDE9IjQzNyIgeTE9IjkzIiB4Mj0iNTczIiB5Mj0iMTIwIi8+CiAgPC9nPgogIDx0ZXh0IHg9IjM1MCIgeT0iNzAiIGZpbGw9IiNiZTEyM2MiIGZvbnQtc2l6ZT0iMTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSI3MDAiPumbt+WwhOS6kumAo++8iOavj+e1hOWPr+mBlCB+MjAwIEdicHPvvIk8L3RleHQ+CiAgPCEtLSDokL3lnLAgLS0+CiAgPGNpcmNsZSBjeD0iNjAwIiBjeT0iMjM1IiByPSI2IiBmaWxsPSIjMTIzMDM5Ii8+PHRleHQgeD0iNjAwIiB5PSIyNTgiIGZpbGw9IiMxMjMwMzkiIGZvbnQtc2l6ZT0iMTEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuWcsOmdoumXnOWPo+ermTwvdGV4dD4KICA8cGF0aCBkPSJNNTgwLDEyNyBMNTk4LDIyOCIgc3Ryb2tlPSIjMDg5MWIyIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1kYXNoYXJyYXk9IjMgMyIvPgogIDwhLS0g6LW36bue55So5oi2IC0tPgogIDxjaXJjbGUgY3g9IjEyMCIgY3k9IjIyMCIgcj0iNiIgZmlsbD0iIzEyMzAzOSIvPjx0ZXh0IHg9IjEyMCIgeT0iMjQzIiBmaWxsPSIjMTIzMDM5IiBmb250LXNpemU9IjExIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7nlKjmiLY8L3RleHQ+CiAgPHBhdGggZD0iTTEyMCwyMTQgTDEyMCwxMjgiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHRleHQgeD0iMjgiIHk9IjI4NiIgZmlsbD0iIzViN2E5MiIgZm9udC1zaXplPSIxMSI+6LOH5paZ5Zyo5aSp5LiK44CM6Lez6KGb5pif44CN5YKz5Yiw5pyJ5Ye65Y+j55qE5Zyw5pa55omN6JC95Zyw77yM5LiN5b+F5q+P5q2l6YO95Zue5Zyw6Z2i4oCU4oCU5rW35LiK44CB5qW15Y2A44CB5oiw5Y2A5Lmf6YCj5b6X5LiK44CCPC90ZXh0Pgo8L3N2Zz4K">'+
+ '<svg class="diagram" viewBox="0 0 720 170" xmlns="http://www.w3.org/2000/svg">'+'<text x="20" y="24" fill="#123039" font-size="15" font-weight="700">動畫：星間雷射在太空中接力傳資料</text>'+'<g fill="#0891b2"><circle cx="110" cy="90" r="7"/><circle cx="290" cy="70" r="7"/><circle cx="470" cy="70" r="7"/><circle cx="620" cy="95" r="7"/></g>'+'<g stroke="#e11d48" stroke-width="2"><line x1="117" y1="90" x2="283" y2="72"/><line x1="297" y1="70" x2="463" y2="70"/><line x1="477" y1="72" x2="613" y2="93"/></g>'+'<circle r="4" fill="#e11d48"><animateMotion dur="2.4s" repeatCount="indefinite" path="M110,90 L290,70 L470,70 L620,95"/></circle>'+'<circle r="4" fill="#e11d48"><animateMotion dur="2.4s" begin="1.2s" repeatCount="indefinite" path="M110,90 L290,70 L470,70 L620,95"/></circle>'+'<rect x="0" y="150" width="720" height="20" fill="#2f6bb0"/><text x="620" y="128" fill="#4d6b76" font-size="10" text-anchor="middle">關口站落地</text><line x1="620" y1="102" x2="620" y2="148" stroke="#0891b2" stroke-dasharray="3 3"/>'+'</svg>'+
+ '<h3>規模（Starlink）</h3><ul><li>每顆 V2 Mini 帶 3 組光學鏈路、每組約 <b>200 Gbps</b>；全星座逾 13000 條雙向鏈路、每天數十 PB。</li></ul>'+
+ '<h3>意外好處</h3><p>光在真空比在光纖快（光纖約 2/3 光速），長距離時「天上走雷射」有時<b>比海底光纜更低延遲</b>。也讓海上、極區、戰區連得上（見 '+L("國防與戰略韌性")+'）。接回地面 → '+L("地面站與網路架構")+'。</p>'},
+{id:"地面站與網路架構",en:"Ground Station & Network",cat:"系統",html:
+ '<div class="callout"><b>一句話：</b>衛星最終要把資料接回地面網際網路。<b>地面關口站（Gateway）</b> 是衛星與地面骨幹的橋樑；資料經衛星（或 '+L("星間雷射鏈路")+'）送到關口站再接入網路。</div>'+
+ '<h3>資料路徑</h3><ul><li>用戶 '+L("相控陣天線與用戶終端")+' ↔ 衛星 → 就近關口站（或先星間雷射跳到有站的區域）→ 網路節點 → 網際網路。</li></ul>'+
+ '<h3>角色與限制</h3><p>每站服務其天空可見範圍的衛星，需多站分布。有星間雷射後偏遠/海上也連得上，但關口站仍是流量<b>落地</b>的關鍵；落地點牽涉各國法規與主權（見 '+L("國防與戰略韌性")+'）。</p>'},
+{id:"Starlink星鏈",en:"Starlink",cat:"案例",html:
+ '<div class="callout"><b>一句話：</b><b>Starlink</b>（SpaceX）是目前規模最大、最成熟的 LEO 星座，靠<b>可重複使用火箭</b>大量發射，已在全球提供低延遲網路。</div>'+
+ '<h3>關鍵數字（2025–2026）</h3><ul><li>已發射<b>約 9500 顆</b>（規劃約 12000），殼層 540/550/570 km、傾角 53°。</li>'+
+ '<li>延遲 <b>25–35 ms</b>、速度 25–220 Mbps；2025 營收約 <b>114 億美元</b>。</li>'+
+ '<li>大量用 '+L("星間雷射鏈路")+'（每顆 3 組、每組 ~200 Gbps）。</li></ul>'+
+ '<h3>為何領先</h3><p>火箭自製＋可重複使用（別人射一顆的錢它射一批）、垂直整合、先搶 '+L("挑戰與爭議")+' 的軌道頻譜。在 '+L("國防與戰略韌性")+' 中扮演關鍵，也帶動 '+L("其他星座競賽")+'。手機直連 → '+L("衛星直連手機")+'。</p>'},
+{id:"衛星直連手機",en:"Direct-to-Cell",cat:"案例",html:
+ '<div class="callout"><b>一句話：</b>讓<b>一般手機不必外接設備、直接連衛星</b>收發訊息或上網。衛星變成「太空中的基地台」，補上地面訊號到不了的空白。</div>'+
+ '<h3>兩種形式</h3><ul><li><b>緊急衛星通訊</b>（如 iPhone Emergency SOS）：透過 <b>Globalstar</b> 傳求救簡訊，需對準天空、功能有限，主打救命。</li>'+
+ '<li><b>Direct-to-Cell（如 Starlink×T-Mobile 的 T-Satellite）</b>：衛星模擬地面基地台，手機用原本 4G/5G 就能連。2025/7 商轉、逾 650 顆 D2C 衛星，覆蓋美國大片死角；紐西蘭等陸續開通。</li></ul>'+
+ '<p>難點：手機天線小、功率低，衛星又高速移動，對波束/功率/'+L("衛星星座與全球覆蓋")+' 是大挑戰。對登山、航海、偏鄉與<b>災難通訊</b>價值巨大。</p>'},
+{id:"其他星座競賽",en:"OneWeb / Kuiper / China",cat:"案例",html:
+ '<div class="callout"><b>一句話：</b>'+L("Starlink星鏈")+' 獨大，但各國與大企業都搶進——低軌同時是通訊基建、龐大商機與戰略資產，軌道與頻譜有限，<b>先搶先贏</b>。</div>'+
+ '<h3>主要玩家</h3><ul><li><b>OneWeb（Eutelsat）</b>：約 648 顆、~1200 km，偏企業/政府/電信批發。</li>'+
+ '<li><b>Amazon Kuiper</b>：規劃約 3200 顆，2025/4 發射首批 27 顆，背靠 AWS。</li>'+
+ '<li><b>中國 星網＋千帆</b>：合計規劃<b>逾 28000 顆</b>，帶國家戰略意圖。</li>'+
+ '<li>另有 Telesat、歐盟 IRIS² 等。</li></ul>'+
+ '<p>搶進原因：頻譜/軌道由 ITU 先登記先用、不想受制單一國家（'+L("國防與戰略韌性")+'）、龐大市場（'+L("產業鏈與台廠商機")+'）。</p>'},
+{id:"產業鏈與台廠商機",en:"Supply Chain & Taiwan",cat:"戰略",html:
+ '<div class="callout"><b>一句話：</b>低軌是一條長產業鏈：<b>衛星製造 → 發射 → 地面設備 → 電信服務</b>。台灣在 ICT 製造有優勢，主要切入<b>地面設備與零組件</b>，並發展自主衛星。</div>'+
+ '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3NjAgMjIwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmc2IiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2Y0ZjhmZCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2U5ZjFmYSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgogIDxyZWN0IHdpZHRoPSI3NjAiIGhlaWdodD0iMjIwIiBmaWxsPSJ1cmwoI2JnNikiLz4KICA8dGV4dCB4PSIyOCIgeT0iMzQiIGZpbGw9IiMxMjMwMzkiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI3MDAiPuS9jui7jOihm+aYn+eUoualremPiOOAgO+8iOWPsOW7oOS4u+aUu+WcsOmdouioreWCme+8iTwvdGV4dD4KICA8ZyBmb250LXNpemU9IjEzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4KICAgIDxyZWN0IHg9IjQwIiB5PSI4MCIgd2lkdGg9IjE0MCIgaGVpZ2h0PSI2MCIgcng9IjgiIGZpbGw9IiNlZWY2ZjkiIHN0cm9rZT0iIzA4OTFiMiIvPjx0ZXh0IHg9IjExMCIgeT0iMTA2IiBmaWxsPSIjMGU1YTZiIiBmb250LXdlaWdodD0iNzAwIj7kuIrmuLg8L3RleHQ+PHRleHQgeD0iMTEwIiB5PSIxMjYiIGZpbGw9IiM2Yjk4YTQiIGZvbnQtc2l6ZT0iMTEiPuihm+aYn+ijvemAoC/phazovIk8L3RleHQ+CiAgICA8cmVjdCB4PSIyMjAiIHk9IjgwIiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjYwIiByeD0iOCIgZmlsbD0iI2VlZjZmOSIgc3Ryb2tlPSIjMDg5MWIyIi8+PHRleHQgeD0iMjkwIiB5PSIxMDYiIGZpbGw9IiMwZTVhNmIiIGZvbnQtd2VpZ2h0PSI3MDAiPuS4rea4uDwvdGV4dD48dGV4dCB4PSIyOTAiIHk9IjEyNiIgZmlsbD0iIzZiOThhNCIgZm9udC1zaXplPSIxMSI+54Gr566t55m85bCEPC90ZXh0PgogICAgPHJlY3QgeD0iNDAwIiB5PSI4MCIgd2lkdGg9IjE0MCIgaGVpZ2h0PSI2MCIgcng9IjgiIGZpbGw9IiNmZmY3ZWQiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSIyLjUiLz48dGV4dCB4PSI0NzAiIHk9IjEwMyIgZmlsbD0iI2ExNWMwNiIgZm9udC13ZWlnaHQ9IjcwMCI+5LiL5ri4IMK3IOWcsOmdouioreWCmTwvdGV4dD48dGV4dCB4PSI0NzAiIHk9IjEyMiIgZmlsbD0iI2I1ODU0OSIgZm9udC1zaXplPSIxMSI+5aSp57eaL+e1guerry/pl5zlj6Pnq5k8L3RleHQ+PHRleHQgeD0iNDcwIiB5PSIxMzYiIGZpbGw9IiNlMTFkNDgiIGZvbnQtc2l6ZT0iMTAiPuKYhSDlj7Dlu6DkuLvlips8L3RleHQ+CiAgICA8cmVjdCB4PSI1ODAiIHk9IjgwIiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjYwIiByeD0iOCIgZmlsbD0iI2YzZWZmZSIgc3Ryb2tlPSIjN2MzYWVkIi8+PHRleHQgeD0iNjUwIiB5PSIxMDYiIGZpbGw9IiM1YjMwYjAiIGZvbnQtd2VpZ2h0PSI3MDAiPuacjeWLmTwvdGV4dD48dGV4dCB4PSI2NTAiIHk9IjEyNiIgZmlsbD0iIzhhN2JjMCIgZm9udC1zaXplPSIxMSI+6Zu75L+h5ZWG5LiK57ay5pyN5YuZPC90ZXh0PgogIDwvZz4KICA8ZyBzdHJva2U9IiM5ZmI4YzIiIHN0cm9rZS13aWR0aD0iMiIgbWFya2VyLWVuZD0idXJsKCNhNikiPjxsaW5lIHgxPSIxODIiIHkxPSIxMTAiIHgyPSIyMTYiIHkyPSIxMTAiLz48bGluZSB4MT0iMzYyIiB5MT0iMTEwIiB4Mj0iMzk2IiB5Mj0iMTEwIi8+PGxpbmUgeDE9IjU0MiIgeTE9IjExMCIgeDI9IjU3NiIgeTI9IjExMCIvPjwvZz4KICA8ZGVmcz48bWFya2VyIGlkPSJhNiIgbWFya2VyV2lkdGg9IjgiIG1hcmtlckhlaWdodD0iOCIgcmVmWD0iNiIgcmVmWT0iMyIgb3JpZW50PSJhdXRvIj48cGF0aCBkPSJNMCwwIEw2LDMgTDAsNiBaIiBmaWxsPSIjOWZiOGMyIi8+PC9tYXJrZXI+PC9kZWZzPgogIDx0ZXh0IHg9IjI4IiB5PSIxODAiIGZpbGw9IiM1YjdhOTIiIGZvbnQtc2l6ZT0iMTIiPuWPsOeBo+W8t+WcqCBJQ1Qg6KO96YCg77ya5aSp57ea44CB5bCE6aC744CBUENCL+i8ieadv+OAgembu+a6kOOAgeezu+e1see1hOijne+8m+S4pueZvOWxlSBUQVNBIOiHquS4u+ihm+aYn+iIh+mbu+S/oeacjeWLmeOAgjwvdGV4dD4KPC9zdmc+Cg==">'+
+ '<h3>台廠的位置</h3><ul><li>強在 ICT/精密製造：'+L("相控陣天線與用戶終端")+'、射頻、<b>PCB/載板</b>、電源、系統組裝等。</li>'+
+ '<li><b>電信服務</b>：中華電信取得台灣首張以 Eutelsat OneWeb 提供 LEO 服務執照。</li>'+
+ '<li><b>自主計畫</b>：太空中心 <b>TASA</b> B5G 計畫，2027/2028 發射兩顆實驗衛星（~600 km、傾角 44–50°）；政府投入數百億。</li></ul>'+
+ '<p>商機龐大，但核心（火箭、巨型星座營運）仍由少數巨頭主導，自主性是課題（見 '+L("國防與戰略韌性")+'）。</p>'},
+{id:"國防與戰略韌性",en:"Defense & Resilience",cat:"戰略",html:
+ '<div class="callout"><b>一句話：</b>低軌提供一條<b>不依賴地面基礎設施</b>的通訊管道，在天災、戰爭、海纜中斷時仍能運作——成為國家<b>通訊韌性與國安</b>的關鍵資產與地緣戰場。</div>'+
+ '<h3>為何攸關國安</h3><ul><li><b>地面會斷</b>：戰爭/地震/颱風可摧毀基地台、切斷海纜；低軌從天上備援。</li>'+
+ '<li><b>台灣痛點</b>：對外網路高度仰賴少數海底電纜，被切斷時低軌是重要替代。</li>'+
+ '<li><b>不受制於人</b>：全靠單一國家/公司星座＝命脈交人手上 → 推動<b>自主星系</b>。</li></ul>'+
+ '<h3>案例</h3><p><b>烏克蘭戰爭</b>：'+L("Starlink星鏈")+' 維持了軍民通訊，展示低軌戰場價值，但也暴露「服務由單一民間公司掌控」可被斷訊的風險；烏克蘭遂推自建 UASAT（約 300 顆）。台灣以 '+L("產業鏈與台廠商機")+' 自主衛星與多元合作分散風險。</p>'},
+{id:"挑戰與爭議",en:"Challenges",cat:"挑戰",html:
+ '<div class="callout"><b>一句話：</b>上萬顆衛星塞進低軌，帶來副作用：<b>太空垃圾、天文光害、頻譜軌道之爭、營運壟斷與永續</b>。低軌熱潮的另一面是「太空能承載多少？」。</div>'+
+ '<h3>主要挑戰</h3><ul><li><b>太空垃圾/碰撞</b>：最壞是<b>凱斯勒效應</b>——碎片連鎖碰撞、越撞越多。LEO 衛星壽命約 5 年、需主動離軌燒毀。</li>'+
+ '<li><b>天文光害</b>：大量衛星反光在夜空拉亮線，干擾天文。</li>'+
+ '<li><b>頻譜/軌道之爭</b>：ITU 先登記先用（'+L("其他星座競賽")+'）。</li>'+
+ '<li><b>營運壟斷</b>：單一公司主導，'+L("國防與戰略韌性")+' 上有被斷訊之慮。</li></ul>'+
+ '<p>低軌的未來，得同時解決「用得好」與「別把太空塞爆」。</p>'}
+];
+const EDGES=[
+ ["什麼是低軌衛星","衛星通訊原理與延遲"],["什麼是低軌衛星","衛星星座與全球覆蓋"],["什麼是低軌衛星","Starlink星鏈"],
+ ["衛星通訊原理與延遲","星間雷射鏈路"],["衛星通訊原理與延遲","地面站與網路架構"],
+ ["衛星星座與全球覆蓋","相控陣天線與用戶終端"],["衛星星座與全球覆蓋","星間雷射鏈路"],["衛星星座與全球覆蓋","Starlink星鏈"],
+ ["相控陣天線與用戶終端","產業鏈與台廠商機"],["相控陣天線與用戶終端","地面站與網路架構"],
+ ["星間雷射鏈路","地面站與網路架構"],["星間雷射鏈路","國防與戰略韌性"],
+ ["地面站與網路架構","國防與戰略韌性"],
+ ["Starlink星鏈","衛星直連手機"],["Starlink星鏈","其他星座競賽"],["Starlink星鏈","國防與戰略韌性"],
+ ["衛星直連手機","衛星星座與全球覆蓋"],
+ ["其他星座競賽","國防與戰略韌性"],["其他星座競賽","挑戰與爭議"],["其他星座競賽","產業鏈與台廠商機"],
+ ["產業鏈與台廠商機","國防與戰略韌性"],["衛星星座與全球覆蓋","挑戰與爭議"]
+];
+const EXTRA={
+"什麼是低軌衛星":{take:["LEO ~160–2000km（Starlink ~550）。","近 → 低延遲、覆蓋小、需大量衛星。","靠可重複使用火箭才成真。"],
+ myth:[{q:"衛星越高越好、看得越廣。",a:"看得廣（GEO）代價是延遲高；上網體驗反而是低軌的近距離勝出。"}],
+ fact:"LEO 衛星每 90–120 分鐘就繞地球一圈，對地面是不斷移動的。",
+ deep:"GEO 一顆覆蓋大半球但延遲 600ms+；LEO 低延遲但單顆覆蓋小、快速掠過，得靠 <a class='wl' data-id='衛星星座與全球覆蓋'>星座</a> 接力。"},
+"衛星通訊原理與延遲":{take:["上行/下行、以光速傳播。","距離就是延遲。","LEO 20–40ms vs GEO 600ms+。"],
+ myth:[{q:"衛星網路一定又慢又卡。",a:"那是傳統 GEO；低軌把距離縮短數十倍，延遲已接近地面寬頻。"}],
+ fact:"光從地面到 GEO 單趟就要約 120 毫秒，來回加處理就破 600 毫秒。",
+ deep:"傳播延遲＝距離÷光速；長距離時 <a class='wl' data-id='星間雷射鏈路'>星間雷射</a>（真空光速）甚至可能比光纖更快。"},
+"衛星星座與全球覆蓋":{take:["單顆覆蓋小、快速掠過。","需成千上萬顆、多軌道面。","靠隨播交接無縫切換。"],
+ myth:[{q:"幾顆衛星就能覆蓋全球。",a:"低軌單顆覆蓋很小又快速移動，要無死角得上千甚至上萬顆。"}],
+ fact:"Starlink 規劃約 12000 顆、甚至申請上看數萬顆。",
+ deep:"分布多個軌道面與傾角讓覆蓋接續；交接像手機漫遊，但基地台以 ~7.5km/s 在天上跑，靠 <a class='wl' data-id='相控陣天線與用戶終端'>相控陣</a> 追蹤。"},
+"相控陣天線與用戶終端":{take:["用電子調相位轉波束、免機械轉動。","能高速追星、瞬間換星。","是台廠切入重點。"],
+ myth:[{q:"要連衛星就得裝會轉的大碟子。",a:"相控陣是平板、靠電子控制波束，不用轉動，還能平放在車船飛機上。"}],
+ fact:"Starlink 的『碟子』其實是一片內含大量天線單元的相控陣平板。",
+ deep:"調整各單元相位即波束成形（beamforming），電子瞬間完成，可同時形成多道波束並在 <a class='wl' data-id='衛星星座與全球覆蓋'>交接</a> 時瞬間指向下一顆。"},
+"星間雷射鏈路":{take:["衛星間用雷射互連成太空骨幹。","不必每步都落回地面。","每組約 200 Gbps。"],
+ myth:[{q:"衛星一定要先傳回地面才能轉出去。",a:"有星間雷射後，資料能在天上跳衛星傳很遠，海上/極區/戰區也連得上。"}],
+ fact:"Starlink 全星座逾 13000 條雙向雷射鏈路，每天搬運數十 PB 資料。",
+ deep:"光在真空比在光纖快（光纖約 2/3 光速），長距離時天上走雷射有時比海纜更低延遲；最後仍需 <a class='wl' data-id='地面站與網路架構'>關口站</a> 落地。"},
+"地面站與網路架構":{take:["關口站是衛星與地面網的橋樑。","資料最終要落地接網際網路。","落地點牽涉法規與主權。"],
+ myth:[{q:"有了衛星就完全不需要地面設施。",a:"流量最終仍要經關口站落地接入網際網路，關口站是關鍵節點。"}],
+ fact:"星間雷射讓沒有鄰近關口站的偏遠海域也能連上，但落地出口仍不可或缺。",
+ deep:"路徑：用戶↔衛星→就近關口站（或先 <a class='wl' data-id='星間雷射鏈路'>星間雷射</a> 跳到有站區域）→網路節點；落地點涉及各國主權（見 <a class='wl' data-id='國防與戰略韌性'>國防</a>）。"},
+"Starlink星鏈":{take:["規模最大最成熟的 LEO 星座。","約 9500 顆、550km、25–35ms。","靠可重複使用火箭領先。"],
+ myth:[{q:"Starlink 領先只是因為衛星做得好。",a:"關鍵在 SpaceX 自有便宜可重複使用的火箭——別人射一顆的錢它射一批。"}],
+ fact:"Starlink 2025 年營收約 114 億美元，已是 SpaceX 最大業務。",
+ deep:"垂直整合火箭/衛星/<a class='wl' data-id='相控陣天線與用戶終端'>用戶天線</a>/地面網；先搶 <a class='wl' data-id='挑戰與爭議'>軌道頻譜</a>；在 <a class='wl' data-id='國防與戰略韌性'>烏克蘭</a> 展現戰略價值。"},
+"衛星直連手機":{take:["一般手機不外接直接連衛星。","緊急 SOS vs Direct-to-Cell。","D2C 用原本 4G/5G。"],
+ myth:[{q:"直連手機跟一般收訊一樣好。",a:"初期多從簡訊起步、頻寬有限，主要補地面死角，逐步擴展數據語音。"}],
+ fact:"T-Mobile 的 T-Satellite 於 2025/7/23 商轉，用逾 650 顆具 D2C 能力的衛星。",
+ deep:"iPhone Emergency SOS 走 Globalstar、主打救命；D2C 讓衛星模擬基地台。難點在手機天線小/功率低而衛星高速移動，對波束與 <a class='wl' data-id='衛星星座與全球覆蓋'>交接</a> 是挑戰。"},
+"其他星座競賽":{take:["各國企業搶進低軌。","OneWeb/Kuiper/中國星網千帆。","軌道頻譜先搶先贏。"],
+ myth:[{q:"低軌市場只有 Starlink。",a:"OneWeb、Amazon Kuiper、中國星網/千帆都在大舉發射，是激烈競賽。"}],
+ fact:"中國星網＋千帆合計規劃逾 28000 顆，2024 年起密集發射。",
+ deep:"頻譜與軌道由 ITU 協調、先登記先使用，形成太空圈地；動機兼具商業與 <a class='wl' data-id='國防與戰略韌性'>戰略自主</a>。"},
+"產業鏈與台廠商機":{take:["製造→發射→地面設備→服務。","台廠主攻地面設備與零組件。","TASA 發展自主衛星。"],
+ myth:[{q:"低軌商機都在天上的衛星。",a:"更大的量在地面：天線、終端、零組件與服務，正是台灣製造業所長。"}],
+ fact:"中華電信取得台灣首張以 Eutelsat OneWeb 技術提供 LEO 服務的執照。",
+ deep:"台廠切入天線、射頻、PCB/載板、系統組裝；TASA B5G 計畫 2027/2028 發射兩顆實驗衛星（~600km），政府投入數百億。核心仍由巨頭主導是課題。"},
+"國防與戰略韌性":{take:["不依賴地面的備援通訊。","戰爭/海纜中斷時的命脈。","單一公司掌控有斷訊風險。"],
+ myth:[{q:"衛星通訊只是上網方便而已。",a:"當海纜被切、基地台被毀，它是還能通訊的國安命脈——已從工具升級成戰略資產。"}],
+ fact:"烏克蘭戰爭中 Starlink 維持了軍民通訊，也讓各國警覺不能全靠單一公司。",
+ deep:"台灣對外高度仰賴海纜，低軌是重要替代；但服務若由單一民間公司掌控可被斷訊，故各國推 <a class='wl' data-id='產業鏈與台廠商機'>自主星系</a>（如烏克蘭 UASAT 約 300 顆）。"},
+"挑戰與爭議":{take:["太空垃圾與凱斯勒效應。","天文光害、頻譜軌道之爭。","營運壟斷與永續。"],
+ myth:[{q:"太空很大，塞多少衛星都沒關係。",a:"軌道與頻譜有限，衛星暴增帶來碰撞、光害與資源之爭，並非無上限。"}],
+ fact:"LEO 衛星壽命約 5 年，需主動離軌再入大氣燒毀，否則成太空垃圾。",
+ deep:"最壞情況是凱斯勒效應——碎片連鎖碰撞讓軌道難以使用；加上天文光害、ITU 頻譜之爭與 <a class='wl' data-id='國防與戰略韌性'>單一公司壟斷</a> 的疑慮。"}
+};
+
+const NById=Object.fromEntries(NOTES.map(n=>[n.id,n]));
+const sidebar=document.getElementById('sidebar');
+function buildSidebar(filter){
+ filter=(filter||'').trim();
+ let html='<div class="navlink" data-id="__home"><span class="dot" style="background:var(--accent)"></span>總覽首頁</div>';
+ for(const key of Object.keys(CATS)){
+  const items=NOTES.filter(n=>n.cat===key&&(!filter||n.id.includes(filter)||n.en.toLowerCase().includes(filter.toLowerCase())));
+  if(!items.length)continue;
+  html+='<div class="cat">'+CATS[key].name+'</div>';
+  for(const n of items)html+='<div class="navlink" data-id="'+n.id+'"><span class="dot" style="background:'+CATS[n.cat].raw+'"></span>'+n.id+'<small>'+n.en+'</small></div>';
+ }
+ sidebar.innerHTML=html;
+}
+/* ===== 筆記 ===== */
+const main=document.getElementById('main');
+let current=null;
+function neighborsOf(id){const s=new Set();EDGES.forEach(([a,b])=>{if(a===id)s.add(b);if(b===id)s.add(a);});return[...s];}
+function renderHome(){
+ current='__home';
+ main.innerHTML='<div class="note"><div class="hero"><div style="font-size:46px">🛰️</div>'+
+  '<div class="big">低軌衛星知識庫</div>'+
+  '<p class="sub">整理自多支低軌衛星 / Starlink 影片。12 個主題，從軌道原理、系統技術到 Starlink、直連手機、產業台廠與國防戰略。</p>'+
+  '<div class="stats"><div class="stat"><b>12</b><span>知識點</span></div><div class="stat"><b>22</b><span>關聯連結</span></div>'+
+  '<div class="stat"><b>2</b><span>互動模擬</span></div><div class="stat"><b>5</b><span>主題分區</span></div></div></div>'+
+  '<h3>建議閱讀路徑</h3>'+
+  '<div class="pathrow">'+Object.keys(CATS).map((key,i)=>{const first=NOTES.find(n=>n.cat===key).id;
+    return (i>0?'<span class="arrow">→</span>':'')+'<span class="stage" data-id="'+first+'"><span class="d" style="background:'+CATS[key].raw+'"></span>'+CATS[key].name+'</span>';}).join('')+'</div>'+
+  '<p style="color:var(--muted);font-size:14px">點上方階段可直接跳到該分區第一篇；或從下方各主題任選。建議從 '+L("什麼是低軌衛星")+' 開始，一路讀到 '+L("挑戰與爭議")+'。</p>'+
+  Object.keys(CATS).map(key=>{const items=NOTES.filter(n=>n.cat===key);
+    return '<div class="catgroup"><div class="cl" style="color:'+CATS[key].raw+'"><span class="d" style="background:'+CATS[key].raw+'"></span>'+CATS[key].name+'</div><div class="chips">'+items.map(n=>'<span class="chip" data-id="'+n.id+'">'+n.id+'</span>').join('')+'</div></div>';}).join('')+
+  '</div>';
+ syncActive();
+}
+function renderNote(id){
+ const n=NById[id];if(!n){renderHome();return;}
+ current=id;const idx=NOTES.findIndex(x=>x.id===id);const prev=NOTES[idx-1],next=NOTES[idx+1];const nb=neighborsOf(id);
+ let html='<div class="note"><div class="crumbs"><span class="tag" style="background:'+CATS[n.cat].raw+'33;color:'+CATS[n.cat].raw+'">'+CATS[n.cat].name+'</span></div>'+
+  '<h2 class="title">'+n.id+'</h2><div class="en">'+n.en+'</div>'+n.html;
+ const ex=EXTRA[id];
+ if(ex){
+  if(ex.take)html+='<div class="kbox"><div class="kt">🎯 重點回顧</div><ul>'+ex.take.map(t=>'<li>'+t+'</li>').join('')+'</ul></div>';
+  if(ex.myth)html+='<details class="collap myth"><summary>💡 常見誤解</summary><div class="body">'+ex.myth.map(m=>'<div class="myth-row"><span class="x">✗</span><div>'+m.q+'</div></div><div class="myth-row"><span class="o">✓</span><div>'+m.a+'</div></div>').join('')+'</div></details>';
+  if(ex.fact)html+='<details class="collap fact"><summary>🔎 冷知識</summary><div class="body"><p>'+ex.fact+'</p></div></details>';
+  if(ex.deep)html+='<details class="collap deep"><summary>📐 深入補充</summary><div class="body">'+ex.deep+'</div></details>';
+ }
+ if(nb.length)html+='<div class="related"><div class="cat">關聯概念</div><div class="chips">'+nb.map(x=>'<span class="chip" data-id="'+x+'">'+x+'</span>').join('')+'</div></div>';
+ html+='<div class="nav-btns">'+(prev?'<button data-id="'+prev.id+'"><small>← 上一篇</small>'+prev.id+'</button>':'<button disabled style="opacity:.3"><small>—</small>第一篇</button>')+
+  (next?'<button data-id="'+next.id+'" style="text-align:right"><small>下一篇 →</small>'+next.id+'</button>':'<button disabled style="opacity:.3;text-align:right"><small>—</small>最後一篇</button>')+'</div></div>';
+ main.innerHTML=html;main.scrollTop=0;
+ if(ex&&ex.chart)drawChart(ex.chart);
+ syncActive();
+}
+function open(id){if(id==='__home')renderHome();else renderNote(id);showNotes();}
+function syncActive(){document.querySelectorAll('.navlink').forEach(el=>el.classList.toggle('active',el.dataset.id===current));}
+document.body.addEventListener('click',e=>{const t=e.target.closest('[data-id]');if(t)open(t.dataset.id);});
+/* ===== 搜尋 ===== */
+const search=document.getElementById('search');
+search.addEventListener('input',()=>buildSidebar(search.value));
+search.addEventListener('keydown',e=>{if(e.key==='Enter'){const f=search.value.trim().toLowerCase();const hit=NOTES.find(n=>n.id.includes(search.value.trim())||n.en.toLowerCase().includes(f));if(hit)open(hit.id);}});
+/* ===== 分頁 ===== */
+const tabNotes=document.getElementById('tabNotes'),tabGraph=document.getElementById('tabGraph'),tabDemo=document.getElementById('tabDemo');
+const graphView=document.getElementById('graphView'),demoView=document.getElementById('demoView');
+const allTabs=[tabNotes,tabGraph,tabDemo];
+function setTab(b){allTabs.forEach(x=>x.classList.toggle('active',x===b));}
+function hideAll(){main.style.display='none';graphView.style.display='none';demoView.style.display='none';}
+function showNotes(){setTab(tabNotes);hideAll();main.style.display='';}
+function showGraph(){setTab(tabGraph);hideAll();graphView.style.display='block';startGraph();}
+function showDemo(){setTab(tabDemo);hideAll();demoView.style.display='block';startDemo();startMesh();}
+tabNotes.onclick=showNotes;tabGraph.onclick=showGraph;tabDemo.onclick=showDemo;
+/* ===== 圖表 ===== */
+
+function drawChart(kind){}
+function buildLegend(){document.getElementById('legend').innerHTML=Object.keys(CATS).map(k=>'<div><i style="background:'+CATS[k].raw+'"></i>'+CATS[k].name+'</div>').join('');}
+function startGraph(){
+ if(G.started)return;G.started=true;buildLegend();
+ const W=svg.clientWidth||900,H=svg.clientHeight||600;
+ const deg={};EDGES.forEach(([a,b])=>{deg[a]=(deg[a]||0)+1;deg[b]=(deg[b]||0)+1;});
+ G.nodes=NOTES.map((n,i)=>({id:n.id,cat:n.cat,x:W/2+Math.cos(i/NOTES.length*6.283)*240+(Math.random()-.5)*40,y:H/2+Math.sin(i/NOTES.length*6.283)*190+(Math.random()-.5)*40,vx:0,vy:0,r:8+(deg[n.id]||1)*1.5}));
+ const pos=Object.fromEntries(G.nodes.map(n=>[n.id,n]));
+ while(svg.firstChild)svg.removeChild(svg.firstChild);
+ const gE=document.createElementNS(SVGNS,'g'),gN=document.createElementNS(SVGNS,'g');svg.appendChild(gE);svg.appendChild(gN);
+ G.edges=EDGES.map(([a,b])=>{const l=document.createElementNS(SVGNS,'line');l.setAttribute('class','gedge');gE.appendChild(l);return{a,b,el:l};});
+ G.nodes.forEach(n=>{
+  const g=document.createElementNS(SVGNS,'g');g.setAttribute('class','gnode');g.dataset.id=n.id;
+  const c=document.createElementNS(SVGNS,'circle');c.setAttribute('r',n.r);c.setAttribute('fill',CATS[n.cat].raw);c.setAttribute('stroke','#ffffff');c.setAttribute('stroke-width','2.5');
+  const t=document.createElementNS(SVGNS,'text');t.setAttribute('text-anchor','middle');t.setAttribute('dy',-n.r-6);t.textContent=n.id;
+  g.appendChild(c);g.appendChild(t);gN.appendChild(g);n.el=g;
+  g.addEventListener('mouseenter',()=>highlight(n.id,true));g.addEventListener('mouseleave',()=>highlight(n.id,false));
+  let moved=false,down=false,ox,oy;
+  g.addEventListener('pointerdown',ev=>{down=true;moved=false;n.fixed=true;const p=toSvg(ev);ox=p.x-n.x;oy=p.y-n.y;g.setPointerCapture(ev.pointerId);});
+  g.addEventListener('pointermove',ev=>{if(!down)return;const p=toSvg(ev);n.x=p.x-ox;n.y=p.y-oy;n.vx=0;n.vy=0;moved=true;});
+  g.addEventListener('pointerup',()=>{down=false;n.fixed=false;if(!moved)open(n.id);});
+ });
+ gloop(pos,W,H);
+}
+function toSvg(ev){const r=svg.getBoundingClientRect();return{x:ev.clientX-r.left,y:ev.clientY-r.top};}
+function highlight(id,on){const nb=new Set(neighborsOf(id));nb.add(id);
+ G.nodes.forEach(n=>{n.el.style.opacity=on?(nb.has(n.id)?1:.2):1;});
+ G.edges.forEach(e=>{const rel=(e.a===id||e.b===id);e.el.classList.toggle('hl',on&&rel);e.el.style.opacity=on?(rel?1:.12):1;});}
+function gloop(pos,W,H){const KR=5200,KS=0.012,L0=118,DA=0.86,GR=0.008;
+ function step(){const ns=G.nodes;
+  for(let i=0;i<ns.length;i++){const a=ns[i];if(a.fixed)continue;let fx=0,fy=0;
+   for(let j=0;j<ns.length;j++){if(i===j)continue;const b=ns[j];let dx=a.x-b.x,dy=a.y-b.y,d2=dx*dx+dy*dy+.01,d=Math.sqrt(d2);const f=KR/d2;fx+=dx/d*f;fy+=dy/d*f;}
+   fx+=(W/2-a.x)*GR;fy+=(H/2-a.y)*GR;a.vx=(a.vx+fx)*DA;a.vy=(a.vy+fy)*DA;}
+  EDGES.forEach(([ai,bi])=>{const a=pos[ai],b=pos[bi];let dx=b.x-a.x,dy=b.y-a.y,d=Math.sqrt(dx*dx+dy*dy)+.01;const f=(d-L0)*KS,ux=dx/d,uy=dy/d;if(!a.fixed){a.vx+=ux*f;a.vy+=uy*f;}if(!b.fixed){b.vx-=ux*f;b.vy-=uy*f;}});
+  ns.forEach(n=>{if(n.fixed)return;n.x+=n.vx;n.y+=n.vy;n.x=Math.max(n.r+40,Math.min(W-n.r-40,n.x));n.y=Math.max(n.r+30,Math.min(H-n.r-20,n.y));});
+  G.edges.forEach(e=>{const a=pos[e.a],b=pos[e.b];e.el.setAttribute('x1',a.x);e.el.setAttribute('y1',a.y);e.el.setAttribute('x2',b.x);e.el.setAttribute('y2',b.y);});
+  ns.forEach(n=>n.el.setAttribute('transform','translate('+n.x+','+n.y+')'));
+  G.raf=requestAnimationFrame(step);}
+ step();}
+/* ===== 互動：軌道模擬 + 延遲比較 ===== */
+let leo={raf:null,built:false,alt:550,nsat:8,sats:[],t:0};
+function startDemo(){
+ if(!leo.built){
+  demoView.innerHTML='<div class="demo"><div class="panel"><h3>① 軌道模擬</h3>'+
+   '<div class="d">拉「軌道高度」看衛星繞行速度、週期與延遲怎麼變——越低，繞越快、延遲越低，但單顆覆蓋越小。拉「衛星數」看星座變密。</div>'+
+   '<canvas id="orbitCv" class="cv" width="820" height="360"></canvas>'+
+   '<div class="controls"><label>軌道高度 <span class="val" id="altV">550</span> km<input type="range" id="alt" min="300" max="36000" value="550"></label>'+
+   '<label>衛星數 <span class="val" id="nV">8</span><input type="range" id="nsat" min="3" max="28" value="8"></label>'+
+   '<span id="orbRead" style="font-size:13px;color:#2b4a53"></span></div></div></div>';
+  const alt=document.getElementById('alt'),ns=document.getElementById('nsat');
+  alt.oninput=()=>{leo.alt=+alt.value;document.getElementById('altV').textContent=leo.alt;};
+  ns.oninput=()=>{leo.nsat=+ns.value;document.getElementById('nV').textContent=leo.nsat;seedSats();};
+  seedSats(); leo.built=true;
+ }
+ cancelAnimationFrame(leo.raf); orbitLoop();
+}
+function seedSats(){ leo.sats=[]; for(let i=0;i<leo.nsat;i++) leo.sats.push(i/leo.nsat*6.2832); }
+function orbitLoop(){ leo.t+=0.016; drawOrbit(); leo.raf=requestAnimationFrame(orbitLoop); }
+function drawOrbit(){
+ const cv=document.getElementById('orbitCv'); if(!cv)return;
+ const ctx=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2; ctx.clearRect(0,0,W,H);
+ const Re=6371, mu=398600, c=299792, alt=leo.alt, r=Re+alt;
+ const T=2*Math.PI*Math.sqrt(r*r*r/mu), lat=4*alt/c*1000+10;
+ const R=50, rmax=150, rOrbit=R+28+(Math.log10(alt/300)/Math.log10(36000/300))*rmax;
+ const g=ctx.createRadialGradient(cx-16,cy-16,8,cx,cy,R); g.addColorStop(0,'#7bb5ec'); g.addColorStop(1,'#2f6bb0');
+ ctx.fillStyle=g; ctx.beginPath(); ctx.arc(cx,cy,R,0,7); ctx.fill();
+ ctx.fillStyle='rgba(255,255,255,.85)'; ctx.font='11px sans-serif'; ctx.textAlign='center'; ctx.fillText('地球',cx,cy+4);
+ ctx.strokeStyle='#c3d8e6'; ctx.setLineDash([4,5]); ctx.beginPath(); ctx.arc(cx,cy,rOrbit,0,7); ctx.stroke(); ctx.setLineDash([]);
+ const w=(2*Math.PI/T)*900;
+ leo.sats.forEach(b=>{const a=b+leo.t*w, x=cx+Math.cos(a)*rOrbit, y=cy+Math.sin(a)*rOrbit;
+   ctx.save();ctx.fillStyle='#0891b2';ctx.shadowColor='#22b8e6';ctx.shadowBlur=6;ctx.beginPath();ctx.arc(x,y,4.5,0,7);ctx.fill();ctx.restore();});
+ const band= alt<2000?'LEO 低軌': (alt<35000?'MEO 中軌':'GEO 同步');
+ const rd=document.getElementById('orbRead');
+ if(rd) rd.innerHTML='<b>'+band+'</b> ・ 高度 <b>'+alt+' km</b> ・ 週期 <b>'+(T/60).toFixed(0)+' 分/圈</b> ・ 來回延遲 ≈ <b>'+lat.toFixed(0)+' ms</b>';
+}
+function startMesh(){
+ if(document.getElementById('latCv'))return;
+ demoView.insertAdjacentHTML('beforeend','<div class="demo"><div class="panel"><h3>② 延遲比較</h3>'+
+  '<div class="d">同一趟資料，高度差幾十倍，延遲天差地別。</div>'+
+  '<canvas id="latCv" class="cv" width="820" height="240"></canvas></div></div>');
+ drawLat();
+}
+function drawLat(){
+ const cv=document.getElementById('latCv'); if(!cv)return; const ctx=cv.getContext('2d'),W=cv.width,H=cv.height; ctx.clearRect(0,0,W,H);
+ const c=299792, data=[['LEO 550 km',550,'#0891b2'],['MEO 20,200 km',20200,'#d97706'],['GEO 35,786 km',35786,'#e11d48']];
+ const P=50, maxL=4*36000/c*1000+20;
+ ctx.strokeStyle='#cfe0e7'; ctx.beginPath(); ctx.moveTo(P,20); ctx.lineTo(P,H-40); ctx.lineTo(W-20,H-40); ctx.stroke();
+ const bw=(W-P-40)/data.length;
+ data.forEach((d,i)=>{const lat=4*d[1]/c*1000+10, hh=(H-70)*Math.min(1,lat/maxL), x=P+20+i*bw, y=(H-40)-hh;
+   ctx.fillStyle=d[2]; ctx.fillRect(x,y,bw*0.5,hh);
+   ctx.fillStyle='#123039'; ctx.font='bold 13px sans-serif'; ctx.textAlign='center'; ctx.fillText(lat.toFixed(0)+' ms', x+bw*0.25, y-8);
+   ctx.fillStyle='#4d6b76'; ctx.font='12px sans-serif'; ctx.fillText(d[0], x+bw*0.25, H-22);});
+ ctx.fillStyle='#8aa4ae'; ctx.font='11px sans-serif'; ctx.textAlign='left'; ctx.fillText('來回延遲（含處理，示意）', P, 15);
+}
+
+buildSidebar();renderHome();
+</script>
+</body>
+</html>
