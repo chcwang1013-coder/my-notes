@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>微波工程 · 互動知識庫</title>
+<style>
+  :root{
+    --bg:#eef6f9; --bg2:#ffffff; --panel:#ffffff; --panel2:#f1f8fb;
+    --line:#d5e5ec; --text:#123039; --muted:#4d6b76; --dim:#8aa4ae;
+    --cyan:#0891b2; --green:#059669; --amber:#d97706; --purple:#7c3aed; --pink:#e11d48;
+    --accent:#0e9bc4;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:
+      radial-gradient(1100px 420px at 50% -120px, rgba(14,155,196,.14), transparent 70%),
+      linear-gradient(180deg,#f6fbfd 0%,#e9f3f7 100%);
+    color:var(--text);font-family:'PingFang TC','Microsoft JhengHei','Helvetica Neue',system-ui,sans-serif;
+    line-height:1.75;overflow:hidden}
+  header{position:fixed;top:0;left:0;right:0;height:60px;z-index:20;
+    display:flex;align-items:center;gap:16px;padding:0 20px;
+    background:rgba(255,255,255,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  header::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;
+    background:linear-gradient(90deg,#e11d48,#d97706,#eab308,#059669,#0891b2,#4f46e5,#7c3aed);opacity:.85}
+  header h1{font-size:18px;margin:0;font-weight:800;letter-spacing:.5px;white-space:nowrap}
+  header h1 .em{color:var(--accent)}
+  .search{flex:1;max-width:340px;position:relative}
+  .search input{width:100%;padding:8px 12px 8px 34px;border-radius:10px;
+    border:1px solid var(--line);background:var(--panel);color:var(--text);font-size:14px;outline:none}
+  .search input:focus{border-color:var(--accent)}
+  .search svg{position:absolute;left:10px;top:9px;opacity:.6}
+  .tabs{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+  .tabs button{padding:8px 14px;border-radius:10px;border:1px solid var(--line);
+    background:var(--panel);color:var(--muted);font-size:13.5px;cursor:pointer;transition:.15s;font-family:inherit}
+  .tabs button:hover{color:var(--text);border-color:var(--accent)}
+  .tabs button.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700;box-shadow:0 2px 10px rgba(14,155,196,.35)}
+  .wrap{position:fixed;top:60px;left:0;right:0;bottom:0;display:flex}
+  aside{width:290px;flex:none;overflow-y:auto;padding:16px 10px 60px;
+    border-right:1px solid var(--line);background:rgba(255,255,255,.55)}
+  .cat{margin:10px 8px 4px;font-size:12px;font-weight:700;letter-spacing:1px;color:var(--dim)}
+  .navlink{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:8px;
+    color:var(--muted);cursor:pointer;font-size:14px;transition:.12s}
+  .navlink:hover{background:var(--panel);color:var(--text)}
+  .navlink.active{background:var(--panel2);color:#123039;font-weight:700;box-shadow:inset 3px 0 0 var(--accent)}
+  .navlink .dot{width:8px;height:8px;border-radius:50%;flex:none}
+  .navlink small{color:var(--dim);font-size:10.5px;margin-left:auto;text-align:right}
+  main{flex:1;overflow-y:auto;padding:38px 46px 90px;scroll-behavior:smooth}
+  .note{max-width:820px;margin:0 auto;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .crumbs{font-size:13px;color:var(--dim);margin-bottom:10px}
+  .crumbs .tag{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11.5px;font-weight:700;margin-right:6px}
+  h2.title{font-size:29px;margin:2px 0 4px;font-weight:800}
+  .en{color:var(--muted);font-size:15px;margin-bottom:18px;letter-spacing:.5px}
+  .callout{background:linear-gradient(180deg,rgba(34,211,238,.12),rgba(34,211,238,.03));
+    border-left:3px solid var(--accent);border-radius:8px;padding:12px 16px;margin:18px 0;color:#123039}
+  .callout b{color:#0e5a6b}
+  main h3{font-size:18px;margin:26px 0 8px;color:#123039;border-bottom:1px solid var(--line);padding-bottom:6px}
+  main p{margin:10px 0}
+  main ul{margin:10px 0;padding-left:22px}
+  main li{margin:5px 0}
+  .diagram{width:100%;border-radius:12px;border:1px solid var(--line);margin:16px 0;background:#fff;display:block;box-shadow:0 2px 12px rgba(18,48,57,.06)}
+  .formula{font-family:'Cambria Math',Georgia,serif;font-size:18px;text-align:center;
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin:16px 0;color:var(--text)}
+  .eqcard{background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid var(--line);border-radius:14px;
+    padding:18px 20px;margin:18px 0;box-shadow:0 3px 14px rgba(18,48,57,.06)}
+  .eqcard .eqt{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--accent);text-align:center;margin-bottom:2px}
+  .eqcard .eq{font-family:'Cambria Math','Times New Roman',Georgia,serif;font-size:32px;text-align:center;
+    color:#123039;margin:6px 0 16px;line-height:1.35}
+  .eqcard .eq i{font-style:italic}
+  .eqcard .eq sub{font-size:.6em;vertical-align:-.25em} .eqcard .eq sup{font-size:.6em;vertical-align:.5em}
+  .eqcard .lg{display:grid;gap:8px}
+  .eqcard .row{display:flex;gap:14px;align-items:baseline;padding:9px 14px;background:#fff;border:1px solid var(--line);border-radius:10px}
+  .eqcard .s{font-family:'Cambria Math','Times New Roman',Georgia,serif;font-style:italic;font-weight:800;
+    font-size:20px;min-width:58px;text-align:center;flex:none}
+  .eqcard .s sub{font-size:.6em;vertical-align:-.2em}
+  .eqcard .m{font-size:13.5px;color:#2b4a53;line-height:1.6}
+  .eqcard .m b{color:#123039}
+  .eqcard .u{display:inline-block;margin-left:8px;font-size:11.5px;color:#5b8090;background:#eef6f9;
+    border:1px solid var(--line);border-radius:20px;padding:1px 9px}
+  .eqcard .cap{font-size:12.5px;color:var(--dim);text-align:center;margin-top:12px}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 12px;text-align:left}
+  th{background:#e4f1f5;color:#123039;font-weight:700}
+  td{background:#fbfeff;color:#2b4a53}
+  tr:nth-child(even) td{background:#f2f8fb}
+  a.wl{color:var(--accent);cursor:pointer;text-decoration:none;border-bottom:1px dashed rgba(34,211,238,.5)}
+  a.wl:hover{color:#0b5566;background:rgba(14,155,196,.14);border-radius:3px}
+  .related{margin-top:34px;padding-top:16px;border-top:1px solid var(--line)}
+  .related .cat{margin-left:0}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .pathrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:16px 0 8px}
+  .stage{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:24px;background:#fff;
+    border:1px solid var(--line);cursor:pointer;font-weight:700;color:#123039;transition:.15s;box-shadow:0 1px 6px rgba(18,48,57,.05)}
+  .stage:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(18,48,57,.12);border-color:var(--accent)}
+  .stage .d{width:10px;height:10px;border-radius:50%;flex:none}
+  .pathrow .arrow{color:var(--dim);font-weight:800;font-size:16px}
+  .catgroup{margin:14px 0}
+  .catgroup .cl{font-size:12.5px;font-weight:800;letter-spacing:.5px;margin-bottom:7px;display:flex;align-items:center;gap:7px}
+  .catgroup .cl .d{width:9px;height:9px;border-radius:50%}
+  .chip{padding:6px 14px;border-radius:20px;background:var(--panel);border:1px solid var(--line);
+    color:var(--muted);cursor:pointer;font-size:13.5px;transition:.12s}
+  .chip:hover{background:var(--accent);color:#04222a;border-color:var(--accent)}
+  .nav-btns{display:flex;justify-content:space-between;margin-top:26px;gap:10px}
+  .nav-btns button{flex:1;padding:12px;border-radius:10px;border:1px solid var(--line);
+    background:var(--panel);color:var(--muted);cursor:pointer;text-align:left;font-family:inherit;transition:.12s}
+  .nav-btns button:hover{border-color:var(--accent);color:#0e5a6b;background:#f0f9fc}
+  .nav-btns small{display:block;color:var(--dim);font-size:11px}
+  .kbox{background:linear-gradient(180deg,rgba(52,211,153,.12),rgba(52,211,153,.03));
+    border:1px solid rgba(52,211,153,.35);border-radius:12px;padding:14px 18px;margin:22px 0}
+  .kbox .kt{font-weight:800;color:var(--green);font-size:14px;margin-bottom:6px}
+  .kbox ul{margin:4px 0 0;padding-left:20px} .kbox li{margin:3px 0}
+  .collap{border:1px solid var(--line);border-radius:10px;margin:12px 0;overflow:hidden;background:#f4fafc}
+  .collap>summary{cursor:pointer;padding:12px 16px;font-weight:700;color:#123039;list-style:none;display:flex;align-items:center;gap:8px}
+  .collap>summary::-webkit-details-marker{display:none}
+  .collap>summary::before{content:'▸';color:var(--accent);transition:.2s;display:inline-block}
+  .collap[open]>summary::before{transform:rotate(90deg)}
+  .collap>summary:hover{background:var(--panel)}
+  .collap .body{padding:2px 18px 16px;color:#2b4a53}
+  .collap.myth{background:#fff5f6}.collap.myth>summary{color:#be123c}.collap.myth>summary::before{color:var(--pink)}
+  .collap.fact{background:#f1fbf6}.collap.fact>summary{color:#047857}.collap.fact>summary::before{color:var(--green)}
+  .collap.deep{background:#f5f4fe}.collap.deep>summary{color:#3730a3}.collap.deep>summary::before{color:#4f46e5}
+  .collap>summary:hover{background:rgba(0,0,0,.03)}
+  .myth-row{display:flex;gap:10px;margin:10px 0}
+  .myth-row .x{color:var(--pink);font-weight:800;flex:none}.myth-row .o{color:var(--green);font-weight:800;flex:none}
+  .hero{text-align:center;padding:14px 0 10px}
+  .hero .big{font-size:40px;font-weight:800;margin:12px 0 4px}
+  .hero .sub{color:var(--muted);max-width:640px;margin:0 auto 8px}
+  .stats{display:flex;gap:12px;justify-content:center;margin:22px 0;flex-wrap:wrap}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 20px;text-align:center}
+  .stat b{font-size:24px;display:block;color:var(--accent)} .stat span{font-size:12px;color:var(--dim)}
+  #graphView,#demoView,#meshView{flex:1;position:relative;display:none}
+  #demoView,#meshView{overflow-y:auto;padding:24px 30px 80px}
+  #graph{width:100%;height:100%;display:block;cursor:grab}
+  .legend{position:absolute;top:16px;left:16px;background:rgba(255,255,255,.9);border:1px solid var(--line);
+    border-radius:10px;padding:12px 14px;font-size:13px;backdrop-filter:blur(6px);box-shadow:0 2px 12px rgba(18,48,57,.08)}
+  .legend div{display:flex;align-items:center;gap:8px;margin:4px 0;color:var(--muted)}
+  .legend i{width:11px;height:11px;border-radius:50%;display:inline-block}
+  .hint{position:absolute;bottom:16px;right:18px;color:var(--dim);font-size:12px}
+  .gnode{cursor:pointer}.gnode text{font-size:12px;fill:var(--text);pointer-events:none;font-family:inherit}
+  .gnode circle{transition:r .15s}
+  .gedge{stroke:#b7d3dd;stroke-width:1.4}.gedge.hl{stroke:var(--accent);stroke-width:2.6}
+  /* demo */
+  .demo{max-width:900px;margin:0 auto}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;margin:18px 0;box-shadow:0 4px 20px rgba(18,48,57,.06)}
+  .panel h3{margin:0 0 4px;color:#123039;font-size:18px;border:none}
+  .panel .d{color:var(--dim);font-size:13px;margin-bottom:12px}
+  .controls{display:flex;flex-wrap:wrap;gap:20px;align-items:center;margin-top:14px}
+  .controls label{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:6px;min-width:190px}
+  .controls input[type=range]{accent-color:var(--accent)}
+  .controls .val{color:var(--accent);font-weight:700}
+  .controls button{padding:9px 16px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);color:var(--text);cursor:pointer;font-family:inherit}
+  .controls button:hover{border-color:var(--accent)}
+  canvas.cv{width:100%;border-radius:12px;background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid var(--line);display:block}
+  .bars{display:flex;gap:18px;margin-top:14px}
+  .bar{flex:1;text-align:center}
+  .bar .track{height:120px;background:var(--panel2);border-radius:8px;position:relative;overflow:hidden;border:1px solid var(--line)}
+  .bar .fill{position:absolute;bottom:0;left:0;right:0;transition:height .08s}
+  .bar .lbl{font-size:13px;color:var(--muted);margin-top:6px}
+  .bar .pct{font-weight:800;color:#123039}
+  svg#mesh{width:100%;height:auto;background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid var(--line);border-radius:12px}
+  .cpl{cursor:pointer}
+  .chartbox{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;margin:16px 0;box-shadow:0 2px 12px rgba(18,48,57,.05)}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:#b7d3dd;border-radius:6px}
+  @media(max-width:720px){aside{position:fixed;z-index:15;height:100%;transform:translateX(-100%);transition:.25s}
+    aside.open{transform:none}main{padding:24px 18px 80px}.search{max-width:none}header h1{font-size:14px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>📡 <span class="em">微波工程</span>知識庫</h1>
+  <div class="search">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8fbccb" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input id="search" placeholder="搜尋知識點…（Enter 開啟）" autocomplete="off">
+  </div>
+  <div class="tabs">
+    <button id="tabNotes" class="active">📖 筆記</button>
+    <button id="tabGraph">🕸️ 關係圖譜</button>
+    <button id="tabDemo">🔬 模擬工具</button>
+  </div>
+</header>
+<div class="wrap">
+  <aside id="sidebar"></aside>
+  <main id="main"></main>
+  <div id="graphView"><svg id="graph"></svg><div class="legend" id="legend"></div>
+    <div class="hint">拖曳節點 · 點擊開啟筆記 · 移入高亮關聯</div></div>
+  <div id="demoView"></div>
+</div>
+<script>
+const CATS={
+ "基礎":{name:"基礎（場與線）",raw:"#0891b2"},
+ "媒介":{name:"傳輸媒介",raw:"#0ea5a4"},
+ "網路":{name:"網路與匹配",raw:"#7c3aed"},
+ "元件":{name:"被動元件",raw:"#d97706"},
+ "系統":{name:"主動與系統",raw:"#e11d48"}
+};
+function L(id){return '<a class="wl" data-id="'+id+'">'+id+'</a>';}
+const NOTES=[
+{id:"電磁與平面波",en:"EM & Plane Waves (Ch.1)",cat:"基礎",html:
+ '<div class="callout"><b>一句話：</b>微波的物理底層：Maxwell 方程 → 平面波解。高頻電流集中於導體表層（趨膚效應），決定損耗與尺度。</div>'+
+ '<h3>本質阻抗與波</h3><ul><li>波數 k=ω√(με)=2π/λ；本質阻抗 η=√(μ/ε)，自由空間 η₀≈377 Ω。</li><li>傳播常數 γ=α+jβ；相速 v_p=1/√(με)。</li></ul>'+
+ '<div class="formula">趨膚深度　δ<sub>s</sub> = 1 / √(πfμσ)</div>'+
+ '<p>頻率越高 δ<sub>s</sub> 越薄 → 有效電阻上升、導體損耗增加。波在線上跑 → '+L("傳輸線理論")+'；在管中跑 → '+L("傳輸線與波導")+'。</p>'},
+{id:"傳輸線理論",en:"Transmission Lines (Ch.2)",cat:"基礎",html:
+ '<div class="callout"><b>一句話：</b>線長可比波長時用分佈參數（電報方程）。核心：特性阻抗 Z₀、反射係數 Γ、VSWR、輸入阻抗 Z<sub>in</sub>。</div>'+
+ '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MjAgMjYwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iMjYwIiBmaWxsPSIjZjRmOGZkIi8+CiAgPHRleHQgeD0iMjQiIHk9IjMyIiBmaWxsPSIjMTIzMDM5IiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIj7lgrPovLjnt5rnmoTlj43lsIToiIfpp5Dms6I8L3RleHQ+CiAgPCEtLSDmupAgLS0+CiAgPHJlY3QgeD0iNDAiIHk9Ijg4IiB3aWR0aD0iNDYiIGhlaWdodD0iNDQiIHJ4PSI0IiBmaWxsPSIjZWVmNmY5IiBzdHJva2U9IiMwODkxYjIiLz48dGV4dCB4PSI2MyIgeT0iMTE1IiBmaWxsPSIjMGU1YTZiIiBmb250LXNpemU9IjEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7mupA8L3RleHQ+CiAgPCEtLSDlgrPovLjnt5ogLS0+CiAgPGxpbmUgeDE9Ijg2IiB5MT0iMTEwIiB4Mj0iNTYwIiB5Mj0iMTEwIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iNCIvPgogIDx0ZXh0IHg9IjMyMCIgeT0iOTgiIGZpbGw9IiM0ZDZiNzYiIGZvbnQtc2l6ZT0iMTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlrigoDvvIjnibnmgKfpmLvmipfvvIk8L3RleHQ+CiAgPCEtLSDosqDovIkgLS0+CiAgPHJlY3QgeD0iNTYwIiB5PSI4NiIgd2lkdGg9IjUyIiBoZWlnaHQ9IjQ4IiByeD0iNCIgZmlsbD0iI2ZmZjVmNiIgc3Ryb2tlPSIjZTExZDQ4Ii8+PHRleHQgeD0iNTg2IiB5PSIxMDgiIGZpbGw9IiNiZTEyM2MiIGZvbnQtc2l6ZT0iMTMiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSI3MDAiPlpfTDwvdGV4dD48dGV4dCB4PSI1ODYiIHk9IjEyNCIgZmlsbD0iI2M3NiIgZm9udC1zaXplPSIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+6LKg6LyJPC90ZXh0PgogIDwhLS0g5YWl5bCEL+WPjeWwhCDnrq3poK0gLS0+CiAgPHBhdGggZD0iTTEyMCw3NCBoMTIwIiBzdHJva2U9IiMwNTk2NjkiIHN0cm9rZS13aWR0aD0iMiIgbWFya2VyLWVuZD0idXJsKCNhKSIvPjx0ZXh0IHg9IjE4MCIgeT0iNjgiIGZpbGw9IiMwNTk2NjkiIGZvbnQtc2l6ZT0iMTEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuWFpeWwhOazoiDihpI8L3RleHQ+CiAgPHBhdGggZD0iTTUyMCwxNDYgaC0xMjAiIHN0cm9rZT0iI2UxMWQ0OCIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI2EpIi8+PHRleHQgeD0iNDYwIiB5PSIxNjQiIGZpbGw9IiNlMTFkNDgiIGZvbnQtc2l6ZT0iMTEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuKGkCDlj43lsITms6IgKM6TKTwvdGV4dD4KICA8IS0tIOmnkOazoiAtLT4KICA8cGF0aCBkPSJNODYsMjEwIFExNDAsMTgwIDE5NCwyMTAgVDMwMiwyMTAgVDQxMCwyMTAgVDUxOCwyMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdjM2FlZCIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHRleHQgeD0iMTIwIiB5PSIyMzgiIGZpbGw9IiM1YjMwYjAiIGZvbnQtc2l6ZT0iMTEiPumnkOazoiB8Vih6KXzvvIjkuI3ljLnphY3mmYLlh7rnj77vvIk8L3RleHQ+CiAgPHRleHQgeD0iMzgwIiB5PSIyMzgiIGZpbGw9IiM1YjdhOTIiIGZvbnQtc2l6ZT0iMTEiPs6TPShaX0ziiJJa4oKAKS8oWl9MK1rigoAp44CAVlNXUj0oMSt8zpN8KS8oMeKIknzOk3wpPC90ZXh0PgogIDxkZWZzPjxtYXJrZXIgaWQ9ImEiIG1hcmtlcldpZHRoPSI4IiBtYXJrZXJIZWlnaHQ9IjgiIHJlZlg9IjYiIHJlZlk9IjMiIG9yaWVudD0iYXV0byI+PHBhdGggZD0iTTAsMCBMNiwzIEwwLDYgWiIgZmlsbD0iIzU1NSIvPjwvbWFya2VyPjwvZGVmcz4KPC9zdmc+Cg==">'+
+ '<div class="formula">Γ = (Z<sub>L</sub>−Z₀)/(Z<sub>L</sub>+Z₀)　・　VSWR = (1+|Γ|)/(1−|Γ|)　・　RL = −20log|Γ|</div>'+
+ '<div class="formula">Z<sub>in</sub> = Z₀ · (Z<sub>L</sub>+jZ₀tanβl)/(Z₀+jZ<sub>L</sub>tanβl)</div>'+
+ '<h3>重要特例</h3><ul><li><b>λ/4</b>：Z<sub>in</sub>=Z₀²/Z<sub>L</sub>（阻抗反轉 → '+L("阻抗匹配與調諧")+'）。</li><li><b>λ/2</b>：Z<sub>in</sub>=Z<sub>L</sub>。</li><li>短/開路短截線＝可調電抗 jZ₀tanβl。</li></ul>'+
+ '<p>圖解工具 → '+L("史密斯圖")+'。到「🔬 模擬工具」可即時算 Γ/VSWR 與駐波。</p>'},
+{id:"史密斯圖",en:"Smith Chart (Ch.2)",cat:"基礎",html:
+ '<div class="callout"><b>一句話：</b>把反射係數 Γ 平面與歸一化阻抗 z=Z/Z₀ 疊在一起的圖解工具。沿線移動＝繞圓旋轉，讓阻抗變換與匹配用尺規解決。</div>'+
+ '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MjAgMzAwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iMzAwIiBmaWxsPSIjZjRmOGZkIi8+CiAgPHRleHQgeD0iMjQiIHk9IjMwIiBmaWxsPSIjMTIzMDM5IiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIj7lj7Llr4bmlq/lnJbvvJrpmLvmipfoiIflj43lsITkv4LmlbjnmoTlnJbop6M8L3RleHQ+CiAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTcwLDE2MCkiPgogICAgPCEtLSDlpJblnIggfM6TfD0xIC0tPgogICAgPGNpcmNsZSBjeD0iMCIgY3k9IjAiIHI9IjEyMCIgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlPSIjMDg5MWIyIiBzdHJva2Utd2lkdGg9IjIiLz4KICAgIDwhLS0g5a+m6Lu4IC0tPgogICAgPGxpbmUgeDE9Ii0xMjAiIHkxPSIwIiB4Mj0iMTIwIiB5Mj0iMCIgc3Ryb2tlPSIjYjlkNGRkIi8+CiAgICA8IS0tIOetiembu+mYu+WckyAoY29uc3RhbnQgcikgLS0+CiAgICA8Y2lyY2xlIGN4PSI0MCIgY3k9IjAiIHI9IjgwIiBmaWxsPSJub25lIiBzdHJva2U9IiM1OWEiIHN0cm9rZS13aWR0aD0iMSIvPgogICAgPGNpcmNsZSBjeD0iNzAiIGN5PSIwIiByPSI1MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNTlhIiBzdHJva2Utd2lkdGg9IjEiLz4KICAgIDxjaXJjbGUgY3g9Ijk1IiBjeT0iMCIgcj0iMjUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzU5YSIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgICA8IS0tIOetiembu+aKl+W8pyAoY29uc3RhbnQgeCkgLS0+CiAgICA8cGF0aCBkPSJNMTIwLDAgQTgwLDgwIDAgMCwwIDQwLC03NiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZDk5IiBzdHJva2Utd2lkdGg9IjEiLz4KICAgIDxwYXRoIGQ9Ik0xMjAsMCBBODAsODAgMCAwLDEgNDAsNzYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2Q5OSIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgICA8cGF0aCBkPSJNMTIwLDAgQTQwLDQwIDAgMCwwIDc4LC0zOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZDk5IiBzdHJva2Utd2lkdGg9IjEiLz4KICAgIDxwYXRoIGQ9Ik0xMjAsMCBBNDAsNDAgMCAwLDEgNzgsMzgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2Q5OSIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgICA8IS0tIOiyoOi8iem7niAtLT4KICAgIDxjaXJjbGUgY3g9IjU1IiBjeT0iLTQ1IiByPSI1IiBmaWxsPSIjZTExZDQ4Ii8+PHRleHQgeD0iNjIiIHk9Ii01MiIgZmlsbD0iI2JlMTIzYyIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCI+el9MPC90ZXh0PgogICAgPCEtLSDlrpogVlNXUiDlnJMgLS0+CiAgICA8Y2lyY2xlIGN4PSIwIiBjeT0iMCIgcj0iNzEiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdjM2FlZCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1kYXNoYXJyYXk9IjMgMyIvPgogICAgPCEtLSDml4vovYnnrq3poK0gLS0+CiAgICA8cGF0aCBkPSJNNDAsLTU5IEE3MSw3MSAwIDAsMSA2OCwtMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdjM2FlZCIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI2EpIi8+CiAgICA8dGV4dCB4PSIwIiB5PSIxMzIiIGZpbGw9IiM1YjMwYjAiIGZvbnQtc2l6ZT0iMTEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuayv+e3muenu+WLle+8nee5nuWciO+8iOS4gOWciCDOuy8y77yJPC90ZXh0PgogICAgPGNpcmNsZSBjeD0iMCIgY3k9IjAiIHI9IjMiIGZpbGw9IiMwODkxYjIiLz48dGV4dCB4PSI0IiB5PSItNiIgZmlsbD0iIzBlNWE2YiIgZm9udC1zaXplPSIxMCI+5Yy56YWNKOWck+W/gyk8L3RleHQ+CiAgPC9nPgogIDxnIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiMxMjMwMzkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDM2MCw5MCkiPgogICAgPHRleHQgeD0iMCIgeT0iMCIgZm9udC13ZWlnaHQ9IjcwMCI+zpMgPSAoeuKIkjEpLyh6KzEpPC90ZXh0PgogICAgPHRleHQgeD0iMCIgeT0iMzAiIGZpbGw9IiM1OWEiPuKXjyDol43lnJPvvJrnrYnpm7vpmLsgcjwvdGV4dD4KICAgIDx0ZXh0IHg9IjAiIHk9IjU0IiBmaWxsPSIjZDc3Ij7il48g57SF5byn77ya562J6Zu75oqXIHg8L3RleHQ+CiAgICA8dGV4dCB4PSIwIiB5PSI3OCIgZmlsbD0iIzdjM2FlZCI+4pePIOe0q+iZm+e3mu+8muWumiBWU1dSIOWckzwvdGV4dD4KICAgIDx0ZXh0IHg9IjAiIHk9IjExMCIgZmlsbD0iIzViN2E5MiIgZm9udC1zaXplPSIxMiI+5oqK6LKg6LyJ5ouJ5Yiw5ZyT5b+D77yd5a6M5oiQ5Yy56YWN77ybPC90ZXh0PgogICAgPHRleHQgeD0iMCIgeT0iMTMwIiBmaWxsPSIjNWI3YTkyIiBmb250LXNpemU9IjEyIj7ml4vovYkgMTgwwrAg5Y2z6Zi75oqX4oaU5bCO57SN44CCPC90ZXh0PgogIDwvZz4KICA8ZGVmcz48bWFya2VyIGlkPSJhIiBtYXJrZXJXaWR0aD0iOCIgbWFya2VySGVpZ2h0PSI4IiByZWZYPSI2IiByZWZZPSIzIiBvcmllbnQ9ImF1dG8iPjxwYXRoIGQ9Ik0wLDAgTDYsMyBMMCw2IFoiIGZpbGw9IiM3YzNhZWQiLz48L21hcmtlcj48L2RlZnM+Cjwvc3ZnPgo=">'+
+ '<div class="formula">Γ = (z−1)/(z+1)　・　z = (1+Γ)/(1−Γ)</div>'+
+ '<h3>要點</h3><ul><li>等電阻圓、等電抗弧兩族圓。</li><li>距負載 l：Γ(l)=Γ<sub>L</sub>e<sup>−2jβl</sup>；向電源＝順時針旋轉，一圈＝λ/2。</li><li>|Γ| 不變＝定 VSWR 圓；旋轉 180°＝阻抗↔導納。</li></ul>'+
+ '<p>主要應用 → '+L("阻抗匹配與調諧")+'。網站「🔬 模擬工具」有互動史密斯圖。</p>'},
+{id:"傳輸線與波導",en:"Lines & Waveguides (Ch.3)",cat:"媒介",html:
+ '<div class="callout"><b>一句話：</b>各種「管道」：TEM 線（同軸、微帶準 TEM）與空心波導（TE/TM，有截止頻率）。結構決定阻抗、損耗、頻寬與可傳模態。</div>'+
+ '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MjAgMjYwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iMjYwIiBmaWxsPSIjZjRmOGZkIi8+CiAgPHRleHQgeD0iMjQiIHk9IjMyIiBmaWxsPSIjMTIzMDM5IiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIj7nn6nlvaLms6LlsI7kuLvmqKEgVEXigoHigoAg6IiH5oiq5q2i6aC7546HPC90ZXh0PgogIDwhLS0g5rOi5bCO5oiq6Z2iIC0tPgogIDxyZWN0IHg9IjcwIiB5PSI3MCIgd2lkdGg9IjIyMCIgaGVpZ2h0PSIxMzAiIGZpbGw9IiNlZWY2ZjkiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHRleHQgeD0iMTgwIiB5PSIyMjIiIGZpbGw9IiM0ZDZiNzYiIGZvbnQtc2l6ZT0iMTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuWvrCBh77yI5rG65a6a5oiq5q2i77yJPC90ZXh0PgogIDxsaW5lIHgxPSI3MCIgeTE9IjIxMiIgeDI9IjI5MCIgeTI9IjIxMiIgc3Ryb2tlPSIjOGFhNGFlIi8+PGxpbmUgeDE9IjcwIiB5MT0iMjA3IiB4Mj0iNzAiIHkyPSIyMTciIHN0cm9rZT0iIzhhYTRhZSIvPjxsaW5lIHgxPSIyOTAiIHkxPSIyMDciIHgyPSIyOTAiIHkyPSIyMTciIHN0cm9rZT0iIzhhYTRhZSIvPgogIDx0ZXh0IHg9IjUyIiB5PSIxNDAiIGZpbGw9IiM0ZDZiNzYiIGZvbnQtc2l6ZT0iMTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIHRyYW5zZm9ybT0icm90YXRlKC05MCA1MiAxNDApIj7pq5ggYjwvdGV4dD4KICA8IS0tIEUg5aC077yI5Y2K5q2j5bym5YiG5biD77yM5Z6C55u0566t6aCt77yM5Lit6ZaT5pyA5by377yJIC0tPgogIDxnIHN0cm9rZT0iI2UxMWQ0OCIgc3Ryb2tlLXdpZHRoPSIyIj4KICAgIDxsaW5lIHgxPSIxMTAiIHkxPSIxODUiIHgyPSIxMTAiIHkyPSI5NSIgbWFya2VyLWVuZD0idXJsKCNhKSIvPgogICAgPGxpbmUgeDE9IjE1MCIgeTE9IjE5NSIgeDI9IjE1MCIgeTI9IjgwIiBtYXJrZXItZW5kPSJ1cmwoI2EpIi8+CiAgICA8bGluZSB4MT0iMTgwIiB5MT0iMTk4IiB4Mj0iMTgwIiB5Mj0iNzUiIG1hcmtlci1lbmQ9InVybCgjYSkiLz4KICAgIDxsaW5lIHgxPSIyMTAiIHkxPSIxOTUiIHgyPSIyMTAiIHkyPSI4MCIgbWFya2VyLWVuZD0idXJsKCNhKSIvPgogICAgPGxpbmUgeDE9IjI1MCIgeTE9IjE4NSIgeDI9IjI1MCIgeTI9Ijk1IiBtYXJrZXItZW5kPSJ1cmwoI2EpIi8+CiAgPC9nPgogIDx0ZXh0IHg9IjE4MCIgeT0iNTUiIGZpbGw9IiNiZTEyM2MiIGZvbnQtc2l6ZT0iMTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkUg5aC077yI5rK/IGEg5ZGI5Y2K5q2j5bym77yM5Lit5aSu5pyA5by377yJPC90ZXh0PgogIDwhLS0g5YWs5byPIC0tPgogIDxnIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiMxMjMwMzkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDM0MCwxMDApIj4KICAgIDx0ZXh0IHg9IjAiIHk9IjAiIGZvbnQtd2VpZ2h0PSI3MDAiPuaIquatoumgu+eOhzwvdGV4dD4KICAgIDx0ZXh0IHg9IjAiIHk9IjI2Ij5mX2MoVEXigoHigoApID0gYyAvICgyYSk8L3RleHQ+CiAgICA8dGV4dCB4PSIwIiB5PSI1NiI+Zl9jLG1uID0gKGMvMiniiJooKG0vYSnCsisobi9iKcKyKTwvdGV4dD4KICAgIDx0ZXh0IHg9IjAiIHk9Ijg2IiBmaWxsPSIjNWI3YTkyIiBmb250LXNpemU9IjEyIj7Ou19nID0gzrsgLyDiiJooMeKIkihmX2MvZinCsikgJmd0OyDOuzwvdGV4dD4KICAgIDx0ZXh0IHg9IjAiIHk9IjExMCIgZmlsbD0iIzViN2E5MiIgZm9udC1zaXplPSIxMiI+5L2O5pa8IGZfYyDihpIg5raI6YCd5rOi77yM5LiN5YKz5pKt44CCPC90ZXh0PgogICAgPHRleHQgeD0iMCIgeT0iMTM0IiBmaWxsPSIjNWI3YTkyIiBmb250LXNpemU9IjEyIj7nqbrlv4Pms6LlsI7nhKEgVEVNIOaooeOAgjwvdGV4dD4KICA8L2c+CiAgPGRlZnM+PG1hcmtlciBpZD0iYSIgbWFya2VyV2lkdGg9IjgiIG1hcmtlckhlaWdodD0iOCIgcmVmWD0iNSIgcmVmWT0iMyIgb3JpZW50PSJhdXRvIj48cGF0aCBkPSJNMCwwIEw2LDMgTDAsNiBaIiBmaWxsPSIjZTExZDQ4Ii8+PC9tYXJrZXI+PC9kZWZzPgo8L3N2Zz4K">'+
+ '<h3>TEM 線</h3><ul><li>同軸 Z₀=(η/2π)ln(b/a)。</li><li>微帶（準 TEM）：用有效介電常數 ε<sub>eff</sub>，v_p=c/√ε<sub>eff</sub>；Z₀ 由 W/h 與 ε<sub>r</sub> 決定。到「🔬 模擬工具」可算微帶 Z₀。</li></ul>'+
+ '<div class="formula">矩形波導　f<sub>c,mn</sub> = (c/2)√((m/a)²+(n/b)²)　・　主模 TE₁₀：f<sub>c</sub>=c/2a</div>'+
+ '<p>λ<sub>g</sub>=λ/√(1−(f<sub>c</sub>/f)²)>λ；低於 f<sub>c</sub> → 消逝波。空心波導無 TEM。諧振腔 → '+L("微波諧振器")+'。</p>'},
+{id:"微波網路與S參數",en:"Networks & S-parameters (Ch.4)",cat:"網路",html:
+ '<div class="callout"><b>一句話：</b>把電路當黑盒子，用入射/反射波描述。高頻難量電壓電流，改用可量測的<b>散射參數 S</b>。</div>'+
+ '<div class="formula">S<sub>ij</sub> = b<sub>i</sub>/a<sub>j</sub>　(其他埠接匹配時)</div>'+
+ '<h3>意義與性質</h3><ul><li>S<sub>11</sub>＝輸入反射（=Γ<sub>in</sub>）、S<sub>21</sub>＝正向傳輸；|S<sub>21</sub>|² 為功率增益。</li>'+
+ '<li>插入損耗 −20log|S<sub>21</sub>|、回波損耗 −20log|S<sub>11</sub>|。</li>'+
+ '<li>互易 → [S] 對稱；無損 → [S] 么正。ABCD 矩陣適合串接。</li></ul>'+
+ '<p>它是所有元件規格書與 VNA 量測的共同語言，也是 '+L("微波放大器設計")+' 的基礎。</p>'},
+{id:"阻抗匹配與調諧",en:"Matching & Tuning (Ch.5)",cat:"網路",html:
+ '<div class="callout"><b>一句話：</b>讓負載「看起來」等於 Z₀，以最大功率傳輸、最小反射。從 L 型、λ/4、單/雙短截線到多節轉換器。</div>'+
+ '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MjAgMjYwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iMjYwIiBmaWxsPSIjZjRmOGZkIi8+CiAgPHRleHQgeD0iMjQiIHk9IjMwIiBmaWxsPSIjMTIzMDM5IiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIj7pmLvmipfljLnphY3vvJrOuy80IOi9ieaPm+WZqOiIhyBMIOWei+e2sui3rzwvdGV4dD4KICA8IS0tIM67LzQgLS0+CiAgPHRleHQgeD0iMjQiIHk9IjYyIiBmaWxsPSIjMDg5MWIyIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIj7lm5vliIbkuYvkuIDms6LplbfovYnmj5vlmajvvIjlr6bmlbjosqDovInvvIk8L3RleHQ+CiAgPGxpbmUgeDE9IjQwIiB5MT0iOTUiIHgyPSIxNTAiIHkyPSI5NSIgc3Ryb2tlPSIjMDg5MWIyIiBzdHJva2Utd2lkdGg9IjQiLz48dGV4dCB4PSI5NSIgeT0iODUiIGZpbGw9IiM0ZDZiNzYiIGZvbnQtc2l6ZT0iMTEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlrigoA8L3RleHQ+CiAgPGxpbmUgeDE9IjE1MCIgeTE9Ijk1IiB4Mj0iMjkwIiB5Mj0iOTUiIHN0cm9rZT0iIzA1OTY2OSIgc3Ryb2tlLXdpZHRoPSI3Ii8+PHRleHQgeD0iMjIwIiB5PSI4MiIgZmlsbD0iIzBhNzM1MCIgZm9udC1zaXplPSIxMSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+WuKCgSA9IOKImiha4oKAwrdaX0wpPC90ZXh0Pjx0ZXh0IHg9IjIyMCIgeT0iMTE1IiBmaWxsPSIjNWY5Yzg0IiBmb250LXNpemU9IjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7plbcgzrsvNDwvdGV4dD4KICA8cmVjdCB4PSIyOTAiIHk9IjgwIiB3aWR0aD0iNDAiIGhlaWdodD0iMzAiIHJ4PSIzIiBmaWxsPSIjZmZmNWY2IiBzdHJva2U9IiNlMTFkNDgiLz48dGV4dCB4PSIzMTAiIHk9IjEwMCIgZmlsbD0iI2JlMTIzYyIgZm9udC1zaXplPSIxMiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+Wl9MPC90ZXh0PgogIDwhLS0gTCDlnosgLS0+CiAgPHRleHQgeD0iMjQiIHk9IjE2NSIgZmlsbD0iIzdjM2FlZCIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCI+TCDlnovntrLot6/vvIjlhanlgIvpm4bnuL3lhYPku7bvvIk8L3RleHQ+CiAgPGxpbmUgeDE9IjQwIiB5MT0iMjAwIiB4Mj0iMTUwIiB5Mj0iMjAwIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iNCIvPgogIDwhLS0g5Liy6IGv5YWD5Lu2IC0tPgogIDxyZWN0IHg9IjE1MCIgeT0iMTkyIiB3aWR0aD0iNDYiIGhlaWdodD0iMTYiIHJ4PSIzIiBmaWxsPSIjZTdkZGY5IiBzdHJva2U9IiM3YzNhZWQiLz48dGV4dCB4PSIxNzMiIHk9IjE4NSIgZmlsbD0iIzViMzBiMCIgZm9udC1zaXplPSIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+aljvvIjkuLLvvIk8L3RleHQ+CiAgPGxpbmUgeDE9IjE5NiIgeTE9IjIwMCIgeDI9IjMwMCIgeTI9IjIwMCIgc3Ryb2tlPSIjMDg5MWIyIiBzdHJva2Utd2lkdGg9IjQiLz4KICA8IS0tIOS4puiBr+WFg+S7tiAtLT4KICA8bGluZSB4MT0iMjUwIiB5MT0iMjAwIiB4Mj0iMjUwIiB5Mj0iMjM1IiBzdHJva2U9IiM3YzNhZWQiIHN0cm9rZS13aWR0aD0iMyIvPjxyZWN0IHg9IjIzOCIgeT0iMjM1IiB3aWR0aD0iMjQiIGhlaWdodD0iMTIiIGZpbGw9IiNlN2RkZjkiIHN0cm9rZT0iIzdjM2FlZCIvPjx0ZXh0IHg9IjI4NSIgeT0iMjM4IiBmaWxsPSIjNWIzMGIwIiBmb250LXNpemU9IjEwIj5qQu+8iOS4pu+8iTwvdGV4dD4KICA8cmVjdCB4PSIzMDAiIHk9IjE4NSIgd2lkdGg9IjQwIiBoZWlnaHQ9IjMwIiByeD0iMyIgZmlsbD0iI2ZmZjVmNiIgc3Ryb2tlPSIjZTExZDQ4Ii8+PHRleHQgeD0iMzIwIiB5PSIyMDUiIGZpbGw9IiNiZTEyM2MiIGZvbnQtc2l6ZT0iMTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlpfTDwvdGV4dD4KICA8ZyBmb250LXNpemU9IjEyIiBmaWxsPSIjNWI3YTkyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg0MDAsOTApIj4KICAgIDx0ZXh0IHg9IjAiIHk9IjAiPuebruaome+8muiukyBaX2luID0gWuKCgO+8iOacgOWkp+WKn+eOh+OAgembtuWPjeWwhO+8iTwvdGV4dD4KICAgIDx0ZXh0IHg9IjAiIHk9IjI2Ij7Ouy8077ya5YOP6K6K5aOT5Zmo5oqKIFpfTCDlj43ovYnliLAgWuKCgDwvdGV4dD4KICAgIDx0ZXh0IHg9IjAiIHk9IjUwIj5MIOWei++8muS4gOS4suS4gOS4pu+8jOWFqeatpeWcqOWPsuWvhuaWr+WcluWIsOWck+W/gzwvdGV4dD4KICAgIDx0ZXh0IHg9IjAiIHk9IjgwIiBmaWxsPSIjMTIzMDM5Ij7llq4v6ZuZ55+t5oiq57ea77ya55So5Y+v6Kq/6Zu75oqX5oq15raIPC90ZXh0PgogICAgPHRleHQgeD0iMCIgeT0iMTA0IiBmaWxsPSIjMTIzMDM5Ij7lpJrnr4DvvJrkuozpoIXlvI8v5YiH5q+U6Zuq5aSrIOKGkiDmm7Tlr6zpoLs8L3RleHQ+CiAgPC9nPgo8L3N2Zz4K">'+
+ '<div class="formula">四分之一波長轉換器（實數負載）　Z₁ = √(Z₀ · Z<sub>L</sub>)</div>'+
+ '<h3>方法</h3><ul><li><b>L 型</b>：兩集總元件，史密斯圖兩步到圓心。</li><li><b>λ/4</b>：像變壓器，頻寬有限、可多節加寬。</li>'+
+ '<li><b>短截線</b>：用可調電抗抵消。</li><li><b>多節</b>：二項式（最大平坦）/切比雪夫（等漣波）。</li></ul>'+
+ '<p><b>Bode–Fano 準則</b>：頻寬與匹配度有理論上限。到「🔬 模擬工具」可算 λ/4 與 L 型匹配。圖解 → '+L("史密斯圖")+'。</p>'},
+{id:"微波諧振器",en:"Resonators (Ch.6)",cat:"元件",html:
+ '<div class="callout"><b>一句話：</b>在特定頻率儲能的元件，用品質因子 Q 衡量「儲能/每週期損耗」。Q 越高、選頻越尖銳。是濾波器與振盪器的核心。</div>'+
+ '<div class="formula">ω₀ = 1/√(LC)　・　Q = ω₀/Δω = f₀/BW　・　1/Q<sub>L</sub> = 1/Q₀ + 1/Q<sub>e</sub></div>'+
+ '<h3>種類</h3><ul><li>傳輸線諧振器：開路 λ/2（並聯 RLC）、短路 λ/4（串聯 RLC）。</li>'+
+ '<li>腔體諧振器 Q 可達數千～上萬；介質諧振器（DR）體積小、Q 高、溫穩。</li></ul>'+
+ '<p>用於窄帶 '+L("微波濾波器")+' 與穩定 '+L("振盪器與混頻器")+'。分佈線基礎 → '+L("傳輸線與波導")+'。</p>'},
+{id:"功率分配器與耦合器",en:"Dividers & Couplers (Ch.7)",cat:"元件",html:
+ '<div class="callout"><b>一句話：</b>把功率分配或合成。三埠（Wilkinson）與四埠（方向耦合器、混合耦合器）是微波系統的基本積木。</div>'+
+ '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MjAgMjYwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iMjYwIiBmaWxsPSIjZjRmOGZkIi8+CiAgPHRleHQgeD0iMjQiIHk9IjMwIiBmaWxsPSIjMTIzMDM5IiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIj7mlrnlkJHogKblkIjlmajvvIjlm5vln6DvvInoiIcgV2lsa2luc29uIOWIhumFjeWZqDwvdGV4dD4KICA8IS0tIOaWueWQkeiApuWQiOWZqCAtLT4KICA8cmVjdCB4PSIxMjAiIHk9IjkwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjcwIiByeD0iNiIgZmlsbD0iI2VlZjZmOSIgc3Ryb2tlPSIjMDg5MWIyIiBzdHJva2Utd2lkdGg9IjIiLz4KICA8dGV4dCB4PSIyMjAiIHk9IjEzMCIgZmlsbD0iIzBlNWE2YiIgZm9udC1zaXplPSIxMyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC13ZWlnaHQ9IjcwMCI+5pa55ZCR6ICm5ZCI5ZmoPC90ZXh0PgogIDx0ZXh0IHg9IjcwIiB5PSI5OCIgZmlsbD0iIzA1OTY2OSIgZm9udC1zaXplPSIxMiI+4pGgIOi8uOWFpSDihpI8L3RleHQ+PGxpbmUgeDE9IjEwMCIgeTE9IjEwNSIgeDI9IjEyMCIgeTI9IjEwNSIgc3Ryb2tlPSIjMDU5NjY5IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8dGV4dCB4PSIzMzAiIHk9Ijk4IiBmaWxsPSIjMDg5MWIyIiBmb250LXNpemU9IjEyIj7ihpIg4pGhIOebtOmAmjwvdGV4dD48bGluZSB4MT0iMzIwIiB5MT0iMTA1IiB4Mj0iMzQ1IiB5Mj0iMTA1IiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMiIvPgogIDx0ZXh0IHg9IjMzMCIgeT0iMTUyIiBmaWxsPSIjZDk3NzA2IiBmb250LXNpemU9IjEyIj7ihpIg4pGiIOiApuWQiDwvdGV4dD48bGluZSB4MT0iMzIwIiB5MT0iMTQ1IiB4Mj0iMzQ1IiB5Mj0iMTQ1IiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMiIvPgogIDx0ZXh0IHg9IjcwIiB5PSIxNTIiIGZpbGw9IiM4YWE0YWUiIGZvbnQtc2l6ZT0iMTIiPuKRoyDpmpTpm6Igw5c8L3RleHQ+PGxpbmUgeDE9IjEwMCIgeTE9IjE0NSIgeDI9IjEyMCIgeTI9IjE0NSIgc3Ryb2tlPSIjOGFhNGFlIiBzdHJva2Utd2lkdGg9IjIiLz4KICA8ZyBmb250LXNpemU9IjExIiBmaWxsPSIjNWI3YTkyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMjAsMTg1KSI+CiAgICA8dGV4dCB4PSIwIiB5PSIwIj7ogKblkIjluqYgQz0xMGxvZyhQ4oKBL1DigoMp44CA5pa55ZCR5oCnIEQ9MTBsb2coUOKCgy9Q4oKEKeOAgOmalOmboj1DK0Q8L3RleHQ+CiAgPC9nPgogIDwhLS0gV2lsa2luc29uIC0tPgogIDx0ZXh0IHg9IjQ3MCIgeT0iNzAiIGZpbGw9IiM3YzNhZWQiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiPldpbGtpbnNvbiDliIbphY3lmag8L3RleHQ+CiAgPGxpbmUgeDE9IjQ0MCIgeTE9IjExMCIgeDI9IjQ4MCIgeTI9IjExMCIgc3Ryb2tlPSIjMDg5MWIyIiBzdHJva2Utd2lkdGg9IjMiLz48dGV4dCB4PSI0MzAiIHk9IjExNCIgZmlsbD0iIzBlNWE2YiIgZm9udC1zaXplPSIxMSIgdGV4dC1hbmNob3I9ImVuZCI+6Ly45YWlPC90ZXh0PgogIDxwYXRoIGQ9Ik00ODAsMTEwIEw1NDAsOTAiIHN0cm9rZT0iIzA1OTY2OSIgc3Ryb2tlLXdpZHRoPSIzIi8+PHBhdGggZD0iTTQ4MCwxMTAgTDU0MCwxMzAiIHN0cm9rZT0iIzA1OTY2OSIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPHRleHQgeD0iNTIwIiB5PSI4MCIgZmlsbD0iIzVmOWM4NCIgZm9udC1zaXplPSIxMCI+4oiaMsK3WuKCgCwgzrsvNDwvdGV4dD4KICA8Y2lyY2xlIGN4PSI1NDUiIGN5PSI5MCIgcj0iNCIgZmlsbD0iIzA4OTFiMiIvPjxjaXJjbGUgY3g9IjU0NSIgY3k9IjEzMCIgcj0iNCIgZmlsbD0iIzA4OTFiMiIvPgogIDx0ZXh0IHg9IjU1NiIgeT0iOTQiIGZpbGw9IiMwZTVhNmIiIGZvbnQtc2l6ZT0iMTEiPui8uOWHuiAxPC90ZXh0Pjx0ZXh0IHg9IjU1NiIgeT0iMTM0IiBmaWxsPSIjMGU1YTZiIiBmb250LXNpemU9IjExIj7ovLjlh7ogMjwvdGV4dD4KICA8bGluZSB4MT0iNTQ1IiB5MT0iOTAiIHgyPSI1NDUiIHkyPSIxMzAiIHN0cm9rZT0iI2UxMWQ0OCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtZGFzaGFycmF5PSIzIDIiLz48dGV4dCB4PSI2MDAiIHk9IjExNCIgZmlsbD0iI2UxMWQ0OCIgZm9udC1zaXplPSIxMCI+6ZqU6Zui6Zu76Zi7PC90ZXh0PgogIDx0ZXh0IHg9IjQ0MCIgeT0iMTc1IiBmaWxsPSIjNWI3YTkyIiBmb250LXNpemU9IjExIj7ovLjlh7rljLnphY3mmYLvvJrkuInln6DljLnphY3jgIHovLjlh7rplpPpmpTpm6LjgIHnhKHmkI3jgII8L3RleHQ+Cjwvc3ZnPgo=">'+
+ '<h3>Wilkinson（三埠）</h3><p>三埠無法同時互易、無損、皆匹配；Wilkinson 加隔離電阻，達成三埠匹配、輸出隔離、輸出匹配時無損。用 √2·Z₀ 的 λ/4 臂。</p>'+
+ '<div class="formula">方向耦合器　耦合度 C=10log(P₁/P₃)　方向性 D=10log(P₃/P₄)　隔離=C+D</div>'+
+ '<p>90° 混合（branch-line）、180° 混合（rat-race）、耦合線（偶/奇模分析）。用於量測 → '+L("微波網路與S參數")+'。</p>'},
+{id:"微波濾波器",en:"Filters (Ch.8)",cat:"元件",html:
+ '<div class="callout"><b>一句話：</b>依頻率選擇通過/阻擋。主流用<b>插入損耗法</b>：先設計正規化低通原型（Butterworth/Chebyshev），再經阻抗/頻率轉換。</div>'+
+ '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MjAgMzAwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iMzAwIiBmaWxsPSIjZjRmOGZkIi8+CiAgPHRleHQgeD0iMjQiIHk9IjMwIiBmaWxsPSIjMTIzMDM5IiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIj7kvY7pgJrmv77ms6Llmajpn7/mh4nvvJpCdXR0ZXJ3b3J0aCB2cyBDaGVieXNoZXY8L3RleHQ+CiAgPCEtLSDou7ggLS0+CiAgPGxpbmUgeDE9IjcwIiB5MT0iNjAiIHgyPSI3MCIgeTI9IjI1MCIgc3Ryb2tlPSIjY2ZlMGU3Ii8+PGxpbmUgeDE9IjcwIiB5MT0iMjUwIiB4Mj0iNjgwIiB5Mj0iMjUwIiBzdHJva2U9IiNjZmUwZTciLz4KICA8dGV4dCB4PSI0MCIgeT0iNzIiIGZpbGw9IiM4YWE0YWUiIGZvbnQtc2l6ZT0iMTEiPnxT4oKC4oKBfDwvdGV4dD48dGV4dCB4PSI0MCIgeT0iOTAiIGZpbGw9IiM4YWE0YWUiIGZvbnQtc2l6ZT0iMTAiPjAgZEI8L3RleHQ+CiAgPHRleHQgeD0iNDAiIHk9IjI1MCIgZmlsbD0iIzhhYTRhZSIgZm9udC1zaXplPSIxMCI+4oiSNDA8L3RleHQ+CiAgPHRleHQgeD0iNjYwIiB5PSIyNjgiIGZpbGw9IiM4YWE0YWUiIGZvbnQtc2l6ZT0iMTEiIHRleHQtYW5jaG9yPSJlbmQiPumgu+eOhyBmIOKGkjwvdGV4dD4KICA8bGluZSB4MT0iMzMwIiB5MT0iNjAiIHgyPSIzMzAiIHkyPSIyNTAiIHN0cm9rZT0iI2Q5OSIgc3Ryb2tlLWRhc2hhcnJheT0iNCA0Ii8+PHRleHQgeD0iMzMwIiB5PSI1OCIgZmlsbD0iI2M3NiIgZm9udC1zaXplPSIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+Zl9jPC90ZXh0PgogIDwhLS0gQnV0dGVyd29ydGjvvJrpgJrluLblubPlnabjgIHnt6npmY0gLS0+CiAgPHBhdGggZD0iTTcwLDg1IEwzMDAsODggUTM2MCw5NSA0MDAsMTUwIFE0NTAsMjE1IDU2MCwyNDYgTDY4MCwyNDkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIyLjUiLz4KICA8IS0tIENoZWJ5c2hldu+8mumAmuW4tua8o+azouOAgemZoemZjSAtLT4KICA8cGF0aCBkPSJNNzAsOTAgUTExMCw4NCAxNTAsOTAgUTE5MCw5NiAyMzAsOTAgUTI3MCw4NCAzMTAsOTIgUTM1MCwxMzAgMzgwLDIwMCBRNDEwLDI0NCA0NzAsMjQ4IEw2ODAsMjQ5IiBmaWxsPSJub25lIiBzdHJva2U9IiNlMTFkNDgiIHN0cm9rZS13aWR0aD0iMi41Ii8+CiAgPCEtLSDlnJbkvosgLS0+CiAgPGxpbmUgeDE9IjQ3MCIgeTE9IjkwIiB4Mj0iNTAwIiB5Mj0iOTAiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIzIi8+PHRleHQgeD0iNTA2IiB5PSI5NCIgZmlsbD0iIzBlNWE2YiIgZm9udC1zaXplPSIxMiI+QnV0dGVyd29ydGjvvIjmnIDlpKflubPlnabvvIk8L3RleHQ+CiAgPGxpbmUgeDE9IjQ3MCIgeTE9IjExMiIgeDI9IjUwMCIgeTI9IjExMiIgc3Ryb2tlPSIjZTExZDQ4IiBzdHJva2Utd2lkdGg9IjMiLz48dGV4dCB4PSI1MDYiIHk9IjExNiIgZmlsbD0iI2JlMTIzYyIgZm9udC1zaXplPSIxMiI+Q2hlYnlzaGV277yI562J5ryj5rOi44CB5pu06Zmh77yJPC90ZXh0PgogIDx0ZXh0IHg9IjkwIiB5PSIyNDAiIGZpbGw9IiM1YjdhOTIiIGZvbnQtc2l6ZT0iMTEiPumajuaVuCBOIOi2iumrmCDihpIg6YGO5rih5bi26LaK6Zmh44CB5YWD5Lu26LaK5aSa44CCPC90ZXh0PgogIDx0ZXh0IHg9IjI0IiB5PSIyODgiIGZpbGw9IiM1YjdhOTIiIGZvbnQtc2l6ZT0iMTEiPuaPkuWFpeaQjeiAl+azle+8mlBfTFIgPSAxLygx4oiSfM6TfMKyKe+8m0J1dHRlcndvcnRoIOmAmuW4tuW5s+mghu+8jENoZWJ5c2hldiDku6XmvKPms6Lmj5vpmaHluqbjgII8L3RleHQ+Cjwvc3ZnPgo=">'+
+ '<div class="formula">功率損耗比　P<sub>LR</sub> = 1/(1−|Γ(ω)|²)</div>'+
+ '<h3>兩種原型</h3><ul><li><b>Butterworth（最大平坦）</b>：P<sub>LR</sub>=1+(ω/ω<sub>c</sub>)<sup>2N</sup>。</li>'+
+ '<li><b>Chebyshev（等漣波）</b>：P<sub>LR</sub>=1+k²T<sub>N</sub>²(ω/ω<sub>c</sub>)，過渡帶更陡。</li></ul>'+
+ '<p>階數 N 越高越陡；實作用階梯阻抗、耦合線/耦合諧振器，Richards 變換＋Kuroda 恆等式。到「🔬 模擬工具」拉 N 看響應。</p>'},
+{id:"鐵氧體元件",en:"Ferrite Components (Ch.9)",cat:"元件",html:
+ '<div class="callout"><b>一句話：</b>利用鐵氧體在外加靜磁場下的迴磁特性，做出<b>非互易</b>元件（正反方向不同）：隔離器與循環器。</div>'+
+ '<h3>兩大元件</h3><ul><li><b>隔離器</b>：正向低損、反向強衰減 → 保護 '+L("微波放大器設計")+'/'+L("振盪器與混頻器")+' 不受反射干擾。</li>'+
+ '<li><b>循環器</b>：三埠依固定方向繞行（1→2→3），可讓收發共用一支天線。</li></ul>'+
+ '<p>打破互易性（一般被動元件多為互易，見 '+L("微波網路與S參數")+'）：張量磁導率使 S<sub>ij</sub>≠S<sub>ji</sub>。</p>'},
+{id:"雜訊與非線性",en:"Noise & Nonlinearity (Ch.10)",cat:"系統",html:
+ '<div class="callout"><b>一句話：</b>接收機的兩個極限：雜訊（訊號下限）與非線性（訊號上限），兩者之間是動態範圍。</div>'+
+ '<div class="formula">熱雜訊 N=kTB　・　雜訊指數 F=SNR<sub>in</sub>/SNR<sub>out</sub>　・　T<sub>e</sub>=(F−1)T₀</div>'+
+ '<div class="formula">Friis 級聯　F = F₁ + (F₂−1)/G₁ + (F₃−1)/(G₁G₂) + …</div>'+
+ '<h3>非線性</h3><ul><li>1 dB 壓縮點＝線性上限；三階交互調變（2f₁−f₂）落在帶內難濾。</li><li>三階截點 IP3 越高越線性；SFDR＝雜訊底到三階產物的可用範圍。</li></ul>'+
+ '<p>第一級最關鍵 → 前端用低雜訊高增益 '+L("微波放大器設計")+'。混頻雜散 → '+L("振盪器與混頻器")+'。</p>'},
+{id:"微波放大器設計",en:"Amplifier Design (Ch.12)",cat:"系統",html:
+ '<div class="callout"><b>一句話：</b>用電晶體（'+L("微波網路與S參數")+' 描述）設計放大器，核心是增益、穩定性、雜訊與匹配的取捨。</div>'+
+ '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MjAgMjQwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iMjQwIiBmaWxsPSIjZjRmOGZkIi8+CiAgPHRleHQgeD0iMjQiIHk9IjMwIiBmaWxsPSIjMTIzMDM5IiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIj7lvq7ms6LmlL7lpKflmajvvJrljLnphY3ntrLot68gKyBTIOWPg+aVuCArIOepqeWumuaApzwvdGV4dD4KICA8bGluZSB4MT0iNDAiIHkxPSIxMTAiIHgyPSIxMjAiIHkyPSIxMTAiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIzIi8+PHRleHQgeD0iNzAiIHk9IjEwMCIgZmlsbD0iIzRkNmI3NiIgZm9udC1zaXplPSIxMSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+5rqQIM6TX1M8L3RleHQ+CiAgPHJlY3QgeD0iMTIwIiB5PSI5MCIgd2lkdGg9IjkwIiBoZWlnaHQ9IjQwIiByeD0iNSIgZmlsbD0iI2VlZjZmOSIgc3Ryb2tlPSIjMDg5MWIyIi8+PHRleHQgeD0iMTY1IiB5PSIxMTUiIGZpbGw9IiMwZTVhNmIiIGZvbnQtc2l6ZT0iMTEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPui8uOWFpeWMuemFjTwvdGV4dD4KICA8IS0tIOmbu+aZtumrlCAtLT4KICA8cG9seWdvbiBwb2ludHM9IjI0MCw4MCAyNDAsMTQwIDMwMCwxMTAiIGZpbGw9IiNmZmY1ZjYiIHN0cm9rZT0iI2UxMWQ0OCIgc3Ryb2tlLXdpZHRoPSIyIi8+PHRleHQgeD0iMjU4IiB5PSIxMTQiIGZpbGw9IiNiZTEyM2MiIGZvbnQtc2l6ZT0iMTEiPumbu+aZtumrlDwvdGV4dD48dGV4dCB4PSIyNzAiIHk9IjcwIiBmaWxsPSIjYzc2IiBmb250LXNpemU9IjEwIj5bU108L3RleHQ+CiAgPHJlY3QgeD0iMzMwIiB5PSI5MCIgd2lkdGg9IjkwIiBoZWlnaHQ9IjQwIiByeD0iNSIgZmlsbD0iI2VlZjZmOSIgc3Ryb2tlPSIjMDg5MWIyIi8+PHRleHQgeD0iMzc1IiB5PSIxMTUiIGZpbGw9IiMwZTVhNmIiIGZvbnQtc2l6ZT0iMTEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPui8uOWHuuWMuemFjTwvdGV4dD4KICA8bGluZSB4MT0iNDIwIiB5MT0iMTEwIiB4Mj0iNTAwIiB5Mj0iMTEwIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMyIvPjx0ZXh0IHg9IjQ2MCIgeT0iMTAwIiBmaWxsPSIjNGQ2Yjc2IiBmb250LXNpemU9IjExIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7osqDovIkgzpNfTDwvdGV4dD4KICA8bGluZSB4MT0iMjEwIiB5MT0iMTEwIiB4Mj0iMjQwIiB5Mj0iMTEwIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMyIvPjxsaW5lIHgxPSIzMDAiIHkxPSIxMTAiIHgyPSIzMzAiIHkyPSIxMTAiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPGcgZm9udC1zaXplPSIxMyIgZmlsbD0iIzEyMzAzOSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNTAwLDgwKSI+CiAgICA8dGV4dCB4PSIwIiB5PSIwIiBmb250LXdlaWdodD0iNzAwIj7nqanlrprmgKfvvIhSb2xsZXR077yJPC90ZXh0PgogICAgPHRleHQgeD0iMCIgeT0iMjYiPksgJmd0OyAxIOS4lCB8zpR8ICZsdDsgMTwvdGV4dD4KICAgIDx0ZXh0IHg9IjAiIHk9IjUwIiBmaWxsPSIjNWI3YTkyIiBmb250LXNpemU9IjExIj7ihpIg54Sh5qKd5Lu256mp5a6a77yI5LiN5pyD5oyv55uq77yJPC90ZXh0PgogICAgPHRleHQgeD0iMCIgeT0iNzgiIGZpbGw9IiM1YjdhOTIiIGZvbnQtc2l6ZT0iMTEiPs6UID0gU+KCgeKCgVPigoLigoIg4oiSIFPigoHigoJT4oKC4oKBPC90ZXh0PgogICAgPHRleHQgeD0iMCIgeT0iMTAyIiBmaWxsPSIjNWI3YTkyIiBmb250LXNpemU9IjExIj7lop7nm4ogdnMg6Zuc6KiK6ZyA5oqY6KG344CCPC90ZXh0PgogIDwvZz4KICA8dGV4dCB4PSIyNCIgeT0iMjEwIiBmaWxsPSIjNWI3YTkyIiBmb250LXNpemU9IjExIj7nlKjovLjlhaUv6Ly45Ye65Yy56YWN5oqK5rqQ6IiH6LKg6LyJ6Zi75oqX6Kq/5Yiw55uu5qiZ77yb5YWI56K66KqN56mp5a6a77yM5YaN5Zyo5aKe55uK5ZyT6IiH6Zuc6KiK5ZyT6ZaT5Y+W5o2o44CCPC90ZXh0Pgo8L3N2Zz4K">'+
+ '<div class="formula">Rollett：無條件穩定 ⇔ K>1 且 |Δ|<1　（Δ=S₁₁S₂₂−S₁₂S₂₁）</div>'+
+ '<div class="formula">K = (1−|S₁₁|²−|S₂₂|²+|Δ|²) / (2|S₁₂S₂₁|)</div>'+
+ '<h3>取捨</h3><p>同時共軛匹配得最大增益；K<1 時用穩定圓避開會振盪的區域。最大增益 vs 最小雜訊需在增益圓與雜訊圓間折衷（'+L("雜訊與非線性")+'）。到「🔬 模擬工具」用 S 參數算 K。</p>'},
+{id:"振盪器與混頻器",en:"Oscillators & Mixers (Ch.13)",cat:"系統",html:
+ '<div class="callout"><b>一句話：</b>振盪器產生訊號（LO）；混頻器用非線性把兩頻率相乘達成變頻。兩者是收發機頻率轉換的核心。</div>'+
+ '<h3>振盪器</h3><ul><li>回授（Barkhausen）|βA|=1、相位 0 起振；或負阻抵消 '+L("微波諧振器")+' 損耗。</li><li>相位雜訊（Leeson）：高 Q 諧振器可壓低。</li></ul>'+
+ '<div class="formula">混頻　f<sub>IF</sub> = |f<sub>RF</sub> ± f<sub>LO</sub>|</div>'+
+ '<p>鏡頻（image）：f<sub>LO</sub>±f<sub>IF</sub> 兩個 RF 都落到同 IF，需鏡頻抑制。轉換損耗、大量雜散與 IMD（見 '+L("雜訊與非線性")+'）。用隔離器保護 → '+L("鐵氧體元件")+'。</p>'},
+{id:"微波系統與天線",en:"Systems & Antennas (Ch.14)",cat:"系統",html:
+ '<div class="callout"><b>一句話：</b>把元件組成通訊/雷達/遙測系統。天線輻射能量；用連結預算（Friis）與雷達方程評估收到多少功率、是否高於雜訊底。</div>'+
+ '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MjAgMjMwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iMjMwIiBmaWxsPSIjZjRmOGZkIi8+CiAgPHRleHQgeD0iMjQiIHk9IjMwIiBmaWxsPSIjMTIzMDM5IiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIj5GcmlpcyDpgKPntZDpoJDnrpfvvJrmjqXmlLblip/njofpmqjot53pm6LoobDmuJs8L3RleHQ+CiAgPCEtLSDnmbzlsITlpKnnt5ogLS0+CiAgPGxpbmUgeDE9IjcwIiB5MT0iMTUwIiB4Mj0iNzAiIHkyPSIxMDAiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIzIi8+PHBhdGggZD0iTTU1LDk1IEw3MCwxMDAgTDg1LDk1IiBmaWxsPSJub25lIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMyIvPgogIDx0ZXh0IHg9IjcwIiB5PSIxNzIiIGZpbGw9IiMwZTVhNmIiIGZvbnQtc2l6ZT0iMTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlR4IChQX3QsIEdfdCk8L3RleHQ+CiAgPCEtLSDms6IgLS0+CiAgPGcgc3Ryb2tlPSIjMDU5NjY5IiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiPgogICAgPHBhdGggZD0iTTk1LDExMCBRMTIwLDkwIDE0NSwxMTAiLz48cGF0aCBkPSJNMTYwLDExMCBRMTg1LDkwIDIxMCwxMTAiLz48cGF0aCBkPSJNMjI1LDExMCBRMjUwLDkwIDI3NSwxMTAiLz4KICAgIDxwYXRoIGQ9Ik0zMDAsMTEwIFEzMjUsOTAgMzUwLDExMCIvPjxwYXRoIGQ9Ik0zNzUsMTEwIFE0MDAsOTAgNDI1LDExMCIvPjxwYXRoIGQ9Ik00NDAsMTEwIFE0NjUsOTAgNDkwLDExMCIvPgogIDwvZz4KICA8dGV4dCB4PSIzMDAiIHk9IjgyIiBmaWxsPSIjMDU5NjY5IiBmb250LXNpemU9IjExIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7oh6rnlLHnqbrplpPot6/lvpHmkI3ogJcgKM67LzTPgFIpwrI8L3RleHQ+CiAgPCEtLSDmjqXmlLblpKnnt5ogLS0+CiAgPGxpbmUgeDE9IjU2MCIgeTE9IjE1MCIgeDI9IjU2MCIgeTI9IjEwMCIgc3Ryb2tlPSIjZTExZDQ4IiBzdHJva2Utd2lkdGg9IjMiLz48cGF0aCBkPSJNNTQ1LDk1IEw1NjAsMTAwIEw1NzUsOTUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2UxMWQ0OCIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPHRleHQgeD0iNTYwIiB5PSIxNzIiIGZpbGw9IiNiZTEyM2MiIGZvbnQtc2l6ZT0iMTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlJ4IChHX3IpPC90ZXh0PgogIDwhLS0g6Led6ZuiIC0tPgogIDxsaW5lIHgxPSI3MCIgeTE9IjE5NSIgeDI9IjU2MCIgeTI9IjE5NSIgc3Ryb2tlPSIjOGFhNGFlIi8+PHRleHQgeD0iMzE1IiB5PSIyMTIiIGZpbGw9IiM4YWE0YWUiIGZvbnQtc2l6ZT0iMTEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPui3nemboiBSPC90ZXh0PgogIDxnIGZvbnQtc2l6ZT0iMTUiIGZpbGw9IiMxMjMwMzkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDYwMCwxMTApIj4KICAgIDx0ZXh0IHg9IjAiIHk9IjAiIGZvbnQtd2VpZ2h0PSI3MDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0zMDAsLTMwKSI+PC90ZXh0PgogIDwvZz4KICA8dGV4dCB4PSIzNjAiIHk9IjU1IiBmaWxsPSIjMTIzMDM5IiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5QX3IgPSBQX3QgwrcgR190IMK3IEdfciDCtyAozrsgLyA0z4BSKcKyPC90ZXh0Pgo8L3N2Zz4K">'+
+ '<div class="formula">天線等效孔徑 A<sub>e</sub>=Gλ²/4π　・　EIRP=P<sub>t</sub>G<sub>t</sub></div>'+
+ '<div class="formula">Friis　P<sub>r</sub> = P<sub>t</sub>G<sub>t</sub>G<sub>r</sub>(λ/4πR)²　・　雷達　P<sub>r</sub> ∝ P<sub>t</sub>G²σλ²/R⁴</div>'+
+ '<p>雷達 R⁴：距離加倍回波掉 16 倍。連結預算綜合 EIRP、路徑損耗、G/T 與 '+L("雜訊與非線性")+' 估算 SNR。到「🔬 模擬工具」算 Friis 連結預算。</p>'}
+];
+const EDGES=[
+ ["電磁與平面波","傳輸線理論"],["電磁與平面波","傳輸線與波導"],
+ ["傳輸線理論","史密斯圖"],["傳輸線理論","阻抗匹配與調諧"],["傳輸線理論","微波網路與S參數"],["傳輸線理論","傳輸線與波導"],
+ ["史密斯圖","阻抗匹配與調諧"],
+ ["傳輸線與波導","微波諧振器"],
+ ["微波網路與S參數","阻抗匹配與調諧"],["微波網路與S參數","微波放大器設計"],["微波網路與S參數","功率分配器與耦合器"],
+ ["阻抗匹配與調諧","微波濾波器"],
+ ["微波諧振器","微波濾波器"],["微波諧振器","振盪器與混頻器"],
+ ["功率分配器與耦合器","微波濾波器"],
+ ["鐵氧體元件","微波放大器設計"],["鐵氧體元件","振盪器與混頻器"],
+ ["雜訊與非線性","微波放大器設計"],["雜訊與非線性","振盪器與混頻器"],["雜訊與非線性","微波系統與天線"],
+ ["微波放大器設計","微波系統與天線"],["振盪器與混頻器","微波系統與天線"]
+];
+const EXTRA={
+"電磁與平面波":{take:["Maxwell → 平面波是最基本解。","η₀≈377Ω 是自由空間阻抗。","趨膚效應讓高頻電流走表皮。"],
+ myth:[{q:"微波跟一般電路沒兩樣。",a:"波長可比元件尺寸，必須用場與波的觀點，電壓電流不再唯一。"}],
+ fact:"銅在 10 GHz 的趨膚深度僅約 0.66 微米——電流幾乎只走最表層。"},
+"傳輸線理論":{take:["線長可比波長就用分佈參數。","Γ、VSWR、Zin 是核心量。","匹配(Z_L=Z₀)則無反射。"],
+ myth:[{q:"導線就只是導線。",a:"到微波，線會反射與共振；λ/4 線甚至能把阻抗反轉。"}],
+ fact:"VSWR=2 相當於約 11% 的功率被反射（回波損耗約 −9.5 dB）。"},
+"史密斯圖":{take:["Γ 平面與歸一化阻抗疊圖。","沿線移動＝繞圈，一圈 λ/2。","匹配＝把負載拉到圓心。"],
+ myth:[{q:"有電腦了還需要史密斯圖？",a:"它給出直觀的幾何洞察，是設計匹配與理解行為的思考工具，至今仍通用。"}],
+ fact:"史密斯圖由 Phillip Smith 於 1939 年發明，至今仍印在每位微波工程師的腦中。"},
+"傳輸線與波導":{take:["TEM 線無截止；波導有截止頻率。","主模 TE₁₀ f_c=c/2a。","微帶便宜好整合、波導低損高功率。"],
+ myth:[{q:"波導什麼頻率都能傳。",a:"低於截止頻率只會消逝衰減，不會傳播；空心波導也沒有 TEM 模。"}],
+ fact:"波導波長 λ_g 比自由空間波長還長，且隨頻率趨近截止而急速變長。"},
+"微波網路與S參數":{take:["用入射/反射波描述黑盒子。","S₁₁看反射、S₂₁看穿透。","互易對稱、無損么正。"],
+ myth:[{q:"S 參數只是另一種阻抗矩陣。",a:"它對應可直接量測的功率波，且在無法定義電壓/電流的高頻仍適用。"}],
+ fact:"向量網路分析儀（VNA）量的就是 S 參數，是微波實驗室最核心的儀器。"},
+"阻抗匹配與調諧":{take:["讓負載看起來等於 Z₀。","λ/4：Z₁=√(Z₀Z_L)。","頻寬受 Bode–Fano 限制。"],
+ myth:[{q:"匹配可以又完美又超寬頻。",a:"Bode–Fano 準則說頻寬與匹配度有取捨，天下沒有白吃的匹配。"}],
+ fact:"λ/4 轉換器只對實數負載直接成立；複數負載要先用短截線抵消電抗。"},
+"微波諧振器":{take:["特定頻率儲能，Q 衡量選頻。","Q=f₀/BW；有載/無載/外部 Q。","腔體與介質諧振器 Q 很高。"],
+ myth:[{q:"諧振器就是 LC 電路而已。",a:"微波頻段改用分佈線與腔體，Q 可達數千至上萬，遠勝集總 LC。"}],
+ fact:"高 Q 腔體諧振器的 Q 可達上萬，是原子鐘與低相位雜訊振盪器的關鍵。"},
+"功率分配器與耦合器":{take:["三埠 Wilkinson、四埠方向耦合器。","耦合度/方向性/隔離度。","偶奇模分析設計耦合線。"],
+ myth:[{q:"分配器把功率憑空變多。",a:"只是分配同一份功率；Wilkinson 用電阻換來輸出間隔離。"}],
+ fact:"方向耦合器的高方向性讓它能只取樣正向波，是 VNA 分離入射與反射的關鍵。"},
+"微波濾波器":{take:["插入損耗法為主流。","Butterworth 平坦、Chebyshev 陡（有漣波）。","階數 N 越高越陡。"],
+ myth:[{q:"濾波器越多級一定越好。",a:"級數多雖更陡，但損耗、體積與群延遲變差，需權衡。"}],
+ fact:"Chebyshev 用通帶漣波換陡度；同樣階數下阻帶衰減明顯優於 Butterworth。"},
+"鐵氧體元件":{take:["靠迴磁做非互易元件。","隔離器保護前級。","循環器讓收發共天線。"],
+ myth:[{q:"被動元件一定互易（正反相同）。",a:"鐵氧體加磁場後打破互易，這正是隔離器/循環器的原理。"}],
+ fact:"循環器讓雷達與基地台用同一支天線同時收發，是雙工的關鍵元件之一。"},
+"雜訊與非線性":{take:["雜訊定下限、非線性定上限。","Friis：第一級雜訊最關鍵。","IP3/1dB 壓縮衡量線性。"],
+ myth:[{q:"多加放大器就能一直提升靈敏度。",a:"雜訊主要由第一級決定，後級增益幫不了雜訊，還可能先進入壓縮。"}],
+ fact:"室溫下 1 Hz 頻寬的熱雜訊約 −174 dBm/Hz——這是所有接收機的雜訊地板。"},
+"微波放大器設計":{take:["用 S 參數設計增益與匹配。","K>1 且 |Δ|<1 才無條件穩定。","增益與雜訊需折衷。"],
+ myth:[{q:"把增益調到最大就是好放大器。",a:"貪心匹配可能讓它振盪；要先看 K 因子與穩定圓，再兼顧雜訊。"}],
+ fact:"低雜訊放大器（LNA）常刻意不做最大增益匹配，而選雜訊最佳的 Γ_opt。"},
+"振盪器與混頻器":{take:["振盪：回授或負阻起振。","混頻：f_IF=|f_RF±f_LO|。","鏡頻與雜散要處理。"],
+ myth:[{q:"混頻器只會產生想要的 IF。",a:"還會產生鏡頻、諧波與一堆雜散，需濾波或鏡頻抑制架構。"}],
+ fact:"超外差接收機的鏡頻若不抑制，會有一個完全不同的電台落在同一中頻上。"},
+"微波系統與天線":{take:["天線輻射；A_e=Gλ²/4π。","Friis 算連結預算。","雷達回波 ∝ 1/R⁴。"],
+ myth:[{q:"訊號弱就加大發射功率就好。",a:"路徑損耗隨距離與頻率快速上升；提升天線增益、降低雜訊往往更有效。"}],
+ fact:"雷達距離加倍，回波功率掉到 1/16——所以遠程雷達要非常大的功率與天線。"}
+};
+
+const NById=Object.fromEntries(NOTES.map(n=>[n.id,n]));
+const sidebar=document.getElementById('sidebar');
+function buildSidebar(filter){
+ filter=(filter||'').trim();
+ let html='<div class="navlink" data-id="__home"><span class="dot" style="background:var(--accent)"></span>總覽首頁</div>';
+ for(const key of Object.keys(CATS)){
+  const items=NOTES.filter(n=>n.cat===key&&(!filter||n.id.includes(filter)||n.en.toLowerCase().includes(filter.toLowerCase())));
+  if(!items.length)continue;
+  html+='<div class="cat">'+CATS[key].name+'</div>';
+  for(const n of items)html+='<div class="navlink" data-id="'+n.id+'"><span class="dot" style="background:'+CATS[n.cat].raw+'"></span>'+n.id+'<small>'+n.en+'</small></div>';
+ }
+ sidebar.innerHTML=html;
+}
+/* ===== 筆記 ===== */
+const main=document.getElementById('main');
+let current=null;
+function neighborsOf(id){const s=new Set();EDGES.forEach(([a,b])=>{if(a===id)s.add(b);if(b===id)s.add(a);});return[...s];}
+function renderHome(){
+ current='__home';
+ main.innerHTML='<div class="note"><div class="hero"><div style="font-size:46px">📡</div>'+
+  '<div class="big">微波工程知識庫</div>'+
+  '<p class="sub">依 D. M. Pozar《Microwave Engineering》(4th Ed.) 章節整理。14 章、含公式，並附史密斯圖、駐波、匹配、濾波器等互動模擬工具。</p>'+
+  '<div class="stats"><div class="stat"><b>12</b><span>知識點</span></div><div class="stat"><b>22</b><span>關聯連結</span></div>'+
+  '<div class="stat"><b>2</b><span>互動模擬</span></div><div class="stat"><b>5</b><span>主題分區</span></div></div></div>'+
+  '<h3>建議閱讀路徑</h3>'+
+  '<div class="pathrow">'+Object.keys(CATS).map((key,i)=>{const first=NOTES.find(n=>n.cat===key).id;
+    return (i>0?'<span class="arrow">→</span>':'')+'<span class="stage" data-id="'+first+'"><span class="d" style="background:'+CATS[key].raw+'"></span>'+CATS[key].name+'</span>';}).join('')+'</div>'+
+  '<p style="color:var(--muted);font-size:14px">點上方階段可直接跳到該分區第一篇；或從下方各主題任選。建議從 '+L("電磁與平面波")+' 開始，一路讀到 '+L("微波系統與天線")+'。</p>'+
+  Object.keys(CATS).map(key=>{const items=NOTES.filter(n=>n.cat===key);
+    return '<div class="catgroup"><div class="cl" style="color:'+CATS[key].raw+'"><span class="d" style="background:'+CATS[key].raw+'"></span>'+CATS[key].name+'</div><div class="chips">'+items.map(n=>'<span class="chip" data-id="'+n.id+'">'+n.id+'</span>').join('')+'</div></div>';}).join('')+
+  '</div>';
+ syncActive();
+}
+function renderNote(id){
+ const n=NById[id];if(!n){renderHome();return;}
+ current=id;const idx=NOTES.findIndex(x=>x.id===id);const prev=NOTES[idx-1],next=NOTES[idx+1];const nb=neighborsOf(id);
+ let html='<div class="note"><div class="crumbs"><span class="tag" style="background:'+CATS[n.cat].raw+'33;color:'+CATS[n.cat].raw+'">'+CATS[n.cat].name+'</span></div>'+
+  '<h2 class="title">'+n.id+'</h2><div class="en">'+n.en+'</div>'+n.html;
+ const ex=EXTRA[id];
+ if(ex){
+  if(ex.take)html+='<div class="kbox"><div class="kt">🎯 重點回顧</div><ul>'+ex.take.map(t=>'<li>'+t+'</li>').join('')+'</ul></div>';
+  if(ex.myth)html+='<details class="collap myth"><summary>💡 常見誤解</summary><div class="body">'+ex.myth.map(m=>'<div class="myth-row"><span class="x">✗</span><div>'+m.q+'</div></div><div class="myth-row"><span class="o">✓</span><div>'+m.a+'</div></div>').join('')+'</div></details>';
+  if(ex.fact)html+='<details class="collap fact"><summary>🔎 冷知識</summary><div class="body"><p>'+ex.fact+'</p></div></details>';
+  if(ex.deep)html+='<details class="collap deep"><summary>📐 深入補充</summary><div class="body">'+ex.deep+'</div></details>';
+ }
+ if(nb.length)html+='<div class="related"><div class="cat">關聯概念</div><div class="chips">'+nb.map(x=>'<span class="chip" data-id="'+x+'">'+x+'</span>').join('')+'</div></div>';
+ html+='<div class="nav-btns">'+(prev?'<button data-id="'+prev.id+'"><small>← 上一篇</small>'+prev.id+'</button>':'<button disabled style="opacity:.3"><small>—</small>第一篇</button>')+
+  (next?'<button data-id="'+next.id+'" style="text-align:right"><small>下一篇 →</small>'+next.id+'</button>':'<button disabled style="opacity:.3;text-align:right"><small>—</small>最後一篇</button>')+'</div></div>';
+ main.innerHTML=html;main.scrollTop=0;
+ if(ex&&ex.chart)drawChart(ex.chart);
+ syncActive();
+}
+function open(id){if(id==='__home')renderHome();else renderNote(id);showNotes();}
+function syncActive(){document.querySelectorAll('.navlink').forEach(el=>el.classList.toggle('active',el.dataset.id===current));}
+document.body.addEventListener('click',e=>{const t=e.target.closest('[data-id]');if(t)open(t.dataset.id);});
+/* ===== 搜尋 ===== */
+const search=document.getElementById('search');
+search.addEventListener('input',()=>buildSidebar(search.value));
+search.addEventListener('keydown',e=>{if(e.key==='Enter'){const f=search.value.trim().toLowerCase();const hit=NOTES.find(n=>n.id.includes(search.value.trim())||n.en.toLowerCase().includes(f));if(hit)open(hit.id);}});
+/* ===== 分頁 ===== */
+const tabNotes=document.getElementById('tabNotes'),tabGraph=document.getElementById('tabGraph'),tabDemo=document.getElementById('tabDemo');
+const graphView=document.getElementById('graphView'),demoView=document.getElementById('demoView');
+const allTabs=[tabNotes,tabGraph,tabDemo];
+function setTab(b){allTabs.forEach(x=>x.classList.toggle('active',x===b));}
+function hideAll(){main.style.display='none';graphView.style.display='none';demoView.style.display='none';}
+function showNotes(){setTab(tabNotes);hideAll();main.style.display='';}
+function showGraph(){setTab(tabGraph);hideAll();graphView.style.display='block';startGraph();}
+function showDemo(){setTab(tabDemo);hideAll();demoView.style.display='block';startDemo();startMesh();}
+tabNotes.onclick=showNotes;tabGraph.onclick=showGraph;tabDemo.onclick=showDemo;
+/* ===== 圖表 ===== */
+
+function drawChart(kind){}
+function buildLegend(){document.getElementById('legend').innerHTML=Object.keys(CATS).map(k=>'<div><i style="background:'+CATS[k].raw+'"></i>'+CATS[k].name+'</div>').join('');}
+function startGraph(){
+ if(G.started)return;G.started=true;buildLegend();
+ const W=svg.clientWidth||900,H=svg.clientHeight||600;
+ const deg={};EDGES.forEach(([a,b])=>{deg[a]=(deg[a]||0)+1;deg[b]=(deg[b]||0)+1;});
+ G.nodes=NOTES.map((n,i)=>({id:n.id,cat:n.cat,x:W/2+Math.cos(i/NOTES.length*6.283)*240+(Math.random()-.5)*40,y:H/2+Math.sin(i/NOTES.length*6.283)*190+(Math.random()-.5)*40,vx:0,vy:0,r:8+(deg[n.id]||1)*1.5}));
+ const pos=Object.fromEntries(G.nodes.map(n=>[n.id,n]));
+ while(svg.firstChild)svg.removeChild(svg.firstChild);
+ const gE=document.createElementNS(SVGNS,'g'),gN=document.createElementNS(SVGNS,'g');svg.appendChild(gE);svg.appendChild(gN);
+ G.edges=EDGES.map(([a,b])=>{const l=document.createElementNS(SVGNS,'line');l.setAttribute('class','gedge');gE.appendChild(l);return{a,b,el:l};});
+ G.nodes.forEach(n=>{
+  const g=document.createElementNS(SVGNS,'g');g.setAttribute('class','gnode');g.dataset.id=n.id;
+  const c=document.createElementNS(SVGNS,'circle');c.setAttribute('r',n.r);c.setAttribute('fill',CATS[n.cat].raw);c.setAttribute('stroke','#ffffff');c.setAttribute('stroke-width','2.5');
+  const t=document.createElementNS(SVGNS,'text');t.setAttribute('text-anchor','middle');t.setAttribute('dy',-n.r-6);t.textContent=n.id;
+  g.appendChild(c);g.appendChild(t);gN.appendChild(g);n.el=g;
+  g.addEventListener('mouseenter',()=>highlight(n.id,true));g.addEventListener('mouseleave',()=>highlight(n.id,false));
+  let moved=false,down=false,ox,oy;
+  g.addEventListener('pointerdown',ev=>{down=true;moved=false;n.fixed=true;const p=toSvg(ev);ox=p.x-n.x;oy=p.y-n.y;g.setPointerCapture(ev.pointerId);});
+  g.addEventListener('pointermove',ev=>{if(!down)return;const p=toSvg(ev);n.x=p.x-ox;n.y=p.y-oy;n.vx=0;n.vy=0;moved=true;});
+  g.addEventListener('pointerup',()=>{down=false;n.fixed=false;if(!moved)open(n.id);});
+ });
+ gloop(pos,W,H);
+}
+function toSvg(ev){const r=svg.getBoundingClientRect();return{x:ev.clientX-r.left,y:ev.clientY-r.top};}
+function highlight(id,on){const nb=new Set(neighborsOf(id));nb.add(id);
+ G.nodes.forEach(n=>{n.el.style.opacity=on?(nb.has(n.id)?1:.2):1;});
+ G.edges.forEach(e=>{const rel=(e.a===id||e.b===id);e.el.classList.toggle('hl',on&&rel);e.el.style.opacity=on?(rel?1:.12):1;});}
+function gloop(pos,W,H){const KR=5200,KS=0.012,L0=118,DA=0.86,GR=0.008;
+ function step(){const ns=G.nodes;
+  for(let i=0;i<ns.length;i++){const a=ns[i];if(a.fixed)continue;let fx=0,fy=0;
+   for(let j=0;j<ns.length;j++){if(i===j)continue;const b=ns[j];let dx=a.x-b.x,dy=a.y-b.y,d2=dx*dx+dy*dy+.01,d=Math.sqrt(d2);const f=KR/d2;fx+=dx/d*f;fy+=dy/d*f;}
+   fx+=(W/2-a.x)*GR;fy+=(H/2-a.y)*GR;a.vx=(a.vx+fx)*DA;a.vy=(a.vy+fy)*DA;}
+  EDGES.forEach(([ai,bi])=>{const a=pos[ai],b=pos[bi];let dx=b.x-a.x,dy=b.y-a.y,d=Math.sqrt(dx*dx+dy*dy)+.01;const f=(d-L0)*KS,ux=dx/d,uy=dy/d;if(!a.fixed){a.vx+=ux*f;a.vy+=uy*f;}if(!b.fixed){b.vx-=ux*f;b.vy-=uy*f;}});
+  ns.forEach(n=>{if(n.fixed)return;n.x+=n.vx;n.y+=n.vy;n.x=Math.max(n.r+40,Math.min(W-n.r-40,n.x));n.y=Math.max(n.r+30,Math.min(H-n.r-20,n.y));});
+  G.edges.forEach(e=>{const a=pos[e.a],b=pos[e.b];e.el.setAttribute('x1',a.x);e.el.setAttribute('y1',a.y);e.el.setAttribute('x2',b.x);e.el.setAttribute('y2',b.y);});
+  ns.forEach(n=>n.el.setAttribute('transform','translate('+n.x+','+n.y+')'));
+  G.raf=requestAnimationFrame(step);}
+ step();}
+/* ===== 模擬工具 ===== */
+let mwTool='smith';
+function startDemo(){
+ if(!document.getElementById('simBar')){
+  demoView.innerHTML='<div class="demo"><div class="panel"><h3>🔬 模擬工具</h3>'+
+   '<div class="d">依 Pozar 章節對應的互動計算器。點下方切換工具。</div>'+
+   '<div id="simBar" style="display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 14px"></div>'+
+   '<div id="simBox"></div></div></div>';
+  const tools=[['smith','史密斯圖'],['vswr','駐波/VSWR'],['match','阻抗匹配 λ/4'],['filter','濾波器響應'],['mstrip','微帶線'],['friis','Friis 連結'],['amp','放大器 K']];
+  document.getElementById('simBar').innerHTML=tools.map(t=>'<button class="simtab" data-t="'+t[0]+'">'+t[1]+'</button>').join('');
+  document.getElementById('simBar').querySelectorAll('.simtab').forEach(b=>b.onclick=()=>{mwTool=b.dataset.t;renderTool();});
+ }
+ renderTool();
+}
+function startMesh(){}
+function renderTool(){
+ document.querySelectorAll('#simBar .simtab').forEach(b=>{const on=b.dataset.t===mwTool;
+  b.style.cssText='padding:7px 14px;border-radius:8px;border:1px solid '+(on?'#0e9bc4':'#d5e5ec')+';background:'+(on?'#0e9bc4':'#fff')+';color:'+(on?'#fff':'#123039')+';cursor:pointer;font-family:inherit;font-size:13px;font-weight:'+(on?'700':'400');});
+ ({smith:toolSmith,vswr:toolVSWR,match:toolMatch,filter:toolFilter,mstrip:toolMstrip,friis:toolFriis,amp:toolAmp}[mwTool])();
+}
+/* ---- 史密斯圖 ---- */
+function toolSmith(){
+ document.getElementById('simBox').innerHTML=
+  '<canvas id="smithCv" class="cv" width="460" height="460" style="max-width:480px;display:block;margin:0 auto"></canvas>'+
+  '<div class="controls"><label>R_L (Ω) <span class="val" id="sRV">50</span><input type="range" id="sR" min="0" max="300" value="50"></label>'+
+  '<label>X_L (Ω) <span class="val" id="sXV">50</span><input type="range" id="sX" min="-300" max="300" value="50"></label>'+
+  '<label>Z0 (Ω) <span class="val" id="sZV">50</span><input type="range" id="sZ" min="20" max="100" value="50"></label>'+
+  '<label>線長 l/λ <span class="val" id="sLV">0.00</span><input type="range" id="sL" min="0" max="50" value="0"></label></div>'+
+  '<div id="smithRead" style="font-size:13px;color:#2b4a53;margin-top:6px;line-height:1.9"></div>';
+ ['sR','sX','sZ','sL'].forEach(id=>document.getElementById(id).oninput=drawSmith); drawSmith();
+}
+function drawSmith(){
+ const cv=document.getElementById('smithCv'); if(!cv)return; const ctx=cv.getContext('2d'),W=cv.width,cx=W/2,cy=W/2,Rp=W/2-22; ctx.clearRect(0,0,W,W);
+ const R=+document.getElementById('sR').value,X=+document.getElementById('sX').value,Z0=+document.getElementById('sZ').value,ll=(+document.getElementById('sL').value)/100;
+ document.getElementById('sRV').textContent=R;document.getElementById('sXV').textContent=X;document.getElementById('sZV').textContent=Z0;document.getElementById('sLV').textContent=ll.toFixed(2);
+ const GX=g=>cx+g*Rp, GY=g=>cy-g*Rp;
+ ctx.strokeStyle='#0891b2';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(cx,cy,Rp,0,7);ctx.stroke();
+ ctx.strokeStyle='#dbe7ee';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(cx-Rp,cy);ctx.lineTo(cx+Rp,cy);ctx.stroke();
+ [0.2,0.5,1,2,5].forEach(r=>{const c=r/(r+1),rad=1/(r+1);ctx.beginPath();ctx.arc(GX(c),cy,rad*Rp,0,7);ctx.stroke();});
+ ctx.save();ctx.beginPath();ctx.arc(cx,cy,Rp,0,7);ctx.clip();
+ [0.2,0.5,1,2,5].forEach(x=>[1,-1].forEach(s=>{const xx=s*x;ctx.beginPath();ctx.arc(GX(1),GY(1/xx),(1/Math.abs(xx))*Rp,0,7);ctx.stroke();}));
+ ctx.restore();
+ const zr=R/Z0,zi=X/Z0,dr=zr+1,di=zi,den=dr*dr+di*di;
+ const Gr=((zr-1)*dr+zi*di)/den, Gi=(zi*dr-(zr-1)*di)/den;
+ const ph=-4*Math.PI*ll,cr=Math.cos(ph),sr=Math.sin(ph),Rr=Gr*cr-Gi*sr,Ri=Gr*sr+Gi*cr;
+ const mag=Math.hypot(Gr,Gi),vswr=(1+mag)/(1-mag+1e-9),rl=-20*Math.log10(mag+1e-9),ang=Math.atan2(Gi,Gr)*180/Math.PI;
+ ctx.strokeStyle='#7c3aed';ctx.setLineDash([4,3]);ctx.beginPath();ctx.arc(cx,cy,mag*Rp,0,7);ctx.stroke();ctx.setLineDash([]);
+ ctx.fillStyle='#e11d48';ctx.beginPath();ctx.arc(GX(Gr),GY(Gi),5,0,7);ctx.fill();
+ ctx.fillStyle='#0891b2';ctx.beginPath();ctx.arc(GX(Rr),GY(Ri),5,0,7);ctx.fill();
+ const nd=(1-Rr)*(1-Rr)+Ri*Ri, zinr=Z0*(1-Rr*Rr-Ri*Ri)/nd, zini=Z0*2*Ri/nd;
+ document.getElementById('smithRead').innerHTML='<span style="color:#e11d48">●</span> 負載 Z_L = '+R+' + j'+X+' Ω　|Γ| = '+mag.toFixed(3)+' ∠'+ang.toFixed(0)+'°<br>'+
+  'VSWR = '+vswr.toFixed(2)+'　回波損耗 = '+rl.toFixed(1)+' dB<br>'+
+  '<span style="color:#0891b2">●</span> 沿線 '+ll.toFixed(2)+'λ 後 Z_in = '+zinr.toFixed(1)+' '+(zini>=0?'+ j':'− j')+Math.abs(zini).toFixed(1)+' Ω';
+}
+/* ---- 駐波 / VSWR ---- */
+function toolVSWR(){
+ document.getElementById('simBox').innerHTML=
+  '<canvas id="vswrCv" class="cv" width="820" height="260"></canvas>'+
+  '<div class="controls"><label>R_L (Ω) <span class="val" id="vRV">100</span><input type="range" id="vR" min="0" max="300" value="100"></label>'+
+  '<label>X_L (Ω) <span class="val" id="vXV">0</span><input type="range" id="vX" min="-300" max="300" value="0"></label>'+
+  '<label>Z0 (Ω) <span class="val" id="vZV">50</span><input type="range" id="vZ" min="20" max="100" value="50"></label></div>'+
+  '<div id="vswrRead" style="font-size:13px;color:#2b4a53;margin-top:6px"></div>';
+ ['vR','vX','vZ'].forEach(id=>document.getElementById(id).oninput=drawVSWR); drawVSWR();
+}
+function drawVSWR(){
+ const cv=document.getElementById('vswrCv'); if(!cv)return; const ctx=cv.getContext('2d'),W=cv.width,H=cv.height; ctx.clearRect(0,0,W,H);
+ const R=+document.getElementById('vR').value,X=+document.getElementById('vX').value,Z0=+document.getElementById('vZ').value;
+ document.getElementById('vRV').textContent=R;document.getElementById('vXV').textContent=X;document.getElementById('vZV').textContent=Z0;
+ const zr=R/Z0,zi=X/Z0,dr=zr+1,di=zi,den=dr*dr+di*di,Gr=((zr-1)*dr+zi*di)/den,Gi=(zi*dr-(zr-1)*di)/den;
+ const mag=Math.hypot(Gr,Gi),gph=Math.atan2(Gi,Gr),vswr=(1+mag)/(1-mag+1e-9),rl=-20*Math.log10(mag+1e-9);
+ const P=44; ctx.strokeStyle='#cfe0e7';ctx.beginPath();ctx.moveTo(P,16);ctx.lineTo(P,H-30);ctx.lineTo(W-16,H-30);ctx.stroke();
+ ctx.fillStyle='#8aa4ae';ctx.font='11px sans-serif';ctx.textAlign='left';ctx.fillText('|V(z)|',P,12);ctx.textAlign='right';ctx.fillText('往負載 →  z/λ',W-16,H-12);
+ ctx.strokeStyle='#0891b2';ctx.lineWidth=2.5;ctx.beginPath();
+ for(let i=0;i<=760;i++){const z=i/760; const th=gph-4*Math.PI*z; const v=Math.hypot(1+mag*Math.cos(th),mag*Math.sin(th)); const x=P+i, y=(H-30)-(v/2)*(H-60); i?ctx.lineTo(x,y):ctx.moveTo(x,y);}
+ ctx.stroke();
+ document.getElementById('vswrRead').innerHTML='Γ = '+mag.toFixed(3)+' ∠'+(gph*180/Math.PI).toFixed(0)+'°　VSWR = '+vswr.toFixed(2)+'　回波損耗 = '+rl.toFixed(1)+' dB　反射功率 = '+(mag*mag*100).toFixed(1)+'%';
+}
+/* ---- 阻抗匹配 λ/4 + L 型 ---- */
+function toolMatch(){
+ document.getElementById('simBox').innerHTML=
+  '<div class="controls"><label>Z0 (Ω) <span class="val" id="mZV">50</span><input type="range" id="mZ" min="20" max="100" value="50"></label>'+
+  '<label>R_L (Ω，實數) <span class="val" id="mRV">100</span><input type="range" id="mR" min="5" max="400" value="100"></label></div>'+
+  '<div class="kbox"><div class="kt">匹配結果</div><div id="matchRead" style="color:#2b4a53;line-height:2"></div></div>';
+ ['mZ','mR'].forEach(id=>document.getElementById(id).oninput=calcMatch); calcMatch();
+}
+function calcMatch(){
+ const Z0=+document.getElementById('mZ').value,RL=+document.getElementById('mR').value;
+ document.getElementById('mZV').textContent=Z0;document.getElementById('mRV').textContent=RL;
+ const Z1=Math.sqrt(Z0*RL); const G=(RL-Z0)/(RL+Z0); const Q=Math.sqrt(Math.abs(RL/Z0-1));
+ document.getElementById('matchRead').innerHTML=
+  '<b>四分之一波長轉換器</b>：Z₁ = √(Z₀·R_L) = <b>'+Z1.toFixed(1)+' Ω</b>（長 λ/4）<br>'+
+  '未匹配時 |Γ| = '+Math.abs(G).toFixed(3)+'、VSWR = '+((1+Math.abs(G))/(1-Math.abs(G))).toFixed(2)+'<br>'+
+  '<b>L 型網路</b> 品質因子 Q = √|R_L/Z₀ − 1| = <b>'+Q.toFixed(2)+'</b>（Q 越大、頻寬越窄）<br>'+
+  '<span style="color:#8aa4ae">λ/4 僅對實數負載；複數負載請先用短截線抵消電抗。</span>';
+}
+/* ---- 濾波器響應 ---- */
+function toolFilter(){
+ document.getElementById('simBox').innerHTML=
+  '<canvas id="filtCv" class="cv" width="820" height="300"></canvas>'+
+  '<div class="controls"><label>類型</label><button id="fBut" class="fbtn">Butterworth</button><button id="fChe" class="fbtn">Chebyshev</button>'+
+  '<label>階數 N <span class="val" id="fNV">5</span><input type="range" id="fN" min="1" max="9" value="5"></label>'+
+  '<label>漣波 (dB) <span class="val" id="fRV">0.5</span><input type="range" id="fR" min="1" max="30" value="5"></label></div>';
+ window.filtType=window.filtType||'butter';
+ document.getElementById('fBut').onclick=()=>{window.filtType='butter';drawFilt();};
+ document.getElementById('fChe').onclick=()=>{window.filtType='cheby';drawFilt();};
+ ['fN','fR'].forEach(id=>document.getElementById(id).oninput=drawFilt); drawFilt();
+}
+function drawFilt(){
+ const cv=document.getElementById('filtCv'); if(!cv)return; const ctx=cv.getContext('2d'),W=cv.width,H=cv.height; ctx.clearRect(0,0,W,H);
+ const N=+document.getElementById('fN').value, rip=(+document.getElementById('fR').value)/10, type=window.filtType;
+ document.getElementById('fNV').textContent=N; document.getElementById('fRV').textContent=rip.toFixed(1);
+ document.getElementById('fBut').style.cssText=document.getElementById('fChe').style.cssText='padding:6px 12px;border-radius:8px;border:1px solid #d5e5ec;background:#fff;color:#123039;cursor:pointer;font-family:inherit;font-size:12px';
+ document.getElementById(type==='butter'?'fBut':'fChe').style.cssText='padding:6px 12px;border-radius:8px;border:1px solid #0e9bc4;background:#0e9bc4;color:#fff;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700';
+ const P=48,y0=20,y1=H-34,x0=P,x1=W-16; ctx.strokeStyle='#cfe0e7';ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x0,y1);ctx.lineTo(x1,y1);ctx.stroke();
+ ctx.fillStyle='#8aa4ae';ctx.font='11px sans-serif';ctx.textAlign='right';[0,-10,-20,-30,-40].forEach(d=>{const y=y0+(-d/40)*(y1-y0);ctx.fillText(d+'dB',x0-4,y+3);});
+ ctx.textAlign='center';[0,1,2,3].forEach(f=>ctx.fillText(f,x0+(f/3)*(x1-x0),y1+14)); ctx.fillText('f / f_c',(x0+x1)/2,y1+28);
+ ctx.strokeStyle='#d99';ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(x0+(1/3)*(x1-x0),y0);ctx.lineTo(x0+(1/3)*(x1-x0),y1);ctx.stroke();ctx.setLineDash([]);
+ const eps=Math.sqrt(Math.pow(10,rip/10)-1);
+ ctx.strokeStyle=type==='butter'?'#0891b2':'#e11d48';ctx.lineWidth=2.5;ctx.beginPath();
+ for(let i=0;i<=(x1-x0);i++){const w=(i/(x1-x0))*3; let s21sq;
+   if(type==='butter'){s21sq=1/(1+Math.pow(w,2*N));}
+   else{let Tn; if(w<=1)Tn=Math.cos(N*Math.acos(w)); else Tn=Math.cosh(N*Math.acosh(w)); s21sq=1/(1+eps*eps*Tn*Tn);}
+   let dB=10*Math.log10(s21sq+1e-12); dB=Math.max(-40,dB); const x=x0+i, y=y0+(-dB/40)*(y1-y0); i?ctx.lineTo(x,y):ctx.moveTo(x,y);}
+ ctx.stroke();
+ ctx.fillStyle='#123039';ctx.font='12px sans-serif';ctx.textAlign='left';ctx.fillText('|S21|　'+(type==='butter'?'Butterworth（最大平坦）':'Chebyshev（漣波 '+rip.toFixed(1)+' dB）')+'　N='+N,x0+8,y0+14);
+}
+/* ---- 微帶線 ---- */
+function toolMstrip(){
+ document.getElementById('simBox').innerHTML=
+  '<div class="controls"><label>ε_r <span class="val" id="eRV">4.4</span><input type="range" id="eR" min="10" max="120" value="44"></label>'+
+  '<label>W/h <span class="val" id="wRV">2.0</span><input type="range" id="wR" min="2" max="120" value="20"></label></div>'+
+  '<div class="kbox"><div class="kt">微帶線特性（Hammerstad）</div><div id="mstripRead" style="color:#2b4a53;line-height:2"></div></div>';
+ ['eR','wR'].forEach(id=>document.getElementById(id).oninput=calcMstrip); calcMstrip();
+}
+function calcMstrip(){
+ const er=(+document.getElementById('eR').value)/10, wh=(+document.getElementById('wR').value)/10;
+ document.getElementById('eRV').textContent=er.toFixed(1);document.getElementById('wRV').textContent=wh.toFixed(1);
+ const eeff=(er+1)/2+(er-1)/2*Math.pow(1+12/wh,-0.5);
+ let Z0; if(wh<=1){Z0=60/Math.sqrt(eeff)*Math.log(8/wh+wh/4);} else {Z0=120*Math.PI/(Math.sqrt(eeff)*(wh+1.393+0.667*Math.log(wh+1.444)));}
+ document.getElementById('mstripRead').innerHTML='有效介電常數 ε_eff = <b>'+eeff.toFixed(2)+'</b><br>特性阻抗 Z₀ = <b>'+Z0.toFixed(1)+' Ω</b><br>相速 v_p = c/√ε_eff = <b>'+(3e8/Math.sqrt(eeff)/1e8).toFixed(2)+'×10⁸ m/s</b><br><span style="color:#8aa4ae">W/h 越大、Z₀ 越低；ε_r 越大、v_p 越慢。</span>';
+}
+/* ---- Friis 連結預算 ---- */
+function toolFriis(){
+ document.getElementById('simBox').innerHTML=
+  '<div class="controls"><label>頻率 (GHz) <span class="val" id="frV">10</span><input type="range" id="fr" min="1" max="400" value="100"></label>'+
+  '<label>距離 (km) <span class="val" id="dV">100</span><input type="range" id="d" min="1" max="40000" value="100"></label>'+
+  '<label>P_t (dBm) <span class="val" id="ptV">30</span><input type="range" id="pt" min="0" max="60" value="30"></label>'+
+  '<label>G_t (dBi) <span class="val" id="gtV">20</span><input type="range" id="gt" min="0" max="50" value="20"></label>'+
+  '<label>G_r (dBi) <span class="val" id="grV">20</span><input type="range" id="gr" min="0" max="50" value="20"></label></div>'+
+  '<div class="kbox"><div class="kt">連結預算</div><div id="friisRead" style="color:#2b4a53;line-height:2"></div></div>';
+ ['fr','d','pt','gt','gr'].forEach(id=>document.getElementById(id).oninput=calcFriis); calcFriis();
+}
+function calcFriis(){
+ const f=(+document.getElementById('fr').value)/10, d=+document.getElementById('d').value, pt=+document.getElementById('pt').value, gt=+document.getElementById('gt').value, gr=+document.getElementById('gr').value;
+ document.getElementById('frV').textContent=f.toFixed(1);document.getElementById('dV').textContent=d;document.getElementById('ptV').textContent=pt;document.getElementById('gtV').textContent=gt;document.getElementById('grV').textContent=gr;
+ const fspl=20*Math.log10(d)+20*Math.log10(f)+92.45; const pr=pt+gt+gr-fspl;
+ document.getElementById('friisRead').innerHTML='自由空間路徑損耗 FSPL = <b>'+fspl.toFixed(1)+' dB</b><br>接收功率 P_r = P_t+G_t+G_r−FSPL = <b>'+pr.toFixed(1)+' dBm</b><br><span style="color:#8aa4ae">FSPL = 20log(d/km)+20log(f/GHz)+92.45；頻率/距離越大，損耗越大。</span>';
+}
+/* ---- 放大器 K（簡化）---- */
+function toolAmp(){
+ document.getElementById('simBox').innerHTML=
+  '<div class="controls"><label>|S11| <span class="val" id="a1V">0.6</span><input type="range" id="a1" min="0" max="99" value="60"></label>'+
+  '<label>|S21| <span class="val" id="a2V">2.5</span><input type="range" id="a2" min="1" max="80" value="25"></label>'+
+  '<label>|S12| <span class="val" id="a3V">0.05</span><input type="range" id="a3" min="0" max="40" value="5"></label>'+
+  '<label>|S22| <span class="val" id="a4V">0.5</span><input type="range" id="a4" min="0" max="99" value="50"></label></div>'+
+  '<div class="kbox"><div class="kt">穩定性（簡化，假設相位對齊）</div><div id="ampRead" style="color:#2b4a53;line-height:2"></div></div>';
+ ['a1','a2','a3','a4'].forEach(id=>document.getElementById(id).oninput=calcAmp); calcAmp();
+}
+function calcAmp(){
+ const s11=(+document.getElementById('a1').value)/100, s21=(+document.getElementById('a2').value)/10, s12=(+document.getElementById('a3').value)/100, s22=(+document.getElementById('a4').value)/100;
+ document.getElementById('a1V').textContent=s11.toFixed(2);document.getElementById('a2V').textContent=s21.toFixed(2);document.getElementById('a3V').textContent=s12.toFixed(2);document.getElementById('a4V').textContent=s22.toFixed(2);
+ const dl=Math.abs(s11*s22-s12*s21); const K=(1-s11*s11-s22*s22+dl*dl)/(2*s12*s21+1e-9);
+ const stable=(K>1&&dl<1); let mag='—'; if(K>1&&s12>0){mag=(s21/s12*(K-Math.sqrt(K*K-1)));mag=10*Math.log10(mag);}
+ document.getElementById('ampRead').innerHTML='|Δ| ≈ <b>'+dl.toFixed(3)+'</b>　K ≈ <b>'+K.toFixed(2)+'</b><br>'+
+  '判定：<b style="color:'+(stable?'#059669':'#e11d48')+'">'+(stable?'✓ 無條件穩定（K>1 且 |Δ|<1）':'✗ 條件穩定（需用穩定圓避開）')+'</b><br>'+
+  (mag!=='—'?'最大可用增益 MAG ≈ <b>'+mag.toFixed(1)+' dB</b><br>':'')+
+  '<span style="color:#8aa4ae">此為簡化估算（假設相位對齊）；精確需完整複數 S 參數。</span>';
+}
+
+buildSidebar();renderHome();
+</script>
+</body>
+</html>
