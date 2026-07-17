@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>控制系統 · 互動知識庫</title>
+<style>
+  :root{
+    --bg:#eef6f9; --bg2:#ffffff; --panel:#ffffff; --panel2:#f1f8fb;
+    --line:#d5e5ec; --text:#123039; --muted:#4d6b76; --dim:#8aa4ae;
+    --cyan:#0891b2; --green:#059669; --amber:#d97706; --purple:#7c3aed; --pink:#e11d48;
+    --accent:#0e9bc4;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:
+      radial-gradient(1100px 420px at 50% -120px, rgba(14,155,196,.14), transparent 70%),
+      linear-gradient(180deg,#f6fbfd 0%,#e9f3f7 100%);
+    color:var(--text);font-family:'PingFang TC','Microsoft JhengHei','Helvetica Neue',system-ui,sans-serif;
+    line-height:1.75;overflow:hidden}
+  header{position:fixed;top:0;left:0;right:0;height:60px;z-index:20;
+    display:flex;align-items:center;gap:16px;padding:0 20px;
+    background:rgba(255,255,255,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  header::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;
+    background:linear-gradient(90deg,#e11d48,#d97706,#eab308,#059669,#0891b2,#4f46e5,#7c3aed);opacity:.85}
+  header h1{font-size:18px;margin:0;font-weight:800;letter-spacing:.5px;white-space:nowrap}
+  header h1 .em{color:var(--accent)}
+  .search{flex:1;max-width:340px;position:relative}
+  .search input{width:100%;padding:8px 12px 8px 34px;border-radius:10px;
+    border:1px solid var(--line);background:var(--panel);color:var(--text);font-size:14px;outline:none}
+  .search input:focus{border-color:var(--accent)}
+  .search svg{position:absolute;left:10px;top:9px;opacity:.6}
+  .tabs{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+  .tabs button{padding:8px 14px;border-radius:10px;border:1px solid var(--line);
+    background:var(--panel);color:var(--muted);font-size:13.5px;cursor:pointer;transition:.15s;font-family:inherit}
+  .tabs button:hover{color:var(--text);border-color:var(--accent)}
+  .tabs button.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700;box-shadow:0 2px 10px rgba(14,155,196,.35)}
+  .wrap{position:fixed;top:60px;left:0;right:0;bottom:0;display:flex}
+  aside{width:290px;flex:none;overflow-y:auto;padding:16px 10px 60px;
+    border-right:1px solid var(--line);background:rgba(255,255,255,.55)}
+  .cat{margin:10px 8px 4px;font-size:12px;font-weight:700;letter-spacing:1px;color:var(--dim)}
+  .navlink{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:8px;
+    color:var(--muted);cursor:pointer;font-size:14px;transition:.12s}
+  .navlink:hover{background:var(--panel);color:var(--text)}
+  .navlink.active{background:var(--panel2);color:#123039;font-weight:700;box-shadow:inset 3px 0 0 var(--accent)}
+  .navlink .dot{width:8px;height:8px;border-radius:50%;flex:none}
+  .navlink small{color:var(--dim);font-size:10.5px;margin-left:auto;text-align:right}
+  main{flex:1;overflow-y:auto;padding:38px 46px 90px;scroll-behavior:smooth}
+  .note{max-width:820px;margin:0 auto;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .crumbs{font-size:13px;color:var(--dim);margin-bottom:10px}
+  .crumbs .tag{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11.5px;font-weight:700;margin-right:6px}
+  h2.title{font-size:29px;margin:2px 0 4px;font-weight:800}
+  .en{color:var(--muted);font-size:15px;margin-bottom:18px;letter-spacing:.5px}
+  .callout{background:linear-gradient(180deg,rgba(34,211,238,.12),rgba(34,211,238,.03));
+    border-left:3px solid var(--accent);border-radius:8px;padding:12px 16px;margin:18px 0;color:#123039}
+  .callout b{color:#0e5a6b}
+  main h3{font-size:18px;margin:26px 0 8px;color:#123039;border-bottom:1px solid var(--line);padding-bottom:6px}
+  main p{margin:10px 0}
+  main ul{margin:10px 0;padding-left:22px}
+  main li{margin:5px 0}
+  .diagram{width:100%;border-radius:12px;border:1px solid var(--line);margin:16px 0;background:#fff;display:block;box-shadow:0 2px 12px rgba(18,48,57,.06)}
+  .formula{font-family:'Cambria Math',Georgia,serif;font-size:18px;text-align:center;
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin:16px 0;color:var(--text)}
+  .eqcard{background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid var(--line);border-radius:14px;
+    padding:18px 20px;margin:18px 0;box-shadow:0 3px 14px rgba(18,48,57,.06)}
+  .eqcard .eqt{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--accent);text-align:center;margin-bottom:2px}
+  .eqcard .eq{font-family:'Cambria Math','Times New Roman',Georgia,serif;font-size:32px;text-align:center;
+    color:#123039;margin:6px 0 16px;line-height:1.35}
+  .eqcard .eq i{font-style:italic}
+  .eqcard .eq sub{font-size:.6em;vertical-align:-.25em} .eqcard .eq sup{font-size:.6em;vertical-align:.5em}
+  .eqcard .lg{display:grid;gap:8px}
+  .eqcard .row{display:flex;gap:14px;align-items:baseline;padding:9px 14px;background:#fff;border:1px solid var(--line);border-radius:10px}
+  .eqcard .s{font-family:'Cambria Math','Times New Roman',Georgia,serif;font-style:italic;font-weight:800;
+    font-size:20px;min-width:58px;text-align:center;flex:none}
+  .eqcard .s sub{font-size:.6em;vertical-align:-.2em}
+  .eqcard .m{font-size:13.5px;color:#2b4a53;line-height:1.6}
+  .eqcard .m b{color:#123039}
+  .eqcard .u{display:inline-block;margin-left:8px;font-size:11.5px;color:#5b8090;background:#eef6f9;
+    border:1px solid var(--line);border-radius:20px;padding:1px 9px}
+  .eqcard .cap{font-size:12.5px;color:var(--dim);text-align:center;margin-top:12px}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 12px;text-align:left}
+  th{background:#e4f1f5;color:#123039;font-weight:700}
+  td{background:#fbfeff;color:#2b4a53}
+  tr:nth-child(even) td{background:#f2f8fb}
+  a.wl{color:var(--accent);cursor:pointer;text-decoration:none;border-bottom:1px dashed rgba(34,211,238,.5)}
+  a.wl:hover{color:#0b5566;background:rgba(14,155,196,.14);border-radius:3px}
+  .related{margin-top:34px;padding-top:16px;border-top:1px solid var(--line)}
+  .related .cat{margin-left:0}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .pathrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:16px 0 8px}
+  .stage{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:24px;background:#fff;
+    border:1px solid var(--line);cursor:pointer;font-weight:700;color:#123039;transition:.15s;box-shadow:0 1px 6px rgba(18,48,57,.05)}
+  .stage:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(18,48,57,.12);border-color:var(--accent)}
+  .stage .d{width:10px;height:10px;border-radius:50%;flex:none}
+  .pathrow .arrow{color:var(--dim);font-weight:800;font-size:16px}
+  .catgroup{margin:14px 0}
+  .catgroup .cl{font-size:12.5px;font-weight:800;letter-spacing:.5px;margin-bottom:7px;display:flex;align-items:center;gap:7px}
+  .catgroup .cl .d{width:9px;height:9px;border-radius:50%}
+  .chip{padding:6px 14px;border-radius:20px;background:var(--panel);border:1px solid var(--line);
+    color:var(--muted);cursor:pointer;font-size:13.5px;transition:.12s}
+  .chip:hover{background:var(--accent);color:#04222a;border-color:var(--accent)}
+  .nav-btns{display:flex;justify-content:space-between;margin-top:26px;gap:10px}
+  .nav-btns button{flex:1;padding:12px;border-radius:10px;border:1px solid var(--line);
+    background:var(--panel);color:var(--muted);cursor:pointer;text-align:left;font-family:inherit;transition:.12s}
+  .nav-btns button:hover{border-color:var(--accent);color:#0e5a6b;background:#f0f9fc}
+  .nav-btns small{display:block;color:var(--dim);font-size:11px}
+  .kbox{background:linear-gradient(180deg,rgba(52,211,153,.12),rgba(52,211,153,.03));
+    border:1px solid rgba(52,211,153,.35);border-radius:12px;padding:14px 18px;margin:22px 0}
+  .kbox .kt{font-weight:800;color:var(--green);font-size:14px;margin-bottom:6px}
+  .kbox ul{margin:4px 0 0;padding-left:20px} .kbox li{margin:3px 0}
+  .collap{border:1px solid var(--line);border-radius:10px;margin:12px 0;overflow:hidden;background:#f4fafc}
+  .collap>summary{cursor:pointer;padding:12px 16px;font-weight:700;color:#123039;list-style:none;display:flex;align-items:center;gap:8px}
+  .collap>summary::-webkit-details-marker{display:none}
+  .collap>summary::before{content:'▸';color:var(--accent);transition:.2s;display:inline-block}
+  .collap[open]>summary::before{transform:rotate(90deg)}
+  .collap>summary:hover{background:var(--panel)}
+  .collap .body{padding:2px 18px 16px;color:#2b4a53}
+  .collap.myth{background:#fff5f6}.collap.myth>summary{color:#be123c}.collap.myth>summary::before{color:var(--pink)}
+  .collap.fact{background:#f1fbf6}.collap.fact>summary{color:#047857}.collap.fact>summary::before{color:var(--green)}
+  .collap.deep{background:#f5f4fe}.collap.deep>summary{color:#3730a3}.collap.deep>summary::before{color:#4f46e5}
+  .collap>summary:hover{background:rgba(0,0,0,.03)}
+  .myth-row{display:flex;gap:10px;margin:10px 0}
+  .myth-row .x{color:var(--pink);font-weight:800;flex:none}.myth-row .o{color:var(--green);font-weight:800;flex:none}
+  .hero{text-align:center;padding:14px 0 10px}
+  .hero .big{font-size:40px;font-weight:800;margin:12px 0 4px}
+  .hero .sub{color:var(--muted);max-width:640px;margin:0 auto 8px}
+  .stats{display:flex;gap:12px;justify-content:center;margin:22px 0;flex-wrap:wrap}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 20px;text-align:center}
+  .stat b{font-size:24px;display:block;color:var(--accent)} .stat span{font-size:12px;color:var(--dim)}
+  #graphView,#demoView,#meshView{flex:1;position:relative;display:none}
+  #demoView,#meshView{overflow-y:auto;padding:24px 30px 80px}
+  #graph{width:100%;height:100%;display:block;cursor:grab}
+  .legend{position:absolute;top:16px;left:16px;background:rgba(255,255,255,.9);border:1px solid var(--line);
+    border-radius:10px;padding:12px 14px;font-size:13px;backdrop-filter:blur(6px);box-shadow:0 2px 12px rgba(18,48,57,.08)}
+  .legend div{display:flex;align-items:center;gap:8px;margin:4px 0;color:var(--muted)}
+  .legend i{width:11px;height:11px;border-radius:50%;display:inline-block}
+  .hint{position:absolute;bottom:16px;right:18px;color:var(--dim);font-size:12px}
+  .gnode{cursor:pointer}.gnode text{font-size:12px;fill:var(--text);pointer-events:none;font-family:inherit}
+  .gnode circle{transition:r .15s}
+  .gedge{stroke:#b7d3dd;stroke-width:1.4}.gedge.hl{stroke:var(--accent);stroke-width:2.6}
+  /* demo */
+  .demo{max-width:900px;margin:0 auto}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;margin:18px 0;box-shadow:0 4px 20px rgba(18,48,57,.06)}
+  .panel h3{margin:0 0 4px;color:#123039;font-size:18px;border:none}
+  .panel .d{color:var(--dim);font-size:13px;margin-bottom:12px}
+  .controls{display:flex;flex-wrap:wrap;gap:20px;align-items:center;margin-top:14px}
+  .controls label{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:6px;min-width:190px}
+  .controls input[type=range]{accent-color:var(--accent)}
+  .controls .val{color:var(--accent);font-weight:700}
+  .controls button{padding:9px 16px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);color:var(--text);cursor:pointer;font-family:inherit}
+  .controls button:hover{border-color:var(--accent)}
+  canvas.cv{width:100%;border-radius:12px;background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid var(--line);display:block}
+  .bars{display:flex;gap:18px;margin-top:14px}
+  .bar{flex:1;text-align:center}
+  .bar .track{height:120px;background:var(--panel2);border-radius:8px;position:relative;overflow:hidden;border:1px solid var(--line)}
+  .bar .fill{position:absolute;bottom:0;left:0;right:0;transition:height .08s}
+  .bar .lbl{font-size:13px;color:var(--muted);margin-top:6px}
+  .bar .pct{font-weight:800;color:#123039}
+  svg#mesh{width:100%;height:auto;background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid var(--line);border-radius:12px}
+  .cpl{cursor:pointer}
+  .chartbox{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;margin:16px 0;box-shadow:0 2px 12px rgba(18,48,57,.05)}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:#b7d3dd;border-radius:6px}
+  @media(max-width:720px){aside{position:fixed;z-index:15;height:100%;transform:translateX(-100%);transition:.25s}
+    aside.open{transform:none}main{padding:24px 18px 80px}.search{max-width:none}header h1{font-size:14px}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <aside id="sidebar"></aside>
+  <main id="main"></main>
+  <div id="graphView"><svg id="graph"></svg><div class="legend" id="legend"></div>
+    <div class="hint">拖曳節點 · 點擊開啟筆記 · 移入高亮關聯</div></div>
+  <div id="demoView"></div>
+</div>
+<script>
+const CATS={
+ "導論":{name:"導論",raw:"#0891b2"},
+ "建模響應":{name:"建模與動態響應",raw:"#0ea5a4"},
+ "回授設計":{name:"回授與設計方法",raw:"#7c3aed"},
+ "狀態空間":{name:"狀態空間",raw:"#d97706"},
+ "進階":{name:"數位與非線性",raw:"#e11d48"}
+};
+function L(id){return '<a class="wl" data-id="'+id+'">'+id+'</a>';}
+const NOTES=[
+{id:"導論與回授控制史",ch:"1",en:"Ch.1 · Intro & History",cat:"導論",html:`<div class="callout"><b>這章的問題：</b>為什麼要「回授」？開迴路控制哪裡不夠用？從一個簡單的靈敏度論證看清楚回授在解決什麼問題。</div>
+<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgMzAwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmOGZjZmUiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlYWYzZjciLz48L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJib3giIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmZmZmZmIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZWVmN2ZhIi8+PC9saW5lYXJHcmFkaWVudD4KICAgIDxtYXJrZXIgaWQ9ImFycm93IiB2aWV3Qm94PSIwIDAgMTAgMTAiIHJlZlg9IjkiIHJlZlk9IjUiIG1hcmtlcldpZHRoPSI3IiBtYXJrZXJIZWlnaHQ9IjciIG9yaWVudD0iYXV0by1zdGFydC1yZXZlcnNlIj4KICAgICAgPHBhdGggZD0iTTAsMCBMMTAsNSBMMCwxMCB6IiBmaWxsPSIjMDg5MWIyIi8+CiAgICA8L21hcmtlcj4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9InVybCgjYmcpIi8+CiAgPHRleHQgeD0iMzAiIHk9IjM0IiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMTIzMDM5Ij7lm57mjojmjqfliLbov7Tot68gRmVlZGJhY2sgQ29udHJvbCBMb29wPC90ZXh0PgoKICA8Y2lyY2xlIGN4PSIxMjAiIGN5PSIxNzAiIHI9IjIyIiBmaWxsPSIjZmZmIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMiIvPgogIDx0ZXh0IHg9IjEyMCIgeT0iMTc3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjIwIiBmaWxsPSIjMDg5MWIyIj4rPC90ZXh0PgogIDx0ZXh0IHg9IjExMiIgeT0iMjAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMDg5MWIyIj4tPC90ZXh0PgoKICA8bGluZSB4MT0iMzAiIHkxPSIxNzAiIHgyPSI5OCIgeTI9IjE3MCIgc3Ryb2tlPSIjMDg5MTZiIiBzdHJva2Utd2lkdGg9IjIuNSIgbWFya2VyLWVuZD0idXJsKCNhcnJvdykiLz4KICA8dGV4dCB4PSI1NSIgeT0iMTU4IiBmb250LXNpemU9IjE0IiBmaWxsPSIjMDg5MTZiIiBmb250LXdlaWdodD0iNzAwIj5SKHMpPC90ZXh0PgogIDx0ZXh0IHg9IjU1IiB5PSIxODgiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiM2YjhhOTIiPuWPg+iAg+i8uOWFpTwvdGV4dD4KCiAgPGxpbmUgeDE9IjE0MiIgeTE9IjE3MCIgeDI9IjIzMCIgeTI9IjE3MCIgc3Ryb2tlPSIjMDg5MWIyIiBzdHJva2Utd2lkdGg9IjIuNSIgbWFya2VyLWVuZD0idXJsKCNhcnJvdykiLz4KICA8dGV4dCB4PSIxNTAiIHk9IjE1OCIgZm9udC1zaXplPSIxMyIgZmlsbD0iIzA4OTFiMiIgZm9udC13ZWlnaHQ9IjcwMCI+RShzKTwvdGV4dD4KCiAgPHJlY3QgeD0iMjMwIiB5PSIxMzAiIHdpZHRoPSIxNTAiIGhlaWdodD0iODAiIHJ4PSIxMCIgZmlsbD0idXJsKCNib3gpIiBzdHJva2U9IiM3YzNhZWQiIHN0cm9rZS13aWR0aD0iMiIvPgogIDx0ZXh0IHg9IjMwNSIgeT0iMTY1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE2IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjM2MzNDg5Ij7mjqfliLblmag8L3RleHQ+CiAgPHRleHQgeD0iMzA1IiB5PSIxODUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiMzYzM0ODkiPkMocyk8L3RleHQ+CgogIDxsaW5lIHgxPSIzODAiIHkxPSIxNzAiIHgyPSI0NzAiIHkyPSIxNzAiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIyLjUiIG1hcmtlci1lbmQ9InVybCgjYXJyb3cpIi8+CiAgPHRleHQgeD0iMzkyIiB5PSIxNTgiIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiMwODkxYjIiIGZvbnQtd2VpZ2h0PSI3MDAiPlUocyk8L3RleHQ+CgogIDxyZWN0IHg9IjQ3MCIgeT0iMTMwIiB3aWR0aD0iMTUwIiBoZWlnaHQ9IjgwIiByeD0iMTAiIGZpbGw9InVybCgjYm94KSIgc3Ryb2tlPSIjZDk3NzA2IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8dGV4dCB4PSI1NDUiIHk9IjE2NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzg1NGYwYiI+5Y+X5o6n6auUPC90ZXh0PgogIDx0ZXh0IHg9IjU0NSIgeT0iMTg1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE0IiBmaWxsPSIjODU0ZjBiIj5QbGFudCBQKHMpPC90ZXh0PgoKICA8bGluZSB4MT0iNjIwIiB5MT0iMTcwIiB4Mj0iNzQwIiB5Mj0iMTcwIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMi41IiBtYXJrZXItZW5kPSJ1cmwoI2Fycm93KSIvPgogIDx0ZXh0IHg9IjY1NSIgeT0iMTU4IiBmb250LXNpemU9IjE0IiBmaWxsPSIjMDg5MTZiIiBmb250LXdlaWdodD0iNzAwIj5ZKHMpPC90ZXh0PgogIDx0ZXh0IHg9IjY1NSIgeT0iMTg4IiBmb250LXNpemU9IjExIiBmaWxsPSIjNmI4YTkyIj7ovLjlh7o8L3RleHQ+CgogIDxsaW5lIHgxPSI3NDAiIHkxPSIxNzAiIHgyPSI3NDAiIHkyPSIyNjAiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIyLjUiLz4KICA8bGluZSB4MT0iNzQwIiB5MT0iMjYwIiB4Mj0iMTQyIiB5Mj0iMjYwIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMi41Ii8+CiAgPGxpbmUgeDE9IjE0MiIgeTE9IjI2MCIgeDI9IjE0MiIgeTI9IjE4NCIgc3Ryb2tlPSIjMDg5MWIyIiBzdHJva2Utd2lkdGg9IjIuNSIgbWFya2VyLWVuZD0idXJsKCNhcnJvdykiLz4KICA8cmVjdCB4PSI1MDAiIHk9IjI0MCIgd2lkdGg9IjExMCIgaGVpZ2h0PSI0MCIgcng9IjgiIGZpbGw9InVybCgjYm94KSIgc3Ryb2tlPSIjZTExZDQ4IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8dGV4dCB4PSI1NTUiIHk9IjI2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzcyMjQzZSI+5oSf5ris5ZmoIEgocyk8L3RleHQ+CgogIDx0ZXh0IHg9Ijc0MCIgeT0iMjQ1IiB0ZXh0LWFuY2hvcj0iZW5kIiBmb250LXNpemU9IjExIiBmaWxsPSIjNmI4YTkyIj7ph4/muKzlm57mjog8L3RleHQ+Cjwvc3ZnPg==">
+<h3>開迴路：直接卻脆弱</h3><p>開迴路控制算好輸入直接送進系統、不看結果。為什麼會失準：受控體實際行為 P(s) 幾乎不可能跟設計用的模型完全一致，開迴路沒有機制偵測、修正這個偏差。</p>
+<h3>閉迴路：用量測誤差換自我修正</h3><p>把輸出量回來跟參考比較，得誤差 E(s)=R(s)−Y(s) 驅動控制器。經回授代數化簡：</p>
+<div class="formula">T(s) = Y(s)/R(s) = C(s)P(s) / (1+C(s)P(s))</div>
+<h3>為什麼回授能對抗模型不準：靈敏度論證</h3><p>把 P 想成有相對誤差 δ，對閉迴路公式微分定義靈敏度函數：</p>
+<div class="formula">S = (∂T/T)/(∂P/P) = 1/(1+C(s)P(s))</div>
+<p>開迴路時模型誤差 1:1 反映到輸出；閉迴路時只要迴路增益夠大，S≪1——模型誤差對輸出的影響被迴路增益稀釋，這是回授「用量測成本換取抗不確定性」的數學核心。</p>
+<h3>簡史</h3><p>1788 瓦特離心調速器 → 1927 Black 負回授放大器（用增益換線性度）→ 1932 Nyquist 頻域穩定判據 → 1940s Bode 增益/相位邊限 → 1950s 後狀態空間方法。每一步都在回答「回授換來什麼、又要付出什麼代價」。</p>
+<p>系統怎麼寫成 P(s) → ${L("動態系統建模")}；靈敏度完整分析 → ${L("回授系統初步分析")}。</p>`},
+{id:"動態系統建模",ch:"2",en:"Ch.2 · Dynamic Models",cat:"建模響應",html:`<div class="callout"><b>這章的問題：</b>彈簧、電路、馬達為什麼都能寫成同一種轉移函數？方塊圖代數的化簡規則從哪來？</div>
+<h3>從物理定律到微分方程</h3><p>牛頓第二定律套用在質量-彈簧-阻尼系統：</p>
+<div class="formula">m·ÿ(t) + b·ẏ(t) + k·y(t) = u(t)</div>
+<p>慣性項、黏滯阻力項、彈簧恢復力項相加等於外力——牛頓定律的直接展開。</p>
+<h3>Laplace：把微分方程變代數</h3><div class="formula">P(s) = Y(s)/U(s) = 1 / (ms²+bs+k)</div>
+<p>轉到 s 域後，多元件的串並聯回授能直接用代數組合，這是轉移函數方法撐起古典控制理論的原因。</p>
+<h3>為什麼電路系統長得一樣</h3><p>RLC 電路 KVL：L q̈+Rq̇+q/C=v(t)。電感抵抗電流變化類比質量、電阻耗能類比阻尼、電容儲能類比彈簧——「儲能+耗能+恢復力」結構在能量守恆框架下數學形式必然相同（機電類比）。</p>
+<h3>方塊圖代數</h3><p>串聯直接相乘（函數合成）；並聯直接相加（線性疊加）；回授化簡 E=R−HY, Y=GE 聯立消去：</p>
+<div class="formula">T(s) = Y/R = G / (1+GH)</div>
+<p>分母 1+GH 是解自我參照方程的必然結果。線性化（非線性系統在工作點泰勒展開）是古典線性理論能套用在真實非線性系統上的前提，見 ${L("非線性系統")}。</p>
+<p>建好模型後怎麼分析 → ${L("動態響應分析")}。</p>`},
+{id:"動態響應分析",ch:"3",en:"Ch.3 · Dynamic Response",cat:"建模響應",html:`<div class="callout"><b>這章的問題：</b>ζ 和 ωn 為什麼能完全決定二階系統響應？超越量公式怎麼推出來？Routh-Hurwitz 怎麼不解根就判斷穩定？</div>
+<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgNDIwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmOGZjZmUiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlYWYzZjciLz48L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJib3giIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmZmZmZmIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZWVmN2ZhIi8+PC9saW5lYXJHcmFkaWVudD4KICAgIDxtYXJrZXIgaWQ9ImFycm93IiB2aWV3Qm94PSIwIDAgMTAgMTAiIHJlZlg9IjkiIHJlZlk9IjUiIG1hcmtlcldpZHRoPSI3IiBtYXJrZXJIZWlnaHQ9IjciIG9yaWVudD0iYXV0by1zdGFydC1yZXZlcnNlIj4KICAgICAgPHBhdGggZD0iTTAsMCBMMTAsNSBMMCwxMCB6IiBmaWxsPSIjMDg5MWIyIi8+CiAgICA8L21hcmtlcj4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSI0MjAiIGZpbGw9InVybCgjYmcpIi8+CiAgPHRleHQgeD0iMzAiIHk9IjM0IiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMTIzMDM5Ij7kuozpmo7ns7vntbHpmo7ouo3pn7/mh4nvvJrpmLvlsLzmr5QgzrYg55qE5b2x6Z+/PC90ZXh0Pgo8bGluZSB4MT0iOTAiIHkxPSIzNzAiIHgyPSI4NTAiIHkyPSIzNzAiIHN0cm9rZT0iIzEyMzAzOSIgc3Ryb2tlLXdpZHRoPSIxLjUiLz48bGluZSB4MT0iOTAiIHkxPSI1MCIgeDI9IjkwIiB5Mj0iMzcwIiBzdHJva2U9IiMxMjMwMzkiIHN0cm9rZS13aWR0aD0iMS41Ii8+PGxpbmUgeDE9IjkwIiB5MT0iMjEwIiB4Mj0iODUwIiB5Mj0iMjEwIiBzdHJva2U9IiNjN2Q4ZGQiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWRhc2hhcnJheT0iNCw0Ii8+PHRleHQgeD0iODU1IiB5PSIyMTUiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM2YjhhOTIiPnk9MTwvdGV4dD48dGV4dCB4PSI4MiIgeT0iMzkwIiB0ZXh0LWFuY2hvcj0iZW5kIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNmI4YTkyIj4wPC90ZXh0Pjx0ZXh0IHg9Ijg1MCIgeT0iMzkyIiB0ZXh0LWFuY2hvcj0iZW5kIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNmI4YTkyIj7mmYLplpMgdDwvdGV4dD48cG9seWxpbmUgcG9pbnRzPSI5MC4wLDIxMC4wIDkzLjIsMjA4LjUgOTYuMywyMDMuOSA5OS41LDE5Ni43IDEwMi43LDE4Ni45IDEwNS44LDE3NS4xIDEwOS4wLDE2MS40IDExMi4yLDE0Ni40IDExNS4zLDEzMC4zIDExOC41LDExMy42IDEyMS43LDk2LjcgMTI0LjgsNzkuOSAxMjguMCw2My43IDEzMS4yLDQ4LjMgMTM0LjMsMzQuMSAxMzcuNSwyMS4zIDE0MC43LDEwLjEgMTQzLjgsMC43IDE0Ny4wLC02LjcgMTUwLjIsLTEyLjEgMTUzLjMsLTE1LjUgMTU2LjUsLTE2LjkgMTU5LjcsLTE2LjMgMTYyLjgsLTEzLjggMTY2LjAsLTkuNiAxNjkuMiwtMy44IDE3Mi4zLDMuMyAxNzUuNSwxMS42IDE3OC43LDIwLjggMTgxLjgsMzAuNyAxODUuMCw0MS4wIDE4OC4yLDUxLjUgMTkxLjMsNjEuOSAxOTQuNSw3Mi4xIDE5Ny43LDgxLjggMjAwLjgsOTAuNyAyMDQuMCw5OC45IDIwNy4yLDEwNi4wIDIxMC4zLDExMi4wIDIxMy41LDExNi45IDIxNi43LDEyMC41IDIxOS44LDEyMi44IDIyMy4wLDEyMy45IDIyNi4yLDEyMy43IDIyOS4zLDEyMi40IDIzMi41LDEyMC4wIDIzNS43LDExNi42IDIzOC44LDExMi4zIDI0Mi4wLDEwNy4yIDI0NS4yLDEwMS42IDI0OC4zLDk1LjYgMjUxLjUsODkuMiAyNTQuNyw4Mi43IDI1Ny44LDc2LjIgMjYxLjAsNjkuOCAyNjQuMiw2My44IDI2Ny4zLDU4LjEgMjcwLjUsNTMuMCAyNzMuNyw0OC40IDI3Ni44LDQ0LjUgMjgwLjAsNDEuNCAyODMuMiwzOS4wIDI4Ni4zLDM3LjQgMjg5LjUsMzYuNiAyOTIuNywzNi42IDI5NS44LDM3LjMgMjk5LjAsMzguNiAzMDIuMiw0MC43IDMwNS4zLDQzLjIgMzA4LjUsNDYuMyAzMTEuNyw0OS43IDMxNC44LDUzLjQgMzE4LjAsNTcuNCAzMjEuMiw2MS40IDMyNC4zLDY1LjQgMzI3LjUsNjkuNCAzMzAuNyw3My4yIDMzMy44LDc2LjggMzM3LjAsODAuMCAzNDAuMiw4Mi45IDM0My4zLDg1LjQgMzQ2LjUsODcuNCAzNDkuNyw4OS4wIDM1Mi44LDkwLjEgMzU2LjAsOTAuNyAzNTkuMiw5MC44IDM2Mi4zLDkwLjQgMzY1LjUsODkuNyAzNjguNyw4OC41IDM3MS44LDg2LjkgMzc1LjAsODUuMSAzNzguMiw4My4wIDM4MS4zLDgwLjcgMzg0LjUsNzguMyAzODcuNyw3NS44IDM5MC44LDczLjMgMzk0LjAsNzAuOCAzOTcuMiw2OC40IDQwMC4zLDY2LjIgNDAzLjUsNjQuMSA0MDYuNyw2Mi4zIDQwOS44LDYwLjcgNDEzLjAsNTkuNCA0MTYuMiw1OC40IDQxOS4zLDU3LjYgNDIyLjUsNTcuMiA0MjUuNyw1Ny4xIDQyOC44LDU3LjMgNDMyLjAsNTcuNyA0MzUuMiw1OC40IDQzOC4zLDU5LjMgNDQxLjUsNjAuNCA0NDQuNyw2MS43IDQ0Ny44LDYzLjEgNDUxLjAsNjQuNiA0NTQuMiw2Ni4xIDQ1Ny4zLDY3LjcgNDYwLjUsNjkuMiA0NjMuNyw3MC43IDQ2Ni44LDcyLjEgNDcwLjAsNzMuNCA0NzMuMiw3NC42IDQ3Ni4zLDc1LjYgNDc5LjUsNzYuNSA0ODIuNyw3Ny4xIDQ4NS44LDc3LjYgNDg5LjAsNzcuOSA0OTIuMiw3OC4wIDQ5NS4zLDc3LjkgNDk4LjUsNzcuNyA1MDEuNyw3Ny4zIDUwNC44LDc2LjggNTA4LjAsNzYuMSA1MTEuMiw3NS4zIDUxNC4zLDc0LjUgNTE3LjUsNzMuNSA1MjAuNyw3Mi42IDUyMy44LDcxLjYgNTI3LjAsNzAuNyA1MzAuMiw2OS43IDUzMy4zLDY4LjggNTM2LjUsNjguMCA1MzkuNyw2Ny4zIDU0Mi44LDY2LjYgNTQ2LjAsNjYuMSA1NDkuMiw2NS42IDU1Mi4zLDY1LjMgNTU1LjUsNjUuMSA1NTguNyw2NS4wIDU2MS44LDY1LjAgNTY1LjAsNjUuMiA1NjguMiw2NS40IDU3MS4zLDY1LjcgNTc0LjUsNjYuMSA1NzcuNyw2Ni42IDU4MC44LDY3LjEgNTg0LjAsNjcuNyA1ODcuMiw2OC4zIDU5MC4zLDY4LjkgNTkzLjUsNjkuNSA1OTYuNyw3MC4xIDU5OS44LDcwLjYgNjAzLjAsNzEuMSA2MDYuMiw3MS42IDYwOS4zLDcyLjAgNjEyLjUsNzIuNCA2MTUuNyw3Mi43IDYxOC44LDcyLjkgNjIyLjAsNzMuMCA2MjUuMiw3My4xIDYyOC4zLDczLjEgNjMxLjUsNzMuMCA2MzQuNyw3Mi45IDYzNy44LDcyLjcgNjQxLjAsNzIuNCA2NDQuMiw3Mi4yIDY0Ny4zLDcxLjggNjUwLjUsNzEuNSA2NTMuNyw3MS4xIDY1Ni44LDcwLjggNjYwLjAsNzAuNCA2NjMuMiw3MC4wIDY2Ni4zLDY5LjcgNjY5LjUsNjkuNCA2NzIuNyw2OS4xIDY3NS44LDY4LjggNjc5LjAsNjguNiA2ODIuMiw2OC40IDY4NS4zLDY4LjIgNjg4LjUsNjguMSA2OTEuNyw2OC4xIDY5NC44LDY4LjEgNjk4LjAsNjguMSA3MDEuMiw2OC4yIDcwNC4zLDY4LjMgNzA3LjUsNjguNSA3MTAuNyw2OC42IDcxMy44LDY4LjggNzE3LjAsNjkuMCA3MjAuMiw2OS4zIDcyMy4zLDY5LjUgNzI2LjUsNjkuNyA3MjkuNyw2OS45IDczMi44LDcwLjIgNzM2LjAsNzAuNCA3MzkuMiw3MC42IDc0Mi4zLDcwLjcgNzQ1LjUsNzAuOSA3NDguNyw3MS4wIDc1MS44LDcxLjEgNzU1LjAsNzEuMSA3NTguMiw3MS4yIDc2MS4zLDcxLjIgNzY0LjUsNzEuMiA3NjcuNyw3MS4xIDc3MC44LDcxLjEgNzc0LjAsNzEuMCA3NzcuMiw3MC45IDc4MC4zLDcwLjggNzgzLjUsNzAuNiA3ODYuNyw3MC41IDc4OS44LDcwLjMgNzkzLjAsNzAuMiA3OTYuMiw3MC4xIDc5OS4zLDY5LjkgODAyLjUsNjkuOCA4MDUuNyw2OS43IDgwOC44LDY5LjYgODEyLjAsNjkuNSA4MTUuMiw2OS40IDgxOC4zLDY5LjMgODIxLjUsNjkuMyA4MjQuNyw2OS4zIDgyNy44LDY5LjMgODMxLjAsNjkuMyA4MzQuMiw2OS4zIDgzNy4zLDY5LjMgODQwLjUsNjkuNCA4NDMuNyw2OS40IDg0Ni44LDY5LjUgODUwLjAsNjkuNiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmY2YjZiIiBzdHJva2Utd2lkdGg9IjIuNSIvPjx0ZXh0IHg9IjcwMCIgeT0iODAiIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiNmZjZiNmIiIGZvbnQtd2VpZ2h0PSI3MDAiPs62PTAuMTUg5qyg6Zi75bC877yI6ZyH55uq5aSn77yJPC90ZXh0Pjxwb2x5bGluZSBwb2ludHM9IjkwLjAsMjEwLjAgOTMuMiwyMDguNSA5Ni4zLDIwNC4zIDk5LjUsMTk3LjkgMTAyLjcsMTg5LjggMTA1LjgsMTgwLjIgMTA5LjAsMTY5LjcgMTEyLjIsMTU4LjYgMTE1LjMsMTQ3LjIgMTE4LjUsMTM1LjcgMTIxLjcsMTI0LjUgMTI0LjgsMTEzLjcgMTI4LjAsMTAzLjUgMTMxLjIsOTQuMSAxMzQuMyw4NS40IDEzNy41LDc3LjYgMTQwLjcsNzAuOCAxNDMuOCw2NC45IDE0Ny4wLDU5LjkgMTUwLjIsNTUuOCAxNTMuMyw1Mi42IDE1Ni41LDUwLjIgMTU5LjcsNDguNSAxNjIuOCw0Ny42IDE2Ni4wLDQ3LjIgMTY5LjIsNDcuMyAxNzIuMyw0Ny45IDE3NS41LDQ4LjkgMTc4LjcsNTAuMiAxODEuOCw1MS43IDE4NS4wLDUzLjQgMTg4LjIsNTUuMiAxOTEuMyw1Ny4xIDE5NC41LDU4LjkgMTk3LjcsNjAuOCAyMDAuOCw2Mi42IDIwNC4wLDY0LjIgMjA3LjIsNjUuOCAyMTAuMyw2Ny4yIDIxMy41LDY4LjUgMjE2LjcsNjkuNyAyMTkuOCw3MC43IDIyMy4wLDcxLjUgMjI2LjIsNzIuMiAyMjkuMyw3Mi44IDIzMi41LDczLjIgMjM1LjcsNzMuNSAyMzguOCw3My42IDI0Mi4wLDczLjcgMjQ1LjIsNzMuNyAyNDguMyw3My42IDI1MS41LDczLjUgMjU0LjcsNzMuMyAyNTcuOCw3My4wIDI2MS4wLDcyLjggMjY0LjIsNzIuNSAyNjcuMyw3Mi4yIDI3MC41LDcxLjkgMjczLjcsNzEuNiAyNzYuOCw3MS4zIDI4MC4wLDcxLjAgMjgzLjIsNzAuNyAyODYuMyw3MC41IDI4OS41LDcwLjMgMjkyLjcsNzAuMSAyOTUuOCw2OS45IDI5OS4wLDY5LjggMzAyLjIsNjkuNyAzMDUuMyw2OS42IDMwOC41LDY5LjUgMzExLjcsNjkuNCAzMTQuOCw2OS40IDMxOC4wLDY5LjQgMzIxLjIsNjkuNCAzMjQuMyw2OS40IDMyNy41LDY5LjQgMzMwLjcsNjkuNSAzMzMuOCw2OS41IDMzNy4wLDY5LjUgMzQwLjIsNjkuNiAzNDMuMyw2OS42IDM0Ni41LDY5LjcgMzQ5LjcsNjkuNyAzNTIuOCw2OS44IDM1Ni4wLDY5LjggMzU5LjIsNjkuOSAzNjIuMyw2OS45IDM2NS41LDY5LjkgMzY4LjcsNzAuMCAzNzEuOCw3MC4wIDM3NS4wLDcwLjAgMzc4LjIsNzAuMSAzODEuMyw3MC4xIDM4NC41LDcwLjEgMzg3LjcsNzAuMSAzOTAuOCw3MC4xIDM5NC4wLDcwLjEgMzk3LjIsNzAuMSA0MDAuMyw3MC4xIDQwMy41LDcwLjEgNDA2LjcsNzAuMSA0MDkuOCw3MC4xIDQxMy4wLDcwLjEgNDE2LjIsNzAuMSA0MTkuMyw3MC4xIDQyMi41LDcwLjEgNDI1LjcsNzAuMCA0MjguOCw3MC4wIDQzMi4wLDcwLjAgNDM1LjIsNzAuMCA0MzguMyw3MC4wIDQ0MS41LDcwLjAgNDQ0LjcsNzAuMCA0NDcuOCw3MC4wIDQ1MS4wLDcwLjAgNDU0LjIsNzAuMCA0NTcuMyw3MC4wIDQ2MC41LDcwLjAgNDYzLjcsNzAuMCA0NjYuOCw3MC4wIDQ3MC4wLDcwLjAgNDczLjIsNzAuMCA0NzYuMyw3MC4wIDQ3OS41LDcwLjAgNDgyLjcsNzAuMCA0ODUuOCw3MC4wIDQ4OS4wLDcwLjAgNDkyLjIsNzAuMCA0OTUuMyw3MC4wIDQ5OC41LDcwLjAgNTAxLjcsNzAuMCA1MDQuOCw3MC4wIDUwOC4wLDcwLjAgNTExLjIsNzAuMCA1MTQuMyw3MC4wIDUxNy41LDcwLjAgNTIwLjcsNzAuMCA1MjMuOCw3MC4wIDUyNy4wLDcwLjAgNTMwLjIsNzAuMCA1MzMuMyw3MC4wIDUzNi41LDcwLjAgNTM5LjcsNzAuMCA1NDIuOCw3MC4wIDU0Ni4wLDcwLjAgNTQ5LjIsNzAuMCA1NTIuMyw3MC4wIDU1NS41LDcwLjAgNTU4LjcsNzAuMCA1NjEuOCw3MC4wIDU2NS4wLDcwLjAgNTY4LjIsNzAuMCA1NzEuMyw3MC4wIDU3NC41LDcwLjAgNTc3LjcsNzAuMCA1ODAuOCw3MC4wIDU4NC4wLDcwLjAgNTg3LjIsNzAuMCA1OTAuMyw3MC4wIDU5My41LDcwLjAgNTk2LjcsNzAuMCA1OTkuOCw3MC4wIDYwMy4wLDcwLjAgNjA2LjIsNzAuMCA2MDkuMyw3MC4wIDYxMi41LDcwLjAgNjE1LjcsNzAuMCA2MTguOCw3MC4wIDYyMi4wLDcwLjAgNjI1LjIsNzAuMCA2MjguMyw3MC4wIDYzMS41LDcwLjAgNjM0LjcsNzAuMCA2MzcuOCw3MC4wIDY0MS4wLDcwLjAgNjQ0LjIsNzAuMCA2NDcuMyw3MC4wIDY1MC41LDcwLjAgNjUzLjcsNzAuMCA2NTYuOCw3MC4wIDY2MC4wLDcwLjAgNjYzLjIsNzAuMCA2NjYuMyw3MC4wIDY2OS41LDcwLjAgNjcyLjcsNzAuMCA2NzUuOCw3MC4wIDY3OS4wLDcwLjAgNjgyLjIsNzAuMCA2ODUuMyw3MC4wIDY4OC41LDcwLjAgNjkxLjcsNzAuMCA2OTQuOCw3MC4wIDY5OC4wLDcwLjAgNzAxLjIsNzAuMCA3MDQuMyw3MC4wIDcwNy41LDcwLjAgNzEwLjcsNzAuMCA3MTMuOCw3MC4wIDcxNy4wLDcwLjAgNzIwLjIsNzAuMCA3MjMuMyw3MC4wIDcyNi41LDcwLjAgNzI5LjcsNzAuMCA3MzIuOCw3MC4wIDczNi4wLDcwLjAgNzM5LjIsNzAuMCA3NDIuMyw3MC4wIDc0NS41LDcwLjAgNzQ4LjcsNzAuMCA3NTEuOCw3MC4wIDc1NS4wLDcwLjAgNzU4LjIsNzAuMCA3NjEuMyw3MC4wIDc2NC41LDcwLjAgNzY3LjcsNzAuMCA3NzAuOCw3MC4wIDc3NC4wLDcwLjAgNzc3LjIsNzAuMCA3ODAuMyw3MC4wIDc4My41LDcwLjAgNzg2LjcsNzAuMCA3ODkuOCw3MC4wIDc5My4wLDcwLjAgNzk2LjIsNzAuMCA3OTkuMyw3MC4wIDgwMi41LDcwLjAgODA1LjcsNzAuMCA4MDguOCw3MC4wIDgxMi4wLDcwLjAgODE1LjIsNzAuMCA4MTguMyw3MC4wIDgyMS41LDcwLjAgODI0LjcsNzAuMCA4MjcuOCw3MC4wIDgzMS4wLDcwLjAgODM0LjIsNzAuMCA4MzcuMyw3MC4wIDg0MC41LDcwLjAgODQzLjcsNzAuMCA4NDYuOCw3MC4wIDg1MC4wLDcwLjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSIyLjUiLz48dGV4dCB4PSI3MDAiIHk9IjEwNCIgZm9udC1zaXplPSIxMyIgZmlsbD0iI2Q5NzcwNiIgZm9udC13ZWlnaHQ9IjcwMCI+zrY9MC41IOasoOmYu+WwvDwvdGV4dD48cG9seWxpbmUgcG9pbnRzPSI5MC4wLDIxMC4wIDkzLjIsMjA4LjYgOTYuMywyMDQuOCA5OS41LDE5OS40IDEwMi43LDE5Mi45IDEwNS44LDE4NS43IDEwOS4wLDE3OC4xIDExMi4yLDE3MC40IDExNS4zLDE2Mi44IDExOC41LDE1NS4zIDEyMS43LDE0OC4xIDEyNC44LDE0MS4zIDEyOC4wLDEzNC44IDEzMS4yLDEyOC44IDEzNC4zLDEyMy4xIDEzNy41LDExOC4wIDE0MC43LDExMy4yIDE0My44LDEwOC44IDE0Ny4wLDEwNC44IDE1MC4yLDEwMS4yIDE1My4zLDk3LjkgMTU2LjUsOTQuOSAxNTkuNyw5Mi4yIDE2Mi44LDg5LjggMTY2LjAsODcuNiAxNjkuMiw4NS42IDE3Mi4zLDgzLjkgMTc1LjUsODIuMyAxNzguNyw4MC45IDE4MS44LDc5LjcgMTg1LjAsNzguNiAxODguMiw3Ny42IDE5MS4zLDc2LjcgMTk0LjUsNzUuOSAxOTcuNyw3NS4yIDIwMC44LDc0LjYgMjA0LjAsNzQuMCAyMDcuMiw3My42IDIxMC4zLDczLjEgMjEzLjUsNzIuOCAyMTYuNyw3Mi40IDIxOS44LDcyLjEgMjIzLjAsNzEuOSAyMjYuMiw3MS42IDIyOS4zLDcxLjQgMjMyLjUsNzEuMyAyMzUuNyw3MS4xIDIzOC44LDcxLjAgMjQyLjAsNzAuOSAyNDUuMiw3MC44IDI0OC4zLDcwLjcgMjUxLjUsNzAuNiAyNTQuNyw3MC41IDI1Ny44LDcwLjQgMjYxLjAsNzAuNCAyNjQuMiw3MC4zIDI2Ny4zLDcwLjMgMjcwLjUsNzAuMyAyNzMuNyw3MC4yIDI3Ni44LDcwLjIgMjgwLjAsNzAuMiAyODMuMiw3MC4yIDI4Ni4zLDcwLjEgMjg5LjUsNzAuMSAyOTIuNyw3MC4xIDI5NS44LDcwLjEgMjk5LjAsNzAuMSAzMDIuMiw3MC4xIDMwNS4zLDcwLjEgMzA4LjUsNzAuMSAzMTEuNyw3MC4wIDMxNC44LDcwLjAgMzE4LjAsNzAuMCAzMjEuMiw3MC4wIDMyNC4zLDcwLjAgMzI3LjUsNzAuMCAzMzAuNyw3MC4wIDMzMy44LDcwLjAgMzM3LjAsNzAuMCAzNDAuMiw3MC4wIDM0My4zLDcwLjAgMzQ2LjUsNzAuMCAzNDkuNyw3MC4wIDM1Mi44LDcwLjAgMzU2LjAsNzAuMCAzNTkuMiw3MC4wIDM2Mi4zLDcwLjAgMzY1LjUsNzAuMCAzNjguNyw3MC4wIDM3MS44LDcwLjAgMzc1LjAsNzAuMCAzNzguMiw3MC4wIDM4MS4zLDcwLjAgMzg0LjUsNzAuMCAzODcuNyw3MC4wIDM5MC44LDcwLjAgMzk0LjAsNzAuMCAzOTcuMiw3MC4wIDQwMC4zLDcwLjAgNDAzLjUsNzAuMCA0MDYuNyw3MC4wIDQwOS44LDcwLjAgNDEzLjAsNzAuMCA0MTYuMiw3MC4wIDQxOS4zLDcwLjAgNDIyLjUsNzAuMCA0MjUuNyw3MC4wIDQyOC44LDcwLjAgNDMyLjAsNzAuMCA0MzUuMiw3MC4wIDQzOC4zLDcwLjAgNDQxLjUsNzAuMCA0NDQuNyw3MC4wIDQ0Ny44LDcwLjAgNDUxLjAsNzAuMCA0NTQuMiw3MC4wIDQ1Ny4zLDcwLjAgNDYwLjUsNzAuMCA0NjMuNyw3MC4wIDQ2Ni44LDcwLjAgNDcwLjAsNzAuMCA0NzMuMiw3MC4wIDQ3Ni4zLDcwLjAgNDc5LjUsNzAuMCA0ODIuNyw3MC4wIDQ4NS44LDcwLjAgNDg5LjAsNzAuMCA0OTIuMiw3MC4wIDQ5NS4zLDcwLjAgNDk4LjUsNzAuMCA1MDEuNyw3MC4wIDUwNC44LDcwLjAgNTA4LjAsNzAuMCA1MTEuMiw3MC4wIDUxNC4zLDcwLjAgNTE3LjUsNzAuMCA1MjAuNyw3MC4wIDUyMy44LDcwLjAgNTI3LjAsNzAuMCA1MzAuMiw3MC4wIDUzMy4zLDcwLjAgNTM2LjUsNzAuMCA1MzkuNyw3MC4wIDU0Mi44LDcwLjAgNTQ2LjAsNzAuMCA1NDkuMiw3MC4wIDU1Mi4zLDcwLjAgNTU1LjUsNzAuMCA1NTguNyw3MC4wIDU2MS44LDcwLjAgNTY1LjAsNzAuMCA1NjguMiw3MC4wIDU3MS4zLDcwLjAgNTc0LjUsNzAuMCA1NzcuNyw3MC4wIDU4MC44LDcwLjAgNTg0LjAsNzAuMCA1ODcuMiw3MC4wIDU5MC4zLDcwLjAgNTkzLjUsNzAuMCA1OTYuNyw3MC4wIDU5OS44LDcwLjAgNjAzLjAsNzAuMCA2MDYuMiw3MC4wIDYwOS4zLDcwLjAgNjEyLjUsNzAuMCA2MTUuNyw3MC4wIDYxOC44LDcwLjAgNjIyLjAsNzAuMCA2MjUuMiw3MC4wIDYyOC4zLDcwLjAgNjMxLjUsNzAuMCA2MzQuNyw3MC4wIDYzNy44LDcwLjAgNjQxLjAsNzAuMCA2NDQuMiw3MC4wIDY0Ny4zLDcwLjAgNjUwLjUsNzAuMCA2NTMuNyw3MC4wIDY1Ni44LDcwLjAgNjYwLjAsNzAuMCA2NjMuMiw3MC4wIDY2Ni4zLDcwLjAgNjY5LjUsNzAuMCA2NzIuNyw3MC4wIDY3NS44LDcwLjAgNjc5LjAsNzAuMCA2ODIuMiw3MC4wIDY4NS4zLDcwLjAgNjg4LjUsNzAuMCA2OTEuNyw3MC4wIDY5NC44LDcwLjAgNjk4LjAsNzAuMCA3MDEuMiw3MC4wIDcwNC4zLDcwLjAgNzA3LjUsNzAuMCA3MTAuNyw3MC4wIDcxMy44LDcwLjAgNzE3LjAsNzAuMCA3MjAuMiw3MC4wIDcyMy4zLDcwLjAgNzI2LjUsNzAuMCA3MjkuNyw3MC4wIDczMi44LDcwLjAgNzM2LjAsNzAuMCA3MzkuMiw3MC4wIDc0Mi4zLDcwLjAgNzQ1LjUsNzAuMCA3NDguNyw3MC4wIDc1MS44LDcwLjAgNzU1LjAsNzAuMCA3NTguMiw3MC4wIDc2MS4zLDcwLjAgNzY0LjUsNzAuMCA3NjcuNyw3MC4wIDc3MC44LDcwLjAgNzc0LjAsNzAuMCA3NzcuMiw3MC4wIDc4MC4zLDcwLjAgNzgzLjUsNzAuMCA3ODYuNyw3MC4wIDc4OS44LDcwLjAgNzkzLjAsNzAuMCA3OTYuMiw3MC4wIDc5OS4zLDcwLjAgODAyLjUsNzAuMCA4MDUuNyw3MC4wIDgwOC44LDcwLjAgODEyLjAsNzAuMCA4MTUuMiw3MC4wIDgxOC4zLDcwLjAgODIxLjUsNzAuMCA4MjQuNyw3MC4wIDgyNy44LDcwLjAgODMxLjAsNzAuMCA4MzQuMiw3MC4wIDgzNy4zLDcwLjAgODQwLjUsNzAuMCA4NDMuNyw3MC4wIDg0Ni44LDcwLjAgODUwLjAsNzAuMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDg5MWIyIiBzdHJva2Utd2lkdGg9IjIuNSIvPjx0ZXh0IHg9IjcwMCIgeT0iMTI4IiBmb250LXNpemU9IjEzIiBmaWxsPSIjMDg5MWIyIiBmb250LXdlaWdodD0iNzAwIj7Otj0xLjAg6Ieo55WM6Zi75bC8PC90ZXh0Pjxwb2x5bGluZSBwb2ludHM9IjkwLjAsMjEwLjAgOTMuMiwyMDguNyA5Ni4zLDIwNS41IDk5LjUsMjAxLjMgMTAyLjcsMTk2LjYgMTA1LjgsMTkxLjYgMTA5LjAsMTg2LjYgMTEyLjIsMTgxLjcgMTE1LjMsMTc2LjkgMTE4LjUsMTcyLjIgMTIxLjcsMTY3LjcgMTI0LjgsMTYzLjQgMTI4LjAsMTU5LjMgMTMxLjIsMTU1LjMgMTM0LjMsMTUxLjUgMTM3LjUsMTQ3LjkgMTQwLjcsMTQ0LjQgMTQzLjgsMTQxLjEgMTQ3LjAsMTM4LjAgMTUwLjIsMTM1LjAgMTUzLjMsMTMyLjEgMTU2LjUsMTI5LjMgMTU5LjcsMTI2LjcgMTYyLjgsMTI0LjEgMTY2LjAsMTIxLjcgMTY5LjIsMTE5LjQgMTcyLjMsMTE3LjIgMTc1LjUsMTE1LjEgMTc4LjcsMTEzLjEgMTgxLjgsMTExLjIgMTg1LjAsMTA5LjQgMTg4LjIsMTA3LjYgMTkxLjMsMTA2LjAgMTk0LjUsMTA0LjQgMTk3LjcsMTAyLjggMjAwLjgsMTAxLjQgMjA0LjAsMTAwLjAgMjA3LjIsOTguNiAyMTAuMyw5Ny40IDIxMy41LDk2LjEgMjE2LjcsOTUuMCAyMTkuOCw5My45IDIyMy4wLDkyLjggMjI2LjIsOTEuOCAyMjkuMyw5MC44IDIzMi41LDg5LjkgMjM1LjcsODkuMCAyMzguOCw4OC4yIDI0Mi4wLDg3LjQgMjQ1LjIsODYuNiAyNDguMyw4NS44IDI1MS41LDg1LjEgMjU0LjcsODQuNSAyNTcuOCw4My44IDI2MS4wLDgzLjIgMjY0LjIsODIuNiAyNjcuMyw4Mi4xIDI3MC41LDgxLjUgMjczLjcsODEuMCAyNzYuOCw4MC41IDI4MC4wLDgwLjEgMjgzLjIsNzkuNiAyODYuMyw3OS4yIDI4OS41LDc4LjggMjkyLjcsNzguNCAyOTUuOCw3OC4wIDI5OS4wLDc3LjcgMzAyLjIsNzcuMyAzMDUuMyw3Ny4wIDMwOC41LDc2LjcgMzExLjcsNzYuNCAzMTQuOCw3Ni4xIDMxOC4wLDc1LjggMzIxLjIsNzUuNiAzMjQuMyw3NS4zIDMyNy41LDc1LjEgMzMwLjcsNzQuOSAzMzMuOCw3NC42IDMzNy4wLDc0LjQgMzQwLjIsNzQuMiAzNDMuMyw3NC4wIDM0Ni41LDczLjkgMzQ5LjcsNzMuNyAzNTIuOCw3My41IDM1Ni4wLDczLjQgMzU5LjIsNzMuMiAzNjIuMyw3My4xIDM2NS41LDcyLjkgMzY4LjcsNzIuOCAzNzEuOCw3Mi43IDM3NS4wLDcyLjYgMzc4LjIsNzIuNSAzODEuMyw3Mi4zIDM4NC41LDcyLjIgMzg3LjcsNzIuMSAzOTAuOCw3Mi4wIDM5NC4wLDcyLjAgMzk3LjIsNzEuOSA0MDAuMyw3MS44IDQwMy41LDcxLjcgNDA2LjcsNzEuNiA0MDkuOCw3MS42IDQxMy4wLDcxLjUgNDE2LjIsNzEuNCA0MTkuMyw3MS40IDQyMi41LDcxLjMgNDI1LjcsNzEuMiA0MjguOCw3MS4yIDQzMi4wLDcxLjEgNDM1LjIsNzEuMSA0MzguMyw3MS4wIDQ0MS41LDcxLjAgNDQ0LjcsNzAuOSA0NDcuOCw3MC45IDQ1MS4wLDcwLjkgNDU0LjIsNzAuOCA0NTcuMyw3MC44IDQ2MC41LDcwLjggNDYzLjcsNzAuNyA0NjYuOCw3MC43IDQ3MC4wLDcwLjcgNDczLjIsNzAuNiA0NzYuMyw3MC42IDQ3OS41LDcwLjYgNDgyLjcsNzAuNSA0ODUuOCw3MC41IDQ4OS4wLDcwLjUgNDkyLjIsNzAuNSA0OTUuMyw3MC41IDQ5OC41LDcwLjQgNTAxLjcsNzAuNCA1MDQuOCw3MC40IDUwOC4wLDcwLjQgNTExLjIsNzAuNCA1MTQuMyw3MC4zIDUxNy41LDcwLjMgNTIwLjcsNzAuMyA1MjMuOCw3MC4zIDUyNy4wLDcwLjMgNTMwLjIsNzAuMyA1MzMuMyw3MC4zIDUzNi41LDcwLjMgNTM5LjcsNzAuMiA1NDIuOCw3MC4yIDU0Ni4wLDcwLjIgNTQ5LjIsNzAuMiA1NTIuMyw3MC4yIDU1NS41LDcwLjIgNTU4LjcsNzAuMiA1NjEuOCw3MC4yIDU2NS4wLDcwLjIgNTY4LjIsNzAuMiA1NzEuMyw3MC4yIDU3NC41LDcwLjEgNTc3LjcsNzAuMSA1ODAuOCw3MC4xIDU4NC4wLDcwLjEgNTg3LjIsNzAuMSA1OTAuMyw3MC4xIDU5My41LDcwLjEgNTk2LjcsNzAuMSA1OTkuOCw3MC4xIDYwMy4wLDcwLjEgNjA2LjIsNzAuMSA2MDkuMyw3MC4xIDYxMi41LDcwLjEgNjE1LjcsNzAuMSA2MTguOCw3MC4xIDYyMi4wLDcwLjEgNjI1LjIsNzAuMSA2MjguMyw3MC4xIDYzMS41LDcwLjEgNjM0LjcsNzAuMSA2MzcuOCw3MC4xIDY0MS4wLDcwLjEgNjQ0LjIsNzAuMSA2NDcuMyw3MC4xIDY1MC41LDcwLjAgNjUzLjcsNzAuMCA2NTYuOCw3MC4wIDY2MC4wLDcwLjAgNjYzLjIsNzAuMCA2NjYuMyw3MC4wIDY2OS41LDcwLjAgNjcyLjcsNzAuMCA2NzUuOCw3MC4wIDY3OS4wLDcwLjAgNjgyLjIsNzAuMCA2ODUuMyw3MC4wIDY4OC41LDcwLjAgNjkxLjcsNzAuMCA2OTQuOCw3MC4wIDY5OC4wLDcwLjAgNzAxLjIsNzAuMCA3MDQuMyw3MC4wIDcwNy41LDcwLjAgNzEwLjcsNzAuMCA3MTMuOCw3MC4wIDcxNy4wLDcwLjAgNzIwLjIsNzAuMCA3MjMuMyw3MC4wIDcyNi41LDcwLjAgNzI5LjcsNzAuMCA3MzIuOCw3MC4wIDczNi4wLDcwLjAgNzM5LjIsNzAuMCA3NDIuMyw3MC4wIDc0NS41LDcwLjAgNzQ4LjcsNzAuMCA3NTEuOCw3MC4wIDc1NS4wLDcwLjAgNzU4LjIsNzAuMCA3NjEuMyw3MC4wIDc2NC41LDcwLjAgNzY3LjcsNzAuMCA3NzAuOCw3MC4wIDc3NC4wLDcwLjAgNzc3LjIsNzAuMCA3ODAuMyw3MC4wIDc4My41LDcwLjAgNzg2LjcsNzAuMCA3ODkuOCw3MC4wIDc5My4wLDcwLjAgNzk2LjIsNzAuMCA3OTkuMyw3MC4wIDgwMi41LDcwLjAgODA1LjcsNzAuMCA4MDguOCw3MC4wIDgxMi4wLDcwLjAgODE1LjIsNzAuMCA4MTguMyw3MC4wIDgyMS41LDcwLjAgODI0LjcsNzAuMCA4MjcuOCw3MC4wIDgzMS4wLDcwLjAgODM0LjIsNzAuMCA4MzcuMyw3MC4wIDg0MC41LDcwLjAgODQzLjcsNzAuMCA4NDYuOCw3MC4wIDg1MC4wLDcwLjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA1OTY2OSIgc3Ryb2tlLXdpZHRoPSIyLjUiLz48dGV4dCB4PSI3MDAiIHk9IjE1MiIgZm9udC1zaXplPSIxMyIgZmlsbD0iIzA1OTY2OSIgZm9udC13ZWlnaHQ9IjcwMCI+zrY9MS44IOmBjumYu+WwvDwvdGV4dD48L3N2Zz4=">
+<h3>標準二階系統</h3><div class="formula">G(s) = ωn² / (s²+2ζωn·s+ωn²)</div>
+<p>極點 s=−ζωn±jωn√(1−ζ²)：ζ&lt;1 欠阻尼（振盪）、ζ=1 臨界阻尼、ζ&gt;1 過阻尼。實部決定衰減快慢，虛部決定振盪頻率。</p>
+<h3>超越量為什麼只跟 ζ 有關</h3><div class="formula">Mp = e^(−ζπ/√(1−ζ²))</div>
+<p>ωn 只是時間軸縮放，不影響振盪的相對幅度衰減比例；ζ 決定每半週期幅度衰減的比例，這個比例與時間尺度無關。</p>
+<h3>上升/安定時間為什麼反比於 ωn</h3><div class="formula">tp ≈ π/(ωn√(1−ζ²))　，　ts ≈ 4/(ζωn)</div>
+<h3>Routh-Hurwitz：不解根判斷穩定</h3><p>把特徵方程係數排成陣列，第一欄變號次數＝右半平面根數——這是綜合除法反覆消去過程與根分布的代數對應。到「🔬 模擬工具 → Routh-Hurwitz」可直接檢查任意四次以內多項式。</p>
+<p>極點位置怎麼被設計出來 → ${L("根軌跡設計法")}。</p>`},
+{id:"回授系統初步分析",ch:"4",en:"Ch.4 · Feedback Analysis",cat:"回授設計",html:`<div class="callout"><b>這章的問題：</b>回授到底換來哪三樣具體好處？穩態誤差為什麼只看系統裡有幾個積分器就知道大概行為？</div>
+<h3>回報一：靈敏度降低</h3><p>延續 ${L("導論與回授控制史")} 的 S=1/(1+CP)：迴路增益做大，模型誤差對輸出的影響被壓低。</p>
+<h3>回報二：干擾抑制</h3><div class="formula">Y(s) = T(s)R(s) + [P/(1+CP)]D(s)</div>
+<p>干擾到輸出的路徑也除以 (1+CP)——不需要知道干擾長怎樣，只要迴路增益夠大就自動壓小。</p>
+<h3>回報三：能穩定原本不穩定的受控體</h3><p>即使 P(s) 開迴路不穩定，C(s) 設計得當閉迴路仍可能穩定。</p>
+<h3>穩態誤差與系統型別</h3><p>用終值定理 e_ss=lim(s→0) sE(s)。依 s=0 處極點（積分器）個數分型別 0/1/2：</p>
+<div class="formula">e_ss,step = 1/(1+Kp)　，　e_ss,ramp = 1/Kv</div>
+<p>每多一個積分器，誤差常數多一次機會趨向無限大（誤差趨零）——這是控制器裡刻意加積分器消除穩態誤差的理論依據，見 ${L("頻率響應設計法與PID")} 的 PID「I」項。</p>`},
+{id:"根軌跡設計法",ch:"5",en:"Ch.5 · Root-Locus Method",cat:"回授設計",html:`<div class="callout"><b>這章的問題：</b>為什麼調一個增益 K，閉迴路極點會沿特定曲線移動？畫圖規則怎麼從一條方程式推出？</div>
+<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgNDIwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmOGZjZmUiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlYWYzZjciLz48L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJib3giIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmZmZmZmIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZWVmN2ZhIi8+PC9saW5lYXJHcmFkaWVudD4KICAgIDxtYXJrZXIgaWQ9ImFycm93IiB2aWV3Qm94PSIwIDAgMTAgMTAiIHJlZlg9IjkiIHJlZlk9IjUiIG1hcmtlcldpZHRoPSI3IiBtYXJrZXJIZWlnaHQ9IjciIG9yaWVudD0iYXV0by1zdGFydC1yZXZlcnNlIj4KICAgICAgPHBhdGggZD0iTTAsMCBMMTAsNSBMMCwxMCB6IiBmaWxsPSIjMDg5MWIyIi8+CiAgICA8L21hcmtlcj4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSI0MjAiIGZpbGw9InVybCgjYmcpIi8+CiAgPHRleHQgeD0iMzAiIHk9IjM0IiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMTIzMDM5Ij7moLnou4zot6HnpLrmhI/vvJrmpbXpu57pmqjlop7nm4ogSyDnp7vli5U8L3RleHQ+CiAgPGxpbmUgeDE9IjYwIiB5MT0iMjIwIiB4Mj0iODQwIiB5Mj0iMjIwIiBzdHJva2U9IiMxMjMwMzkiIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgPGxpbmUgeDE9IjQ1MCIgeTE9IjYwIiB4Mj0iNDUwIiB5Mj0iMzgwIiBzdHJva2U9IiMxMjMwMzkiIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgPHRleHQgeD0iODQ1IiB5PSIyMjUiIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiM2YjhhOTIiPlJlPC90ZXh0PgogIDx0ZXh0IHg9IjQ1NSIgeT0iNzAiIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiM2YjhhOTIiPkltPC90ZXh0PgogIDx0ZXh0IHg9IjYwIiB5PSIyMzgiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM2YjhhOTIiPuW3puWNiuW5s+mdou+8iOepqeWumu+8iTwvdGV4dD4KICA8dGV4dCB4PSI3MDAiIHk9IjIzOCIgZm9udC1zaXplPSIxMiIgZmlsbD0iI2UxMWQ0OCI+5Y+z5Y2K5bmz6Z2i77yI5LiN56mp5a6a77yJPC90ZXh0PgoKICA8Y2lyY2xlIGN4PSIzMzAiIGN5PSIyMjAiIHI9IjYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIyLjUiLz4KICA8Y2lyY2xlIGN4PSIyMjAiIGN5PSIyMjAiIHI9IjYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIyLjUiLz4KICA8dGV4dCB4PSIzMzAiIHk9IjIwNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzA4OTFiMiI+6ZaL6L+06Lev5qW16buePC90ZXh0PgoKICA8cGF0aCBkPSJNIDMzMCAyMjAgQyAzMzAgMTUwLCA0MjAgOTAsIDUwMCA5MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjN2MzYWVkIiBzdHJva2Utd2lkdGg9IjIuNSIgbWFya2VyLWVuZD0idXJsKCNhcnJvdykiLz4KICA8cGF0aCBkPSJNIDMzMCAyMjAgQyAzMzAgMjkwLCA0MjAgMzUwLCA1MDAgMzUwIiBmaWxsPSJub25lIiBzdHJva2U9IiM3YzNhZWQiIHN0cm9rZS13aWR0aD0iMi41IiBtYXJrZXItZW5kPSJ1cmwoI2Fycm93KSIvPgogIDxwYXRoIGQ9Ik0gMjIwIDIyMCBDIDI2MCAyMjAsIDI4MCAyMjAsIDMzMCAyMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1kYXNoYXJyYXk9IjUsNCIvPgoKICA8Y2lyY2xlIGN4PSI2MDAiIGN5PSIxNDAiIHI9IjUiIGZpbGw9IiM3YzNhZWQiLz4KICA8dGV4dCB4PSI2MTAiIHk9IjEzNSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzNjMzQ4OSI+SyDlop7lpKcg4oaSIOWIhuaUr+W+gOWklui1sDwvdGV4dD4KICA8Y2lyY2xlIGN4PSI2MDAiIGN5PSIzMDAiIHI9IjUiIGZpbGw9IiM3YzNhZWQiLz4KCiAgPHRleHQgeD0iNjAiIHk9IjQwMCIgZm9udC1zaXplPSIxMi41IiBmaWxsPSIjNmI4YTkyIj7liIbmlK/lvp7plovov7Tot6/mpbXpu57vvIjDl++8ieWHuueZvO+8jOmaqCBL4oaS4oieIOi1sOWQkemWi+i/tOi3r+mbtum7nuaIlueEoeeqrumBoOKAlOKAlOmAmeaYr+aguei7jOi3oeazleioreioiOeahOaguOW/g+WcluWDj+OAgjwvdGV4dD4KPC9zdmc+">
+<h3>幅角條件：軌跡的骨架</h3><p>特徵方程 1+KG(s)H(s)=0 改寫成 KGH=−1，拆成：</p>
+<div class="formula">∠G(s)H(s) = 180°(2k+1)　　（幅角條件，與 K 無關）</div>
+<div class="formula">|K·G(s)H(s)| = 1　　（幅值條件，決定該點的 K）</div>
+<p>幅角條件不含 K，只由開迴路零極點幾何位置決定——根軌跡形狀只由零極點決定，K 只決定走到骨架上哪一點。</p>
+<h3>畫圖規則從哪來</h3><p>分支數＝極點數（代數基本定理）；實軸段：測試點右側零極點總數為奇數（幅角條件在實軸特例的直接推論）；漸近線角度 180°(2k+1)/(n−m)：n−m 條分支要平分角度空間同時滿足奇數倍180°的幾何要求。</p>
+<h3>怎麼拿來設計</h3><p>先畫出符合超越量/安定時間規格的目標區域（見 ${L("動態響應分析")}），找根軌跡與目標區域交點，用幅值條件反推 K。到「🔬 模擬工具 → 根軌跡」可拖 K 看兩極點即時移動。</p>`},
+{id:"頻率響應設計法與PID",ch:"6",en:"Ch.6 · Frequency-Response & PID",cat:"回授設計",html:`<div class="callout"><b>這章的問題：</b>Bode 圖漸近線為什麼能近似真實曲線？相位邊限怎麼量測穩定裕度？PID 三項各自做什麼？</div>
+<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgNDYwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmOGZjZmUiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlYWYzZjciLz48L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJib3giIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmZmZmZmIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZWVmN2ZhIi8+PC9saW5lYXJHcmFkaWVudD4KICAgIDxtYXJrZXIgaWQ9ImFycm93IiB2aWV3Qm94PSIwIDAgMTAgMTAiIHJlZlg9IjkiIHJlZlk9IjUiIG1hcmtlcldpZHRoPSI3IiBtYXJrZXJIZWlnaHQ9IjciIG9yaWVudD0iYXV0by1zdGFydC1yZXZlcnNlIj4KICAgICAgPHBhdGggZD0iTTAsMCBMMTAsNSBMMCwxMCB6IiBmaWxsPSIjMDg5MWIyIi8+CiAgICA8L21hcmtlcj4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSI0NjAiIGZpbGw9InVybCgjYmcpIi8+CiAgPHRleHQgeD0iMzAiIHk9IjM0IiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMTIzMDM5Ij5Cb2RlIOWclu+8mua8uOi/kee3mui/keS8vDwvdGV4dD4KCiAgPGxpbmUgeDE9IjkwIiB5MT0iMTUwIiB4Mj0iODQwIiB5Mj0iMTUwIiBzdHJva2U9IiNjN2Q4ZGQiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWRhc2hhcnJheT0iNCw0Ii8+CiAgPHRleHQgeD0iNjAiIHk9IjE1NSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzZiOGE5MiI+MGRCPC90ZXh0PgogIDxsaW5lIHgxPSI5MCIgeTE9IjgwIiB4Mj0iODQwIiB5Mj0iODAiIHN0cm9rZT0iIzEyMzAzOSIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8bGluZSB4MT0iOTAiIHkxPSI4MCIgeDI9IjkwIiB5Mj0iMjMwIiBzdHJva2U9IiMxMjMwMzkiIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgPHRleHQgeD0iMzAiIHk9IjkwIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMTIzMDM5IiBmb250LXdlaWdodD0iNzAwIj7lop7nm4ogfEcoas+JKXwgZEI8L3RleHQ+CiAgPHBvbHlsaW5lIHBvaW50cz0iOTAsMTIwIDQwMCwxMjAgNDAwLDE1MCA4NDAsMjIwIiBmaWxsPSJub25lIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMi41Ii8+CiAgPGxpbmUgeDE9IjQwMCIgeTE9IjE1MCIgeDI9IjQwMCIgeTI9IjgwIiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtZGFzaGFycmF5PSIzLDMiLz4KICA8dGV4dCB4PSI0MDUiIHk9Ijk1IiBmb250LXNpemU9IjEyIiBmaWxsPSIjODU0ZjBiIj7ovYnop5LpoLvnjocgz4k9MS/PhDwvdGV4dD4KICA8dGV4dCB4PSI3MDAiIHk9IjIwNSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzA4OTFiMiI+LTIwZEIvZGVjYWRlPC90ZXh0PgoKICA8bGluZSB4MT0iOTAiIHkxPSIyNjAiIHgyPSI4NDAiIHkyPSIyNjAiIHN0cm9rZT0iIzEyMzAzOSIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8bGluZSB4MT0iOTAiIHkxPSIyNjAiIHgyPSI5MCIgeTI9IjQxMCIgc3Ryb2tlPSIjMTIzMDM5IiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjMwIiB5PSIyNzAiIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiMxMjMwMzkiIGZvbnQtd2VpZ2h0PSI3MDAiPuebuOS9jSDiiKBHKGrPiSkg5bqmPC90ZXh0PgogIDxsaW5lIHgxPSI5MCIgeTE9IjMwMCIgeDI9Ijg0MCIgeTI9IjMwMCIgc3Ryb2tlPSIjYzdkOGRkIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1kYXNoYXJyYXk9IjQsNCIvPgogIDx0ZXh0IHg9IjYwIiB5PSIzMDUiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM2YjhhOTIiPjDCsDwvdGV4dD4KICA8bGluZSB4MT0iOTAiIHkxPSIzODAiIHgyPSI4NDAiIHkyPSIzODAiIHN0cm9rZT0iI2M3ZDhkZCIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtZGFzaGFycmF5PSI0LDQiLz4KICA8dGV4dCB4PSI1NSIgeT0iMzg1IiBmb250LXNpemU9IjEyIiBmaWxsPSIjNmI4YTkyIj4tOTDCsDwvdGV4dD4KICA8cGF0aCBkPSJNIDkwIDMwMCBDIDMwMCAzMDAsIDM1MCAzNDAsIDQwMCAzNDAgUyA1MDAgMzgwLCA4NDAgMzgwIiBmaWxsPSJub25lIiBzdHJva2U9IiM3YzNhZWQiIHN0cm9rZS13aWR0aD0iMi41Ii8+CiAgPGxpbmUgeDE9IjQwMCIgeTE9IjQxMCIgeDI9IjQwMCIgeTI9IjI2MCIgc3Ryb2tlPSIjZDk3NzA2IiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWRhc2hhcnJheT0iMywzIi8+CgogIDx0ZXh0IHg9IjkwIiB5PSI0MzUiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM2YjhhOTIiPs+J77yI5bCN5pW45Yi75bqm77yJPC90ZXh0Pgo8L3N2Zz4=">
+<h3>Bode 漸近線</h3><p>一階極點 20log|G(jω)|=−20log√(1+(ω/p)²)。ω≪p 時≈0dB（水平線）、ω≫p 時≈−20log(ω/p)（−20dB/decade 直線），兩線交於轉角頻率——乘除變加減，讓複雜轉移函數的 Bode 圖能疊加畫出。</p>
+<h3>相位邊限：離不穩定多遠</h3><div class="formula">PM = 180° + ∠G(jω_gc)</div>
+<p>增益穿越頻率處相位若剛好 −180°，訊號繞一圈相位剛好反轉、幅值不變——系統將自我維持振盪。PM 越大裕度越足，經驗上 ζ≈PM/100。</p>
+<h3>PID：三個獨立的物理作用</h3><div class="formula">u(t) = Kp·e(t) + Ki∫e dτ + Kd·de/dt</div>
+<p>P 顧反應快慢；I 持續累積誤差直到歸零——把系統型別從 0 提升到 1（見 ${L("回授系統初步分析")}），代價是拖慢響應；D 用誤差變化率預測未來、提前煞車減少超越量，代價是放大雜訊。到「🔬 模擬工具 → PID 調諧」可拖 Kp/Ki/Kd 即時看階躍響應。</p>
+<h3>Ziegler-Nichols</h3><p>只用 P 加大增益到剛好持續振盪，記錄臨界增益 Ku 與週期 Tu，用經驗公式反推 PID 三個增益——不需要精確模型，工業現場常用。</p>`},
+{id:"狀態空間設計",ch:"7",en:"Ch.7 · State-Space Design",cat:"狀態空間",html:`<div class="callout"><b>這章的問題：</b>「狀態」是什麼？能控性、能觀性為什麼能直接判斷設計問題有沒有解？</div>
+<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgMzIwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmOGZjZmUiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlYWYzZjciLz48L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJib3giIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmZmZmZmIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZWVmN2ZhIi8+PC9saW5lYXJHcmFkaWVudD4KICAgIDxtYXJrZXIgaWQ9ImFycm93IiB2aWV3Qm94PSIwIDAgMTAgMTAiIHJlZlg9IjkiIHJlZlk9IjUiIG1hcmtlcldpZHRoPSI3IiBtYXJrZXJIZWlnaHQ9IjciIG9yaWVudD0iYXV0by1zdGFydC1yZXZlcnNlIj4KICAgICAgPHBhdGggZD0iTTAsMCBMMTAsNSBMMCwxMCB6IiBmaWxsPSIjMDg5MWIyIi8+CiAgICA8L21hcmtlcj4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSIzMjAiIGZpbGw9InVybCgjYmcpIi8+CiAgPHRleHQgeD0iMzAiIHk9IjM0IiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMTIzMDM5Ij7ni4DmhYvnqbrplpPmlrnloYrlnJY8L3RleHQ+CgogIDxsaW5lIHgxPSIzMCIgeTE9IjE3MCIgeDI9IjkwIiB5Mj0iMTcwIiBzdHJva2U9IiMwODkxNmIiIHN0cm9rZS13aWR0aD0iMi41IiBtYXJrZXItZW5kPSJ1cmwoI2Fycm93KSIvPgogIDx0ZXh0IHg9IjM1IiB5PSIxNTgiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiMwODkxNmIiIGZvbnQtd2VpZ2h0PSI3MDAiPnUodCk8L3RleHQ+CgogIDxjaXJjbGUgY3g9IjEyMCIgY3k9IjE3MCIgcj0iMjAiIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHRleHQgeD0iMTIwIiB5PSIxNzYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMwODkxYjIiPis8L3RleHQ+CgogIDxyZWN0IHg9IjE4MCIgeT0iMTMwIiB3aWR0aD0iOTAiIGhlaWdodD0iODAiIHJ4PSIxMCIgZmlsbD0idXJsKCNib3gpIiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMiIvPgogIDx0ZXh0IHg9IjIyNSIgeT0iMTY1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjODU0ZjBiIj5CPC90ZXh0PgoKICA8bGluZSB4MT0iMjcwIiB5MT0iMTcwIiB4Mj0iMzMwIiB5Mj0iMTcwIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMi41IiBtYXJrZXItZW5kPSJ1cmwoI2Fycm93KSIvPgoKICA8Y2lyY2xlIGN4PSIzNjAiIGN5PSIxNzAiIHI9IjIwIiBmaWxsPSIjZmZmIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMiIvPgogIDx0ZXh0IHg9IjM2MCIgeT0iMTc2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMDg5MWIyIj4rPC90ZXh0PgoKICA8cmVjdCB4PSI0MjAiIHk9IjEzMCIgd2lkdGg9IjcwIiBoZWlnaHQ9IjgwIiByeD0iMTAiIGZpbGw9InVybCgjYm94KSIgc3Ryb2tlPSIjMDU5NjY5IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8dGV4dCB4PSI0NTUiIHk9IjE2OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzA4NTA0MSI+4oirPC90ZXh0PgogIDx0ZXh0IHg9IjQ1NSIgeT0iMTg4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjMDg1MDQxIj7nqY3liIblmag8L3RleHQ+CgogIDxsaW5lIHgxPSI0OTAiIHkxPSIxNzAiIHgyPSI1NjAiIHkyPSIxNzAiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIyLjUiIG1hcmtlci1lbmQ9InVybCgjYXJyb3cpIi8+CiAgPHRleHQgeD0iNTAwIiB5PSIxNTgiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiMwODkxYjIiIGZvbnQtd2VpZ2h0PSI3MDAiPuG6iyh0KTwvdGV4dD4KCiAgPHJlY3QgeD0iNTYwIiB5PSIxMzAiIHdpZHRoPSI3MCIgaGVpZ2h0PSI4MCIgcng9IjEwIiBmaWxsPSJ1cmwoI2JveCkiIHN0cm9rZT0iIzdjM2FlZCIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHRleHQgeD0iNTk1IiB5PSIxNzUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTUiIGZpbGw9IiMzYzM0ODkiPngodCk8L3RleHQ+CgogIDxsaW5lIHgxPSI2MzAiIHkxPSIxNzAiIHgyPSI3MDAiIHkyPSIxNzAiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIyLjUiIG1hcmtlci1lbmQ9InVybCgjYXJyb3cpIi8+CgogIDxyZWN0IHg9IjcwMCIgeT0iMTMwIiB3aWR0aD0iNzAiIGhlaWdodD0iODAiIHJ4PSIxMCIgZmlsbD0idXJsKCNib3gpIiBzdHJva2U9IiNlMTFkNDgiIHN0cm9rZS13aWR0aD0iMiIvPgogIDx0ZXh0IHg9IjczNSIgeT0iMTc1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjNzIyNDNlIj5DPC90ZXh0PgoKICA8bGluZSB4MT0iNzcwIiB5MT0iMTcwIiB4Mj0iODQwIiB5Mj0iMTcwIiBzdHJva2U9IiMwODkxNmIiIHN0cm9rZS13aWR0aD0iMi41IiBtYXJrZXItZW5kPSJ1cmwoI2Fycm93KSIvPgogIDx0ZXh0IHg9Ijc3NSIgeT0iMTU4IiBmb250LXNpemU9IjE0IiBmaWxsPSIjMDg5MTZiIiBmb250LXdlaWdodD0iNzAwIj55KHQpPC90ZXh0PgoKICA8cGF0aCBkPSJNIDU5NSAxMzAgQyA1OTUgNjAsIDMwMCA2MCwgMjI1IDEzMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZTExZDQ4IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1kYXNoYXJyYXk9IjUsNCIgbWFya2VyLWVuZD0idXJsKCNhcnJvdykiLz4KICA8cmVjdCB4PSIyNDAiIHk9IjQ1IiB3aWR0aD0iMTMwIiBoZWlnaHQ9IjM0IiByeD0iNyIgZmlsbD0idXJsKCNib3gpIiBzdHJva2U9IiNlMTFkNDgiIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgPHRleHQgeD0iMzA1IiB5PSI2NyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZmlsbD0iIzcyMjQzZSIgZm9udC13ZWlnaHQ9IjcwMCI+Qe+8iOeLgOaFi+WbnuaOiOi3r+W+ke+8iTwvdGV4dD4KCiAgPHRleHQgeD0iMzAiIHk9IjI3MCIgZm9udC1zaXplPSIxMyIgZmlsbD0iIzZiOGE5MiI+4bqLID0gQXggKyBCdeOAgOOAgHkgPSBDeCArIER144CA4oCU4oCU44CAeCh0KSDmmK/ns7vntbHnmoTlrozmlbToqJjmhrbvvIxBIOaxuuWumuWug+iHquW3seaAjum6vOa8lOWMljwvdGV4dD4KPC9zdmc+">
+<h3>狀態：系統的完整記憶</h3><p>只要知道現在狀態與未來輸入，就能完全決定系統未來行為，不需要知道更早發生過什麼。</p>
+<div class="formula">ẋ(t) = Ax(t)+Bu(t)　，　y(t) = Cx(t)+Du(t)</div>
+<h3>能控性</h3><p>能控性矩陣 C=[B AB A²B ⋯]，系統能控 ⟺ C 滿秩。B 是輸入能直接影響的方向，AB 是傳遞一步後能到達的新方向——滿秩代表輸入影響能觸及每個維度。</p>
+<h3>能觀性</h3><p>能觀性矩陣 O=[C; CA; CA²; ⋯]，系統能觀 ⟺ O 滿秩——與能控性互為對偶問題。</p>
+<h3>極點配置</h3><p>狀態回授 u=−Kx，代入：ẋ=(A−BK)x。只要 (A,B) 能控，可證明能把 A−BK 特徵值任意配置到目標位置。到「🔬 模擬工具 → 極點配置」可拖增益即時看閉迴路極點與響應。</p>
+<h3>觀測器與分離原理</h3><p>Luenberger 觀測器 x̂̇=Ax̂+Bu+L(y−Cx̂)，誤差動態 ė=(A−LC)e——只要能觀就能設計 L 讓估測誤差收斂。分離原理保證控制增益 K 與觀測器增益 L 可以分開設計、互不影響閉迴路穩定性。</p>`},
+{id:"數位控制",ch:"8",en:"Ch.8 · Digital Control",cat:"進階",html:`<div class="callout"><b>這章的問題：</b>取樣頻率為什麼要大於訊號最高頻率兩倍？z 轉換為什麼是離散版的 Laplace？</div>
+<h3>取樣定理</h3><p>取樣讓頻譜在頻率軸上以取樣頻率為週期複製。相鄰複製頻譜重疊會造成混疊（高頻偽裝成低頻、無法復原），要避免重疊：</p>
+<div class="formula">fs > 2·f_max</div>
+<h3>z 轉換</h3><p>令 z=e^(sT)，z⁻¹ 恰好對應「延遲一個取樣週期」，離散差分方程能像連續微分方程一樣用 z 轉換變成代數方程。</p>
+<h3>穩定性：左半平面 → 單位圓</h3><p>s=σ+jω，σ&lt;0（連續穩定）對應 |z|=e^(σT)&lt;1——s 平面左半平面透過 z=e^(sT) 映射到 z 平面單位圓內部。</p>
+<h3>零階保持與雙線性轉換</h3><p>ZOH 把取樣值保持到下一取樣時刻，等效延遲半個取樣週期、拉低相位邊限。雙線性轉換 s≈(2/T)(z−1)/(z+1) 把梯形法數值積分結果用來把類比設計轉成數位控制器，能把左半平面精確映射進單位圓。</p>`},
+{id:"非線性系統",ch:"9",en:"Ch.9 · Nonlinear Systems",cat:"進階",html:`<div class="callout"><b>這章的問題：</b>線性理論為什麼只在附近有效？沒有轉移函數時怎麼分析非線性系統？</div>
+<h3>線性化的局限</h3><p>泰勒展開捨去的高階項隨偏離工作點距離增長——這是所有線性設計工具（根軌跡、頻率響應）只在工作點附近成立的原因。</p>
+<h3>相平面分析</h3><p>二階非線性系統改寫成一階聯立方程，在 (x1,x2) 平面畫軌跡——平衡點附近軌跡形狀直接對應線性化雅可比矩陣的特徵值型態，不解析解就能判斷穩定行為。</p>
+<h3>描述函數法：預測自激振盪</h3><p>假設非線性元件輸入正弦波，只留輸出基波分量，定義等效增益 N(A)（隨振幅變化）。尋找同時滿足 1+N(A)G(jω)=0 的 (A,ω)——存在解代表系統會自己形成穩定的等幅振盪（極限環），不需外部激勵。</p>
+<h3>李亞普諾夫方法</h3><p>找一個「類似能量」的函數 V(x)&gt;0，若沿系統軌跡 V̇(x)&lt;0，系統被拉向平衡點——不用解方程就能證明穩定，但沒有通用公式保證找得到合適的 V(x)。</p>`},
+{id:"控制系統設計原則與案例研究",ch:"10",en:"Ch.10 · Design & Case Study",cat:"進階",html:`<div class="callout"><b>這章的問題：</b>把前九章整合起來，真實控制系統設計的流程是什麼？效能與強健性為什麼永遠要取捨？</div>
+<h3>設計流程</h3><p>建模 → 分析開迴路行為 → 訂規格（超越量/安定時間/穩態誤差） → 選設計方法（根軌跡／頻域／狀態空間） → 模擬驗證 → 數位實作 → 迭代。跳過某一步容易做出「數學漂亮但不解決實際問題」的控制器。</p>
+<h3>效能與強健性的張力</h3><p>迴路增益越高、S 越小、效能越好，但穩定裕度變差、雜訊被放大、執行機構可能飽和——這不是演算法不夠聰明，是模型不確定性與物理限制的根本張力，不存在數學上的最優解，只有工程上可接受的平衡點。</p>
+<h3>案例：直流馬達位置控制</h3><p>電樞電路+轉子機械動態組成二三階轉移函數；型別至少為1（角速度積分成角度）；用根軌跡選比例或PD增益把主導極點配置進目標區域；數位化時取樣頻率遠高於機械頻寬、雙線性轉換離散化後燒進微控制器。這條主線串起了全書十章。</p>`},
+];
+const EDGES=[
+ ["導論與回授控制史","動態系統建模"],["導論與回授控制史","回授系統初步分析"],
+ ["動態系統建模","動態響應分析"],["動態系統建模","非線性系統"],
+ ["動態響應分析","根軌跡設計法"],["動態響應分析","頻率響應設計法與PID"],
+ ["回授系統初步分析","頻率響應設計法與PID"],
+ ["根軌跡設計法","頻率響應設計法與PID"],["根軌跡設計法","狀態空間設計"],
+ ["頻率響應設計法與PID","數位控制"],
+ ["狀態空間設計","數位控制"],
+ ["非線性系統","頻率響應設計法與PID"],
+ ["控制系統設計原則與案例研究","導論與回授控制史"],["控制系統設計原則與案例研究","動態響應分析"],
+ ["控制系統設計原則與案例研究","根軌跡設計法"],["控制系統設計原則與案例研究","頻率響應設計法與PID"],
+ ["控制系統設計原則與案例研究","狀態空間設計"],["控制系統設計原則與案例研究","數位控制"]
+];
+
+const NById=Object.fromEntries(NOTES.map(n=>[n.id,n]));
+const sidebar=document.getElementById('sidebar');
+function buildSidebar(filter){
+ filter=(filter||'').trim();
+ let html='<div class="navlink" data-id="__home"><span class="dot" style="background:var(--accent)"></span>總覽首頁</div>';
+ for(const key of Object.keys(CATS)){
+  const items=NOTES.filter(n=>n.cat===key&&(!filter||n.id.includes(filter)||n.en.toLowerCase().includes(filter.toLowerCase())));
+  if(!items.length)continue;
+  html+='<div class="cat">'+CATS[key].name+'</div>';
+  for(const n of items)html+='<div class="navlink" data-id="'+n.id+'"><span class="dot" style="background:'+CATS[n.cat].raw+'"></span>'+(n.ch?'<b style="color:#0e9bc4;margin-right:5px">'+n.ch+'</b>':'')+n.id+'<small>'+n.en+'</small></div>';
+ }
+ sidebar.innerHTML=html;
+}
+/* ===== 筆記 ===== */
+const main=document.getElementById('main');
+let current=null;
+function neighborsOf(id){const s=new Set();EDGES.forEach(([a,b])=>{if(a===id)s.add(b);if(b===id)s.add(a);});return[...s];}
+function renderHome(){
+ current='__home';
+ main.innerHTML='<div class="note"><div class="hero"><div style="font-size:46px">🎛️</div>'+
+  '<div class="big">控制系統知識庫</div>'+
+  '<p class="sub">依台大電機《控制系統》課程 10 個 Unit + Ogata《Modern Control Engineering》整理，含推導公式，並附階躍響應、Routh-Hurwitz、根軌跡、Bode 圖、PID 調諧、極點配置等互動模擬工具。</p>'+
+  '<div class="stats"><div class="stat"><b>10</b><span>知識點</span></div><div class="stat"><b>18</b><span>關聯連結</span></div>'+
+  '<div class="stat"><b>6</b><span>互動模擬</span></div><div class="stat"><b>5</b><span>主題分區</span></div></div></div>'+
+  '<h3>建議閱讀路徑</h3>'+
+  '<div class="pathrow">'+Object.keys(CATS).map((key,i)=>{const first=NOTES.find(n=>n.cat===key).id;
+    return (i>0?'<span class="arrow">→</span>':'')+'<span class="stage" data-id="'+first+'"><span class="d" style="background:'+CATS[key].raw+'"></span>'+CATS[key].name+'</span>';}).join('')+'</div>'+
+  '<p style="color:var(--muted);font-size:14px">點上方階段可直接跳到該分區第一篇；或從下方各主題任選。建議從 '+L("電磁與平面波")+' 開始，一路讀到 '+L("微波系統與天線")+'。</p>'+
+  Object.keys(CATS).map(key=>{const items=NOTES.filter(n=>n.cat===key);
+    return '<div class="catgroup"><div class="cl" style="color:'+CATS[key].raw+'"><span class="d" style="background:'+CATS[key].raw+'"></span>'+CATS[key].name+'</div><div class="chips">'+items.map(n=>'<span class="chip" data-id="'+n.id+'">'+n.id+'</span>').join('')+'</div></div>';}).join('')+
+  '</div>';
+ syncActive();
+}
+function renderNote(id){
+ const n=NById[id];if(!n){renderHome();return;}
+ current=id;const idx=NOTES.findIndex(x=>x.id===id);const prev=NOTES[idx-1],next=NOTES[idx+1];const nb=neighborsOf(id);
+ let html='<div class="note"><div class="crumbs"><span class="tag" style="background:'+CATS[n.cat].raw+'33;color:'+CATS[n.cat].raw+'">'+CATS[n.cat].name+'</span></div>'+
+  '<h2 class="title">'+n.id+'</h2><div class="en">'+n.en+'</div>'+n.html;
+ const ex=EXTRA[id];
+ if(ex){
+  if(ex.take)html+='<div class="kbox"><div class="kt">🎯 重點回顧</div><ul>'+ex.take.map(t=>'<li>'+t+'</li>').join('')+'</ul></div>';
+  if(ex.myth)html+='<details class="collap myth"><summary>💡 常見誤解</summary><div class="body">'+ex.myth.map(m=>'<div class="myth-row"><span class="x">✗</span><div>'+m.q+'</div></div><div class="myth-row"><span class="o">✓</span><div>'+m.a+'</div></div>').join('')+'</div></details>';
+  if(ex.fact)html+='<details class="collap fact"><summary>🔎 冷知識</summary><div class="body"><p>'+ex.fact+'</p></div></details>';
+  if(ex.deep)html+='<details class="collap deep"><summary>📐 深入補充</summary><div class="body">'+ex.deep+'</div></details>';
+ }
+ if(nb.length)html+='<div class="related"><div class="cat">關聯概念</div><div class="chips">'+nb.map(x=>'<span class="chip" data-id="'+x+'">'+x+'</span>').join('')+'</div></div>';
+ html+='<div class="nav-btns">'+(prev?'<button data-id="'+prev.id+'"><small>← 上一篇</small>'+prev.id+'</button>':'<button disabled style="opacity:.3"><small>—</small>第一篇</button>')+
+  (next?'<button data-id="'+next.id+'" style="text-align:right"><small>下一篇 →</small>'+next.id+'</button>':'<button disabled style="opacity:.3;text-align:right"><small>—</small>最後一篇</button>')+'</div></div>';
+ main.innerHTML=html;main.scrollTop=0;
+ if(ex&&ex.chart)drawChart(ex.chart);
+ syncActive();
+}
+function open(id){if(id==='__home')renderHome();else renderNote(id);showNotes();}
+function syncActive(){document.querySelectorAll('.navlink').forEach(el=>el.classList.toggle('active',el.dataset.id===current));}
+document.body.addEventListener('click',e=>{const t=e.target.closest('[data-id]');if(t)open(t.dataset.id);});
+/* ===== 搜尋 ===== */
+const search=document.getElementById('search');
+search.addEventListener('input',()=>buildSidebar(search.value));
+search.addEventListener('keydown',e=>{if(e.key==='Enter'){const f=search.value.trim().toLowerCase();const hit=NOTES.find(n=>n.id.includes(search.value.trim())||n.en.toLowerCase().includes(f));if(hit)open(hit.id);}});
+/* ===== 分頁 ===== */
+const tabNotes=document.getElementById('tabNotes'),tabGraph=document.getElementById('tabGraph'),tabDemo=document.getElementById('tabDemo');
+const graphView=document.getElementById('graphView'),demoView=document.getElementById('demoView');
+const allTabs=[tabNotes,tabGraph,tabDemo];
+function setTab(b){allTabs.forEach(x=>x.classList.toggle('active',x===b));}
+function hideAll(){main.style.display='none';graphView.style.display='none';demoView.style.display='none';}
+function showNotes(){setTab(tabNotes);hideAll();main.style.display='';}
+function showGraph(){setTab(tabGraph);hideAll();graphView.style.display='block';startGraph();}
+function showDemo(){setTab(tabDemo);hideAll();demoView.style.display='block';startDemo();startMesh();}
+tabNotes.onclick=showNotes;tabGraph.onclick=showGraph;tabDemo.onclick=showDemo;
+/* ===== 圖表 ===== */
+
+function drawChart(kind){}
+function buildLegend(){document.getElementById('legend').innerHTML=Object.keys(CATS).map(k=>'<div><i style="background:'+CATS[k].raw+'"></i>'+CATS[k].name+'</div>').join('');}
+function startGraph(){
+ if(G.started)return;G.started=true;buildLegend();
+ const W=svg.clientWidth||900,H=svg.clientHeight||600;
+ const deg={};EDGES.forEach(([a,b])=>{deg[a]=(deg[a]||0)+1;deg[b]=(deg[b]||0)+1;});
+ G.nodes=NOTES.map((n,i)=>({id:n.id,cat:n.cat,x:W/2+Math.cos(i/NOTES.length*6.283)*240+(Math.random()-.5)*40,y:H/2+Math.sin(i/NOTES.length*6.283)*190+(Math.random()-.5)*40,vx:0,vy:0,r:8+(deg[n.id]||1)*1.5}));
+ const pos=Object.fromEntries(G.nodes.map(n=>[n.id,n]));
+ while(svg.firstChild)svg.removeChild(svg.firstChild);
+ const gE=document.createElementNS(SVGNS,'g'),gN=document.createElementNS(SVGNS,'g');svg.appendChild(gE);svg.appendChild(gN);
+ G.edges=EDGES.map(([a,b])=>{const l=document.createElementNS(SVGNS,'line');l.setAttribute('class','gedge');gE.appendChild(l);return{a,b,el:l};});
+ G.nodes.forEach(n=>{
+  const g=document.createElementNS(SVGNS,'g');g.setAttribute('class','gnode');g.dataset.id=n.id;
+  const c=document.createElementNS(SVGNS,'circle');c.setAttribute('r',n.r);c.setAttribute('fill',CATS[n.cat].raw);c.setAttribute('stroke','#ffffff');c.setAttribute('stroke-width','2.5');
+  const t=document.createElementNS(SVGNS,'text');t.setAttribute('text-anchor','middle');t.setAttribute('dy',-n.r-6);t.textContent=n.id;
+  g.appendChild(c);g.appendChild(t);gN.appendChild(g);n.el=g;
+  g.addEventListener('mouseenter',()=>highlight(n.id,true));g.addEventListener('mouseleave',()=>highlight(n.id,false));
+  let moved=false,down=false,ox,oy;
+  g.addEventListener('pointerdown',ev=>{down=true;moved=false;n.fixed=true;const p=toSvg(ev);ox=p.x-n.x;oy=p.y-n.y;g.setPointerCapture(ev.pointerId);});
+  g.addEventListener('pointermove',ev=>{if(!down)return;const p=toSvg(ev);n.x=p.x-ox;n.y=p.y-oy;n.vx=0;n.vy=0;moved=true;});
+  g.addEventListener('pointerup',()=>{down=false;n.fixed=false;if(!moved)open(n.id);});
+ });
+ gloop(pos,W,H);
+}
+function toSvg(ev){const r=svg.getBoundingClientRect();return{x:ev.clientX-r.left,y:ev.clientY-r.top};}
+function highlight(id,on){const nb=new Set(neighborsOf(id));nb.add(id);
+ G.nodes.forEach(n=>{n.el.style.opacity=on?(nb.has(n.id)?1:.2):1;});
+ G.edges.forEach(e=>{const rel=(e.a===id||e.b===id);e.el.classList.toggle('hl',on&&rel);e.el.style.opacity=on?(rel?1:.12):1;});}
+function gloop(pos,W,H){const KR=5200,KS=0.012,L0=118,DA=0.86,GR=0.008;
+ function step(){const ns=G.nodes;
+  for(let i=0;i<ns.length;i++){const a=ns[i];if(a.fixed)continue;let fx=0,fy=0;
+   for(let j=0;j<ns.length;j++){if(i===j)continue;const b=ns[j];let dx=a.x-b.x,dy=a.y-b.y,d2=dx*dx+dy*dy+.01,d=Math.sqrt(d2);const f=KR/d2;fx+=dx/d*f;fy+=dy/d*f;}
+   fx+=(W/2-a.x)*GR;fy+=(H/2-a.y)*GR;a.vx=(a.vx+fx)*DA;a.vy=(a.vy+fy)*DA;}
+  EDGES.forEach(([ai,bi])=>{const a=pos[ai],b=pos[bi];let dx=b.x-a.x,dy=b.y-a.y,d=Math.sqrt(dx*dx+dy*dy)+.01;const f=(d-L0)*KS,ux=dx/d,uy=dy/d;if(!a.fixed){a.vx+=ux*f;a.vy+=uy*f;}if(!b.fixed){b.vx-=ux*f;b.vy-=uy*f;}});
+  ns.forEach(n=>{if(n.fixed)return;n.x+=n.vx;n.y+=n.vy;n.x=Math.max(n.r+40,Math.min(W-n.r-40,n.x));n.y=Math.max(n.r+30,Math.min(H-n.r-20,n.y));});
+  G.edges.forEach(e=>{const a=pos[e.a],b=pos[e.b];e.el.setAttribute('x1',a.x);e.el.setAttribute('y1',a.y);e.el.setAttribute('x2',b.x);e.el.setAttribute('y2',b.y);});
+  ns.forEach(n=>n.el.setAttribute('transform','translate('+n.x+','+n.y+')'));
+  G.raf=requestAnimationFrame(step);}
+ step();}
+
+/* ===== 模擬工具 ===== */
+let csTool='step';
+function startDemo(){
+ if(!document.getElementById('simBar')){
+  demoView.innerHTML='<div class="demo"><div class="panel"><h3>🔬 模擬工具</h3>'+
+   '<div class="d">依課程 Unit 對應的互動計算器。點下方切換工具。</div>'+
+   '<div id="simBar" style="display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 14px"></div>'+
+   '<div id="simBox"></div></div></div>';
+  const tools=[['step','二階階躍響應'],['routh','Routh-Hurwitz'],['rlocus','根軌跡'],['bode','Bode 圖'],['pid','PID 調諧'],['state','極點配置']];
+  document.getElementById('simBar').innerHTML=tools.map(t=>'<button class="simtab" data-t="'+t[0]+'">'+t[1]+'</button>').join('');
+  document.getElementById('simBar').querySelectorAll('.simtab').forEach(b=>b.onclick=()=>{csTool=b.dataset.t;renderTool();});
+ }
+ renderTool();
+}
+function startMesh(){}
+function renderTool(){
+ document.querySelectorAll('#simBar .simtab').forEach(b=>{const on=b.dataset.t===csTool;
+  b.style.cssText='padding:7px 14px;border-radius:8px;border:1px solid '+(on?'#0e9bc4':'#d5e5ec')+';background:'+(on?'#0e9bc4':'#fff')+';color:'+(on?'#fff':'#123039')+';cursor:pointer;font-family:inherit;font-size:13px;font-weight:'+(on?'700':'400');});
+ ({step:toolStep,routh:toolRouth,rlocus:toolRlocus,bode:toolBode,pid:toolPID,state:toolState}[csTool])();
+}
+
+/* ---- 1. 二階系統階躍響應 ---- */
+function toolStep(){
+ document.getElementById('simBox').innerHTML=
+  '<canvas id="stepCv" class="cv" width="820" height="300"></canvas>'+
+  '<div class="controls"><label>阻尼比 ζ <span class="val" id="zV">0.5</span><input type="range" id="zeta" min="5" max="200" value="50"></label>'+
+  '<label>自然頻率 ωn (rad/s) <span class="val" id="wV">4</span><input type="range" id="wn" min="10" max="150" value="40"></label></div>'+
+  '<div id="stepRead" style="font-size:13px;color:#2b4a53;margin-top:6px"></div>';
+ ['zeta','wn'].forEach(id=>document.getElementById(id).oninput=drawStep); drawStep();
+}
+function drawStep(){
+ const cv=document.getElementById('stepCv'); if(!cv)return; const ctx=cv.getContext('2d'),W=cv.width,H=cv.height; ctx.clearRect(0,0,W,H);
+ const zeta=(+document.getElementById('zeta').value)/100, wn=(+document.getElementById('wn').value)/10;
+ document.getElementById('zV').textContent=zeta.toFixed(2); document.getElementById('wV').textContent=wn.toFixed(1);
+ const P=48,x0=P,x1=W-16,y0=H-34,yTop=20,Tmax=8/(zeta*wn+0.05);
+ ctx.strokeStyle='#cfe0e7';ctx.beginPath();ctx.moveTo(x0,yTop);ctx.lineTo(x0,y0);ctx.lineTo(x1,y0);ctx.stroke();
+ ctx.strokeStyle='#e3eef2';ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(x0,y0-(y0-yTop)*0.72);ctx.lineTo(x1,y0-(y0-yTop)*0.72);ctx.stroke();ctx.setLineDash([]);
+ ctx.fillStyle='#8aa4ae';ctx.font='11px sans-serif';ctx.textAlign='left';ctx.fillText('y=1',x1+4,y0-(y0-yTop)*0.72+3);ctx.fillText('t (s)',x1-24,y0+22);
+ ctx.strokeStyle='#0891b2';ctx.lineWidth=2.5;ctx.beginPath();
+ let Mp=0,tp=0;
+ for(let i=0;i<=600;i++){
+  const t=i/600*Tmax; let y;
+  if(zeta<1){const wd=wn*Math.sqrt(1-zeta*zeta),phi=Math.acos(zeta); y=1-(Math.exp(-zeta*wn*t)/Math.sqrt(1-zeta*zeta))*Math.sin(wd*t+phi);}
+  else if(Math.abs(zeta-1)<1e-3){y=1-Math.exp(-wn*t)*(1+wn*t);}
+  else{const r1=wn*(zeta-Math.sqrt(zeta*zeta-1)),r2=wn*(zeta+Math.sqrt(zeta*zeta-1));const A=r2/(r2-r1),B=-r1/(r2-r1);y=1-A*Math.exp(-r1*t)-B*Math.exp(-r2*t);}
+  if(y>Mp){Mp=y;tp=t;}
+  const x=x0+(x1-x0)*t/Tmax, yy=y0-(y0-yTop)*Math.min(1.5,y)/1.5;
+  i?ctx.lineTo(x,yy):ctx.moveTo(x,yy);
+ }
+ ctx.stroke();
+ const overshoot=zeta<1?Math.exp(-zeta*Math.PI/Math.sqrt(1-zeta*zeta))*100:0;
+ const ts=4/(zeta*wn);
+ document.getElementById('stepRead').innerHTML='超越量 Mp = <b>'+overshoot.toFixed(1)+'%</b>　尖峰時間 tp ≈ <b>'+(zeta<1?(Math.PI/(wn*Math.sqrt(1-zeta*zeta))).toFixed(2):'—')+' s</b>　安定時間 ts(2%) ≈ <b>'+ts.toFixed(2)+' s</b>　極點 = '+(zeta<1?('-'+(zeta*wn).toFixed(2)+' ± j'+(wn*Math.sqrt(1-zeta*zeta)).toFixed(2)):('實極點 -'+(wn*(zeta-Math.sqrt(Math.max(0,zeta*zeta-1)))).toFixed(2)+', -'+(wn*(zeta+Math.sqrt(Math.max(0,zeta*zeta-1)))).toFixed(2)));
+}
+
+/* ---- 2. Routh-Hurwitz ---- */
+function toolRouth(){
+ document.getElementById('simBox').innerHTML=
+  '<div class="controls">'+
+  '<label>a₃ (s³) <span class="val" id="r3V">1</span><input type="range" id="r3" min="1" max="20" value="10"></label>'+
+  '<label>a₂ (s²) <span class="val" id="r2V">6</span><input type="range" id="r2" min="0" max="30" value="60"></label>'+
+  '<label>a₁ (s¹) <span class="val" id="r1V">11</span><input type="range" id="r1" min="0" max="40" value="110"></label>'+
+  '<label>a₀ (s⁰) <span class="val" id="r0V">6</span><input type="range" id="r0" min="0" max="40" value="60"></label></div>'+
+  '<p style="font-size:13px;color:#6b8a92">特徵方程：a₃s³+a₂s²+a₁s+a₀ = 0</p>'+
+  '<div id="routhTable"></div><div id="routhRead" style="font-size:13.5px;color:#2b4a53;margin-top:10px"></div>';
+ ['r3','r2','r1','r0'].forEach(id=>document.getElementById(id).oninput=drawRouth); drawRouth();
+}
+function drawRouth(){
+ const a3=(+document.getElementById('r3').value)/10, a2=(+document.getElementById('r2').value)/10, a1=(+document.getElementById('r1').value)/10, a0=(+document.getElementById('r0').value)/10;
+ document.getElementById('r3V').textContent=a3.toFixed(1);document.getElementById('r2V').textContent=a2.toFixed(1);document.getElementById('r1V').textContent=a1.toFixed(1);document.getElementById('r0V').textContent=a0.toFixed(1);
+ const row1=[a3,a1], row2=[a2,a0];
+ const b1=a2!==0?(a2*a1-a3*a0)/a2:NaN;
+ const row3=[b1,0];
+ const c1=b1!==0?(b1*a0-a2*0)/b1:NaN;
+ const row4=[c1];
+ const rows=[['s³',row1],['s²',row2],['s¹',row3],['s⁰',row4]];
+ let html='<table><tr><th></th><th>col1</th><th>col2</th></tr>';
+ rows.forEach(r=>{html+='<tr><td><b>'+r[0]+'</b></td><td>'+(isFinite(r[1][0])?r[1][0].toFixed(2):'—')+'</td><td>'+(r[1][1]!==undefined&&isFinite(r[1][1])?r[1][1].toFixed(2):'')+'</td></tr>';});
+ html+='</table>';
+ document.getElementById('routhTable').innerHTML=html;
+ const firstCol=[a3,a2,b1,c1];
+ let signChanges=0; for(let i=1;i<firstCol.length;i++){if(isFinite(firstCol[i-1])&&isFinite(firstCol[i])&&firstCol[i-1]*firstCol[i]<0)signChanges++;}
+ const stable=signChanges===0 && firstCol.every(v=>isFinite(v)&&v>0);
+ document.getElementById('routhRead').innerHTML='第一欄：'+firstCol.map(v=>isFinite(v)?v.toFixed(2):'—').join(', ')+'　變號次數 = <b>'+signChanges+'</b><br>判定：<b style="color:'+(stable?'#059669':'#e11d48')+'">'+(stable?'✓ 穩定（第一欄全同號，無右半平面根）':'✗ 不穩定（變號次數 = 右半平面根數 = '+signChanges+'）')+'</b>';
+}
+
+/* ---- 3. 根軌跡（典型二階範例 K/(s(s+2))）---- */
+function toolRlocus(){
+ document.getElementById('simBox').innerHTML=
+  '<canvas id="rlCv" class="cv" width="820" height="360"></canvas>'+
+  '<div class="controls"><label>增益 K <span class="val" id="rlKV">1</span><input type="range" id="rlK" min="0" max="100" value="10"></label></div>'+
+  '<div id="rlRead" style="font-size:13px;color:#2b4a53;margin-top:6px"></div>'+
+  '<p style="font-size:12.5px;color:#8aa4ae">範例系統：G(s)H(s)=K/(s(s+2))，特徵方程 s²+2s+K=0</p>';
+ document.getElementById('rlK').oninput=drawRlocus; drawRlocus();
+}
+function drawRlocus(){
+ const cv=document.getElementById('rlCv'); if(!cv)return; const ctx=cv.getContext('2d'),W=cv.width,H=cv.height; ctx.clearRect(0,0,W,H);
+ const K=(+document.getElementById('rlK').value)/10; document.getElementById('rlKV').textContent=K.toFixed(1);
+ const cx=W/2, cy=H/2, scale=70;
+ ctx.strokeStyle='#cfe0e7';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(20,cy);ctx.lineTo(W-20,cy);ctx.moveTo(cx,20);ctx.lineTo(cx,H-20);ctx.stroke();
+ ctx.fillStyle='#8aa4ae';ctx.font='11px sans-serif';ctx.fillText('Re',W-30,cy-8);ctx.fillText('Im',cx+8,30);
+ for(let m=-3;m<=1;m++){const x=cx+m*scale;ctx.fillText(m,x-3,cy+16);}
+ ctx.fillStyle='#0891b2';[0,-2].forEach(p=>{ctx.beginPath();ctx.moveTo(cx+p*scale-5,cy-5);ctx.lineTo(cx+p*scale+5,cy+5);ctx.moveTo(cx+p*scale+5,cy-5);ctx.lineTo(cx+p*scale-5,cy+5);ctx.strokeStyle='#0891b2';ctx.lineWidth=2;ctx.stroke();});
+ ctx.strokeStyle='#c9b3f5';ctx.lineWidth=2;ctx.setLineDash([4,4]);
+ ctx.beginPath();
+ for(let kk=0;kk<=100;kk++){const k=kk/10; const disc=1-k; let re,im;
+  if(disc>=0){re=-1-Math.sqrt(disc);im=0;} else {re=-1;im=Math.sqrt(-disc);}
+  const x=cx+re*scale, y=cy-im*scale; kk?ctx.lineTo(x,y):ctx.moveTo(x,y);
+ }
+ ctx.stroke();
+ ctx.beginPath();
+ for(let kk=0;kk<=100;kk++){const k=kk/10; const disc=1-k; let re,im;
+  if(disc>=0){re=-1+Math.sqrt(disc);im=0;} else {re=-1;im=-Math.sqrt(-disc);}
+  const x=cx+re*scale, y=cy-im*scale; kk?ctx.lineTo(x,y):ctx.moveTo(x,y);
+ }
+ ctx.stroke(); ctx.setLineDash([]);
+ const disc=1-K; let re1,im1,re2,im2;
+ if(disc>=0){re1=-1-Math.sqrt(disc);im1=0;re2=-1+Math.sqrt(disc);im2=0;}
+ else{re1=-1;im1=Math.sqrt(-disc);re2=-1;im2=-Math.sqrt(-disc);}
+ ctx.fillStyle='#e11d48';
+ [[re1,im1],[re2,im2]].forEach(([re,im])=>{ctx.beginPath();ctx.arc(cx+re*scale,cy-im*scale,6,0,7);ctx.fill();});
+ const zeta=disc<0? (1/Math.sqrt(1+(-disc)/1)) : 1;
+ document.getElementById('rlRead').innerHTML='閉迴路極點：s = '+re1.toFixed(2)+(im1?'±j'+Math.abs(im1).toFixed(2):'')+(disc>=0?(', '+re2.toFixed(2)):'')+'　　'+(K<1?'K<1：兩相異實極點（過阻尼）':(K===1?'K=1：分離點（臨界阻尼）':'K>1：共軛複數極點（欠阻尼，ζ='+(1/Math.sqrt(K)).toFixed(2)+'）'));
+}
+
+/* ---- 4. Bode 圖 ---- */
+function toolBode(){
+ document.getElementById('simBox').innerHTML=
+  '<canvas id="bodeCv" class="cv" width="820" height="420"></canvas>'+
+  '<div class="controls"><label>增益 K <span class="val" id="bKV">10</span><input type="range" id="bK" min="1" max="100" value="10"></label>'+
+  '<label>極點 p1 (rad/s) <span class="val" id="bP1V">1</span><input type="range" id="bP1" min="1" max="50" value="10"></label>'+
+  '<label>極點 p2 (rad/s) <span class="val" id="bP2V">20</span><input type="range" id="bP2" min="5" max="200" value="200"></label></div>'+
+  '<div id="bodeRead" style="font-size:13px;color:#2b4a53;margin-top:6px"></div>'+
+  '<p style="font-size:12.5px;color:#8aa4ae">範例系統：G(s)=K/((1+s/p1)(1+s/p2))</p>';
+ ['bK','bP1','bP2'].forEach(id=>document.getElementById(id).oninput=drawBode); drawBode();
+}
+function drawBode(){
+ const cv=document.getElementById('bodeCv'); if(!cv)return; const ctx=cv.getContext('2d'),W=cv.width,H=cv.height; ctx.clearRect(0,0,W,H);
+ const K=+document.getElementById('bK').value, p1=(+document.getElementById('bP1').value)/10, p2=(+document.getElementById('bP2').value)/10;
+ document.getElementById('bKV').textContent=K;document.getElementById('bP1V').textContent=p1.toFixed(1);document.getElementById('bP2V').textContent=p2.toFixed(1);
+ const x0=60,x1=W-20,yM0=20,yM1=190,yP0=220,yP1=390;
+ ctx.strokeStyle='#123039';ctx.lineWidth=1.3;ctx.beginPath();ctx.moveTo(x0,yM0);ctx.lineTo(x0,yM1);ctx.lineTo(x1,yM1);ctx.stroke();
+ ctx.beginPath();ctx.moveTo(x0,yP0);ctx.lineTo(x0,yP1);ctx.lineTo(x1,yP1);ctx.stroke();
+ ctx.fillStyle='#123039';ctx.font='12px sans-serif';ctx.fillText('增益 |G(jω)| dB',x0,14);ctx.fillText('相位 ∠G(jω) 度',x0,212);
+ const wmin=0.1,wmax=1000;
+ function xOf(w){return x0+(x1-x0)*(Math.log10(w)-Math.log10(wmin))/(Math.log10(wmax)-Math.log10(wmin));}
+ let gcw=null,pmDeg=null,mags=[],phs=[];
+ for(let i=0;i<=300;i++){
+  const lw=Math.log10(wmin)+i/300*(Math.log10(wmax)-Math.log10(wmin)); const w=Math.pow(10,lw);
+  const mag1=1/Math.sqrt(1+(w/p1)**2), mag2=1/Math.sqrt(1+(w/p2)**2);
+  const magDb=20*Math.log10(K*mag1*mag2+1e-12);
+  const ph=-(Math.atan(w/p1)+Math.atan(w/p2))*180/Math.PI;
+  mags.push(magDb); phs.push(ph);
+ }
+ ctx.strokeStyle='#c7d8dd';ctx.setLineDash([3,3]);ctx.beginPath();const y0dB=yM1-(0-(-40))/(80)*(yM1-yM0);ctx.moveTo(x0,y0dB);ctx.lineTo(x1,y0dB);ctx.stroke();
+ ctx.beginPath();const yn180=yP1-((-180)-(-270))/90*(yP1-yP0);ctx.moveTo(x0,yn180);ctx.lineTo(x1,yn180);ctx.stroke();ctx.setLineDash([]);
+ ctx.strokeStyle='#0891b2';ctx.lineWidth=2.3;ctx.beginPath();
+ for(let i=0;i<=300;i++){const lw=Math.log10(wmin)+i/300*(Math.log10(wmax)-Math.log10(wmin));const w=Math.pow(10,lw);
+  const x=xOf(w); const yy=yM1-(mags[i]-(-40))/80*(yM1-yM0);
+  if(mags[i-1]!==undefined&&mags[i-1]>=0&&mags[i]<0&&gcw===null){gcw=w;pmDeg=180+phs[i];}
+  i?ctx.lineTo(x,Math.max(yM0,Math.min(yM1,yy))):ctx.moveTo(x,Math.max(yM0,Math.min(yM1,yy)));}
+ ctx.stroke();
+ ctx.strokeStyle='#7c3aed';ctx.lineWidth=2.3;ctx.beginPath();
+ for(let i=0;i<=300;i++){const lw=Math.log10(wmin)+i/300*(Math.log10(wmax)-Math.log10(wmin));const w=Math.pow(10,lw);
+  const x=xOf(w); const yy=yP1-(phs[i]-(-270))/90*(yP1-yP0);
+  i?ctx.lineTo(x,Math.max(yP0,Math.min(yP1,yy))):ctx.moveTo(x,Math.max(yP0,Math.min(yP1,yy)));}
+ ctx.stroke();
+ document.getElementById('bodeRead').innerHTML=(gcw?('增益穿越頻率 ω_gc ≈ <b>'+gcw.toFixed(2)+' rad/s</b>　相位邊限 PM ≈ <b>'+pmDeg.toFixed(1)+'°</b>　（經驗估計 ζ≈PM/100 ≈ '+(pmDeg/100).toFixed(2)+'）'):'增益全程未穿越 0dB（在此頻率範圍內）');
+}
+
+/* ---- 5. PID 階躍響應調諧 ---- */
+function toolPID(){
+ document.getElementById('simBox').innerHTML=
+  '<canvas id="pidCv" class="cv" width="820" height="300"></canvas>'+
+  '<div class="controls"><label>Kp <span class="val" id="kpV">4</span><input type="range" id="kp" min="0" max="200" value="40"></label>'+
+  '<label>Ki <span class="val" id="kiV">1</span><input type="range" id="ki" min="0" max="100" value="10"></label>'+
+  '<label>Kd <span class="val" id="kdV">0.5</span><input type="range" id="kd" min="0" max="100" value="5"></label></div>'+
+  '<div id="pidRead" style="font-size:13px;color:#2b4a53;margin-top:6px"></div>'+
+  '<p style="font-size:12.5px;color:#8aa4ae">範例受控體：P(s)=1/(s²+s)（如馬達位置，含一個積分器與黏滯摩擦）</p>';
+ ['kp','ki','kd'].forEach(id=>document.getElementById(id).oninput=drawPID); drawPID();
+}
+function drawPID(){
+ const cv=document.getElementById('pidCv'); if(!cv)return; const ctx=cv.getContext('2d'),W=cv.width,H=cv.height; ctx.clearRect(0,0,W,H);
+ const Kp=(+document.getElementById('kp').value)/10, Ki=(+document.getElementById('ki').value)/10, Kd=(+document.getElementById('kd').value)/10;
+ document.getElementById('kpV').textContent=Kp.toFixed(1);document.getElementById('kiV').textContent=Ki.toFixed(1);document.getElementById('kdV').textContent=Kd.toFixed(1);
+ let x1=0,x2=0,ei=0,prevE=0; const dt=0.01,steps=1000; const ys=[];
+ for(let i=0;i<steps;i++){
+  const r=1, y=x1, e=r-y;
+  ei+=e*dt; const ed=(e-prevE)/dt; prevE=e;
+  let u=Kp*e+Ki*ei+Kd*ed; u=Math.max(-50,Math.min(50,u));
+  const dx1=x2, dx2=-x2+u;
+  x1+=dx1*dt; x2+=dx2*dt;
+  ys.push(y);
+ }
+ const P=48,x0=P,xr=W-16,y0=H-34,yTop=20;
+ ctx.strokeStyle='#cfe0e7';ctx.beginPath();ctx.moveTo(x0,yTop);ctx.lineTo(x0,y0);ctx.lineTo(xr,y0);ctx.stroke();
+ const yScaleMax=1.8;
+ ctx.strokeStyle='#e3eef2';ctx.setLineDash([3,3]);ctx.beginPath();const yref=y0-(y0-yTop)*(1/yScaleMax);ctx.moveTo(x0,yref);ctx.lineTo(xr,yref);ctx.stroke();ctx.setLineDash([]);
+ ctx.fillStyle='#8aa4ae';ctx.font='11px sans-serif';ctx.fillText('r=1',xr+4,yref+3);
+ ctx.strokeStyle='#0891b2';ctx.lineWidth=2.3;ctx.beginPath();
+ let maxY=0,peakT=0;
+ ys.forEach((y,i)=>{if(y>maxY){maxY=y;peakT=i*dt;} const x=x0+(xr-x0)*i/ys.length, yy=y0-(y0-yTop)*Math.min(yScaleMax,Math.max(0,y))/yScaleMax; i?ctx.lineTo(x,yy):ctx.moveTo(x,yy);});
+ ctx.stroke();
+ const overshoot=Math.max(0,(maxY-1)*100);
+ document.getElementById('pidRead').innerHTML='最大超越量 ≈ <b>'+overshoot.toFixed(1)+'%</b>（於 t≈'+peakT.toFixed(2)+'s）　最終值 ≈ <b>'+ys[ys.length-1].toFixed(2)+'</b>　'+(Ki>0?'（Ki>0：穩態誤差理論上趨近 0）':'（Ki=0：可能有穩態誤差）');
+}
+
+/* ---- 6. 狀態空間極點配置 ---- */
+function toolState(){
+ document.getElementById('simBox').innerHTML=
+  '<canvas id="stCv" class="cv" width="820" height="300"></canvas>'+
+  '<div class="controls"><label>k1 <span class="val" id="k1V">4</span><input type="range" id="k1" min="0" max="200" value="40"></label>'+
+  '<label>k2 <span class="val" id="k2V">4</span><input type="range" id="k2" min="0" max="100" value="40"></label></div>'+
+  '<div id="stRead" style="font-size:13px;color:#2b4a53;margin-top:6px"></div>'+
+  '<p style="font-size:12.5px;color:#8aa4ae">範例系統（雙積分器）：ẋ1=x2, ẋ2=u；狀態回授 u=−(k1·x1+k2·x2)　閉迴路特徵方程 s²+k2·s+k1=0</p>';
+ ['k1','k2'].forEach(id=>document.getElementById(id).oninput=drawState); drawState();
+}
+function drawState(){
+ const cv=document.getElementById('stCv'); if(!cv)return; const ctx=cv.getContext('2d'),W=cv.width,H=cv.height; ctx.clearRect(0,0,W,H);
+ const k1=(+document.getElementById('k1').value)/10, k2=(+document.getElementById('k2').value)/10;
+ document.getElementById('k1V').textContent=k1.toFixed(1);document.getElementById('k2V').textContent=k2.toFixed(1);
+ const disc=k2*k2-4*k1; let re1,im1,re2,im2;
+ if(disc>=0){re1=(-k2-Math.sqrt(disc))/2;im1=0;re2=(-k2+Math.sqrt(disc))/2;im2=0;}
+ else{re1=-k2/2;im1=Math.sqrt(-disc)/2;re2=-k2/2;im2=-Math.sqrt(-disc)/2;}
+ let x1=1,x2=0; const dt=0.01,steps=800; const ys=[];
+ for(let i=0;i<steps;i++){const u=-(k1*x1+k2*x2); const dx1=x2,dx2=u; x1+=dx1*dt;x2+=dx2*dt; ys.push(x1);}
+ const P=48,x0=P,xr=W-16,y0=H/2,yTop=20,yBot=H-24;
+ ctx.strokeStyle='#cfe0e7';ctx.beginPath();ctx.moveTo(x0,yTop);ctx.lineTo(x0,yBot);ctx.lineTo(xr,y0>yBot?yBot:y0);ctx.stroke();
+ ctx.strokeStyle='#e3eef2';ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(xr,y0);ctx.stroke();
+ ctx.strokeStyle='#d97706';ctx.lineWidth=2.3;ctx.beginPath();
+ ys.forEach((y,i)=>{const x=x0+(xr-x0)*i/ys.length, yy=y0-y*(y0-yTop)/1.2; i?ctx.lineTo(x,yy):ctx.moveTo(x,yy);});
+ ctx.stroke();
+ document.getElementById('stRead').innerHTML='閉迴路極點：s = '+re1.toFixed(2)+(im1?'±j'+Math.abs(im1).toFixed(2):'')+(disc>=0&&re1!==re2?(', '+re2.toFixed(2)):'')+'　　狀態從 x1(0)=1 出發，曲線是回授把它拉回 0 的過程（調節問題）。'+(disc<0?' 共軛複數極點：帶振盪地收斂。':' 實極點：不振盪收斂。');
+}
+
+buildSidebar();renderHome();
+</script>
+</body>
+</html>
