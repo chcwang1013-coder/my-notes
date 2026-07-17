@@ -201,285 +201,55 @@ const CATS={
 function L(id){return '<a class="wl" data-id="'+id+'">'+id+'</a>';}
 const NOTES=[
 {id:"光子積體電路",en:"Photonic Integrated Circuit (PIC)",cat:"基礎",html:
- '<div class="callout"><b>一句話：</b>把桌上型光學（光纖、透鏡、分光鏡）的功能<b>整合到一塊晶片上</b>，讓光在微米級的'+L("波導")+'中被產生、導引、調變、偵測——就像電子 IC 整合電晶體。</div>'+
- '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgMzYwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZjhmY2ZlIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZWFmM2Y3Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJjaGlwIiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlZWY3ZmEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9IndnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMCI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMwODkxYjIiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwNTk2NjkiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9Imx6IiBjeD0iNTAlIiBjeT0iNDAlIiByPSI2MCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmI3MTg1Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZTExZDQ4Ii8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjM2MCIgZmlsbD0idXJsKCNiZykiLz4KICA8dGV4dCB4PSIzNCIgeT0iNDIiIGZpbGw9IiMxMjMwMzkiIGZvbnQtc2l6ZT0iMjAiIGZvbnQtd2VpZ2h0PSI3MDAiPuefveWFieWtkOaZtueJh++8muS4gOaineWFieeahOaXheeoi+OAgEFuYXRvbXkgb2YgYSBTaWxpY29uIFBob3RvbmljIENoaXA8L3RleHQ+CgogIDxyZWN0IHg9IjQwIiB5PSI3MCIgd2lkdGg9IjgyMCIgaGVpZ2h0PSIyNTAiIHJ4PSIxNiIgZmlsbD0idXJsKCNjaGlwKSIgc3Ryb2tlPSIjY2ZlM2VhIiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjYwIiB5PSI5OCIgZmlsbD0iIzhhYTRhZSIgZm9udC1zaXplPSIxMiI+55+95pm254mH77yIU09J77yJPC90ZXh0PgoKICA8cGF0aCBkPSJNIDEyMCAyMDAgSCA3ODAiIGZpbGw9Im5vbmUiIHN0cm9rZT0idXJsKCN3ZykiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CgogIDxjaXJjbGUgY3g9IjExMCIgY3k9IjIwMCIgcj0iMTYiIGZpbGw9InVybCgjbHopIi8+CiAgPHRleHQgeD0iMTEwIiB5PSIyNTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNlMTFkNDgiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI3MDAiPumbt+WwhDwvdGV4dD4KICA8dGV4dCB4PSIxMTAiIHk9IjI2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2IwNmE3OCIgZm9udC1zaXplPSIxMCI+TGFzZXLvvIjlpJbmjqXvvIk8L3RleHQ+CgogIDxnPgogICAgPHJlY3QgeD0iMTc2IiB5PSIxODYiIHdpZHRoPSIzMCIgaGVpZ2h0PSIyOCIgcng9IjMiIGZpbGw9IiNlYWY2ZjkiIHN0cm9rZT0iIzA4OTFiMiIvPgogICAgPGxpbmUgeDE9IjE4MiIgeTE9IjE4OCIgeDI9IjE4MiIgeTI9IjIxMiIgc3Ryb2tlPSIjMDg5MWIyIi8+PGxpbmUgeDE9IjE4OCIgeTE9IjE4OCIgeDI9IjE4OCIgeTI9IjIxMiIgc3Ryb2tlPSIjMDg5MWIyIi8+CiAgICA8bGluZSB4MT0iMTk0IiB5MT0iMTg4IiB4Mj0iMTk0IiB5Mj0iMjEyIiBzdHJva2U9IiMwODkxYjIiLz48bGluZSB4MT0iMjAwIiB5MT0iMTg4IiB4Mj0iMjAwIiB5Mj0iMjEyIiBzdHJva2U9IiMwODkxYjIiLz4KICAgIDx0ZXh0IHg9IjE5MSIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMGU1YTZiIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNzAwIj7lhYnmn7XogKblkIjlmag8L3RleHQ+CiAgICA8dGV4dCB4PSIxOTEiIHk9IjE2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZiOThhNCIgZm9udC1zaXplPSIxMCI+R3JhdGluZyBDb3VwbGVyPC90ZXh0PgogIDwvZz4KCiAgPGc+CiAgICA8cmVjdCB4PSIzMDAiIHk9IjE3NiIgd2lkdGg9IjkwIiBoZWlnaHQ9IjQ4IiByeD0iNiIgZmlsbD0iI2VlZmFmNCIgc3Ryb2tlPSIjMDU5NjY5Ii8+CiAgICA8cGF0aCBkPSJNIDMwMCAyMDAgcSAyMiAtMjAgNDUgMCBxIDIyIDIwIDQ1IDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA1OTY2OSIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgICA8cmVjdCB4PSIzMzIiIHk9IjE3MiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjgiIHJ4PSIyIiBmaWxsPSIjZDk3NzA2Ii8+CiAgICA8dGV4dCB4PSIzNDUiIHk9IjE1MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzBhNzM1MCIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCI+6Kq/6K6K5ZmoIE1aTTwvdGV4dD4KICAgIDx0ZXh0IHg9IjM0NSIgeT0iMTY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNWY5Yzg0IiBmb250LXNpemU9IjEwIj7lr6vlhaXos4fmlpk8L3RleHQ+CiAgPC9nPgoKICA8Zz4KICAgIDxjaXJjbGUgY3g9IjUwMCIgY3k9IjE3NiIgcj0iMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgICA8dGV4dCB4PSI1MDAiIHk9IjI0OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzBlNWE2YiIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCI+55Kw5b2i6Kun5oyv5ZmoPC90ZXh0PgogICAgPHRleHQgeD0iNTAwIiB5PSIyNjQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2Yjk4YTQiIGZvbnQtc2l6ZT0iMTAiPuazoumVt+a/vuazoiAvIFdETTwvdGV4dD4KICA8L2c+CgogIDxnPgogICAgPHJlY3QgeD0iNTk2IiB5PSIxOTIiIHdpZHRoPSIyNiIgaGVpZ2h0PSIxNiIgcng9IjMiIGZpbGw9IiNkOTc3MDYiLz4KICAgIDx0ZXh0IHg9IjYwOSIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjYTE1YzA2IiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNzAwIj7nm7jkvY3lmag8L3RleHQ+CiAgICA8dGV4dCB4PSI2MDkiIHk9IjE2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2I1ODU0OSIgZm9udC1zaXplPSIxMCI+54ax5YWJ6Kq/6KunPC90ZXh0PgogIDwvZz4KCiAgPGc+CiAgICA8cmVjdCB4PSI3MDAiIHk9IjE4NCIgd2lkdGg9IjM0IiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0iI2YzZWZmZSIgc3Ryb2tlPSIjN2MzYWVkIi8+CiAgICA8cGF0aCBkPSJNIDcwNiAyMTYgTCA3MTcgMTkwIEwgNzI4IDIxNiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjN2MzYWVkIiBzdHJva2Utd2lkdGg9IjIiLz4KICAgIDx0ZXh0IHg9IjcxNyIgeT0iMjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNWIzMGIwIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNzAwIj7lhYnlgbXmuKzlmag8L3RleHQ+CiAgICA8dGV4dCB4PSI3MTciIHk9IjI2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzhhN2JjMCIgZm9udC1zaXplPSIxMCI+R2Ugwrcg6K6A5Zue6Zu7PC90ZXh0PgogIDwvZz4KCiAgPHBhdGggZD0iTSA3ODAgMjAwIEggODIwIiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWRhc2hhcnJheT0iMyAzIi8+CiAgPHRleHQgeD0iODM1IiB5PSIyMDQiIGZpbGw9IiNhMTVjMDYiIGZvbnQtc2l6ZT0iMTIiPumbu+ioiuiZnzwvdGV4dD4KCiAgPHRleHQgeD0iNjAiIHk9IjMwOCIgZmlsbD0iIzhhYTRhZSIgZm9udC1zaXplPSIxMSI+5YWJ77ya6Zu35bCEIOKGkiDpgLLmmbbniYcg4oaSIOiqv+iuiu+8iOWvq+izh+aWme+8ieKGkiDmv77ms6Ig4oaSIOWBtea4rO+8iOiugOWbnumbu++8iTwvdGV4dD4KPC9zdmc+Cg==" alt="矽光子晶片概觀">'+
- '<h3>與電子 IC 的類比</h3><table><tr><th>電子 IC</th><th>光子 IC</th></tr>'+
- '<tr><td>電子在金屬導線中流動</td><td>光子在'+L("波導")+'中傳播</td></tr>'+
- '<tr><td>電晶體</td><td>'+L("調變器")+'、'+L("相位器")+'</td></tr>'+
- '<tr><td>電阻/電容</td><td>'+L("環形諧振器")+'、'+L("方向耦合器與分光器")+'</td></tr>'+
- '<tr><td>打線/銲墊</td><td>'+L("光柵耦合器與邊緣耦合")+'</td></tr></table>'+
- '<h3>為什麼重要</h3><p>把一整套光學系統從光學桌縮到指甲大小，體積、成本、穩定度大幅改善，是資料中心光收發、光達、量子與光學運算的關鍵，並最終走向 '+L("可程式化光子電路")+'。</p>'},
-{id:"為什麼要用光子",en:"Electrons vs Photons",cat:"基礎",html:
- '<div class="callout"><b>一句話：</b>光子在<b>頻寬、傳輸損耗、抗干擾、平行度</b>上有電子難以匹敵的優勢，因此在通訊與部分運算中，用光取代或輔助電特別有價值。</div>'+
- '<h3>光子的優勢</h3><ul><li><b>超高頻寬</b>：光載波約 200 THz，單一波導可用 WDM 同時傳多通道。</li>'+
- '<li><b>低損耗</b>：光纖每公里僅約 0.2 dB；晶片'+L("波導")+'約 1–2 dB/cm。</li>'+
- '<li><b>無電阻發熱、無電磁串擾</b>。</li><li><b>天生平行</b>：不同波長/模態同時載資料 → 適合'+L("應用領域")+'的矩陣運算。</li></ul>'+
- '<h3>光子的挑戰</h3><ul><li>不易「儲存」、不易做強交互作用（邏輯運算難）。</li>'+
- '<li>'+L("光源與雷射整合")+'：矽不發光。</li><li>元件尺寸受波長限制。</li></ul>'+
- '<h3>白話</h3><p>電子擅長運算與儲存，光子擅長搬運與傳輸。現代趨勢是<b>電光協同</b>：用光搬高頻寬資料，用電做邏輯。</p>'},
-{id:"矽光子技術",en:"Silicon Photonics",cat:"基礎",html:
- '<div class="callout"><b>一句話：</b>用<b>矽</b>作光子電路材料，並借成熟的 <b>CMOS 製程</b>大量精密製造'+L("光子積體電路")+'——目前最主流的 PIC 平台。</div>'+
- '<h3>為什麼選矽</h3><ul><li><b>CMOS 相容</b>：沿用電子晶圓廠設備，低成本、可量產。</li>'+
- '<li><b>高折射率對比</b>：矽 n≈3.48 vs 氧化矽 n≈1.44，光被緊緊侷限，'+L("波導")+'可做次微米、彎曲半徑僅數 µm。</li>'+
- '<li>對 1310/1550 nm 電信波長透明。</li></ul>'+
- '<h3>SOI 平台</h3><ul><li>標準結構：<b>220 nm</b> 矽層 + 約 <b>2 µm</b> 埋氧層（BOX）。</li>'+
- '<li>埋氧層提供垂直光侷限；元件用光刻與乾蝕刻定義。</li></ul>'+
- '<h3>先天限制</h3><p>矽<b>不會發光</b>（間接能隙），需 '+L("光源與雷射整合")+'；強調變靠 '+L("調變器")+' 的載子色散，效率有限。</p>'},
+ '<div class="callout"><b>這篇要回答：</b>為什麼要把光學元件做成「晶片」？PIC 跟電子 IC 的類比在哪裡成立、在哪裡不成立？</div> <img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgMzYwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZjhmY2ZlIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZWFmM2Y3Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJjaGlwIiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlZWY3ZmEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9IndnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMCI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMwODkxYjIiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwNTk2NjkiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9Imx6IiBjeD0iNTAlIiBjeT0iNDAlIiByPSI2MCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmI3MTg1Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZTExZDQ4Ii8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjM2MCIgZmlsbD0idXJsKCNiZykiLz4KICA8dGV4dCB4PSIzNCIgeT0iNDIiIGZpbGw9IiMxMjMwMzkiIGZvbnQtc2l6ZT0iMjAiIGZvbnQtd2VpZ2h0PSI3MDAiPuefveWFieWtkOaZtueJh++8muS4gOaineWFieeahOaXheeoi+OAgEFuYXRvbXkgb2YgYSBTaWxpY29uIFBob3RvbmljIENoaXA8L3RleHQ+CgogIDxyZWN0IHg9IjQwIiB5PSI3MCIgd2lkdGg9IjgyMCIgaGVpZ2h0PSIyNTAiIHJ4PSIxNiIgZmlsbD0idXJsKCNjaGlwKSIgc3Ryb2tlPSIjY2ZlM2VhIiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjYwIiB5PSI5OCIgZmlsbD0iIzhhYTRhZSIgZm9udC1zaXplPSIxMiI+55+95pm254mH77yIU09J77yJPC90ZXh0PgoKICA8cGF0aCBkPSJNIDEyMCAyMDAgSCA3ODAiIGZpbGw9Im5vbmUiIHN0cm9rZT0idXJsKCN3ZykiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CgogIDxjaXJjbGUgY3g9IjExMCIgY3k9IjIwMCIgcj0iMTYiIGZpbGw9InVybCgjbHopIi8+CiAgPHRleHQgeD0iMTEwIiB5PSIyNTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNlMTFkNDgiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI3MDAiPumbt+WwhDwvdGV4dD4KICA8dGV4dCB4PSIxMTAiIHk9IjI2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2IwNmE3OCIgZm9udC1zaXplPSIxMCI+TGFzZXLvvIjlpJbmjqXvvIk8L3RleHQ+CgogIDxnPgogICAgPHJlY3QgeD0iMTc2IiB5PSIxODYiIHdpZHRoPSIzMCIgaGVpZ2h0PSIyOCIgcng9IjMiIGZpbGw9IiNlYWY2ZjkiIHN0cm9rZT0iIzA4OTFiMiIvPgogICAgPGxpbmUgeDE9IjE4MiIgeTE9IjE4OCIgeDI9IjE4MiIgeTI9IjIxMiIgc3Ryb2tlPSIjMDg5MWIyIi8+PGxpbmUgeDE9IjE4OCIgeTE9IjE4OCIgeDI9IjE4OCIgeTI9IjIxMiIgc3Ryb2tlPSIjMDg5MWIyIi8+CiAgICA8bGluZSB4MT0iMTk0IiB5MT0iMTg4IiB4Mj0iMTk0IiB5Mj0iMjEyIiBzdHJva2U9IiMwODkxYjIiLz48bGluZSB4MT0iMjAwIiB5MT0iMTg4IiB4Mj0iMjAwIiB5Mj0iMjEyIiBzdHJva2U9IiMwODkxYjIiLz4KICAgIDx0ZXh0IHg9IjE5MSIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMGU1YTZiIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNzAwIj7lhYnmn7XogKblkIjlmag8L3RleHQ+CiAgICA8dGV4dCB4PSIxOTEiIHk9IjE2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZiOThhNCIgZm9udC1zaXplPSIxMCI+R3JhdGluZyBDb3VwbGVyPC90ZXh0PgogIDwvZz4KCiAgPGc+CiAgICA8cmVjdCB4PSIzMDAiIHk9IjE3NiIgd2lkdGg9IjkwIiBoZWlnaHQ9IjQ4IiByeD0iNiIgZmlsbD0iI2VlZmFmNCIgc3Ryb2tlPSIjMDU5NjY5Ii8+CiAgICA8cGF0aCBkPSJNIDMwMCAyMDAgcSAyMiAtMjAgNDUgMCBxIDIyIDIwIDQ1IDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA1OTY2OSIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgICA8cmVjdCB4PSIzMzIiIHk9IjE3MiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjgiIHJ4PSIyIiBmaWxsPSIjZDk3NzA2Ii8+CiAgICA8dGV4dCB4PSIzNDUiIHk9IjE1MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzBhNzM1MCIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCI+6Kq/6K6K5ZmoIE1aTTwvdGV4dD4KICAgIDx0ZXh0IHg9IjM0NSIgeT0iMTY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNWY5Yzg0IiBmb250LXNpemU9IjEwIj7lr6vlhaXos4fmlpk8L3RleHQ+CiAgPC9nPgoKICA8Zz4KICAgIDxjaXJjbGUgY3g9IjUwMCIgY3k9IjE3NiIgcj0iMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgICA8dGV4dCB4PSI1MDAiIHk9IjI0OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzBlNWE2YiIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCI+55Kw5b2i6Kun5oyv5ZmoPC90ZXh0PgogICAgPHRleHQgeD0iNTAwIiB5PSIyNjQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2Yjk4YTQiIGZvbnQtc2l6ZT0iMTAiPuazoumVt+a/vuazoiAvIFdETTwvdGV4dD4KICA8L2c+CgogIDxnPgogICAgPHJlY3QgeD0iNTk2IiB5PSIxOTIiIHdpZHRoPSIyNiIgaGVpZ2h0PSIxNiIgcng9IjMiIGZpbGw9IiNkOTc3MDYiLz4KICAgIDx0ZXh0IHg9IjYwOSIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjYTE1YzA2IiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNzAwIj7nm7jkvY3lmag8L3RleHQ+CiAgICA8dGV4dCB4PSI2MDkiIHk9IjE2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2I1ODU0OSIgZm9udC1zaXplPSIxMCI+54ax5YWJ6Kq/6KunPC90ZXh0PgogIDwvZz4KCiAgPGc+CiAgICA8cmVjdCB4PSI3MDAiIHk9IjE4NCIgd2lkdGg9IjM0IiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0iI2YzZWZmZSIgc3Ryb2tlPSIjN2MzYWVkIi8+CiAgICA8cGF0aCBkPSJNIDcwNiAyMTYgTCA3MTcgMTkwIEwgNzI4IDIxNiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjN2MzYWVkIiBzdHJva2Utd2lkdGg9IjIiLz4KICAgIDx0ZXh0IHg9IjcxNyIgeT0iMjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNWIzMGIwIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNzAwIj7lhYnlgbXmuKzlmag8L3RleHQ+CiAgICA8dGV4dCB4PSI3MTciIHk9IjI2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzhhN2JjMCIgZm9udC1zaXplPSIxMCI+R2Ugwrcg6K6A5Zue6Zu7PC90ZXh0PgogIDwvZz4KCiAgPHBhdGggZD0iTSA3ODAgMjAwIEggODIwIiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWRhc2hhcnJheT0iMyAzIi8+CiAgPHRleHQgeD0iODM1IiB5PSIyMDQiIGZpbGw9IiNhMTVjMDYiIGZvbnQtc2l6ZT0iMTIiPumbu+ioiuiZnzwvdGV4dD4KCiAgPHRleHQgeD0iNjAiIHk9IjMwOCIgZmlsbD0iIzhhYTRhZSIgZm9udC1zaXplPSIxMSI+5YWJ77ya6Zu35bCEIOKGkiDpgLLmmbbniYcg4oaSIOiqv+iuiu+8iOWvq+izh+aWme+8ieKGkiDmv77ms6Ig4oaSIOWBtea4rO+8iOiugOWbnumbu++8iTwvdGV4dD4KPC9zdmc+Cg=="> <h3>電子 IC 的成功公式</h3><p>積體電路把原本要手工焊接對準的分立元件，改成用微影直接「畫」在晶圓上：體積小、可量產、對準精密。PIC 想把同一套邏輯搬到光學系統——雷射、分光鏡、偵測器全部畫成波導上的圖案。</p> <table><tr><th>電子 IC</th><th>光子 IC</th></tr><tr><td>電晶體</td><td>\'+L("相位器")+\' / \'+L("調變器")+\'</td></tr><tr><td>導線</td><td>\'+L("波導")+\'</td></tr><tr><td>邏輯閘</td><td>\'+L("方向耦合器與分光器")+\' + \'+L("馬赫-曾德干涉儀")+\'</td></tr></table> <h3>為什麼類比只能走一半</h3><p>電訊號是純量、疊加靠 KCL/KVL；光訊號是<b>複數振幅</b>（振幅+相位），疊加時會<b>干涉</b>——多走 1 nm 光程都可能讓結果從建設性變破壞性。這是 PIC 設計必須從物理模擬出發、不能只靠邏輯抽象的根本原因。</p> <p>延伸：為什麼值得做 → \'+L("為什麼要用光子")+\'；用什麼材料 → \'+L("矽光子技術")+\'。</p>'},
+{id:"為什麼要用光子",en:"Why Photonics",cat:"基礎",html:
+ '<div class="callout"><b>這篇要回答：</b>電訊號幾乎都能做到，為什麼還要換成光？答案在「傳導的物理極限」。</div> <h3>電訊號的代價：幫電容充放電</h3><p>每翻轉一次電位，能耗約 E ≈ ½CV²。導線電阻與電容都隨長度增加，高頻時集膚效應（電阻∝√f）與介電損耗（∝f）再疊加，讓長距離高速電訊號的能耗隨頻率、距離同時惡化。</p> <h3>為什麼光子不受這個限制</h3><p>光纖/波導損耗主要來自散射與吸收，<b>幾乎不隨調變速率變化</b>——1 Gb/s 跟 400 Gb/s 打進同一段光纖衰減幾乎一樣，因為傳輸過程不需要對線路電容充放電，能耗只發生在「產生光」與「偵測光」兩端。</p> <h3>頻寬-距離乘積</h3><p>銅線頻寬隨距離快速下降，光纖頻寬幾乎與距離無關（色散補償後）——這正是所有長距離大頻寬鏈路最終都轉向光的原因：不是光「比較快」，是光的損耗機制不會被頻率懲罰。</p> <p>具體實現 → \'+L("矽光子技術")+\'；應用戰場 → \'+L("光收發器")+\' · \'+L("共封裝光學")+\'。</p>'},
+{id:"矽光子技術",en:"Silicon Photonics · SOI",cat:"基礎",html:
+ '<div class="callout"><b>這篇要回答：</b>光學材料很多，為什麼矽光子成主流？物理夠好、經濟夠便宜兩者缺一不可。</div> <h3>光學上：折射率對比夠高</h3><p>矽 n≈3.48 包在氧化矽 n≈1.44 中，用平板波導的歸一化頻率 V = (2πa/λ)√(n₁²−n₂²) 描述侷限能力：對比越大，V 越大，能用越小截面把光關住（單模條件 V&lt;2.405）。矽/氧化矽的高對比讓波導可窄到數百奈米、彎曲半徑僅數微米——這是高密度整合的物理根本。</p> <h3>經濟上：借用 CMOS 產能</h3><p>矽光子製程與 CMOS 高度重疊，可直接沿用既有晶圓廠的微影、蝕刻、良率控制，不必為光學另蓋新廠——電路與光路能整合在同一封裝，見 \'+L("製程與代工")+\'。</p> <h3>代價：矽不發光</h3><p>矽是間接能隙半導體，天生不太會發光（見 \'+L("光源與雷射整合")+\'）——這是「借用 CMOS 製程」必須付出的唯一代價。</p> <p>高對比的後果 → \'+L("波導")+\'。</p>'},
 {id:"光子電路的複雜度擴展",en:"Scaling Complexity",cat:"基礎",html:
- '<div class="callout"><b>一句話：</b>就像電子 IC 靠標準製程讓電晶體數量指數成長，光子電路也在提高<b>單晶片的元件數量與功能複雜度</b>——這是本演講的核心敘事。</div>'+
- '<h3>擴展的來源</h3><ul><li>元件庫標準化（'+L("製程與代工")+'的 PDK）：波導、耦合器、調變器都成為可調用的積木。</li><li>設計自動化與模擬工具成熟。</li></ul>'+
- '<h3>瓶頸（與電子不同）</h3><ul><li>元件尺寸受<b>波長</b>限制，難持續微縮。</li>'+
- '<li>每個可調元件都要電控與供電（見'+L("相位器")+'），控制與散熱成瓶頸。</li><li>光學損耗沿路徑累積。</li></ul>'+
- '<h3>一條出路：可重構</h3><p>與其為每個功能做專用晶片，不如做一顆通用、可重新配置的晶片 → 這正是 '+L("可程式化光子電路")+' 的動機。</p>'},
+ '<div class="callout"><b>這篇要回答：</b>電子 IC 能塞幾十億顆電晶體，光子電路能無限擴大嗎？限制不是尺寸，是<b>損耗</b>。</div> <h3>為什麼光子電路不能像電子一樣「再生」訊號</h3><p>數位訊號每經過一個邏輯閘都會被拉回乾淨的 0/1，錯誤不累積；光訊號沒有這種機制，每經過一個元件（轉彎、耦合器、交叉點）就多一點插入損耗，且會一路累加：P_out(dBm) = P_in − N × L_elem。</p> <h3>這如何決定電路規模上限</h3><p>只要定出偵測器可用的最低功率 P_min，就能反推最大元件數 N_max = (P_in − P_min) / L_elem——這代表光子電路的「摩爾定律」不是元件變小就能無限疊代，必須同步壓低每元件插入損耗，規模才能往上長。這正是 \'+L("可程式化光子電路")+\' 網格節點數被斤斤計較的原因。</p> <p>元件損耗來源 → \'+L("波導")+\' · \'+L("方向耦合器與分光器")+\'；系統總帳 → \'+L("挑戰")+\'。</p>'},
 {id:"波導",en:"Waveguide",cat:"被動",html:
- '<div class="callout"><b>一句話：</b>光子電路的「導線」：用高折射率的矽芯與低折射率的氧化矽包覆，靠全內反射把光侷限在數百奈米寬的通道中傳播。</div>'+
- '<h3>關鍵物理</h3><ul><li><b>折射率對比</b>：矽 3.48 / 氧化矽 1.44，對比極高 → 光被緊緊侷限。</li>'+
- '<li><b>模態 mode</b>：截面內場分布；夠窄則單模。</li>'+
- '<li><b>有效折射率 n_eff</b>：決定相位速度；<b>群折射率 n_g</b> 決定訊號速度，影響'+L("環形諧振器")+'。</li></ul>'+
- '<h3>型式與規格（220 nm SOI）</h3><ul><li><b>條形（strip）</b>：約 500 nm 寬×220 nm 高，單模，彎曲半徑可小到 ~5 µm。</li>'+
- '<li><b>脊形（rib）</b>：部分蝕刻、低損耗，常用於'+L("調變器")+'。</li>'+
- '<li><b>傳播損耗</b>：矽條形波導約 1–2 dB/cm（側壁散射為主）。</li></ul>'+
- '<p>光要先「被關進」波導才能被後續元件操控——這是所有 PIC 的地基。進出晶片靠 '+L("光柵耦合器與邊緣耦合")+'。</p>'},
-{id:"光柵耦合器與邊緣耦合",en:"Fiber Coupling",cat:"被動",html:
- '<div class="callout"><b>一句話：</b>讓光在<b>光纖與晶片'+L("波導")+'之間</b>進出的介面。難點：光纖模場（~10 µm）與波導模場（次微米）差距極大，需模態轉換。</div>'+
- '<h3>兩大方式</h3><ul><li><b>光柵耦合器</b>：在波導上刻週期光柵，把近垂直入射的光繞射進波導。可放晶片任意位置、方便晶圓級測試；但有波長/偏振依賴，效率約 −1～−3 dB。</li>'+
- '<li><b>邊緣耦合</b>：晶片邊緣用倒錐把模場放大匹配光纖。頻寬大、偏振不敏感、損耗低；但只能在邊緣、需切割端面。</li></ul>'+
- '<p>耦合損耗常是系統損耗大戶，直接影響 '+L("挑戰")+' 中的損耗預算。這是光子晶片的「打線銲墊」。</p>'},
-{id:"方向耦合器與分光器",en:"Coupler / Splitter",cat:"被動",html:
- '<div class="callout"><b>一句話：</b>把光<b>分開或合併</b>的基本元件，是'+L("馬赫-曾德干涉儀")+'、'+L("環形諧振器")+'、'+L("可調基本單元")+'的核心零件。</div>'+
- '<h3>常見型式</h3><ul><li><b>方向耦合器</b>：兩條'+L("波導")+'靠近，消逝場耦合，功率週期性在兩波導間轉移；比例由間距與長度決定。</li>'+
- '<li><b>多模干涉器 MMI</b>：自我成像做 1×2、2×2 分光，對製程誤差不敏感、頻寬大。</li>'+
- '<li><b>Y 分支</b>：最簡單的 1×2 等分。</li></ul>'+
- '<h3>cross 與 bar</h3><p>2×2 耦合器有兩極端：<b>bar 直通</b>與 <b>cross 交叉</b>。把耦合設成可調，就成了 '+L("可調基本單元")+'，是 '+L("光子網格")+' 的基礎。</p>'},
-{id:"馬赫-曾德干涉儀",en:"Mach-Zehnder Interferometer (MZI)",cat:"被動",html:
- '<div class="callout"><b>一句話：</b>把光分成兩臂、在一臂加<b>可調相位差</b>、再合併干涉。輸出功率隨相位在兩埠間切換——PIC 中最通用的「開關與可調元件」。</div>'+
- '<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgMzQwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiZzIiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2Y4ZmNmZSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2VhZjNmNyIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0id2cyIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMCI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMwODkxYjIiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwNTk2NjkiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI5MDAiIGhlaWdodD0iMzQwIiBmaWxsPSJ1cmwoI2JnMikiLz4KICA8dGV4dCB4PSIzNCIgeT0iNDIiIGZpbGw9IiMxMjMwMzkiIGZvbnQtc2l6ZT0iMjAiIGZvbnQtd2VpZ2h0PSI3MDAiPummrOi1q+KAk+abvuW+t+W5sua2ieWEgCBNWknvvJrnlKjnm7jkvY3lt67mjqfliLblhYk8L3RleHQ+CgogIDx0ZXh0IHg9IjYwIiB5PSIxODAiIHRleHQtYW5jaG9yPSJlbmQiIGZpbGw9IiMwZTVhNmIiIGZvbnQtc2l6ZT0iMTMiPui8uOWFpTwvdGV4dD4KICA8cGF0aCBkPSJNIDcwIDE3NSBIIDE5MCIgc3Ryb2tlPSJ1cmwoI3dnMikiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CgogIDxyZWN0IHg9IjE5MCIgeT0iMTUwIiB3aWR0aD0iMzQiIGhlaWdodD0iNTAiIHJ4PSI2IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiMwNTk2NjkiLz4KICA8dGV4dCB4PSIyMDciIHk9IjIyOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzVmOWM4NCIgZm9udC1zaXplPSIxMCI+5YiG5YWJPC90ZXh0PgoKICA8cGF0aCBkPSJNIDIyNCAxNjUgQyAyNzAgMTIwLCA0NzAgMTIwLCA1MTYgMTIwIiBzdHJva2U9InVybCgjd2cyKSIgc3Ryb2tlLXdpZHRoPSI1IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNIDIyNCAxODUgQyAyNzAgMjMwLCA0NzAgMjMwLCA1MTYgMjMwIiBzdHJva2U9InVybCgjd2cyKSIgc3Ryb2tlLXdpZHRoPSI1IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KCiAgPHJlY3QgeD0iMzMwIiB5PSIxMDgiIHdpZHRoPSI2MCIgaGVpZ2h0PSIyNCIgcng9IjUiIGZpbGw9IiNkOTc3MDYiLz4KICA8dGV4dCB4PSIzNjAiIHk9IjEyNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCI+55u45L2NIM+GPC90ZXh0PgogIDx0ZXh0IHg9IjM2MCIgeT0iOTYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNhMTVjMDYiIGZvbnQtc2l6ZT0iMTEiPuWPr+iqv+ebuOS9jeWZqDwvdGV4dD4KCiAgPHRleHQgeD0iMzYwIiB5PSIyNTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2Yjk4YTQiIGZvbnQtc2l6ZT0iMTEiPuWPg+iAg+iHgjwvdGV4dD4KCiAgPHJlY3QgeD0iNTE2IiB5PSI5NSIgd2lkdGg9IjM0IiBoZWlnaHQ9IjE1MCIgcng9IjYiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZT0iIzA1OTY2OSIvPgogIDx0ZXh0IHg9IjUzMyIgeT0iMjY4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNWY5Yzg0IiBmb250LXNpemU9IjEwIj7lkIjlhYkgwrcg5bmy5raJPC90ZXh0PgoKICA8cGF0aCBkPSJNIDU1MCAxMjAgSCA3MDAiIHN0cm9rZT0idXJsKCN3ZzIpIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0gNTUwIDIzMCBIIDcwMCIgc3Ryb2tlPSJ1cmwoI3dnMikiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHRleHQgeD0iNzEyIiB5PSIxMTIiIGZpbGw9IiMwZTVhNmIiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiPui8uOWHuiBB77yIYmFy77yJPC90ZXh0PgogIDx0ZXh0IHg9IjcxMiIgeT0iMTI4IiBmaWxsPSIjNmI5OGE0IiBmb250LXNpemU9IjExIj5QIOKInSBjb3PCsijPhi8yKTwvdGV4dD4KICA8dGV4dCB4PSI3MTIiIHk9IjIyNCIgZmlsbD0iIzBhNzM1MCIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCI+6Ly45Ye6IELvvIhjcm9zc++8iTwvdGV4dD4KICA8dGV4dCB4PSI3MTIiIHk9IjI0MCIgZmlsbD0iIzZiOThhNCIgZm9udC1zaXplPSIxMSI+UCDiiJ0gc2luwrIoz4YvMik8L3RleHQ+CgogIDx0ZXh0IHg9IjYwIiB5PSIzMTUiIGZpbGw9IiM4YWE0YWUiIGZvbnQtc2l6ZT0iMTIiPuaUueiuiuebuOS9jSDPhu+8jOWFieWwseWcqOWFqeWAi+i8uOWHuuWfoOS5i+mWk+WIh+aPm+KAlOKAlOmAmeWwseaYr+WFiemWi+mXnOOAgeiqv+iuiuWZqOiIh+WPr+eoi+W8j+WMlue2suagvOeahOWfuuacrOWOn+eQhuOAgjwvdGV4dD4KPC9zdmc+Cg==" alt="MZI 原理">'+
- '<h3>運作</h3><ul><li>輸入經'+L("方向耦合器與分光器")+'分成兩臂。</li><li>一臂加'+L("相位器")+'造成相位差 Δφ。</li><li>第二耦合器合併干涉。</li></ul>'+
- '<div class="eqcard"><div class="eqt">輸出功率</div>'+
-  '<div class="eq"><i style="color:#0ea5e9">P</i><sub style="color:#0ea5e9">out</sub> ∝ <span style="color:#8b5cf6">cos²</span>(<span style="color:#f59e0b">Δφ</span> ⁄ 2)</div>'+
-  '<div class="lg">'+
-   '<div class="row"><div class="s" style="color:#0ea5e9">P<sub>out</sub></div><div class="m"><b>輸出光功率</b>：某個輸出埠測到的光強度<span class="u">相對值 0–1</span></div></div>'+
-   '<div class="row"><div class="s" style="color:#f59e0b">Δφ</div><div class="m"><b>兩臂相位差</b>：上、下兩條路徑累積的相位差，由'+L("相位器")+'控制<span class="u">rad 弧度</span></div></div>'+
-   '<div class="row"><div class="s" style="color:#8b5cf6">cos²</div><div class="m"><b>干涉關係</b>：相位差每變化 π，輸出就在「全亮 ↔ 全暗」之間切換一次</div></div>'+
-  '</div><div class="cap">另一個輸出埠為 sin²(Δφ/2)；兩埠功率相加恆為 1（能量守恆）。</div></div>'+
- '<p>相位差每變 π，輸出就在亮/暗間切換一次。可當光開關、'+L("調變器")+'（MZM）、可調分光器，也是 '+L("可調基本單元")+' 的骨幹。想親手玩？到上方「🔬 互動元件」拖動相位滑桿。</p>'},
+ '<div class="callout"><b>這篇要回答：</b>光怎麼被「關」在數百奈米寬的通道裡？有效折射率、單模條件怎麼推出來？</div> <h3>全內反射：為什麼高對比能困住光</h3><p>芯（n₁）包覆（n₂）界面，臨界角 θc = arcsin(n₂/n₁)。對比越大，臨界角越小，波導能容忍更緊的彎折半徑而不漏光。</p> <h3>有效折射率 n_eff 怎麼來</h3><p>場有一部分穿透進包覆（消逝波），解 Maxwell 方程配邊界條件得到離散傳播常數 β，定義 n_eff = β/k₀，介於 n₁、n₂ 之間——波導越窄，n_eff 越接近 n₂；越寬越接近 n₁。</p> <h3>為什麼要限制單模</h3><p>V = (2πa/λ)√(n₁²−n₂²) &lt; 2.405 只允許基模傳播。多模波導裡各模態速度不同會色散失真，且下游 \'+L("馬赫-曾德干涉儀")+\'、\'+L("環形諧振器")+\' 的干涉行為都假設單模——這是矽波導要窄到約 500 nm 的原因。</p> <p>光如何進出晶片 → \'+L("光柵耦合器與邊緣耦合")+\'。</p>'},
+{id:"光柵耦合器與邊緣耦合",en:"Grating / Edge Coupler",cat:"被動",html:
+ '<div class="callout"><b>這篇要回答：</b>光纖芯徑約 10 µm、波導只有 0.5 µm，這麼大的落差怎麼對接？</div> <h3>邊緣耦合：漸縮波導</h3><p>波導末端做成錐形（taper），讓模態沿波導緩慢放大。為什麼要漸變：轉換太快會激發高階模態或輻射損耗；絕熱錐形能讓基模平順演化。頻寬廣、偏振損耗低，但需拋光晶圓邊緣。</p> <h3>光柵耦合器：用繞射轉個彎</h3><p>表面刻週期性溝槽，靠繞射把光從表面耦合進波導：n_eff sinθ = n_eff,wg − mλ/Λ。為什麼要傾斜 8–10°：完全垂直入射時 +1/−1 級對稱分走能量、還有背向反射問題；傾斜角讓能量集中單一繞射級。可晶圓級測試但頻寬窄、偏振敏感。</p> <p>前提：模場由波導尺寸決定 → \'+L("波導")+\'；影響鏈路預算 → \'+L("光收發器")+\'。</p>'},
+{id:"方向耦合器與分光器",en:"Directional Coupler / MMI",cat:"被動",html:
+ '<div class="callout"><b>這篇要回答：</b>兩條靠近的波導為什麼會交換能量？分光比怎麼被耦合長度精確控制？</div> <h3>耦合模理論</h3><p>消逝場重疊使兩波導弱耦合：da₁/dz=−jκa₂，da₂/dz=−jκa₁，κ 由間距與模場重疊決定。</p> <h3>為什麼解出來是 sin²/cos²</h3><p>解得 P₁(z)=cos²(κz)，P₂(z)=sin²(κz)——能量像兩個同頻鐘擺互相傳遞。耦合長度 L_c=π/2κ 走完即 100% 交叉，L_c/2 即 50:50。精準控制間距與長度就能做任意分光比。</p> <h3>MMI：另一種機制</h3><p>靠多模干涉的「自成像」效應分光，分光比由幾何尺寸決定，對製程誤差比消逝場耦合更穩健，代價是元件較長。</p> <p>組成 → \'+L("馬赫-曾德干涉儀")+\'；依賴 → \'+L("波導")+\'。</p>'},
+{id:"馬赫-曾德干涉儀",en:"MZI",cat:"被動",html:
+ '<div class="callout"><b>這篇要回答：</b>為什麼 MZI 輸出功率長成 cos²(Δφ/2)？從兩道波疊加怎麼推出這個式子？</div> <img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgMzQwIiBmb250LWZhbWlseT0iJ0hlbHZldGljYSBOZXVlJywnUGluZ0ZhbmcgVEMnLCdNaWNyb3NvZnQgSmhlbmdIZWknLHNhbnMtc2VyaWYiPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiZzIiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2Y4ZmNmZSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2VhZjNmNyIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0id2cyIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMCI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMwODkxYjIiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwNTk2NjkiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI5MDAiIGhlaWdodD0iMzQwIiBmaWxsPSJ1cmwoI2JnMikiLz4KICA8dGV4dCB4PSIzNCIgeT0iNDIiIGZpbGw9IiMxMjMwMzkiIGZvbnQtc2l6ZT0iMjAiIGZvbnQtd2VpZ2h0PSI3MDAiPummrOi1q+KAk+abvuW+t+W5sua2ieWEgCBNWknvvJrnlKjnm7jkvY3lt67mjqfliLblhYk8L3RleHQ+CgogIDx0ZXh0IHg9IjYwIiB5PSIxODAiIHRleHQtYW5jaG9yPSJlbmQiIGZpbGw9IiMwZTVhNmIiIGZvbnQtc2l6ZT0iMTMiPui8uOWFpTwvdGV4dD4KICA8cGF0aCBkPSJNIDcwIDE3NSBIIDE5MCIgc3Ryb2tlPSJ1cmwoI3dnMikiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CgogIDxyZWN0IHg9IjE5MCIgeT0iMTUwIiB3aWR0aD0iMzQiIGhlaWdodD0iNTAiIHJ4PSI2IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiMwNTk2NjkiLz4KICA8dGV4dCB4PSIyMDciIHk9IjIyOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzVmOWM4NCIgZm9udC1zaXplPSIxMCI+5YiG5YWJPC90ZXh0PgoKICA8cGF0aCBkPSJNIDIyNCAxNjUgQyAyNzAgMTIwLCA0NzAgMTIwLCA1MTYgMTIwIiBzdHJva2U9InVybCgjd2cyKSIgc3Ryb2tlLXdpZHRoPSI1IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNIDIyNCAxODUgQyAyNzAgMjMwLCA0NzAgMjMwLCA1MTYgMjMwIiBzdHJva2U9InVybCgjd2cyKSIgc3Ryb2tlLXdpZHRoPSI1IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KCiAgPHJlY3QgeD0iMzMwIiB5PSIxMDgiIHdpZHRoPSI2MCIgaGVpZ2h0PSIyNCIgcng9IjUiIGZpbGw9IiNkOTc3MDYiLz4KICA8dGV4dCB4PSIzNjAiIHk9IjEyNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCI+55u45L2NIM+GPC90ZXh0PgogIDx0ZXh0IHg9IjM2MCIgeT0iOTYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNhMTVjMDYiIGZvbnQtc2l6ZT0iMTEiPuWPr+iqv+ebuOS9jeWZqDwvdGV4dD4KCiAgPHRleHQgeD0iMzYwIiB5PSIyNTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2Yjk4YTQiIGZvbnQtc2l6ZT0iMTEiPuWPg+iAg+iHgjwvdGV4dD4KCiAgPHJlY3QgeD0iNTE2IiB5PSI5NSIgd2lkdGg9IjM0IiBoZWlnaHQ9IjE1MCIgcng9IjYiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZT0iIzA1OTY2OSIvPgogIDx0ZXh0IHg9IjUzMyIgeT0iMjY4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNWY5Yzg0IiBmb250LXNpemU9IjEwIj7lkIjlhYkgwrcg5bmy5raJPC90ZXh0PgoKICA8cGF0aCBkPSJNIDU1MCAxMjAgSCA3MDAiIHN0cm9rZT0idXJsKCN3ZzIpIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0gNTUwIDIzMCBIIDcwMCIgc3Ryb2tlPSJ1cmwoI3dnMikiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHRleHQgeD0iNzEyIiB5PSIxMTIiIGZpbGw9IiMwZTVhNmIiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiPui8uOWHuiBB77yIYmFy77yJPC90ZXh0PgogIDx0ZXh0IHg9IjcxMiIgeT0iMTI4IiBmaWxsPSIjNmI5OGE0IiBmb250LXNpemU9IjExIj5QIOKInSBjb3PCsijPhi8yKTwvdGV4dD4KICA8dGV4dCB4PSI3MTIiIHk9IjIyNCIgZmlsbD0iIzBhNzM1MCIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCI+6Ly45Ye6IELvvIhjcm9zc++8iTwvdGV4dD4KICA8dGV4dCB4PSI3MTIiIHk9IjI0MCIgZmlsbD0iIzZiOThhNCIgZm9udC1zaXplPSIxMSI+UCDiiJ0gc2luwrIoz4YvMik8L3RleHQ+CgogIDx0ZXh0IHg9IjYwIiB5PSIzMTUiIGZpbGw9IiM4YWE0YWUiIGZvbnQtc2l6ZT0iMTIiPuaUueiuiuebuOS9jSDPhu+8jOWFieWwseWcqOWFqeWAi+i8uOWHuuWfoOS5i+mWk+WIh+aPm+KAlOKAlOmAmeWwseaYr+WFiemWi+mXnOOAgeiqv+iuiuWZqOiIh+WPr+eoi+W8j+WMlue2suagvOeahOWfuuacrOWOn+eQhuOAgjwvdGV4dD4KPC9zdmc+Cg=="> <h3>推導</h3><p>兩臂等振幅：E₁=E₀/√2，E₂=(E₀/√2)e^(jΔφ)，合光埠相加 E_out=(E₀/2)(1+e^(jΔφ))，取功率並用 |1+e^(jθ)|²=4cos²(θ/2)：</p> <div class="formula">P_out ∝ cos²(Δφ/2)</div> <p>為什麼是這形狀：同相建設性干涉（全亮），反相破壞性干涉（全暗）——cos² 是複數場相加、取模平方兩步運算必然浮現的形狀，不是湊出來的曲線。</p> <h3>為什麼是最通用的可調元件</h3><p>電控 Δφ（靠 \'+L("相位器")+\'）就能連續掃過全通到全暗，還能當 2×2 開關（cross/bar），是 \'+L("調變器")+\' 與 \'+L("可調基本單元")+\' 共通的基礎結構。</p>'},
 {id:"環形諧振器",en:"Ring Resonator",cat:"被動",html:
- '<div class="callout"><b>一句話：</b>環形'+L("波導")+'靠近直波導，當波長讓環周長為整數個波長時發生<b>共振</b>，形成波長選擇性的濾波器、調變器或感測器。</div>'+
- '<h3>關鍵參數</h3><ul><li><b>共振條件</b>：環周長 = 整數 × (波長 / n_eff)。</li>'+
- '<li><b>自由頻譜範圍 FSR</b> ≈ λ² / (n_g·L)，環越小 FSR 越大。</li>'+
- '<li><b>品質因子 Q</b>：越高線寬越窄、儲能越久、頻寬越小。</li></ul>'+
- '<div class="eqcard"><div class="eqt">自由頻譜範圍</div>'+
-  '<div class="eq"><span style="color:#0ea5e9">FSR</span> ≈ <span style="color:#f59e0b">λ²</span> ⁄ (<span style="color:#10b981">n<sub>g</sub></span> · <span style="color:#8b5cf6">L</span>)</div>'+
-  '<div class="lg">'+
-   '<div class="row"><div class="s" style="color:#0ea5e9">FSR</div><div class="m"><b>自由頻譜範圍</b>：相鄰兩個共振波長的間距；環越小，FSR 越大<span class="u">nm</span></div></div>'+
-   '<div class="row"><div class="s" style="color:#f59e0b">λ</div><div class="m"><b>光的波長</b>：工作波長，例如 1550 nm<span class="u">nm</span></div></div>'+
-   '<div class="row"><div class="s" style="color:#10b981">n<sub>g</sub></div><div class="m"><b>群折射率</b>：'+L("波導")+'對「波包（訊號）」的等效折射率<span class="u">無單位</span></div></div>'+
-   '<div class="row"><div class="s" style="color:#8b5cf6">L</div><div class="m"><b>環的周長</b>：光在環中繞一圈的長度<span class="u">µm</span></div></div>'+
-  '</div></div>'+
-  '<div class="eqcard"><div class="eqt">共振條件</div>'+
-  '<div class="eq"><span style="color:#10b981">n<sub>eff</sub></span> · <span style="color:#8b5cf6">L</span> = <span style="color:#e11d48">m</span> · <span style="color:#f59e0b">λ</span></div>'+
-  '<div class="lg">'+
-   '<div class="row"><div class="s" style="color:#10b981">n<sub>eff</sub></div><div class="m"><b>有效折射率</b>：模態在'+L("波導")+'中「看到」的等效折射率<span class="u">無單位</span></div></div>'+
-   '<div class="row"><div class="s" style="color:#8b5cf6">L</div><div class="m"><b>環的周長</b><span class="u">µm</span></div></div>'+
-   '<div class="row"><div class="s" style="color:#e11d48">m</div><div class="m"><b>共振階數</b>：任一正整數（1, 2, 3…）；每個 m 對應一個共振峰<span class="u">整數</span></div></div>'+
-   '<div class="row"><div class="s" style="color:#f59e0b">λ</div><div class="m"><b>共振波長</b>：滿足此式的波長才會在環中共振<span class="u">nm</span></div></div>'+
-  '</div><div class="cap">環的「光程」剛好是整數個波長時，光才會建設性干涉、能量累積在環中。</div></div>'+
- '<h3>用途</h3><ul><li>濾波器/WDM：挑出或丟棄特定波長。</li><li>'+L("調變器")+'（環調變器）：微調共振做強度調變，小又省電但<b>對溫度極敏感</b>。</li><li>感測：折射率變化 → 共振偏移。</li></ul>'+
- '<p>它像「光的鞦韆」，只有對的節奏才會累積能量——代價是需要 '+L("相位器")+' 熱調諧校準。</p>'},
+ '<div class="callout"><b>這篇要回答：</b>環形波導為何只對特定波長「有反應」？FSR、Q 值怎麼從「繞一圈」推出來？</div> <h3>共振條件</h3><p>繞環一圈的光程要是整數倍波長：n_eff·L=mλ。若相位沒對齊整數倍 2π，每圈疊加會逐漸抵消；對齊時光才能一圈圈疊加、把能量攢起來形成共振尖峰。</p> <h3>FSR 從哪來</h3><div class="formula">FSR ≈ λ² / (n_g · L)</div><p>環越小，相鄰共振波長間距越大（同樣 ΔL 對應更大 Δλ）——這是設計 \'+L("分波多工")+\' 通道間距時環半徑怎麼選的依據。</p> <h3>Q 值：共振多尖</h3><p>Q=λ/Δλ_FWHM。損耗越小，光在環內繞越多圈才洩漏，共振條件被要求得越嚴格，峰越窄——「時域存活越久 ↔ 頻域峰越窄」，跟微波諧振腔同源。</p> <p>對照 → \'+L("馬赫-曾德干涉儀")+\'；調諧 → \'+L("相位器")+\'；應用 → \'+L("調變器")+\' · \'+L("分波多工")+\'。</p>'},
 {id:"相位器",en:"Phase Shifter",cat:"主動",html:
- '<div class="callout"><b>一句話：</b>能<b>電控改變光相位</b>的元件，是所有可調光路（'+L("馬赫-曾德干涉儀")+'、'+L("環形諧振器")+'、'+L("可程式化光子電路")+'）的「旋鈕」。</div>'+
- '<h3>主要機制</h3><table><tr><th>機制</th><th>原理</th><th>特點</th></tr>'+
- '<tr><td>熱光</td><td>加熱改變矽折射率（dn/dT≈1.8e-4/K）</td><td>簡單、低損耗；慢(µs)、耗電、熱串擾</td></tr>'+
- '<tr><td>電光/等離子色散</td><td>注入/耗盡載子</td><td>快(GHz)；有吸收損耗</td></tr>'+
- '<tr><td>相變 PCM</td><td>材料態改變折射率</td><td><b>非揮發</b>；耐久待克服</td></tr>'+
- '<tr><td>MEMS</td><td>機械移動</td><td>低靜態功耗；製程特殊</td></tr></table>'+
- '<p>可程式化光子需<b>成百上千個</b>相位器，若用熱光，功耗與散熱會爆炸——這是 '+L("挑戰")+' 的核心。</p>'},
-{id:"調變器",en:"Modulator",cat:"主動",html:
- '<div class="callout"><b>一句話：</b>把<b>高速電訊號寫進光</b>的元件——讓資料搭上光載波，是光通訊發射端核心。</div>'+
- '<h3>矽的機制：等離子色散</h3><p>矽無強電光效應，靠改變自由載子濃度改變折射率。主流用<b>載子耗盡</b>（PN 反偏），速度可達數十 GHz。</p>'+
- '<h3>兩大架構</h3><ul><li><b>馬赫–曾德調變器 MZM</b>：把'+L("相位器")+'放進'+L("馬赫-曾德干涉儀")+'臂中。頻寬大、耐溫、線性好；但體積大、驅動電壓較高。</li>'+
- '<li><b>環調變器</b>：用'+L("環形諧振器")+'共振偏移做調變。小又省電；但頻寬窄、對溫度極敏感。</li></ul>'+
- '<p>衡量：速率(Gb/s)、消光比、插入損耗、Vπ、能耗(fJ/bit)。它是 PIC 的「嘴巴」，對應接收端的 '+L("光偵測器")+'。</p>'},
+ '<div class="callout"><b>這篇要回答：</b>電怎麼「推」光的相位？Vπ·L 這個指標怎麼從相位公式直接讀出來？</div> <h3>相位怎麼來</h3><div class="formula">φ = (2π/λ)·n·L</div><p>要調相位就是用電改變 n 或 L，Δφ=(2π/λ)ΔnL 要可控。</p> <h3>四種機制的取捨</h3><p><b>熱光</b>：加熱改折射率，變化大但慢（µs 級）、持續耗電。<b>載子色散</b>：注入/抽出載子改折射率，奈秒級快但矽電光效應弱、且 Δn 與 Δα 同時變化（吸收損耗跟著漲）。<b>相變材料</b>：非揮發（斷電保持狀態），適合 \'+L("可程式化光子電路")+\'，但切換需能量脈衝、壽命有限。<b>MEMS</b>：變化量大但慢、有機械疲勞風險。</p> <h3>為什麼用 Vπ·L 評分</h3><p>V 與 L 可互換（拉長 L 可用較小電壓達到同樣 Δφ），乘積才是與尺寸無關、能公平比較不同技術的指標。</p> <p>應用 → \'+L("馬赫-曾德干涉儀")+\' · \'+L("環形諧振器")+\' · \'+L("調變器")+\'。</p>'},
+{id:"調變器",en:"Modulator · MZM",cat:"主動",html:
+ '<div class="callout"><b>這篇要回答：</b>相位調變跟強度調變之間，是怎麼被 MZI 或環轉換過去的？</div> <h3>為什麼不能直接用相位器</h3><p>偵測器只感測強度 |E|²，對純相位變化不敏感——必須把相位差轉成干涉結果才能被讀到。</p> <h3>MZM：靠 cos² 把相位變強度</h3><p>相位器放進 MZI 一臂：P_out(V)∝cos²(Δφ(V)/2)。為什麼用差動（push-pull）驅動：只調一臂會引入啁啾（瞬時頻率隨強度變化，在光纖色散中失真）；兩臂反向變化能保持平均相位穩定，大幅降低啁啾。</p> <h3>環調變器：靠共振偏移</h3><p>\'+L("環形諧振器")+\' 穿透率在共振附近極陡峭，小幅移動共振波長就能在通/阻間快速切換，且高 Q 放大了靈敏度——體積小、功耗低，代價是對溫度敏感需主動鎖溫。</p> <table><tr><th></th><th>MZM</th><th>環調變器</th></tr><tr><td>體積</td><td>大</td><td>小</td></tr><tr><td>功耗</td><td>較高</td><td>低</td></tr><tr><td>溫控</td><td>不需要</td><td>需要</td></tr></table> <p>應用 → \'+L("光收發器")+\' · \'+L("共封裝光學")+\'。</p>'},
 {id:"光偵測器",en:"Photodetector",cat:"主動",html:
- '<div class="callout"><b>一句話：</b>把<b>光轉回電</b>的元件——光通訊接收端核心。吸收光子產生電子電洞對形成光電流。</div>'+
- '<h3>矽的解法：鍺 Ge-on-Si</h3><ul><li>矽在 1310/1550 nm 幾乎不吸收（做'+L("波導")+'是優點、做偵測器是缺點）。</li>'+
- '<li>在矽上磊晶生長<b>鍺</b>來吸收電信波長。</li>'+
- '<li>典型：responsivity &gt; 0.8 A/W、頻寬 &gt; 50–65 GHz、暗電流數十 µA。</li></ul>'+
- '<h3>關鍵指標</h3><p>響應度(A/W)、頻寬、暗電流；進階用 APD 內建增益提升靈敏度。它是 PIC 的「耳朵」，對應發射端 '+L("調變器")+'。</p>'},
+ '<div class="callout"><b>這篇要回答：</b>光子怎麼變電流？響應度公式怎麼來？為什麼矽做不了通訊波段偵測器？</div> <h3>光電轉換</h3><div class="formula">R = I_photo / P_optical = η·q/hν</div><p>q/hν 是「每焦耳光能對應多少電荷」的換算，η（量子效率）折進非理想因素。</p> <h3>為什麼矽「看不見」1550 nm</h3><p>矽能隙 E_g≈1.12 eV，對應截止波長約 1100 nm；1310/1550 nm 光子能量低於能隙，矽幾乎不吸收——這正是矽波導低損耗的原因，卻也代表矽不能當這個波段的偵測器。</p> <h3>為什麼選鍺</h3><p>鍺能隙約 0.66 eV，截止波長約 1880 nm，涵蓋 C 波段；且可直接磊晶生長在矽上（Ge-on-Si），與 CMOS 相容——不需要像雷射一樣異質接合，是矽光子平台少數能自己補上的主動元件缺口。</p> <p>吸收層厚→效率高但渡越時間長，速度受限——頻寬-效率取捨。應用 → \'+L("光收發器")+\'。</p>'},
 {id:"光源與雷射整合",en:"Laser Integration",cat:"主動",html:
- '<div class="callout"><b>一句話：</b>矽是<b>間接能隙</b>、發光效率極差，做不出好雷射，因此「晶片上的光源」是矽光子最大的先天缺口。</div>'+
- '<h3>三種策略</h3><ul><li><b>外接雷射（hybrid）</b>：雷射另做，光靠'+L("光柵耦合器與邊緣耦合")+'送進晶片。最成熟。</li>'+
- '<li><b>異質整合</b>：把 <b>III-V（InP/GaAs）</b> 鍵合到矽上再共同加工，與波導緊耦合。</li>'+
- '<li><b>異質磊晶</b>：直接在矽上長 III-V（如量子點雷射），良率是挑戰。</li></ul>'+
- '<p>矽什麼都能做，就是自己不會發光——這是 '+L("挑戰")+' 中最硬的一環。</p>'},
-{id:"可程式化光子電路",en:"Programmable Photonic Circuits",cat:"程式",html:
- '<div class="callout"><b>一句話：</b>用<b>同一片通用光子晶片</b>，靠軟體設定大量'+L("相位器")+'，就能實現多種功能，不必為每個應用重做專用晶片。這是 Bogaerts 等人 2020 <i>Nature</i> 論文的核心。</div>'+
- '<h3>核心概念</h3><ul><li>由許多'+L("可調基本單元")+'連成'+L("光子網格")+'。</li>'+
- '<li>調整每個單元的分光比與相位，就能把光路「重新佈線」。</li>'+
- '<li>類比電子界的 <b>FPGA</b> → 又稱 '+L("Field-Programmable Photonic Array")+'。</li></ul>'+
- '<h3>意義與代價</h3><ul><li>降低門檻：不用每功能都'+L("製程與代工")+'流片。</li>'+
- '<li>可重構、自我校準，適應製程誤差。</li><li>代價：較高損耗、較大面積、較多控制通道（見'+L("挑戰")+'）。</li></ul>'+
- '<p>想體驗「同一片硬體、不同佈線」？到上方「🔀 可程式化網格」點切換 cross/bar 看光如何改道。</p>'},
-{id:"可調基本單元",en:"Tunable Basic Unit (TBU)",cat:"程式",html:
- '<div class="callout"><b>一句話：</b>'+L("光子網格")+'的最小積木：一個<b>可調 2×2 耦合器</b>，通常是兩個'+L("方向耦合器與分光器")+'夾一個'+L("相位器")+'（即一個'+L("馬赫-曾德干涉儀")+'）。</div>'+
- '<h3>它能做什麼</h3><ul><li><b>bar 直通</b>、<b>cross 交叉</b>，或介於之間的<b>任意分光</b>並附加相位。</li></ul>'+
- '<p>把許多 TBU 依規則連成'+L("光子網格")+'並個別設定，就能合成任意線性光學轉換（分光、路由、濾波、矩陣乘法）——這是 '+L("可程式化光子電路")+' 的硬體基礎。它像光路上的「可調道岔＋號誌」。</p>'},
+ '<div class="callout"><b>這篇要回答：</b>矽光子幾乎什麼都能自己做，唯獨雷射做不好——物理根源是什麼？</div> <h3>直接 vs 間接能隙</h3><p>直接能隙材料（GaAs、InP）導帶最低點與價帶最高點在同一動量，躍遷只需放光子，效率高。矽是間接能隙——導帶與價帶最低/最高點動量不同，躍遷須同時發射/吸收聲子補動量差。</p> <h3>為什麼差了幾個數量級</h3><p>直接躍遷是二體過程（電子+光子），間接躍遷是三體過程（電子+光子+聲子）——機率遠低於二體過程，這是能帶結構的幾何事實，不是矽的品質問題。矽的自發輻射效率因此低上萬倍，增益不足以克服損耗起振。</p> <h3>三條解法</h3><p><b>III-V 異質整合</b>：晶粒鍵合到矽上，增益在 III-V、光模態延伸進矽波導——目前主流。<b>外部雷射</b>：完全不整合，光纖打光進晶片，多一道對準成本。<b>鍺錫合金/應變工程</b>：把鍺能帶拉向直接能隙，尚未大規模商用。</p> <p>平台限制 → \'+L("矽光子技術")+\'；系統方案 → \'+L("共封裝光學")+\'。</p>'},
+{id:"可程式化光子電路",en:"Programmable Photonics",cat:"程式",html:
+ '<div class="callout"><b>這篇要回答：</b>一顆晶片靠軟體設定就能變濾波器、路由器或運算單元——「通用」在數學上怎麼被保證？</div> <h3>任意線性光學＝么正矩陣</h3><div class="formula">E_out = U · E_in</div><p>無損系統（能量守恆）保證 U 么正，跟 S 參數的么正性同一套邏輯。</p> <h3>為什麼 MZI 網格能做到「任意」</h3><p>Reck/Clements 分解證明：任意 N×N 么正矩陣可分解成一系列 2×2 么正變換（正是 MZI+相位器能實現的操作）。為什麼數字對得上：么正矩陣自由度是 N²（N(N−1) 個旋轉角＋N 個相位），每個 \'+L("可調基本單元")+\' 恰好貢獻 2 個自由度，用 N(N−1)/2 個單元排成網格，總自由度剛好對上，可用逐步消去法把任意 U 分解、映射回每個單元設定值。</p> <h3>為什麼比做 N 個專用電路划算</h3><p>只需一種硬體拓樸，功能差異全靠燒錄設定——本質是把「多個 ASIC」換成光域的「可燒錄 FPGA」。</p> <p>排列方式 → \'+L("光子網格")+\'；應用 → \'+L("Field-Programmable Photonic Array")+\' · \'+L("光子運算")+\'。</p>'},
+{id:"可調基本單元",en:"Tunable Basic Unit",cat:"程式",html:
+ '<div class="callout"><b>這篇要回答：</b>一個 2×2 可調耦合器要怎麼設計，才能同時控制分光比與相位？</div> <h3>為什麼單一 MZI 不夠</h3><p>只用一個相位器時分光比可調，但兩輸出的相對相位固定死——要當獨立 2×2 么正單元，需要兩個自由度。</p> <h3>標準結構</h3><p>MZI 內部相位器 θ 控分光比（cross↔bar 連續變化），輸出端再加相位器 φ 校正整體相位——θ 只決定「多少功率去哪」，φ 只決定「相位差」，兩者正交，剛好對應 2×2 么正矩陣的 2 個獨立參數。少一個相位器就只能覆蓋 U 的子集合。</p> <h3>Bar / Cross</h3><p>θ=0 直通（bar），θ=π 完全交換（cross）。\'+L("Field-Programmable Photonic Array")+\' 常只用這兩個極限狀態當數位開關，但連續可調的能力才是它比機械開關更強大之處。</p> <p>組成 → \'+L("馬赫-曾德干涉儀")+\'；排列 → \'+L("光子網格")+\'。</p>'},
 {id:"光子網格",en:"Photonic Mesh",cat:"程式",html:
- '<div class="callout"><b>一句話：</b>由許多'+L("可調基本單元")+'規則連接成的網狀結構。設定每個單元就能把光任意佈線，實現'+L("可程式化光子電路")+'。</div>'+
- '<h3>兩大拓撲</h3><ul><li><b>前饋網格（feed-forward）</b>：光單向通過，實現任意<b>么正矩陣</b>。Reck 三角形與 Clements 矩形是經典排列（後者更緊湊）。常用於'+L("應用領域")+'的神經網路/矩陣運算。</li>'+
- '<li><b>循環網格（recirculating）</b>：光可回流成迴路，能做含回授的電路（濾波、延遲、'+L("環形諧振器")+'）。Bogaerts / Pérez–Capmany 推廣的<b>六角形網格</b>屬此類，通用性高。</li></ul>'+
- '<p>前饋像單行道系統（適合矩陣乘法），六角形循環網格允許環路（更接近萬用）。皆受限於'+L("挑戰")+'的累積損耗與調諧功耗。</p>'},
-{id:"Field-Programmable Photonic Array",en:"FPPA · 光子 FPGA",cat:"程式",html:
- '<div class="callout"><b>一句話：</b>「<b>光子版的 FPGA</b>」：一片由'+L("光子網格")+'構成、可反覆重新配置的通用光子晶片，靠「寫程式」設定各'+L("可調基本單元")+'即可改功能。</div>'+
- '<svg class="diagram" viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg">'+
-  '<text x="20" y="26" fill="#123039" font-size="15" font-weight="700">動畫：同一片硬體，改設定就改功能</text>'+
-  '<line x1="120" y1="80" x2="600" y2="80" stroke="#cfe3ea" stroke-width="3"/><line x1="120" y1="140" x2="600" y2="140" stroke="#cfe3ea" stroke-width="3"/>'+
-  '<circle cx="112" cy="80" r="7" fill="#0891b2"/><text x="96" y="70" fill="#4d6b76" font-size="11" text-anchor="end">輸入</text>'+
-  '<polyline fill="none" stroke="#7dd3fc" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" opacity="0.5" points="112,80 290,80 330,80 600,80"><animate attributeName="points" dur="5s" repeatCount="indefinite" values="112,80 290,80 330,80 600,80; 112,80 290,80 330,140 600,140; 112,80 290,80 330,80 600,80"/></polyline>'+
-  '<polyline fill="none" stroke="#0891b2" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" points="112,80 290,80 330,80 600,80"><animate attributeName="points" dur="5s" repeatCount="indefinite" values="112,80 290,80 330,80 600,80; 112,80 290,80 330,140 600,140; 112,80 290,80 330,80 600,80"/></polyline>'+
-  '<rect x="286" y="64" width="48" height="92" rx="8" stroke-width="2" fill="#ffffff" stroke="#0891b2"><animate attributeName="fill" dur="5s" repeatCount="indefinite" values="#ffffff;#fff7ed;#ffffff"/><animate attributeName="stroke" dur="5s" repeatCount="indefinite" values="#0891b2;#f59e0b;#0891b2"/></rect>'+
-  '<text x="310" y="176" fill="#4d6b76" font-size="10" text-anchor="middle">可調耦合器</text>'+
-  '<text x="612" y="84" fill="#4d6b76" font-size="12">out A</text><text x="612" y="144" fill="#4d6b76" font-size="12">out B</text>'+
-  '<text x="360" y="40" fill="#8aa4ae" font-size="11">耦合器在 bar（藍）↔ cross（橙）間切換，光就改走不同輸出</text>'+
-  '</svg>'+
- '<h3>與電子 FPGA 類比</h3><table><tr><th>電子 FPGA</th><th>光子 FPPA</th></tr>'+
- '<tr><td>可程式邏輯區塊 CLB</td><td>'+L("可調基本單元")+'</td></tr>'+
- '<tr><td>可程式繞線</td><td>'+L("光子網格")+'的連接</td></tr>'+
- '<tr><td>位元流配置</td><td>各'+L("相位器")+'的設定值</td></tr></table>'+
- '<p>讓「設計光子電路」從硬體製造變成軟體配置，大幅縮短開發、降低門檻，一片晶片支援多種'+L("應用領域")+'。限制是通用性帶來的損耗、面積與控制複雜度（見'+L("挑戰")+'）。</p>'},
-{id:"分波多工",en:"WDM · Wavelength-Division Multiplexing",cat:"光通",html:
- '<div class="callout"><b>一句話：</b>在同一條光纖裡<b>同時傳多個不同波長（顏色）的光</b>，每個波長是一條獨立通道——把一條路拓成多線道，讓單根光纖總容量倍增。</div>'+
- '<svg class="diagram" viewBox="0 0 720 210" xmlns="http://www.w3.org/2000/svg">'+
-  '<text x="20" y="24" fill="#123039" font-size="15" font-weight="700">動畫：五個波長合進同一條光纖</text>'+
-  '<rect x="330" y="40" width="46" height="150" rx="8" fill="#eef6f9" stroke="#b9d4dd"/><text x="353" y="204" fill="#4d6b76" font-size="11" text-anchor="middle">合波 MUX</text>'+
-  '<line x1="376" y1="115" x2="694" y2="115" stroke="#9fb8c2" stroke-width="6" stroke-linecap="round"/><text x="694" y="102" fill="#4d6b76" font-size="11" text-anchor="end">一條光纖 · 多波長並行</text>'+
-  '<g stroke-width="3" fill="none" opacity="0.3">'+
-   '<path d="M52,55 L322,55 C348,55 348,115 376,115" stroke="#e11d48"/><path d="M52,85 L322,85 C348,85 348,115 376,115" stroke="#ea580c"/>'+
-   '<path d="M52,115 L376,115" stroke="#059669"/><path d="M52,145 L322,145 C348,145 348,115 376,115" stroke="#0891b2"/>'+
-   '<path d="M52,175 L322,175 C348,175 348,115 376,115" stroke="#7c3aed"/></g>'+
-  '<g font-size="11" text-anchor="end">'+
-   '<text x="46" y="59" fill="#e11d48">λ1</text><text x="46" y="89" fill="#ea580c">λ2</text><text x="46" y="119" fill="#059669">λ3</text><text x="46" y="149" fill="#0891b2">λ4</text><text x="46" y="179" fill="#7c3aed">λ5</text></g>'+
-  '<circle r="4.5" fill="#e11d48"><animateMotion dur="2.6s" repeatCount="indefinite" begin="0s" path="M52,55 L322,55 C348,55 348,115 376,115 L694,115"/></circle>'+
-  '<circle r="4.5" fill="#ea580c"><animateMotion dur="2.6s" repeatCount="indefinite" begin="0.5s" path="M52,85 L322,85 C348,85 348,115 376,115 L694,115"/></circle>'+
-  '<circle r="4.5" fill="#059669"><animateMotion dur="2.6s" repeatCount="indefinite" begin="1s" path="M52,115 L376,115 L694,115"/></circle>'+
-  '<circle r="4.5" fill="#0891b2"><animateMotion dur="2.6s" repeatCount="indefinite" begin="1.5s" path="M52,145 L322,145 C348,145 348,115 376,115 L694,115"/></circle>'+
-  '<circle r="4.5" fill="#7c3aed"><animateMotion dur="2.6s" repeatCount="indefinite" begin="2s" path="M52,175 L322,175 C348,175 348,115 376,115 L694,115"/></circle>'+
-  '<circle r="4.5" fill="#e11d48"><animateMotion dur="2.6s" repeatCount="indefinite" begin="1.3s" path="M52,55 L322,55 C348,55 348,115 376,115 L694,115"/></circle>'+
-  '<circle r="4.5" fill="#059669"><animateMotion dur="2.6s" repeatCount="indefinite" begin="2.3s" path="M52,115 L376,115 L694,115"/></circle>'+
-  '<circle r="4.5" fill="#7c3aed"><animateMotion dur="2.6s" repeatCount="indefinite" begin="0.8s" path="M52,175 L322,175 C348,175 348,115 376,115 L694,115"/></circle>'+
-  '</svg>'+
- '<h3>兩大類</h3><table><tr><th>類型</th><th>通道間距</th><th>通道數</th><th>用途</th></tr>'+
- '<tr><td>CWDM 粗分波</td><td>20 nm</td><td>約 4–18</td><td>短距、低成本、免溫控</td></tr>'+
- '<tr><td>DWDM 密分波</td><td>0.8 / 0.4 nm（100 / 50 GHz）</td><td>40–96+</td><td>長途、高容量、需精密控溫</td></tr></table>'+
- '<p>DWDM 集中在 <b>C 波段（約 1530–1565 nm）</b>，因為這裡的摻鉺光纖放大器（EDFA）能一次放大所有通道。</p>'+
- '<h3>晶片上怎麼做</h3><ul><li>用 '+L("環形諧振器")+' 陣列或陣列波導光柵（AWG）把各波長合進／分出同一條 '+L("波導")+'。</li>'+
- '<li>每個微環對準一個通道，是矽光子 '+L("光收發器")+' 的主流做法；波長會隨溫度漂移，需 '+L("相位器")+' 熱鎖定。</li></ul>'+
- '<p>把光纖想成高速公路，WDM 就是「用不同顏色的車道同時開車」。想看動畫？到「🔬 互動元件」的環形諧振器分波示範。</p>'},
+ '<div class="callout"><b>這篇要回答：</b>把很多 \'+L("可調基本單元")+\' 排起來有前饋、循環兩種拓樸，取捨在比什麼？</div> <h3>前饋網格</h3><p>光只往一個方向走，無迴圈。沒有回授代表系統永遠穩定、延遲固定可預測——\'+L("可程式化光子電路")+\' 的 Reck/Clements 分解本身就是前饋結構。</p> <h3>循環網格（如六角形）</h3><p>允許光走回頭路或繞圈，能實現前饋做不到的功能：IIR 濾波器、類 \'+L("環形諧振器")+\' 窄頻共振、延遲線疊加——這些都需要光多次通過同一路徑並疊加干涉。前饋只能做 FIR 等效功能。</p> <h3>代價</h3><p>循環結構需要更多交叉與彎折，累積損耗更高，還需謹慎穩定性分析（迴路增益若因製程誤差超過 1，可能出現寄生共振）；前饋結構損耗路徑固定，更容易補償。</p> <p>理論基礎 → \'+L("可程式化光子電路")+\'。</p>'},
+{id:"Field-Programmable Photonic Array",en:"FPPA",cat:"程式",html:
+ '<div class="callout"><b>這篇要回答：</b>FPGA 靠查表與可程式互連做任意邏輯，FPPA 想在光域複製這個想法——能走多遠？</div> <h3>複製哪個部分</h3><p>把邏輯區塊換成波導交叉開關網路，用大量 \'+L("可調基本單元")+\' 排成交叉點陣列，每點設「直通」或「交換」（bar/cross）。為什麼用交叉開關而非任意矩陣：FPPA 主要追求任意路由，比 \'+L("可程式化光子電路")+\' 追求任意么正運算更聚焦，用二元開關就夠，簡化控制複雜度。</p> <h3>為什麼光域的可程式互連更難</h3><p>數位開關只需控制通/不通，導通路徑訊號不劣化；FPPA 每個交叉點即使「直通」仍有插入損耗與串音，會隨路徑上交叉點數累積（見 \'+L("光子電路的複雜度擴展")+\'）——FPPA 的可程式規模比電子 FPGA 更早撞到物理天花板。</p>'},
 {id:"光收發器",en:"Optical Transceiver",cat:"光通",html:
- '<div class="callout"><b>一句話：</b>把電訊號與光訊號<b>雙向互轉</b>的模組（發射 TX ＋接收 RX）——矽光子目前<b>最大的商業應用</b>。</div>'+
- '<svg class="diagram" viewBox="0 0 720 180" xmlns="http://www.w3.org/2000/svg">'+
-  '<text x="20" y="24" fill="#123039" font-size="15" font-weight="700">動畫：電 → 光 → 電</text>'+
-  '<path d="M30,110 h18 v-30 h22 v30 h22 v-30 h22 v30 h18" fill="none" stroke="#d97706" stroke-width="2.5"/><text x="30" y="140" fill="#a15c06" font-size="11">電訊號 1 0 1 1</text>'+
-  '<rect x="170" y="70" width="70" height="52" rx="8" fill="#eefaf4" stroke="#059669"/><text x="205" y="100" fill="#0a7350" font-size="11" text-anchor="middle">TX</text><text x="205" y="138" fill="#4d6b76" font-size="10" text-anchor="middle">雷射+調變器</text>'+
-  '<line x1="240" y1="96" x2="500" y2="96" stroke="#9fb8c2" stroke-width="6" stroke-linecap="round"/><text x="370" y="80" fill="#4d6b76" font-size="11" text-anchor="middle">光纖（光脈衝）</text>'+
-  '<rect x="500" y="70" width="70" height="52" rx="8" fill="#f3effe" stroke="#7c3aed"/><text x="535" y="100" fill="#5b30b0" font-size="11" text-anchor="middle">RX</text><text x="535" y="138" fill="#4d6b76" font-size="10" text-anchor="middle">光偵測器</text>'+
-  '<path d="M578,110 h18 v-30 h22 v30 h22 v-30 h22 v30 h8" fill="none" stroke="#d97706" stroke-width="2.5"/><text x="600" y="140" fill="#a15c06" font-size="11">電訊號 1 0 1 1</text>'+
-  '<g fill="#22b8e6">'+
-   '<circle r="5"><animateMotion dur="1.8s" repeatCount="indefinite" begin="0s" path="M245,96 L500,96"/></circle>'+
-   '<circle r="5"><animateMotion dur="1.8s" repeatCount="indefinite" begin="0.45s" path="M245,96 L500,96"/></circle>'+
-   '<circle r="5"><animateMotion dur="1.8s" repeatCount="indefinite" begin="0.9s" path="M245,96 L500,96"/></circle>'+
-   '<circle r="5"><animateMotion dur="1.8s" repeatCount="indefinite" begin="1.35s" path="M245,96 L500,96"/></circle></g>'+
-  '</svg>'+
- '<h3>內部組成</h3><ul><li><b>發射 TX</b>：'+L("光源與雷射整合")+' → '+L("調變器")+'（寫入資料）→ 驅動電路 → '+L("光柵耦合器與邊緣耦合")+'。</li>'+
- '<li><b>接收 RX</b>：光進來 → '+L("光偵測器")+' → 跨阻放大器（TIA）→ 還原成電。</li>'+
- '<li>常整合 '+L("分波多工")+' 合／分波器，一個模組處理多波長。</li></ul>'+
- '<h3>規格演進（資料中心）</h3><table><tr><th>世代</th><th>總速率</th><th>常見做法</th></tr>'+
- '<tr><td>400G</td><td>400 Gb/s</td><td>8×50G / 4×100G PAM4</td></tr>'+
- '<tr><td>800G</td><td>800 Gb/s</td><td>8×100G / 4×200G PAM4</td></tr>'+
- '<tr><td>1.6T</td><td>1.6 Tb/s</td><td>8×200G PAM4（單波長 200G）</td></tr></table>'+
- '<p><b>PAM4</b>（四階振幅，一符號 2 位元）是短距主流；封裝多為 OSFP / QSFP-DD，功耗力求 &lt;25 W。距離代號：DR 500 m、FR 2 km、LR 10 km。長途則走 '+L("相干光通訊")+'。</p>'},
-{id:"相干光通訊",en:"Coherent Optical Communication",cat:"光通",html:
- '<div class="callout"><b>一句話：</b>不只用「光的亮暗」，而是同時利用光的<b>振幅、相位、偏振</b>承載資訊，接收端用本地雷射＋DSP 還原——大幅提升每符號位元數與傳輸距離。</div>'+
- '<svg class="diagram" viewBox="0 0 720 250" xmlns="http://www.w3.org/2000/svg">'+
-  '<text x="20" y="24" fill="#123039" font-size="15" font-weight="700">動畫：16QAM 星座——一個符號帶 4 位元</text>'+
-  '<line x1="40" y1="135" x2="270" y2="135" stroke="#ccd9df" stroke-width="1.5"/><line x1="155" y1="30" x2="155" y2="240" stroke="#ccd9df" stroke-width="1.5"/>'+
-  '<text x="266" y="128" fill="#8aa4ae" font-size="11">I（同相）</text><text x="160" y="40" fill="#8aa4ae" font-size="11">Q（正交）</text>'+
-  '<g fill="#c3d3da">'+
-   '<circle cx="75" cy="55" r="4"/><circle cx="128" cy="55" r="4"/><circle cx="182" cy="55" r="4"/><circle cx="235" cy="55" r="4"/>'+
-   '<circle cx="75" cy="108" r="4"/><circle cx="128" cy="108" r="4"/><circle cx="182" cy="108" r="4"/><circle cx="235" cy="108" r="4"/>'+
-   '<circle cx="75" cy="162" r="4"/><circle cx="128" cy="162" r="4"/><circle cx="182" cy="162" r="4"/><circle cx="235" cy="162" r="4"/>'+
-   '<circle cx="75" cy="215" r="4"/><circle cx="128" cy="215" r="4"/><circle cx="182" cy="215" r="4"/><circle cx="235" cy="215" r="4"/></g>'+
-  '<line x1="155" y1="135" x2="235" y2="55" stroke="#0891b2" stroke-width="2"><animate attributeName="x2" dur="4s" calcMode="discrete" repeatCount="indefinite" values="235;75;182;128;235;75;182;128"/><animate attributeName="y2" dur="4s" calcMode="discrete" repeatCount="indefinite" values="55;215;108;162;215;55;215;108"/></line>'+
-  '<circle r="7" fill="#0891b2"><animate attributeName="cx" dur="4s" calcMode="discrete" repeatCount="indefinite" values="235;75;182;128;235;75;182;128"/><animate attributeName="cy" dur="4s" calcMode="discrete" repeatCount="indefinite" values="55;215;108;162;215;55;215;108"/></circle>'+
-  '<g font-size="13" fill="#2b4a53"><text x="330" y="70" font-weight="700" fill="#123039">同時用三個維度傳資訊</text>'+
-   '<text x="330" y="100"><tspan fill="#0891b2" font-weight="700">振幅</tspan>：向量離原點的長度</text>'+
-   '<text x="330" y="126"><tspan fill="#7c3aed" font-weight="700">相位</tspan>：向量的角度</text>'+
-   '<text x="330" y="152"><tspan fill="#e11d48" font-weight="700">偏振</tspan>：兩個垂直方向各傳一路（容量加倍）</text>'+
-   '<text x="330" y="192" font-size="12" fill="#4d6b76">16 個星座點 = 4 位元/符號；</text>'+
-   '<text x="330" y="212" font-size="12" fill="#4d6b76">相較之下 OOK 一次只傳 1 位元。</text></g>'+
-  '</svg>'+
- '<h3>與強度調變（PAM4）的差別</h3><table><tr><th></th><th>強度調變 IM-DD</th><th>相干 Coherent</th></tr>'+
- '<tr><td>維度</td><td>只有振幅</td><td>振幅＋相位＋兩偏振</td></tr>'+
- '<tr><td>格式</td><td>PAM4</td><td>QPSK / 16QAM（DP-QAM）</td></tr>'+
- '<tr><td>距離</td><td>短（機房內）</td><td>長途、超高容量</td></tr>'+
- '<tr><td>複雜度</td><td>低、便宜</td><td>高，需強大 DSP</td></tr></table>'+
- '<h3>核心概念</h3><ul><li><b>QAM</b>：在振幅×相位平面放多個星座點，一符號帶更多位元。</li>'+
- '<li><b>偏振多工（DP）</b>：兩個垂直偏振各傳一路，容量加倍。</li>'+
- '<li>需 IQ '+L("調變器")+'（多個 '+L("馬赫-曾德干涉儀")+' 組合）與平衡 '+L("光偵測器")+'——都是矽光子強項。近年 400ZR 把相干帶進資料中心互連。</li></ul>'},
+ '<div class="callout"><b>這篇要回答：</b>收發器模組裡雷射、調變器、偵測器怎麼分工？鏈路預算怎麼「算帳」？</div> <h3>最小組成</h3><p>發射：\'+L("光源與雷射整合")+\' 提供載波 → \'+L("調變器")+\' 寫入電訊號 → \'+L("光柵耦合器與邊緣耦合")+\' 送出晶片。接收：\'+L("光柵耦合器與邊緣耦合")+\' 進晶片 → \'+L("光偵測器")+\' 轉回電流。</p> <h3>鏈路預算</h3><p>跟微波 Friis 鏈路預算同構的算帳邏輯：</p> <div class="formula">P_rx(dBm) = P_tx − ΣL_loss</div><p>餘裕 = P_rx − P_sensitivity，通常抓 3–6 dB 安全值，因老化、對準漂移會緩慢劣化。</p> <h3>為什麼調變格式要升級</h3><p>OOK（開關鍵控）撞頻寬牆後改 PAM4（4 電平，每符號 2 位元）：在同樣元件頻寬限制下用「多電平」塞更多資訊，代價是電平間距變小、需要更高訊噪比與更複雜均衡。更高階見 \'+L("相干光通訊")+\'。</p>'},
+{id:"分波多工",en:"WDM / DWDM",cat:"光通",html:
+ '<div class="callout"><b>這篇要回答：</b>為什麼能在同一條光纖裡同時塞進幾十個獨立通道，彼此互不干擾？</div> <h3>為什麼波長可以共用纖芯</h3><p>光纖是線性媒介，不同波長同時傳播不互相作用；只要接收端能分開，每個波長就是獨立通道：總容量＝通道數 × 每通道速率。</p> <h3>為什麼用 \'+L("環形諧振器")+\' 陣列做合波/分波</h3><p>每個環只對特定共振波長有反應，一排環半徑略有差異、對準不同 ITU 波長，就組成波長選擇性的分類器——比稜鏡或干涉濾波片更緊湊、更適合晶片整合。</p> <h3>CWDM vs DWDM</h3><p>通道間距越窄（DWDM）能塞更多通道，但波長精度要求更高、更易串音；CWDM 用寬間距換免溫控低成本，DWDM 用精密控制換最大容量，是長途骨幹網標準。</p>'},
+{id:"相干光通訊",en:"Coherent Optical",cat:"光通",html:
+ '<div class="callout"><b>這篇要回答：</b>開關鍵控只傳「有沒有光」，相干通訊怎麼在一個符號裡塞進振幅、相位、偏振三維資訊？</div> <h3>為什麼要用本地振盪器</h3><p>\'+L("光偵測器")+\' 只測 |E|²，直接偵測會丟失相位。讓訊號光與本地雷射（LO）混合干涉：</p> <div class="formula">I ∝ |E_sig+E_LO|² = |E_sig|²+|E_LO|²+2|E_sig||E_LO|cos(Δφ)</div> <p>交叉項把測不到的 Δφ 轉成偵測器讀得到的強度變化——跟 \'+L("馬赫-曾德干涉儀")+\' 用干涉轉換相位是同一招式。</p> <h3>IQ 調變</h3><p>90° 光混合器把訊號分兩路，分別跟 LO 做同相(I)/正交(Q)混合，等於把複數振幅完整投影到實部虛部——發射端用兩個並聯 MZM 合成星座圖任意一點（16-QAM、64-QAM），每符號帶 log₂M 位元。</p> <h3>雙偏振</h3><p>水平/垂直偏振正交、互不干擾，等於再翻一倍通道——DP-16QAM 一符號帶 2×4=8 位元。</p>'},
+{id:"共封裝光學",en:"Co-packaged Optics · CPO",cat:"光通",html:
+ '<div class="callout"><b>這篇要回答：</b>為什麼交換晶片旁那幾公分電路板走線，會變成資料中心最大的功耗瓶頸？</div> <h3>電訊號能耗為何隨走線長度惡化</h3><p>驅動走線電容每次翻轉能耗約 ½CV²，電容大致隨長度線性增加。傳統架構訊號要先在 PCB 走幾公分到面板可插拔 \'+L("光收發器")+\' 才轉光，這段電路徑能耗隨資料率上升不成比例增加。</p> <h3>CPO 的省電邏輯</h3><p>把光引擎直接封裝在 ASIC 旁幾毫米內：既然能耗正比走線電容、電容正比長度，把長度從公分縮到毫米，充放電能耗等比例下降，還能省掉模組內的重定時 DSP。</p> <h3>代價</h3><p>可插拔模組壞了直接換；CPO 焊死在封裝裡，故障可能要整顆交換器下線——這是折衷方案 LPO（線性可插拔光學，拿掉模組 DSP、交換晶片直接驅動）出現的原因。</p>'},
 {id:"光子運算",en:"Photonic Computing",cat:"光通",html:
- '<div class="callout"><b>一句話：</b>用光執行運算，尤其是 AI 最吃重的<b>矩陣–向量乘法</b>。光通過 '+L("光子網格")+' 時自然完成「相乘再相加」，以接近光速、極低能耗平行運算。</div>'+
- '<h3>為什麼用光算 AI</h3><ul><li>神經網路核心是大量乘加（MAC）。</li>'+
- '<li>光通過一組 '+L("可調基本單元")+' 組成的前饋 '+L("光子網格")+' 時，干涉會自動把輸入向量「乘上」網格代表的矩陣——<b>一次通過完成整個矩陣乘法</b>。</li>'+
- '<li>不同 '+L("分波多工")+' 波長還能同時算多組資料。</li></ul>'+
- '<h3>現況與限制</h3><p>2017 年 MIT 用可程式化網格示範以光跑神經網路；之後多家新創投入。限制：類比精度有限、光電轉換開銷、'+L("挑戰")+' 的校準成本——目前定位為「加速特定線性運算」，而非取代通用處理器。它與 '+L("光收發器")+' 共用同一套矽光子元件庫。</p>'},
-{id:"共封裝光學",en:"Co-packaged Optics (CPO)",cat:"光通",html:
- '<div class="callout"><b>一句話：</b>把 '+L("光收發器")+' 從面板上的可插拔模組，<b>搬到緊貼交換晶片（ASIC）的同一封裝裡</b>，縮短電訊號路徑，解決資料中心「頻寬爆炸、功耗撞牆」。</div>'+
- '<svg class="diagram" viewBox="0 0 720 250" xmlns="http://www.w3.org/2000/svg">'+
-  '<text x="20" y="24" fill="#123039" font-size="15" font-weight="700">動畫：電訊號路徑，越短越省電</text>'+
-  '<text x="20" y="52" fill="#e11d48" font-size="12" font-weight="700">傳統可插拔：長電路徑</text>'+
-  '<rect x="40" y="66" width="70" height="40" rx="6" fill="#eef6f9" stroke="#b9d4dd"/><text x="75" y="90" fill="#4d6b76" font-size="11" text-anchor="middle">ASIC</text>'+
-  '<line x1="110" y1="86" x2="470" y2="86" stroke="#e11d48" stroke-width="4"/><text x="290" y="78" fill="#e11d48" font-size="10" text-anchor="middle">長電路徑（耗電）</text>'+
-  '<rect x="470" y="66" width="66" height="40" rx="6" fill="#f3effe" stroke="#7c3aed"/><text x="503" y="90" fill="#5b30b0" font-size="10" text-anchor="middle">光模組</text>'+
-  '<line x1="536" y1="86" x2="694" y2="86" stroke="#9fb8c2" stroke-width="6" stroke-linecap="round"/>'+
-  '<circle r="5" fill="#e11d48"><animateMotion dur="2.6s" repeatCount="indefinite" path="M110,86 L470,86"/></circle>'+
-  '<circle r="5" fill="#22b8e6"><animateMotion dur="1.6s" repeatCount="indefinite" path="M540,86 L694,86"/></circle>'+
-  '<text x="20" y="158" fill="#059669" font-size="12" font-weight="700">CPO 共封裝：電路徑極短</text>'+
-  '<rect x="40" y="172" width="70" height="40" rx="6" fill="#eef6f9" stroke="#b9d4dd"/><text x="75" y="196" fill="#4d6b76" font-size="11" text-anchor="middle">ASIC</text>'+
-  '<line x1="110" y1="192" x2="150" y2="192" stroke="#059669" stroke-width="4"/>'+
-  '<rect x="150" y="172" width="60" height="40" rx="6" fill="#f3effe" stroke="#7c3aed"/><text x="180" y="196" fill="#5b30b0" font-size="10" text-anchor="middle">光引擎</text>'+
-  '<line x1="210" y1="192" x2="694" y2="192" stroke="#9fb8c2" stroke-width="6" stroke-linecap="round"/><text x="450" y="184" fill="#4d6b76" font-size="10" text-anchor="middle">光纖（省下的都是電力）</text>'+
-  '<circle r="5" fill="#059669"><animateMotion dur="0.7s" repeatCount="indefinite" path="M110,192 L150,192"/></circle>'+
-  '<circle r="5" fill="#22b8e6"><animateMotion dur="2s" repeatCount="indefinite" begin="0s" path="M210,192 L694,192"/></circle>'+
-  '<circle r="5" fill="#22b8e6"><animateMotion dur="2s" repeatCount="indefinite" begin="1s" path="M210,192 L694,192"/></circle>'+
-  '</svg>'+
- '<h3>為什麼需要</h3><ul><li>交換晶片頻寬每兩年翻倍（數十 Tb/s），但電訊號在 PCB 上跑越快越遠就越耗電、越衰減。</li>'+
- '<li>把光引擎移到 ASIC 旁，電通道縮到最短，<b>每位元能耗大幅下降</b>。</li></ul>'+
- '<h3>三種路線</h3><ul><li><b>可插拔</b>：目前主流，好維護，但較耗電。</li>'+
- '<li><b>CPO 共封裝</b>：最省電、密度最高，但維修性與良率是挑戰。</li>'+
- '<li><b>LPO 線性可插拔</b>：拿掉模組內 DSP、靠交換晶片直驅，省電又保留可插拔。</li></ul>'+
- '<p>CPO 正需要矽光子的高整合度，把 '+L("調變器")+'、'+L("光偵測器")+'、'+L("分波多工")+' 密集整合，並用 '+L("光源與雷射整合")+' 外置光源統一供光。</p>'},
+ '<div class="callout"><b>這篇要回答：</b>為什麼「光的干涉」可以直接拿來做矩陣乘法？光學神經網路的速度優勢從哪來？</div> <h3>矩陣-向量乘法＝MZI 網格在做的事</h3><p>\'+L("可程式化光子電路")+\' 的 MZI 網格能實現任意 U，把輸入 x 轉成 Ux；神經網路全連接層本質正是 y=Wx。光學做乘加的方式就是波的干涉疊加——不需像電子逐一 MAC 迴圈，全通道乘加在光同時穿過網格時物理上同步完成。</p> <h3>為什麼被稱為近零延遲</h3><p>運算時間只等於光的渡越時間（奈秒級），被動干涉不需額外供電（只在設定相位器時耗電）——這跟電子每次乘法都要對電容充放電（½CV²）的能耗結構本質不同。</p> <h3>還沒取代電子運算的原因</h3><p>線性光學元件本身無法產生<b>非線性</b>（神經網路必需），常仍需光轉電做非線性再轉回光；類比精度受相位器控制精度與偵測器雜訊限制；規模受 \'+L("光子電路的複雜度擴展")+\' 的損耗預算限制。</p>'},
 {id:"應用領域",en:"Applications",cat:"應用",html:
- '<div class="callout"><b>一句話：</b>'+L("光子積體電路")+'從最成熟的光通訊，延伸到運算、感測與量子等前沿。</div>'+
- '<h3>主要應用</h3><ul><li><b>光通訊收發器</b>：最大宗。用'+L("調變器")+'＋'+L("光偵測器")+'做高速光收發，WDM 多波長並行。</li>'+
- '<li><b>光學運算 / AI</b>：用'+L("光子網格")+'做<b>矩陣–向量乘法</b>，以光速低功耗跑神經網路（2017 MIT 示範）。</li>'+
- '<li><b>微波光子</b>：用光處理高頻 RF（濾波、延遲、波束成形）。</li>'+
- '<li><b>感測 / 光達</b>：晶片級光學相位陣列做固態光達；'+L("環形諧振器")+'做生化感測。</li>'+
- '<li><b>量子光子</b>：用'+L("光子網格")+'操控光子量子位元。</li></ul>'+
- '<p>許多應用能對映到'+L("可程式化光子電路")+'同一種通用網格，攤薄開發成本。</p>'},
+ '<div class="callout"><b>這篇要回答：</b>組合起來的 PIC 目前落地在哪些戰場？各自看重哪個物理優勢？</div> <h3>光通訊</h3><p>資料中心、電信骨幹網需要 \'+L("光收發器")+\'、\'+L("分波多工")+\'、\'+L("相干光通訊")+\' 的頻寬密度，核心訴求是傳輸能耗與頻寬解耦——市場最成熟、出貨量最大。</p> <h3>微波光子</h3><p>把微波訊號調變到光載波，利用光纖低損耗做長距離、抗電磁干擾的射頻訊號傳輸與延遲線，常見於雷達與衛星酬載。</p> <h3>光學運算 / AI 加速</h3><p>利用 \'+L("光子運算")+\' 的矩陣-干涉對應，做神經網路推論加速器。</p> <h3>感測</h3><p>\'+L("環形諧振器")+\' 對折射率變化極敏感，可做生化感測；相位干涉結構也用於 LiDAR 光學相控陣掃描。</p> <h3>量子光子</h3><p>精密操控單光子干涉與糾纏，看重的是相位控制精度而非速度。</p>'},
 {id:"挑戰",en:"Challenges",cat:"應用",html:
- '<div class="callout"><b>一句話：</b>PIC——尤其'+L("可程式化光子電路")+'——要大規模落地，仍面臨損耗、功耗、控制、面積與光源等瓶頸。</div>'+
- '<div class="chartbox" id="chartbox"><canvas id="chart" width="760" height="300" style="width:100%;height:auto"></canvas></div>'+
- '<h3>主要瓶頸</h3><ul><li><b>損耗累積</b>：每個彎折、耦合器、'+L("光柵耦合器與邊緣耦合")+'介面都損失功率，限制網格規模。</li>'+
- '<li><b>調諧功耗與散熱</b>：上千個'+L("相位器")+'，熱光式會災難性耗電 → 推動 PCM/MEMS。</li>'+
- '<li><b>控制與校準</b>：每個可調元件要獨立電控、對溫度/製程敏感。</li>'+
- '<li><b>面積與密度</b>：受波長限制，難奈米化。</li><li><b>'+L("光源與雷射整合")+'</b>：矽不發光。</li></ul>'+
- '<p>難點不在單一元件，而在「同時餵電、控溫、校準上千個可調元件還要壓低損耗」。</p>'},
+ '<div class="callout"><b>這篇要回答：</b>把各篇的「代價」收斂成一份總帳——PIC 規模化真正卡住的是哪幾項？</div> <h3>損耗預算是根</h3><p>\'+L("光子電路的複雜度擴展")+\' 推導過，插入損耗隨元件數累加、無法再生。損耗預算越緊，元件數、雷射功率、偵測器靈敏度要求就越苛刻。</p> <h3>調諧功耗</h3><p>熱調諧維持大量 \'+L("相位器")+\' 工作點需持續供電（非相變材料是非揮發的），大規模晶片上光是維持設定值的靜態功耗就可能超過運算本身效益——\'+L("光子運算")+\' 能效優勢打折扣的主因之一。</p> <h3>校準與良率</h3><p>\'+L("環形諧振器")+\' 共振波長對奈米級製程誤差極敏感，出廠前幾乎都需逐顆量測、主動校準對準目標通道。</p> <h3>面積與雷射整合</h3><p>大規模 \'+L("光子網格")+\' 需要大量彎折交叉，累積面積遠大於電子電路；矽不發光（\'+L("光源與雷射整合")+\'）是唯一「借不到」CMOS 產能的一塊。</p> <p>母題：光沒有數位再生機制，任何損耗誤差功耗都直接累積進系統。</p>'},
 {id:"製程與代工",en:"Foundry & PDK",cat:"應用",html:
- '<div class="callout"><b>一句話：</b>讓設計者不必自建無塵室，就能把'+L("光子積體電路")+'送到專業代工廠製造的生態；核心是標準化的 <b>製程設計套件（PDK）</b>。</div>'+
- '<h3>關鍵組成</h3><ul><li><b>代工廠</b>：imec、AIM Photonics、GlobalFoundries 等，提供標準製程與多專案晶圓（MPW）共乘流片。</li>'+
- '<li><b>PDK</b>：已量測、可靠的標準元件庫（'+L("波導")+'、耦合器、'+L("調變器")+'、'+L("光偵測器")+'…），像堆積木一樣組電路。</li>'+
- '<li><b>設計自動化</b>：版圖、模擬、驗證工具。</li></ul>'+
- '<p>這正是電子 IC 成功的模式——<b>設計與製造分離</b>。有穩定 PDK 才可能'+L("光子電路的複雜度擴展")+'，也是'+L("可程式化光子電路")+'能量產的前提。</p>'}
+ '<div class="callout"><b>這篇要回答：</b>矽光子怎麼從實驗室走向量產？PDK 扮演什麼角色？</div> <h3>為什麼能走代工模式</h3><p>矽光子製程與 CMOS 高度重疊（見 \'+L("矽光子技術")+\'），代工廠可在既有產線開光子製程模組，讓設計團隊像設計電子 IC 一樣無晶圓廠設計光子晶片。</p> <h3>PDK 提供什麼</h3><p>標準元件庫（預先驗證的 \'+L("波導")+\'、\'+L("方向耦合器與分光器")+\'、\'+L("環形諧振器")+\' 版圖與模型）、設計規則檢查、製程校正模型（尺寸誤差如何影響共振波長偏移）。</p> <h3>為什麼 PDK 對矽光子特別關鍵</h3><p>電子電路對製程誤差通常不敏感（數位有雜訊容裕），但光子元件（尤其共振類）對奈米級誤差極敏感——PDK 的製程校正模型讓設計者能在流片前就預判良率，而非流片後才發現不 work。</p> <p>良率與挑戰 → \'+L("挑戰")+\'。</p>'},
 ];
 const EDGES=[
  ["光子積體電路","波導"],["光子積體電路","為什麼要用光子"],["光子積體電路","矽光子技術"],
