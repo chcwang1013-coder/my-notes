@@ -288,6 +288,7 @@ const EDGES=[
  ["控制系統設計原則與案例研究","根軌跡設計法"],["控制系統設計原則與案例研究","頻率響應設計法與PID"],
  ["控制系統設計原則與案例研究","狀態空間設計"],["控制系統設計原則與案例研究","數位控制"]
 ];
+const EXTRA={};
 
 const NById=Object.fromEntries(NOTES.map(n=>[n.id,n]));
 const sidebar=document.getElementById('sidebar');
@@ -362,6 +363,9 @@ tabNotes.onclick=showNotes;tabGraph.onclick=showGraph;tabDemo.onclick=showDemo;
 
 function drawChart(kind){}
 function buildLegend(){document.getElementById('legend').innerHTML=Object.keys(CATS).map(k=>'<div><i style="background:'+CATS[k].raw+'"></i>'+CATS[k].name+'</div>').join('');}
+const svg=document.getElementById('graph');
+const SVGNS='http://www.w3.org/2000/svg';
+const G={started:false,nodes:[],edges:[],raf:null};
 function startGraph(){
  if(G.started)return;G.started=true;buildLegend();
  const W=svg.clientWidth||900,H=svg.clientHeight||600;
