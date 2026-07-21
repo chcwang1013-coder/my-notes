@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>再生能源 · 互動知識庫</title>
+<style>
+  :root{
+    --bg:#eef6f9; --bg2:#ffffff; --panel:#ffffff; --panel2:#f1f8fb;
+    --line:#d5e5ec; --text:#123039; --muted:#4d6b76; --dim:#8aa4ae;
+    --cyan:#0891b2; --green:#059669; --amber:#d97706; --purple:#7c3aed; --pink:#e11d48;
+    --accent:#0e9bc4;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:
+      radial-gradient(1100px 420px at 50% -120px, rgba(14,155,196,.14), transparent 70%),
+      linear-gradient(180deg,#f6fbfd 0%,#e9f3f7 100%);
+    color:var(--text);font-family:'PingFang TC','Microsoft JhengHei','Helvetica Neue',system-ui,sans-serif;
+    line-height:1.75;overflow:hidden}
+  header{position:fixed;top:0;left:0;right:0;height:60px;z-index:20;
+    display:flex;align-items:center;gap:16px;padding:0 20px;
+    background:rgba(255,255,255,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  header::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;
+    background:linear-gradient(90deg,#e11d48,#d97706,#eab308,#059669,#0891b2,#4f46e5,#7c3aed);opacity:.85}
+  header h1{font-size:18px;margin:0;font-weight:800;letter-spacing:.5px;white-space:nowrap}
+  header h1 .em{color:var(--accent)}
+  .search{flex:1;max-width:340px;position:relative}
+  .search input{width:100%;padding:8px 12px 8px 34px;border-radius:10px;
+    border:1px solid var(--line);background:var(--panel);color:var(--text);font-size:14px;outline:none}
+  .search input:focus{border-color:var(--accent)}
+  .search svg{position:absolute;left:10px;top:9px;opacity:.6}
+  .tabs{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+  .tabs button{padding:8px 14px;border-radius:10px;border:1px solid var(--line);
+    background:var(--panel);color:var(--muted);font-size:13.5px;cursor:pointer;transition:.15s;font-family:inherit}
+  .tabs button:hover{color:var(--text);border-color:var(--accent)}
+  .tabs button.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700;box-shadow:0 2px 10px rgba(14,155,196,.35)}
+  .wrap{position:fixed;top:60px;left:0;right:0;bottom:0;display:flex}
+  aside{width:290px;flex:none;overflow-y:auto;padding:16px 10px 60px;
+    border-right:1px solid var(--line);background:rgba(255,255,255,.55)}
+  .cat{margin:10px 8px 4px;font-size:12px;font-weight:700;letter-spacing:1px;color:var(--dim)}
+  .navlink{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:8px;
+    color:var(--muted);cursor:pointer;font-size:14px;transition:.12s}
+  .navlink:hover{background:var(--panel);color:var(--text)}
+  .navlink.active{background:var(--panel2);color:#123039;font-weight:700;box-shadow:inset 3px 0 0 var(--accent)}
+  .navlink .dot{width:8px;height:8px;border-radius:50%;flex:none}
+  .navlink small{color:var(--dim);font-size:10.5px;margin-left:auto;text-align:right}
+  main{flex:1;overflow-y:auto;padding:38px 46px 90px;scroll-behavior:smooth}
+  .note{max-width:820px;margin:0 auto;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .crumbs{font-size:13px;color:var(--dim);margin-bottom:10px}
+  .crumbs .tag{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11.5px;font-weight:700;margin-right:6px}
+  h2.title{font-size:29px;margin:2px 0 4px;font-weight:800}
+  .en{color:var(--muted);font-size:15px;margin-bottom:18px;letter-spacing:.5px}
+  .callout{background:linear-gradient(180deg,rgba(34,211,238,.12),rgba(34,211,238,.03));
+    border-left:3px solid var(--accent);border-radius:8px;padding:12px 16px;margin:18px 0;color:#123039}
+  .callout b{color:#0e5a6b}
+  main h3{font-size:18px;margin:26px 0 8px;color:#123039;border-bottom:1px solid var(--line);padding-bottom:6px}
+  main p{margin:10px 0}
+  main ul{margin:10px 0;padding-left:22px}
+  main li{margin:5px 0}
+  .diagram{width:100%;border-radius:12px;border:1px solid var(--line);margin:16px 0;background:#fff;display:block;box-shadow:0 2px 12px rgba(18,48,57,.06)}
+  .formula{font-family:'Cambria Math',Georgia,serif;font-size:18px;text-align:center;
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin:16px 0;color:var(--text)}
+  .eqcard{background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid var(--line);border-radius:14px;
+    padding:18px 20px;margin:18px 0;box-shadow:0 3px 14px rgba(18,48,57,.06)}
+  .eqcard .eqt{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--accent);text-align:center;margin-bottom:2px}
+  .eqcard .eq{font-family:'Cambria Math','Times New Roman',Georgia,serif;font-size:32px;text-align:center;
+    color:#123039;margin:6px 0 16px;line-height:1.35}
+  .eqcard .eq i{font-style:italic}
+  .eqcard .eq sub{font-size:.6em;vertical-align:-.25em} .eqcard .eq sup{font-size:.6em;vertical-align:.5em}
+  .eqcard .lg{display:grid;gap:8px}
+  .eqcard .row{display:flex;gap:14px;align-items:baseline;padding:9px 14px;background:#fff;border:1px solid var(--line);border-radius:10px}
+  .eqcard .s{font-family:'Cambria Math','Times New Roman',Georgia,serif;font-style:italic;font-weight:800;
+    font-size:20px;min-width:58px;text-align:center;flex:none}
+  .eqcard .s sub{font-size:.6em;vertical-align:-.2em}
+  .eqcard .m{font-size:13.5px;color:#2b4a53;line-height:1.6}
+  .eqcard .m b{color:#123039}
+  .eqcard .u{display:inline-block;margin-left:8px;font-size:11.5px;color:#5b8090;background:#eef6f9;
+    border:1px solid var(--line);border-radius:20px;padding:1px 9px}
+  .eqcard .cap{font-size:12.5px;color:var(--dim);text-align:center;margin-top:12px}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 12px;text-align:left}
+  th{background:#e4f1f5;color:#123039;font-weight:700}
+  td{background:#fbfeff;color:#2b4a53}
+  tr:nth-child(even) td{background:#f2f8fb}
+  a.wl{color:var(--accent);cursor:pointer;text-decoration:none;border-bottom:1px dashed rgba(34,211,238,.5)}
+  a.wl:hover{color:#0b5566;background:rgba(14,155,196,.14);border-radius:3px}
+  .related{margin-top:34px;padding-top:16px;border-top:1px solid var(--line)}
+  .related .cat{margin-left:0}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .pathrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:16px 0 8px}
+  .stage{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:24px;background:#fff;
+    border:1px solid var(--line);cursor:pointer;font-weight:700;color:#123039;transition:.15s;box-shadow:0 1px 6px rgba(18,48,57,.05)}
+  .stage:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(18,48,57,.12);border-color:var(--accent)}
+  .stage .d{width:10px;height:10px;border-radius:50%;flex:none}
+  .pathrow .arrow{color:var(--dim);font-weight:800;font-size:16px}
+  .catgroup{margin:14px 0}
+  .catgroup .cl{font-size:12.5px;font-weight:800;letter-spacing:.5px;margin-bottom:7px;display:flex;align-items:center;gap:7px}
+  .catgroup .cl .d{width:9px;height:9px;border-radius:50%}
+  .chip{padding:6px 14px;border-radius:20px;background:var(--panel);border:1px solid var(--line);
+    color:var(--muted);cursor:pointer;font-size:13.5px;transition:.12s}
+  .chip:hover{background:var(--accent);color:#04222a;border-color:var(--accent)}
+  .nav-btns{display:flex;justify-content:space-between;margin-top:26px;gap:10px}
+  .nav-btns button{flex:1;padding:12px;border-radius:10px;border:1px solid var(--line);
+    background:var(--panel);color:var(--muted);cursor:pointer;text-align:left;font-family:inherit;transition:.12s}
+  .nav-btns button:hover{border-color:var(--accent);color:#0e5a6b;background:#f0f9fc}
+  .nav-btns small{display:block;color:var(--dim);font-size:11px}
+  .kbox{background:linear-gradient(180deg,rgba(52,211,153,.12),rgba(52,211,153,.03));
+    border:1px solid rgba(52,211,153,.35);border-radius:12px;padding:14px 18px;margin:22px 0}
+  .kbox .kt{font-weight:800;color:var(--green);font-size:14px;margin-bottom:6px}
+  .kbox ul{margin:4px 0 0;padding-left:20px} .kbox li{margin:3px 0}
+  .collap{border:1px solid var(--line);border-radius:10px;margin:12px 0;overflow:hidden;background:#f4fafc}
+  .collap>summary{cursor:pointer;padding:12px 16px;font-weight:700;color:#123039;list-style:none;display:flex;align-items:center;gap:8px}
+  .collap>summary::-webkit-details-marker{display:none}
+  .collap>summary::before{content:'▸';color:var(--accent);transition:.2s;display:inline-block}
+  .collap[open]>summary::before{transform:rotate(90deg)}
+  .collap>summary:hover{background:var(--panel)}
+  .collap .body{padding:2px 18px 16px;color:#2b4a53}
+  .collap.myth{background:#fff5f6}.collap.myth>summary{color:#be123c}.collap.myth>summary::before{color:var(--pink)}
+  .collap.fact{background:#f1fbf6}.collap.fact>summary{color:#047857}.collap.fact>summary::before{color:var(--green)}
+  .collap.deep{background:#f5f4fe}.collap.deep>summary{color:#3730a3}.collap.deep>summary::before{color:#4f46e5}
+  .collap>summary:hover{background:rgba(0,0,0,.03)}
+  .myth-row{display:flex;gap:10px;margin:10px 0}
+  .myth-row .x{color:var(--pink);font-weight:800;flex:none}.myth-row .o{color:var(--green);font-weight:800;flex:none}
+  .hero{text-align:center;padding:14px 0 10px}
+  .hero .big{font-size:40px;font-weight:800;margin:12px 0 4px}
+  .hero .sub{color:var(--muted);max-width:640px;margin:0 auto 8px}
+  .stats{display:flex;gap:12px;justify-content:center;margin:22px 0;flex-wrap:wrap}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 20px;text-align:center}
+  .stat b{font-size:24px;display:block;color:var(--accent)} .stat span{font-size:12px;color:var(--dim)}
+  #graphView,#demoView,#meshView{flex:1;position:relative;display:none}
+  #demoView,#meshView{overflow-y:auto;padding:24px 30px 80px}
+  #graph{width:100%;height:100%;display:block;cursor:grab}
+  .legend{position:absolute;top:16px;left:16px;background:rgba(255,255,255,.9);border:1px solid var(--line);
+    border-radius:10px;padding:12px 14px;font-size:13px;backdrop-filter:blur(6px);box-shadow:0 2px 12px rgba(18,48,57,.08)}
+  .legend div{display:flex;align-items:center;gap:8px;margin:4px 0;color:var(--muted)}
+  .legend i{width:11px;height:11px;border-radius:50%;display:inline-block}
+  .hint{position:absolute;bottom:16px;right:18px;color:var(--dim);font-size:12px}
+  .gnode{cursor:pointer}.gnode text{font-size:12px;fill:var(--text);pointer-events:none;font-family:inherit}
+  .gnode circle{transition:r .15s}
+  .gedge{stroke:#b7d3dd;stroke-width:1.4}.gedge.hl{stroke:var(--accent);stroke-width:2.6}
+  /* demo */
+  .demo{max-width:900px;margin:0 auto}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;margin:18px 0;box-shadow:0 4px 20px rgba(18,48,57,.06)}
+  .panel h3{margin:0 0 4px;color:#123039;font-size:18px;border:none}
+  .panel .d{color:var(--dim);font-size:13px;margin-bottom:12px}
+  .controls{display:flex;flex-wrap:wrap;gap:20px;align-items:center;margin-top:14px}
+  .controls label{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:6px;min-width:190px}
+  .controls input[type=range]{accent-color:var(--accent)}
+  .controls .val{color:var(--accent);font-weight:700}
+  .controls button{padding:9px 16px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);color:var(--text);cursor:pointer;font-family:inherit}
+  .controls button:hover{border-color:var(--accent)}
+  canvas.cv{width:100%;border-radius:12px;background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid var(--line);display:block}
+  .bars{display:flex;gap:18px;margin-top:14px}
+  .bar{flex:1;text-align:center}
+  .bar .track{height:120px;background:var(--panel2);border-radius:8px;position:relative;overflow:hidden;border:1px solid var(--line)}
+  .bar .fill{position:absolute;bottom:0;left:0;right:0;transition:height .08s}
+  .bar .lbl{font-size:13px;color:var(--muted);margin-top:6px}
+  .bar .pct{font-weight:800;color:#123039}
+  svg#mesh{width:100%;height:auto;background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid var(--line);border-radius:12px}
+  .cpl{cursor:pointer}
+  .chartbox{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;margin:16px 0;box-shadow:0 2px 12px rgba(18,48,57,.05)}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:#b7d3dd;border-radius:6px}
+  @media(max-width:720px){aside{position:fixed;z-index:15;height:100%;transform:translateX(-100%);transition:.25s}
+    aside.open{transform:none}main{padding:24px 18px 80px}.search{max-width:none}header h1{font-size:14px}}
+</style>
+</head>
+
+<body>
+<header>
+  <h1>🌱 <span class="em">再生能源</span>知識庫</h1>
+  <div class="search">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8fbccb" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input id="search" placeholder="搜尋知識點…（Enter 開啟）" autocomplete="off">
+  </div>
+  <div class="tabs">
+    <button id="tabNotes" class="active">📖 筆記</button>
+    <button id="tabGraph">🕸️ 關係圖譜</button>
+    <button id="tabDemo">🔬 模擬工具</button>
+  </div>
+</header>
+<div class="wrap">
+  <aside id="sidebar"></aside>
+  <main id="main"></main>
+  <div id="graphView"><svg id="graph"></svg><div class="legend" id="legend"></div>
+    <div class="hint">拖曳節點 · 點擊開啟筆記 · 移入高亮關聯</div></div>
+  <div id="demoView"></div>
+</div>
+<script>
+
+const CATS={
+ "太空":{name:"宇宙太陽能",raw:"#0891b2"},
+ "海洋":{name:"海洋能",raw:"#059669"},
+ "風力":{name:"風力發電",raw:"#7c3aed"},
+ "地熱":{name:"地熱發電",raw:"#d97706"}
+};
+function L(id){return '<a class="wl" data-id="'+id+'">'+id+'</a>';}
+const NOTES=[
+{id:"宇宙太陽能導論與動機",ch:"1",en:"Ch.1 · Why Space Solar",cat:"太空",html:`<div class="callout"><b>這章的問題：</b>地面太陽能已經在快速發展了，為什麼還要把太陽能板送上太空？同一塊板子，放到太空能多發多少電？</div>
+<h3>地面太陽能卡在哪裡</h3><p>發電看老天臉色（晚上不發電、陰天效率差、冬天入射角傾斜），而且要蓋 GW 等級電廠需要幅員廣大、日照充足的土地——只有印度、中國、中東等少數國家做得到。</p>
+<h3>兩個獨立效應，相乘放大</h3><p><b>效應一：</b>太空沒有夜晚，衛星幾乎 24 小時受光，且能隨時保持與陽光垂直，接收 100% 入射角效率——單這項就至少是地表的 3 倍以上。<b>效應二：</b>地球大氣層會散射掉部分陽光，太空中的太陽輻射強度比地表多約 40%。</p>
+<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNzAwIDQyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiI+Cjx0ZXh0IHg9IjM1MC4wIiB5PSIzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxOCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzEyMzAzOSI+5ZCM5LiA5aGK5aSq6Zm96IO95p2/77ya5Zyw6Z2iIHZzIOWkquepuueZvOmbu+mHj+avlOi8g++8iOebuOWwjeWAjeaVuO+8iTwvdGV4dD4KPHJlY3QgeD0iNjAiIHk9IjI3MC4wIiB3aWR0aD0iMTEwIiBoZWlnaHQ9IjcwLjAiIGZpbGw9IiMwODkxYjIiIHJ4PSI0Ii8+Cjx0ZXh0IHg9IjExNS4wIiB5PSIyNjAuMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIyMCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzA4OTFiMiI+MS4weDwvdGV4dD4KPHRleHQgeD0iMTE1LjAiIHk9IjM2MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMi41IiBmaWxsPSIjNGQ2Yjc2Ij7lnLDpnaI8L3RleHQ+Cjx0ZXh0IHg9IjExNS4wIiB5PSIzNzgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIuNSIgZmlsbD0iIzRkNmI3NiI+KOW5s+Wdh+aXpeeFpyk8L3RleHQ+CjxyZWN0IHg9IjIxMCIgeT0iMjQyLjAiIHdpZHRoPSIxMTAiIGhlaWdodD0iOTguMCIgZmlsbD0iIzA1OTY2OSIgcng9IjQiLz4KPHRleHQgeD0iMjY1LjAiIHk9IjIzMi4wIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjIwIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDU5NjY5Ij4xLjR4PC90ZXh0Pgo8dGV4dCB4PSIyNjUuMCIgeT0iMzYyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyLjUiIGZpbGw9IiM0ZDZiNzYiPuWcsOmdojwvdGV4dD4KPHRleHQgeD0iMjY1LjAiIHk9IjM3OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMi41IiBmaWxsPSIjNGQ2Yjc2Ij4o6ICD5oWu5aSn5rCj5pWj5bCEKTwvdGV4dD4KPHJlY3QgeD0iMzYwIiB5PSIxMzAuMCIgd2lkdGg9IjExMCIgaGVpZ2h0PSIyMTAuMCIgZmlsbD0iI2Q5NzcwNiIgcng9IjQiLz4KPHRleHQgeD0iNDE1LjAiIHk9IjEyMC4wIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjIwIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZDk3NzA2Ij4zLjB4PC90ZXh0Pgo8dGV4dCB4PSI0MTUuMCIgeT0iMzYyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyLjUiIGZpbGw9IiM0ZDZiNzYiPuWkquepujwvdGV4dD4KPHRleHQgeD0iNDE1LjAiIHk9IjM3OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMi41IiBmaWxsPSIjNGQ2Yjc2Ij4o54Sh5pel5aScK+WeguebtOWFpeWwhCk8L3RleHQ+CjxyZWN0IHg9IjUxMCIgeT0iNjAuMCIgd2lkdGg9IjExMCIgaGVpZ2h0PSIyODAuMCIgZmlsbD0iI2UxMWQ0OCIgcng9IjQiLz4KPHRleHQgeD0iNTY1LjAiIHk9IjUwLjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNlMTFkNDgiPjQuMHg8L3RleHQ+Cjx0ZXh0IHg9IjU2NS4wIiB5PSIzNjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIuNSIgZmlsbD0iIzRkNmI3NiI+5aSq56m6PC90ZXh0Pgo8dGV4dCB4PSI1NjUuMCIgeT0iMzc4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyLjUiIGZpbGw9IiM0ZDZiNzYiPijntpzlkIjmlYjmnpwpPC90ZXh0Pgo8bGluZSB4MT0iNTAiIHkxPSIzNDAiIHgyPSI2NjAiIHkyPSIzNDAiIHN0cm9rZT0iIzhhYTRhZSIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KPC9zdmc+">
+<h3>兩者疊加</h3><p>同一片光電材料搬到太空軌道，大約可以拿到 <b>4 倍</b> 發電量，且不需要額外占地，不排擠農地魚塭棲地。</p>
+<h3>電要怎麼送回地球</h3><p>1941 年艾西莫夫小說《理性》就提出用微波光束遠距送電的構想；1968 年工程師 Peter Glaser 在《Science》正式提出並申請專利。當時受限於發射成本過高、技術不成熟，遲遲無法測試——詳見 ${L("宇宙太陽能發展現況與經濟性")}。微波怎麼精準送到地面一點 → ${L("微波無線能量傳輸原理")}。</p>`},
+{id:"微波無線能量傳輸原理",ch:"2",en:"Ch.2 · Phased Array Beaming",cat:"太空",html:`<div class="callout"><b>這章的問題：</b>電磁波能量會向四面八方發散，距離一遠就快速衰減——要怎麼把太空收集到的能量精準送到地面一個接收站？</div>
+<h3>發散 vs 指向性</h3><p>單一天線發出的是球面波，強度隨距離平方衰減。無線傳能要求絕大多數能量精準落在接收點，這跟一般通訊（訊號夠強能解調就好）完全不同。</p>
+<h3>賦相陣列：用相位干涉「捏」出波束</h3><p>多個天線組成陣列，刻意調整每根天線的發射相位：在目標方向上相位對齊、建設性干涉疊加；在其他方向相位不對齊、破壞性干涉抵銷——不靠透鏡聚焦，純粹用電子方式的幾何與相位計算，把能量集中成一道直線波束。</p>
+<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNzAwIDM2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiI+Cjx0ZXh0IHg9IjM1MC4wIiB5PSIyOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzEyMzAzOSI+6LOm55u46Zmj5YiX77ya5aSa5aSp57ea55u45L2N5bCN6b2K77yM5bu66Kit5oCn5bmy5raJ5b2i5oiQ5oyH5ZCR5oCn5rOi5p2fPC90ZXh0Pgo8cmVjdCB4PSI4MiIgeT0iNjQiIHdpZHRoPSIxNiIgaGVpZ2h0PSIxMiIgZmlsbD0iIzA4OTFiMiIgcng9IjIiLz4KPGxpbmUgeDE9IjkwIiB5MT0iNzAiIHgyPSI5MCIgeTI9IjQ4IiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMyIvPgo8cmVjdCB4PSI4MiIgeT0iMTAyIiB3aWR0aD0iMTYiIGhlaWdodD0iMTIiIGZpbGw9IiMwODkxYjIiIHJ4PSIyIi8+CjxsaW5lIHgxPSI5MCIgeTE9IjEwOCIgeDI9IjkwIiB5Mj0iODYiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIzIi8+CjxyZWN0IHg9IjgyIiB5PSIxNDAiIHdpZHRoPSIxNiIgaGVpZ2h0PSIxMiIgZmlsbD0iIzA4OTFiMiIgcng9IjIiLz4KPGxpbmUgeDE9IjkwIiB5MT0iMTQ2IiB4Mj0iOTAiIHkyPSIxMjQiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIzIi8+CjxyZWN0IHg9IjgyIiB5PSIxNzgiIHdpZHRoPSIxNiIgaGVpZ2h0PSIxMiIgZmlsbD0iIzA4OTFiMiIgcng9IjIiLz4KPGxpbmUgeDE9IjkwIiB5MT0iMTg0IiB4Mj0iOTAiIHkyPSIxNjIiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIzIi8+CjxyZWN0IHg9IjgyIiB5PSIyMTYiIHdpZHRoPSIxNiIgaGVpZ2h0PSIxMiIgZmlsbD0iIzA4OTFiMiIgcng9IjIiLz4KPGxpbmUgeDE9IjkwIiB5MT0iMjIyIiB4Mj0iOTAiIHkyPSIyMDAiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIzIi8+CjxyZWN0IHg9IjgyIiB5PSIyNTQiIHdpZHRoPSIxNiIgaGVpZ2h0PSIxMiIgZmlsbD0iIzA4OTFiMiIgcng9IjIiLz4KPGxpbmUgeDE9IjkwIiB5MT0iMjYwIiB4Mj0iOTAiIHkyPSIyMzgiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIzIi8+CjxwYXRoIGQ9Ik0gMTAwIDcwIFEgMzU1LjAgMTE3LjUgNTYwIDE2NS4wIiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIgb3BhY2l0eT0iMC43NSIgc3Ryb2tlLWRhc2hhcnJheT0iNiA0Ii8+CjxwYXRoIGQ9Ik0gMTAwIDEwOCBRIDM1NS4wIDEzNi41IDU2MCAxNjUuMCIgc3Ryb2tlPSIjZDk3NzA2IiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiIG9wYWNpdHk9IjAuNzUiIHN0cm9rZS1kYXNoYXJyYXk9IjYgNCIvPgo8cGF0aCBkPSJNIDEwMCAxNDYgUSAzNTUuMCAxNTUuNSA1NjAgMTY1LjAiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIiBvcGFjaXR5PSIwLjc1IiBzdHJva2UtZGFzaGFycmF5PSI2IDQiLz4KPHBhdGggZD0iTSAxMDAgMTg0IFEgMzU1LjAgMTc0LjUgNTYwIDE2NS4wIiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIgb3BhY2l0eT0iMC43NSIgc3Ryb2tlLWRhc2hhcnJheT0iNiA0Ii8+CjxwYXRoIGQ9Ik0gMTAwIDIyMiBRIDM1NS4wIDE5My41IDU2MCAxNjUuMCIgc3Ryb2tlPSIjZDk3NzA2IiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiIG9wYWNpdHk9IjAuNzUiIHN0cm9rZS1kYXNoYXJyYXk9IjYgNCIvPgo8cGF0aCBkPSJNIDEwMCAyNjAgUSAzNTUuMCAyMTIuNSA1NjAgMTY1LjAiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIiBvcGFjaXR5PSIwLjc1IiBzdHJva2UtZGFzaGFycmF5PSI2IDQiLz4KPHBhdGggZD0iTSA1NjAgMTM1LjAgTCA2NDAgMTY1LjAgTCA1NjAgMTk1LjAgWiIgZmlsbD0iI2UxMWQ0OCIgb3BhY2l0eT0iMC44NSIvPgo8dGV4dCB4PSI2MDAiIHk9IjIyMC4wIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjNGQ2Yjc2Ij7pm4bkuK3ms6LmnZ88L3RleHQ+Cjx0ZXh0IHg9IjkwIiB5PSIzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZmlsbD0iIzRkNmI3NiI+5aSp57ea6Zmj5YiX77yI55u45L2N5Y+v6Kq/77yJPC90ZXh0Pgo8L3N2Zz4=">
+<h3>為什麼選微波</h3><p>特定頻率的微波能穿透大氣層、雲層，就像手機訊號能穿牆一樣——即使地面下雨，宇宙太陽能仍可透過微波送達地表，大幅降低天氣造成的發電不穩定。</p>
+<h3>真正的難題：發散角</h3><p>賦相陣列不可能做到完全零發散角。地球同步軌道離地表約 3.6 萬公里，再小的發散角放大到地面都是致命誤差——難度相當於「從操場一端用雷射筆打中另一端的蚊子」。日本 JAXA 目前把發散角控制在約 0.15 度，足以應付低軌道初步傳能測試，但還不足以精準命中同步軌道等級的目標。</p>
+<p>實測進度細節 → ${L("宇宙太陽能發展現況與經濟性")}。</p>`},
+{id:"宇宙太陽能發展現況與經濟性",ch:"3",en:"Ch.3 · Economics & Progress",cat:"太空",html:`<div class="callout"><b>這章的問題：</b>原理可行不代表划算——把發電廠射到太空要花多少錢？跟燃煤、核電比誰貴？貴很多科學家為什麼還不放棄？</div>
+<h3>關鍵轉折：發射成本斷崖式下降</h3><p>SpaceX 獵鷹九號把每公斤物質送上低地球軌道的成本降到約 3000 美元，是太空梭時代的 1/20——這正是宇宙太陽能從純科幻走向可實測階段的轉折點。</p>
+<h3>JAXA：時程最具體</h3><p>1980 年代起步，2015 年地面測試成功傳輸電能到 55 公尺外接收天線；規劃 2025 年前後展開太空對地送電實驗，2030 年左右試運轉。</p>
+<h3>Caltech：軌道實測已跑第一步</h3><p>小型測試模組隨獵鷹九號進入低地球軌道，成功用可彎曲天線陣列傳送能量到 30 公分外接收天線並點亮 LED；同時嘗試傳能回地面某大學實驗室屋頂並量測到訊號——這是宇宙太陽能第一次真正的軌道測試。</p>
+<h3>成本到底多驚人</h3><p>1GW 電廠比較：燃煤約 1000 億台幣、核電約 2000 億台幣。宇宙太陽能：每 1kW 需 20kg 材料，1GW 需 2 萬公噸，以獵鷹重型每公斤 3 萬台幣估算，光運輸成本就要 6000 億台幣，加上設備建置再多 500 億。JAXA 自估首座 1GW 電廠至少需 1 兆 2000 億日圓。</p>
+<h3>為什麼沒放棄：兩股下修成本的力量</h3><p>發射成本相比 50 年前已少了兩個零、還在快速下降；太陽能板同時在輕量化，每 kW 發電重量可能壓到 10 公斤以下。兩者疊加，1 兆 2000 億日圓的成本有機會在幾年內降到十分之一以下——而且宇宙太陽能一旦建成就是不受晝夜天候影響的基載可再生能源。</p>
+<p>還沒解決的問題：發射廢氣排放、太空垃圾與小行星撞擊風險，仍需持續研究。</p>`},
+{id:"海洋能總論",ch:"4",en:"Ch.4 · Ocean Energy Overview",cat:"海洋",html:`<div class="callout"><b>這章的問題：</b>「海洋能」底下其實藏著五種物理機制完全不同的發電方式，它們的能量分別從哪裡來？</div>
+<h3>蘊藏量：足以供給全球</h3><p>地球 70% 是海洋，IEA 2007 估計海洋每年蘊藏 21,100–93,100 TWh 發電量，而 2022 年全球總發電量僅約 29,165 TWh——海洋能理論上足以供給全球用電，甚至數倍有餘。</p>
+<h3>波浪能與潮汐能：源頭是太陽和月亮</h3><p>波浪能來自風吹過海面的摩擦力，風又源自地球自轉與太陽加熱造成的氣壓差——追根究柢是地球自轉加太陽能。潮汐能則來自月球引力造成的水位變化（位能）與潮流（動能），跟波浪能是完全不同的物理機制。</p>
+<h3>海流能：穩定的地球自轉驅動水流</h3><p>如台灣附近黑潮全年由南向北、流速每秒 1–2 公尺，放一台水輪機即可發電，方向與流速比波浪穩定得多。</p>
+<h3>溫差能與鹽差能：兩種特別的機制</h3><p>溫差能（OTEC）利用海水表層與深海溫差（約 14–25°C）發電，原理跟地熱發電相同（低沸點工作流體熱交換）；鹽差能利用鹹淡水濃度差產生的化學電位差發電，概念上更接近一顆電池。</p>
+<p>波浪、潮汐細節 → ${L("波浪能與潮汐能")}；溫差、鹽差細節 → ${L("溫差能與鹽差能")}；台灣具體潛力 → ${L("台灣海洋能潛力與挑戰")}。</p>`},
+{id:"波浪能與潮汐能",ch:"5",en:"Ch.5 · Wave & Tidal Energy",cat:"海洋",html:`<div class="callout"><b>這章的問題：</b>潮汐發電是全球最成熟的海洋能技術，為什麼台灣卻幾乎沒有大規模潮汐電廠？</div>
+<h3>潮汐能：潮差是關鍵門檻</h3><p>全球有十來座潮汐電廠運作中，南韓始華湖潮汐電廠是世界最大（254MW）。但潮汐發電需要潮差 5 公尺以上才有經濟效益，台灣本島潮差普遍不足 5 公尺（金馬外島除外）——技術最成熟的潮汐發電，反而不是台灣的首選，不是不會用，是地理條件不符合物理前提。</p>
+<h3>波浪能：沒有地理硬限制，但卡在耐用度</h3><p>近年商業化嘗試包括愛爾蘭 OceanEnergy 在夏威夷的 OE-35（1.25MW）、瑞典 CorPower Ocean 在葡萄牙的 C4（600kW），規模已達商業化門檻。但海水腐蝕性、風浪損毀、生物附著，讓打造耐用又具經濟規模的裝置成為工程挑戰——做不出夠耐用的裝置，成本就降不下來。</p>
+<p>另外兩種特別機制 → ${L("溫差能與鹽差能")}；台灣潛力數字 → ${L("台灣海洋能潛力與挑戰")}。</p>`},
+{id:"溫差能與鹽差能",ch:"6",en:"Ch.6 · OTEC & Salinity Gradient",cat:"海洋",html:`<div class="callout"><b>這章的問題：</b>溫差能靠「溫度差」發電、鹽差能靠「鹹淡差」發電，它們實際上怎麼把「差異」轉成電？</div>
+<h3>溫差能（OTEC）：跟地熱發電同一套邏輯</h3><p>海水表層因太陽照射較暖，深海較冷，溫差約 14–25°C。用沸點低的工作流體在表層溫水中吸熱蒸發推動渦輪、深海冷水中冷凝液化循環——這跟 ${L("地熱能物理基礎與傳統地熱")} 用低沸點工作流體跟地下熱源交換熱量幾乎一模一樣，只是熱源換成太陽曬熱的海水表層。系統還能順便做海水淡化、養殖、空調冷卻。</p>
+<h3>鹽差能：靠化學電位差，不是動能</h3><p>利用鹹水與淡水的鹽度濃差發電，電廠通常建在河海交界，把海水淡水當成巨大化學電池的陰陽極——概念上更接近電池而非傳統的位能／動能轉換。</p>
+<h3>共同瓶頸</h3><p>兩者都還在技術發展或小規模實驗階段，挑戰在於如何把小規模的物理／化學效應放大到具經濟規模的發電量。</p>
+<p>台灣發展現況 → ${L("台灣海洋能潛力與挑戰")}。</p>`},
+{id:"台灣海洋能潛力與挑戰",ch:"7",en:"Ch.7 · Taiwan Ocean Energy",cat:"海洋",html:`<div class="callout"><b>這章的問題：</b>台灣四面環海，海洋能潛力數字有多大？既然潛力驚人，為什麼至今沒有大規模海洋能電廠？</div>
+<h3>潛力：9.4GW，相當於七部核能機組</h3><p>波浪能（東北角、富貴角、澎湖、雲彰外海）約 2.4GW；溫差能（花東外海）約 2.8GW；海流能（富貴角、澎湖水道、黑潮）約 4.2GW；另有少量潮汐潛力——加總約 9.4GW，市場產值估計數兆台幣。</p>
+<h3>為什麼沒人搶：技術成熟度是關鍵</h3><p>9.4GW 是技術上能用到的總和估算，不是馬上能商轉的量。海水腐蝕、風浪損毀、生物附著，讓打造耐用又具經濟規模的裝置成為全球共同瓶頸，不是台灣特有問題。</p>
+<h3>台灣的研發</h3><p>工研院「懸浮點吸收式波浪發電」、國海院與台灣海大「振盪水柱式波浪發電」、國海院/台大/中山/海大合作「浮游式洋流發電機組」（20kW 級已在 90 公尺深海測試，中研院 100kW 渦輪機預計台東外海下水）、台泥規劃和平電廠溫差能系統。</p>
+<h3>政策目標與制度瓶頸</h3><p>2030 年完成 100kW–1MW 示範機組，2035 年設置 1–10MW 商業機組，2050 年目標 1.3–7.5GW。制度上牽涉環境部、漁業署、國土管理署等多部會，簡化單一窗口是關鍵。躉購費率每度 7.32 元，但對突破技術門檻的投資人誘因仍不足。</p>`},
+{id:"風能物理基礎與風速三次方定律",ch:"8",en:"Ch.8 · Wind Power Cube Law",cat:"風力",html:`<div class="callout"><b>這章的問題：</b>為什麼風機越蓋越高、越蓋越往海上跑？風速只要快兩倍，發電功率會變幾倍？</div>
+<h3>推導：功率為什麼正比於風速三次方</h3><p>單位時間流過風機掃過面積的空氣質量正比於風速 v；每單位質量的動能正比於 v²。兩者相乘：</p>
+<div class="formula">P ∝ (流量∝v) × v² = v³</div>
+<p>這不是工程近似，是動能公式本身的 v² 疊上「流量正比於 v」的直接結果。</p>
+<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNzAwIDQyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiI+Cjx0ZXh0IHg9IjM1MC4wIiB5PSIyOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzEyMzAzOSI+6aKo5Yqb55m86Zu75Yqf546HIFAg4oidIHbCs++8mumiqOmAn+WKoOWAje+8jOWKn+eOh+iuiiA4IOWAjTwvdGV4dD4KPGxpbmUgeDE9IjcwIiB5MT0iMzYwIiB4Mj0iNjMwIiB5Mj0iMzYwIiBzdHJva2U9IiM4YWE0YWUiIHN0cm9rZS13aWR0aD0iMS41Ii8+CjxsaW5lIHgxPSI3MCIgeTE9IjM2MCIgeDI9IjcwIiB5Mj0iNjAiIHN0cm9rZT0iIzhhYTRhZSIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KPHRleHQgeD0iNjQwIiB5PSIzNjUiIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiM0ZDZiNzYiPumiqOmAnyB2PC90ZXh0Pgo8dGV4dCB4PSI1NSIgeT0iNTAiIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiM0ZDZiNzYiPuWKn+eOhyBQPC90ZXh0Pgo8cG9seWxpbmUgcG9pbnRzPSI3MC4wLDM2MC4wIDc5LjMsMzYwLjAgODguNywzNjAuMCA5OC4wLDM2MC4wIDEwNy4zLDM1OS45IDExNi43LDM1OS44IDEyNi4wLDM1OS43IDEzNS4zLDM1OS41IDE0NC43LDM1OS4zIDE1NC4wLDM1OS4wIDE2My4zLDM1OC42IDE3Mi43LDM1OC4yIDE4Mi4wLDM1Ny42IDE5MS4zLDM1Ni45IDIwMC43LDM1Ni4yIDIxMC4wLDM1NS4zIDIxOS4zLDM1NC4zIDIyOC43LDM1My4yIDIzOC4wLDM1MS45IDI0Ny4zLDM1MC41IDI1Ni43LDM0OC45IDI2Ni4wLDM0Ny4xIDI3NS4zLDM0NS4yIDI4NC43LDM0My4xIDI5NC4wLDM0MC44IDMwMy4zLDMzOC4zIDMxMi43LDMzNS42IDMyMi4wLDMzMi43IDMzMS4zLDMyOS41IDM0MC43LDMyNi4xIDM1MC4wLDMyMi41IDM1OS4zLDMxOC42IDM2OC43LDMxNC41IDM3OC4wLDMxMC4xIDM4Ny4zLDMwNS40IDM5Ni43LDMwMC41IDQwNi4wLDI5NS4yIDQxNS4zLDI4OS42IDQyNC43LDI4My44IDQzNC4wLDI3Ny42IDQ0My4zLDI3MS4xIDQ1Mi43LDI2NC4zIDQ2Mi4wLDI1Ny4xIDQ3MS4zLDI0OS42IDQ4MC43LDI0MS43IDQ5MC4wLDIzMy40IDQ5OS4zLDIyNC44IDUwOC43LDIxNS44IDUxOC4wLDIwNi40IDUyNy4zLDE5Ni42IDUzNi43LDE4Ni40IDU0Ni4wLDE3NS44IDU1NS4zLDE2NC43IDU2NC43LDE1My4yIDU3NC4wLDE0MS4zIDU4My4zLDEyOC45IDU5Mi43LDExNi4xIDYwMi4wLDEwMi44IDYxMS4zLDg5LjAgNjIwLjcsNzQuOCA2MzAuMCw2MC4wIiBmaWxsPSJub25lIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMyIvPgo8bGluZSB4MT0iMzI0LjU0NTQ1NDU0NTQ1NDUiIHkxPSIzNjAiIHgyPSIzMjQuNTQ1NDU0NTQ1NDU0NSIgeTI9IjMzMS44MjU2OTQ5NjYxOTA4NCIgc3Ryb2tlPSIjZDk3NzA2IiBzdHJva2UtZGFzaGFycmF5PSI0IDQiIHN0cm9rZS13aWR0aD0iMS41Ii8+CjxsaW5lIHgxPSI3MCIgeTE9IjMzMS44MjU2OTQ5NjYxOTA4NCIgeDI9IjMyNC41NDU0NTQ1NDU0NTQ1IiB5Mj0iMzMxLjgyNTY5NDk2NjE5MDg0IiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS1kYXNoYXJyYXk9IjQgNCIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KPGNpcmNsZSBjeD0iMzI0LjU0NTQ1NDU0NTQ1NDUiIGN5PSIzMzEuODI1Njk0OTY2MTkwODQiIHI9IjUiIGZpbGw9IiNkOTc3MDYiLz4KPHRleHQgeD0iMzI0LjU0NTQ1NDU0NTQ1NDUiIHk9IjM4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZmlsbD0iI2Q5NzcwNiIgZm9udC13ZWlnaHQ9IjcwMCI+djwvdGV4dD4KPGxpbmUgeDE9IjU3OS4wOTA5MDkwOTA5MDkiIHkxPSIzNjAiIHgyPSI1NzkuMDkwOTA5MDkwOTA5IiB5Mj0iMTM0LjYwNTU1OTcyOTUyNjczIiBzdHJva2U9IiNlMTFkNDgiIHN0cm9rZS1kYXNoYXJyYXk9IjQgNCIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KPGxpbmUgeDE9IjcwIiB5MT0iMTM0LjYwNTU1OTcyOTUyNjczIiB4Mj0iNTc5LjA5MDkwOTA5MDkwOSIgeTI9IjEzNC42MDU1NTk3Mjk1MjY3MyIgc3Ryb2tlPSIjZTExZDQ4IiBzdHJva2UtZGFzaGFycmF5PSI0IDQiIHN0cm9rZS13aWR0aD0iMS41Ii8+CjxjaXJjbGUgY3g9IjU3OS4wOTA5MDkwOTA5MDkiIGN5PSIxMzQuNjA1NTU5NzI5NTI2NzMiIHI9IjUiIGZpbGw9IiNlMTFkNDgiLz4KPHRleHQgeD0iNTc5LjA5MDkwOTA5MDkwOSIgeT0iMzgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjZTExZDQ4IiBmb250LXdlaWdodD0iNzAwIj4ydjwvdGV4dD4KPHRleHQgeD0iMTAwIiB5PSIxMjAuNjA1NTU5NzI5NTI2NzMiIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiNlMTFkNDgiIGZvbnQtd2VpZ2h0PSI3MDAiPjjlgI3lip/njoc8L3RleHQ+Cjwvc3ZnPg==">
+<h3>直接後果：風速快兩倍，功率翻八倍</h3><p>代入 P∝v³：2³=8。風速幾乎是風力發電的頭號考量因子——與其把葉片做大、效率做好，不如找風速更快的地點，報酬率高得多。這正是風機越蓋越高的原因：地表附近風速被建物、地形拖慢，越往高空受影響越小。</p>
+<h3>為什麼離岸更吸引人</h3><p>離岸平坦海面讓氣流暢行無阻，台灣海峽因為位在中央山脈與武夷山脈之間、方向恰與東北/西南季風一致，形成管道加速效應，風速格外驚人——離岸風速優勢經過 v³ 放大成巨大的發電量優勢，詳見 ${L("離岸風電工程與環境挑戰")}。</p>`},
+{id:"離岸風電工程與環境挑戰",ch:"9",en:"Ch.9 · Offshore Wind",cat:"風力",html:`<div class="callout"><b>這章的問題：</b>離岸風電裝置成本約陸域三倍，為什麼還要做？它對海洋生態有哪些代價？</div>
+<h3>為什麼貴還要做</h3><p>離岸裝置成本約陸域三倍（經濟部資料，1MW 年發電量約 1.5–1.7 億元），開發流程也更長。兩個理由：陸域噪音與土地限制（風機需與建物保持 500 公尺以上，優良風場已飽和）；以及離岸風速更快更穩定——對應 ${L("風能物理基礎與風速三次方定律")} 的 v³ 定律，划算程度遠遠蓋過成本差距。</p>
+<h3>鳥擊風險與應對</h3><p>2013 年研究估計北美風電扇葉每年殺死 14–32 萬隻鳥。應對：音波偵測器、熱感應器監控後停機降載；2020 年研究發現把一片扇葉塗黑可減少鳥擊 70%（減少動態模糊，鳥類看得更清楚）。根本做法仍是選址避開候鳥遷徙路徑。</p>
+<h3>水下噪音</h3><p>打樁噪音短期但強烈，運轉低頻噪音則長期存在；水中聲音傳遞快、損耗低，魚類與海洋哺乳類聽覺格外敏感。台灣規範打樁單次不超過 190 分貝、超過 160 分貝次數不超過 5%，且打樁前需確認 750 公尺內無鯨豚。中華白海豚棲地與最佳風場高度重疊，選址需格外謹慎。</p>
+<h3>真正的瓶頸：供應鏈</h3><p>離岸風機組件動辄超過 10MW、葉片長 100 公尺以上、總高 260 公尺，需專用工程安裝船——這正是台灣目前最欠缺的資源，且全球需求推升船隻租金與稀缺程度。</p>`},
+{id:"風機構造演化與新型風力發電",ch:"10",en:"Ch.10 · Turbine Design Evolution",cat:"風力",html:`<div class="callout"><b>這章的問題：</b>為什麼幾乎所有大型風機都是三片葉片？垂直軸風機、無扇葉發電棒是異想天開還是有物理道理？</div>
+<h3>為什麼是三葉片</h3><p>更多扇葉帶來更多風阻、降低轉速，三葉增加到四五葉效率提升非常有限——若有 12 片扇葉的材料預算，蓋 4 座三葉機發電量會高於 3 座四葉機。單葉需額外配重（不穩定）、雙葉轉向時易震動，三葉是效率與成本的最佳平衡點。</p>
+<h3>垂直軸風機：犧牲規模換全風向適應</h3><p>不論風向都能發電、不占空間，適合都會區捕捉方向不固定的小氣流（例如路燈供電），但規模遠不及海上水平軸巨無霸。</p>
+<h3>漂浮式風機：把垂直軸優勢搬到深海</h3><p>挪威 World Wide Wind 的浮標式垂直軸機組，靠海面下配重直立漂浮，只需電纜不需海床固定——擴展到深海風場。特別之處是兩組反向旋轉葉片（反轉式直立渦輪），靠相對旋轉發電，反向就像雙手擰毛巾，收集接近兩倍能量；因為風來自水平方向，上下兩組葉片彼此干擾不大，水平軸風車做不到這件事。</p>
+<h3>無扇葉發電：利用共振而非旋轉</h3><p>西班牙 Vortex Bladeless：氣流流經圓柱物體在後方形成不穩定渦流造成左右震動，若震動頻率接近物體自然頻率就產生強共振（如 1940 年代塔科馬海峽吊橋因共振扭斷）。底部磁鐵線圈把震動轉為電能。轉換效率比渦輪低，但成本低、噪音小、對鳥類威脅低，適合和太陽能互補供電住家與都市。</p>
+<h3>高空發電</h3><p>Altaeros Energies 把風機裝在氦氣飛船，飄浮 300–600 公尺高空，風速約地面兩倍、風能（∝v³）約地面八倍，透過纜線傳電回地面。優勢是機動性極佳，適合偏遠地區或臨時場合供電，代價是維護成本較高。</p>`},
+{id:"地熱能物理基礎與傳統地熱",ch:"11",en:"Ch.11 · Conventional Geothermal",cat:"地熱",html:`<div class="callout"><b>這章的問題：</b>地底的熱從哪裡來？為什麼地熱發電不是哪裡都能挖？台灣真的有活火山可以用嗎？</div>
+<h3>熱從哪裡來</h3><p>地球早期形成留下的原始熱、板塊推擠產生的熱、地層放射性元素衰變熱（目前主要來源）——透過板塊運動帶動的水循環源源不絕往上傳遞，24 小時不受天氣影響。</p>
+<h3>三個必要條件：熱源、裂隙、水，缺一不可</h3><p>地下水需滲進岩石裂隙被加熱成可抽取的熱水或蒸氣。三者同時具備的地點不多，這直接限制了台灣淺層地熱總潛力僅約 1GW。</p>
+<h3>台灣四種地熱來源</h3><p>宜蘭（沖繩海槽張裂形成海底火山鏈）、雪山中央山脈高溫區（斷層抬升）、地壓型（快速沉積盆地，如關子嶺水火同源）、火山型（潛力最高，位在活火山）。</p>
+<h3>大屯火山：確認是活火山</h3><p>2015 年鈾釷鐳定年法確認最近噴發約 1370 年前，地底有約四分之一台北市面積的岩漿庫（深約 8 公里以下）。1994 年估計大屯潛能 514MWe，2015 年重估升至約 2,886MWe，2023 年中央地質調查所估算全台地熱潛能共 40GWe。</p>
+<h3>為什麼只有清水成功，大屯沒有</h3><p>最佳地點大油坑、馬槽因位於陽明山國家公園限制開發區出局；清水電廠施工僅一年多，行政程序卻耗四年。近年鬆綁：10MWe 以下免環評、單一窗口申請。</p>
+<p>如何突破裂隙與水的限制，開發更深處的乾熱岩 → ${L("增強型地熱系統EGS")}。</p>`},
+{id:"增強型地熱系統EGS",ch:"12",en:"Ch.12 · EGS",cat:"地熱",html:`<div class="callout"><b>這章的問題：</b>如果地底又熱又缺裂隙和水，這股熱能就注定用不到嗎？EGS 怎麼把乾熱岩變成可發電資源？</div>
+<h3>乾熱岩：有熱，沒有裂隙和水</h3><p>台灣地底 3–6 公里普遍是超過 150°C 的高溫岩層，但缺乏裂隙與水，像沒有水管鍋子的空爐灶。地礦中心估計此深度潛能約 40GW，可開發量上看 6–8GW，約等於 2–3 座核四。</p>
+<h3>借頁岩油氣的技術：水平鑽井＋水力壓裂</h3><p>垂直鑽到目標深度後改水平鑽井，大幅增加高溫岩層中的熱交換面積；再用水力壓裂，強制高壓水撐開一排排細小裂縫，把密不透水的岩層變成「人工海綿」。冷水從注入井打下去，在人工裂隙網絡中循環吸熱，再從生產井把高溫熱水抽回地表發電。</p>
+<h3>已有商轉案例</h3><p>美國 Fervo Energy 的 Project Red 在內華達沙漠穩定產生 3.5MW，已為 Google 資料中心供電。台灣宜蘭員山深層探勘井目標 4 公里，截至 2025 年 8 月已鑽進約 4 公里，正邊鑽取岩心邊驗證地質模型。2025 年 4 月 Google 與倍速羅得簽下台灣首筆 10MW 地熱企業購電協議。</p>
+<h3>雙面刃</h3><p>高壓注水撐開裂隙的動作，跟誘發地震有直接的物理連結——這正是 EGS 面對的核心風險，見 ${L("誘發地震與風險治理")}；避開這個風險的替代設計見 ${L("先進地熱系統AGS")}。</p>`},
+{id:"誘發地震與風險治理",ch:"13",en:"Ch.13 · Induced Seismicity",cat:"地熱",html:`<div class="callout"><b>這章的問題：</b>把高壓水打進地底撐開裂隙，真的會引發地震嗎？工程界要怎麼監測、怎麼喊停？</div>
+<h3>浦項地震：證實不是天然</h3><p>2017 年南韓浦項 M5.4 地震，82 人受傷、1700 多人無家可歸。事後查明源自附近 EGS 計畫 2016 年起 5 次高壓注水，期間已記錄多次微震（含一次 M3.2）卻被忽視、未停工。2019 年國際專家委員會確認：地震並非天然，是高壓流體滲入臨界狀態斷層、觸發未知斷層錯動所致。</p>
+<h3>不是全面封殺，是更完整的監測規範</h3><p>如同鋰電池、氫能、核能都在試錯中成熟，浦項教訓催生出更嚴謹的風險治理方法，對同樣位在地震帶的台灣格外值得借鏡。</p>
+<h3>三道防線</h3><p><b>避險優先：</b>動工前做高解析度 3D 地球物理探勘（像替地球做電腦斷層掃描），找出並避開有誘震風險的斷層。<b>即時監控：</b>核心是分布式光纖監測（DAS）——雷射脈衝在光纖中因微小不均勻點產生瑞利散射，外界震動使這些點偏移、造成訊號相位變化，轉換成震動位置分布圖，可偵測規模小於 0 的微震；搭配井下地震儀可再提高定位精度。<b>動態調控：</b>建立在地化交通號誌系統（TLS）——依監測地震規模分綠黃紅三級，黃燈立刻降低注水壓力，紅燈無條件停工。</p>
+<p>事前評估、施工監測、安全標準缺一不可，做到才能讓 EGS 安全運行。完全避開注水風險的替代設計 → ${L("先進地熱系統AGS")}。</p>`},
+{id:"先進地熱系統AGS",ch:"14",en:"Ch.14 · AGS",cat:"地熱",html:`<div class="callout"><b>這章的問題：</b>EGS 靠高壓注水取熱帶著誘震風險，有沒有方法能從物理機制上就完全避開這個風險？</div>
+<h3>核心差異：不注水，也不接觸岩石</h3><p>加拿大 Eavor Technologies 的 Eavor-Loop™ 採完全封閉式迴路：鑽出多條互相連接的 U 型水平井，對接成地下熱交換器。工作流體封閉在管路中循環，只靠熱傳導從周圍高溫岩石吸熱——流體完全不接觸岩石，沒有高壓注水、沒有裂縫擴展、沒有孔隙壓力變化，從物理機制上就幾乎消除誘震風險。</p>
+<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNzAwIDQ2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiI+Cjx0ZXh0IHg9IjM1MC4wIiB5PSIyNiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzEyMzAzOSI+RUdT77yI6KOC6ZqZ5b6q55Kw77yJdnMgQUdT77yI5bCB6ZaJ6L+06Lev77yJ56S65oSPPC90ZXh0Pgo8bGluZSB4MT0iMzAiIHkxPSI3MCIgeDI9IjY3MCIgeTI9IjcwIiBzdHJva2U9IiM4YWE0YWUiIHN0cm9rZS13aWR0aD0iMS41Ii8+Cjx0ZXh0IHg9IjQwIiB5PSI2MCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzRkNmI3NiI+5Zyw6KGoPC90ZXh0Pgo8dGV4dCB4PSIxNzUiIHk9Ijk1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDg5MWIyIj5FR1PvvJrmsLTlipvlo5Poo4LvvIvoo4LpmpnlvqrnkrA8L3RleHQ+CjxsaW5lIHgxPSIxMzAiIHkxPSI3MCIgeDI9IjEzMCIgeTI9IjMzMCIgc3Ryb2tlPSIjMDg5MWIyIiBzdHJva2Utd2lkdGg9IjYiLz4KPGxpbmUgeDE9IjIyMCIgeTE9IjcwIiB4Mj0iMjIwIiB5Mj0iMzMwIiBzdHJva2U9IiNlMTFkNDgiIHN0cm9rZS13aWR0aD0iNiIvPgo8dGV4dCB4PSIxMzAiIHk9IjM0NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzA4OTFiMiI+5rOo5YWl5LqVPC90ZXh0Pgo8dGV4dCB4PSIyMjAiIHk9IjM0NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iI2UxMWQ0OCI+55Sf55Si5LqVPC90ZXh0Pgo8bGluZSB4MT0iMTQ0IiB5MT0iMjU2IiB4Mj0iMTMzIiB5Mj0iMjYxIiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMiIgb3BhY2l0eT0iMC43Ii8+CjxsaW5lIHgxPSIxODMiIHkxPSIxODkiIHgyPSIxNDQiIHkyPSIyMDYiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjciLz4KPGxpbmUgeDE9IjE0NiIgeTE9IjIxMyIgeDI9IjE4NiIgeTI9IjIxMSIgc3Ryb2tlPSIjZDk3NzA2IiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuNyIvPgo8bGluZSB4MT0iMjA0IiB5MT0iMjQ3IiB4Mj0iMjE1IiB5Mj0iMjI5IiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMiIgb3BhY2l0eT0iMC43Ii8+CjxsaW5lIHgxPSIxODMiIHkxPSIzMDIiIHgyPSIxODUiIHkyPSIzMTQiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjciLz4KPGxpbmUgeDE9IjE4NyIgeTE9IjE4OSIgeDI9IjIwOCIgeTI9IjE5NCIgc3Ryb2tlPSIjZDk3NzA2IiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuNyIvPgo8bGluZSB4MT0iMTUwIiB5MT0iMTg0IiB4Mj0iMTc5IiB5Mj0iMTgzIiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMiIgb3BhY2l0eT0iMC43Ii8+CjxsaW5lIHgxPSIxOTIiIHkxPSIzMDMiIHgyPSIyMDkiIHkyPSIzMjQiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjciLz4KPGxpbmUgeDE9IjE1OSIgeTE9IjI5MiIgeDI9IjE1NSIgeTI9IjMxNCIgc3Ryb2tlPSIjZDk3NzA2IiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuNyIvPgo8bGluZSB4MT0iMjA4IiB5MT0iMTk0IiB4Mj0iMTc5IiB5Mj0iMTc5IiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMiIgb3BhY2l0eT0iMC43Ii8+CjxsaW5lIHgxPSIyMTciIHkxPSIyNDEiIHgyPSIyMjciIHkyPSIyMzEiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjciLz4KPGxpbmUgeDE9IjE3MSIgeTE9IjIzNCIgeDI9IjE1OSIgeTI9IjIzOCIgc3Ryb2tlPSIjZDk3NzA2IiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuNyIvPgo8bGluZSB4MT0iMTc4IiB5MT0iMzA3IiB4Mj0iMTkzIiB5Mj0iMzI4IiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMiIgb3BhY2l0eT0iMC43Ii8+CjxsaW5lIHgxPSIyMDYiIHkxPSIzMTkiIHgyPSIyMTkiIHkyPSIzMDIiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjciLz4KPHJlY3QgeD0iOTAiIHk9IjE3MCIgd2lkdGg9IjE3MCIgaGVpZ2h0PSIxNzAiIGZpbGw9IiNkOTc3MDYiIG9wYWNpdHk9IjAuMDgiIHJ4PSI4Ii8+Cjx0ZXh0IHg9IjE3NSIgeT0iMzY1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjNGQ2Yjc2Ij7mtYHpq5Tnm7TmjqXmjqXop7jlsqnnn7Mg4oaSIOWPr+iDveiqmOeZvOWcsOmchzwvdGV4dD4KPHRleHQgeD0iNTAwIiB5PSI5NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzA1OTY2OSI+QUdT77ya5bCB6ZaJ5byPIFUg5Z6L6L+06LevPC90ZXh0Pgo8cGF0aCBkPSJNIDQyMCA3MCBMIDQyMCAyNTAgUSA0MjAgMzAwIDQ3MCAzMDAgTCA1MzAgMzAwIFEgNTgwIDMwMCA1ODAgMjUwIEwgNTgwIDcwIiBmaWxsPSJub25lIiBzdHJva2U9IiMwNTk2NjkiIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjx0ZXh0IHg9IjQyMCIgeT0iMzQ1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjMDU5NjY5Ij7lhrfmtYHpq5TkuIs8L3RleHQ+Cjx0ZXh0IHg9IjU4MCIgeT0iMzQ1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjZTExZDQ4Ij7nhrHmtYHpq5TkuIo8L3RleHQ+CjxyZWN0IHg9IjM4MCIgeT0iMTUwIiB3aWR0aD0iMjQwIiBoZWlnaHQ9IjE3MCIgZmlsbD0iIzA1OTY2OSIgb3BhY2l0eT0iMC4wOCIgcng9IjgiLz4KPHRleHQgeD0iNTAwIiB5PSIzNjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiM0ZDZiNzYiPua1gemrlOS4jeaOpeinuOWyqeefsyDihpIg6Zu26KqY6ZyH6aKo6Zqq77yM5pWI546H6LyD5L2OPC90ZXh0Pgo8L3N2Zz4=">
+<h3>代價：效率較低、工程更複雜</h3><p>只靠熱傳導取熱，效率比 EGS 開放式裂隙循環低；鑽出多條互相對接的水平井，鑽井成本與複雜度也更高——用效率換安全性的典型工程取捨。</p>
+<h3>進度</h3><p>2019 年 Eavor 在加拿大完成 Eavor-Lite™ 實驗井，證明熱虹吸效應可行（溫差驅動密度變化，流體能自然循環）。目前在德國興建全球首座商業化 Eavor-Loop™，規劃深度 4,500 公尺，目標 8.2MW 電力＋64MW 熱能，足以供應整個社區。</p>
+<h3>EGS 還是 AGS：真實的權衡題</h3><p>EGS 用嚴格監測換較高效率（見 ${L("誘發地震與風險治理")}）；AGS 用更高成本換幾乎零誘震風險。對地震敏感的台灣，AGS 可能更容易取得社會支持，但需要更高的初期建置成本——沒有標準答案，是成本、效率、社會風險接受度之間的政策取捨。</p>`},
+];
+const EDGES=[
+ ["宇宙太陽能導論與動機","微波無線能量傳輸原理"],
+ ["宇宙太陽能導論與動機","宇宙太陽能發展現況與經濟性"],
+ ["微波無線能量傳輸原理","宇宙太陽能發展現況與經濟性"],
+ ["海洋能總論","波浪能與潮汐能"],
+ ["海洋能總論","溫差能與鹽差能"],
+ ["海洋能總論","台灣海洋能潛力與挑戰"],
+ ["波浪能與潮汐能","台灣海洋能潛力與挑戰"],
+ ["溫差能與鹽差能","台灣海洋能潛力與挑戰"],
+ ["溫差能與鹽差能","地熱能物理基礎與傳統地熱"],
+ ["風能物理基礎與風速三次方定律","離岸風電工程與環境挑戰"],
+ ["風能物理基礎與風速三次方定律","風機構造演化與新型風力發電"],
+ ["離岸風電工程與環境挑戰","風機構造演化與新型風力發電"],
+ ["地熱能物理基礎與傳統地熱","增強型地熱系統EGS"],
+ ["增強型地熱系統EGS","誘發地震與風險治理"],
+ ["增強型地熱系統EGS","先進地熱系統AGS"],
+ ["誘發地震與風險治理","先進地熱系統AGS"]
+];
+const EXTRA={};
+
+const NById=Object.fromEntries(NOTES.map(n=>[n.id,n]));
+const sidebar=document.getElementById('sidebar');
+function buildSidebar(filter){
+ filter=(filter||'').trim();
+ let html='<div class="navlink" data-id="__home"><span class="dot" style="background:var(--accent)"></span>總覽首頁</div>';
+ for(const key of Object.keys(CATS)){
+  const items=NOTES.filter(n=>n.cat===key&&(!filter||n.id.includes(filter)||n.en.toLowerCase().includes(filter.toLowerCase())));
+  if(!items.length)continue;
+  html+='<div class="cat">'+CATS[key].name+'</div>';
+  for(const n of items)html+='<div class="navlink" data-id="'+n.id+'"><span class="dot" style="background:'+CATS[n.cat].raw+'"></span>'+(n.ch?'<b style="color:#0e9bc4;margin-right:5px">'+n.ch+'</b>':'')+n.id+'<small>'+n.en+'</small></div>';
+ }
+ sidebar.innerHTML=html;
+}
+/* ===== 筆記 ===== */
+const main=document.getElementById('main');
+let current=null;
+function neighborsOf(id){const s=new Set();EDGES.forEach(([a,b])=>{if(a===id)s.add(b);if(b===id)s.add(a);});return[...s];}
+function renderHome(){
+ current='__home';
+ main.innerHTML='<div class="note"><div class="hero"><div style="font-size:46px">🌱</div>'+
+  '<div class="big">再生能源知識庫</div>'+
+  '<p class="sub">依 PanSci 泛科學《一小時略懂再生能源》整理，橫跨宇宙太陽能、海洋能、風力發電、地熱發電四大領域，含物理推導，並附太空日照比較、賦相陣列波束、風機功率 v³、渦流共振發電、地熱溫度梯度等互動模擬工具。</p>'+
+  '<div class="stats"><div class="stat"><b>14</b><span>知識點</span></div><div class="stat"><b>16</b><span>關聯連結</span></div>'+
+  '<div class="stat"><b>5</b><span>互動模擬</span></div><div class="stat"><b>4</b><span>主題分區</span></div></div></div>'+
+  '<h3>建議閱讀路徑</h3>'+
+  '<div class="pathrow">'+Object.keys(CATS).map((key,i)=>{const first=NOTES.find(n=>n.cat===key).id;
+    return (i>0?'<span class="arrow">→</span>':'')+'<span class="stage" data-id="'+first+'"><span class="d" style="background:'+CATS[key].raw+'"></span>'+CATS[key].name+'</span>';}).join('')+'</div>'+
+  '<p style="color:var(--muted);font-size:14px">點上方階段可直接跳到該分區第一篇；或從下方各主題任選。建議從 '+L("宇宙太陽能導論與動機")+' 開始，一路讀到 '+L("先進地熱系統AGS")+'。</p>'+
+  Object.keys(CATS).map(key=>{const items=NOTES.filter(n=>n.cat===key);
+    return '<div class="catgroup"><div class="cl" style="color:'+CATS[key].raw+'"><span class="d" style="background:'+CATS[key].raw+'"></span>'+CATS[key].name+'</div><div class="chips">'+items.map(n=>'<span class="chip" data-id="'+n.id+'">'+n.id+'</span>').join('')+'</div></div>';}).join('')+
+  '</div>';
+ syncActive();
+}
+function renderNote(id){
+ const n=NById[id];if(!n){renderHome();return;}
+ current=id;const idx=NOTES.findIndex(x=>x.id===id);const prev=NOTES[idx-1],next=NOTES[idx+1];const nb=neighborsOf(id);
+ let html='<div class="note"><div class="crumbs"><span class="tag" style="background:'+CATS[n.cat].raw+'33;color:'+CATS[n.cat].raw+'">'+CATS[n.cat].name+'</span></div>'+
+  '<h2 class="title">'+n.id+'</h2><div class="en">'+n.en+'</div>'+n.html;
+ const ex=EXTRA[id];
+ if(ex){
+  if(ex.take)html+='<div class="kbox"><div class="kt">🎯 重點回顧</div><ul>'+ex.take.map(t=>'<li>'+t+'</li>').join('')+'</ul></div>';
+  if(ex.myth)html+='<details class="collap myth"><summary>💡 常見誤解</summary><div class="body">'+ex.myth.map(m=>'<div class="myth-row"><span class="x">✗</span><div>'+m.q+'</div></div><div class="myth-row"><span class="o">✓</span><div>'+m.a+'</div></div>').join('')+'</div></details>';
+  if(ex.fact)html+='<details class="collap fact"><summary>🔎 冷知識</summary><div class="body"><p>'+ex.fact+'</p></div></details>';
+  if(ex.deep)html+='<details class="collap deep"><summary>📐 深入補充</summary><div class="body">'+ex.deep+'</div></details>';
+ }
+ if(nb.length)html+='<div class="related"><div class="cat">關聯概念</div><div class="chips">'+nb.map(x=>'<span class="chip" data-id="'+x+'">'+x+'</span>').join('')+'</div></div>';
+ html+='<div class="nav-btns">'+(prev?'<button data-id="'+prev.id+'"><small>← 上一篇</small>'+prev.id+'</button>':'<button disabled style="opacity:.3"><small>—</small>第一篇</button>')+
+  (next?'<button data-id="'+next.id+'" style="text-align:right"><small>下一篇 →</small>'+next.id+'</button>':'<button disabled style="opacity:.3;text-align:right"><small>—</small>最後一篇</button>')+'</div></div>';
+ main.innerHTML=html;main.scrollTop=0;
+ if(ex&&ex.chart)drawChart(ex.chart);
+ syncActive();
+}
+function open(id){if(id==='__home')renderHome();else renderNote(id);showNotes();}
+function syncActive(){document.querySelectorAll('.navlink').forEach(el=>el.classList.toggle('active',el.dataset.id===current));}
+document.body.addEventListener('click',e=>{const t=e.target.closest('[data-id]');if(t)open(t.dataset.id);});
+/* ===== 搜尋 ===== */
+const search=document.getElementById('search');
+search.addEventListener('input',()=>buildSidebar(search.value));
+search.addEventListener('keydown',e=>{if(e.key==='Enter'){const f=search.value.trim().toLowerCase();const hit=NOTES.find(n=>n.id.includes(search.value.trim())||n.en.toLowerCase().includes(f));if(hit)open(hit.id);}});
+/* ===== 分頁 ===== */
+const tabNotes=document.getElementById('tabNotes'),tabGraph=document.getElementById('tabGraph'),tabDemo=document.getElementById('tabDemo');
+const graphView=document.getElementById('graphView'),demoView=document.getElementById('demoView');
+const allTabs=[tabNotes,tabGraph,tabDemo];
+function setTab(b){allTabs.forEach(x=>x.classList.toggle('active',x===b));}
+function hideAll(){main.style.display='none';graphView.style.display='none';demoView.style.display='none';}
+function showNotes(){setTab(tabNotes);hideAll();main.style.display='';}
+function showGraph(){setTab(tabGraph);hideAll();graphView.style.display='block';startGraph();}
+function showDemo(){setTab(tabDemo);hideAll();demoView.style.display='block';startDemo();startMesh();}
+tabNotes.onclick=showNotes;tabGraph.onclick=showGraph;tabDemo.onclick=showDemo;
+/* ===== 圖表 ===== */
+
+function drawChart(kind){}
+function buildLegend(){document.getElementById('legend').innerHTML=Object.keys(CATS).map(k=>'<div><i style="background:'+CATS[k].raw+'"></i>'+CATS[k].name+'</div>').join('');}
+const svg=document.getElementById('graph');
+const SVGNS='http://www.w3.org/2000/svg';
+const G={started:false,nodes:[],edges:[],raf:null};
+function startGraph(){
+ if(G.started)return;G.started=true;buildLegend();
+ const W=svg.clientWidth||900,H=svg.clientHeight||600;
+ const deg={};EDGES.forEach(([a,b])=>{deg[a]=(deg[a]||0)+1;deg[b]=(deg[b]||0)+1;});
+ G.nodes=NOTES.map((n,i)=>({id:n.id,cat:n.cat,x:W/2+Math.cos(i/NOTES.length*6.283)*240+(Math.random()-.5)*40,y:H/2+Math.sin(i/NOTES.length*6.283)*190+(Math.random()-.5)*40,vx:0,vy:0,r:8+(deg[n.id]||1)*1.5}));
+ const pos=Object.fromEntries(G.nodes.map(n=>[n.id,n]));
+ while(svg.firstChild)svg.removeChild(svg.firstChild);
+ const gE=document.createElementNS(SVGNS,'g'),gN=document.createElementNS(SVGNS,'g');svg.appendChild(gE);svg.appendChild(gN);
+ G.edges=EDGES.map(([a,b])=>{const l=document.createElementNS(SVGNS,'line');l.setAttribute('class','gedge');gE.appendChild(l);return{a,b,el:l};});
+ G.nodes.forEach(n=>{
+  const g=document.createElementNS(SVGNS,'g');g.setAttribute('class','gnode');g.dataset.id=n.id;
+  const c=document.createElementNS(SVGNS,'circle');c.setAttribute('r',n.r);c.setAttribute('fill',CATS[n.cat].raw);c.setAttribute('stroke','#ffffff');c.setAttribute('stroke-width','2.5');
+  const t=document.createElementNS(SVGNS,'text');t.setAttribute('text-anchor','middle');t.setAttribute('dy',-n.r-6);t.textContent=n.id;
+  g.appendChild(c);g.appendChild(t);gN.appendChild(g);n.el=g;
+  g.addEventListener('mouseenter',()=>highlight(n.id,true));g.addEventListener('mouseleave',()=>highlight(n.id,false));
+  let moved=false,down=false,ox,oy;
+  g.addEventListener('pointerdown',ev=>{down=true;moved=false;n.fixed=true;const p=toSvg(ev);ox=p.x-n.x;oy=p.y-n.y;g.setPointerCapture(ev.pointerId);});
+  g.addEventListener('pointermove',ev=>{if(!down)return;const p=toSvg(ev);n.x=p.x-ox;n.y=p.y-oy;n.vx=0;n.vy=0;moved=true;});
+  g.addEventListener('pointerup',()=>{down=false;n.fixed=false;if(!moved)open(n.id);});
+ });
+ gloop(pos,W,H);
+}
+function toSvg(ev){const r=svg.getBoundingClientRect();return{x:ev.clientX-r.left,y:ev.clientY-r.top};}
+function highlight(id,on){const nb=new Set(neighborsOf(id));nb.add(id);
+ G.nodes.forEach(n=>{n.el.style.opacity=on?(nb.has(n.id)?1:.2):1;});
+ G.edges.forEach(e=>{const rel=(e.a===id||e.b===id);e.el.classList.toggle('hl',on&&rel);e.el.style.opacity=on?(rel?1:.12):1;});}
+function gloop(pos,W,H){const KR=5200,KS=0.012,L0=118,DA=0.86,GR=0.008;
+ function step(){const ns=G.nodes;
+  for(let i=0;i<ns.length;i++){const a=ns[i];if(a.fixed)continue;let fx=0,fy=0;
+   for(let j=0;j<ns.length;j++){if(i===j)continue;const b=ns[j];let dx=a.x-b.x,dy=a.y-b.y,d2=dx*dx+dy*dy+.01,d=Math.sqrt(d2);const f=KR/d2;fx+=dx/d*f;fy+=dy/d*f;}
+   fx+=(W/2-a.x)*GR;fy+=(H/2-a.y)*GR;a.vx=(a.vx+fx)*DA;a.vy=(a.vy+fy)*DA;}
+  EDGES.forEach(([ai,bi])=>{const a=pos[ai],b=pos[bi];let dx=b.x-a.x,dy=b.y-a.y,d=Math.sqrt(dx*dx+dy*dy)+.01;const f=(d-L0)*KS,ux=dx/d,uy=dy/d;if(!a.fixed){a.vx+=ux*f;a.vy+=uy*f;}if(!b.fixed){b.vx-=ux*f;b.vy-=uy*f;}});
+  ns.forEach(n=>{if(n.fixed)return;n.x+=n.vx;n.y+=n.vy;n.x=Math.max(n.r+40,Math.min(W-n.r-40,n.x));n.y=Math.max(n.r+30,Math.min(H-n.r-20,n.y));});
+  G.edges.forEach(e=>{const a=pos[e.a],b=pos[e.b];e.el.setAttribute('x1',a.x);e.el.setAttribute('y1',a.y);e.el.setAttribute('x2',b.x);e.el.setAttribute('y2',b.y);});
+  ns.forEach(n=>n.el.setAttribute('transform','translate('+n.x+','+n.y+')'));
+  G.raf=requestAnimationFrame(step);}
+ step();}
+
+
+/* ===== 模擬工具 ===== */
+let reTool='space';
+function startDemo(){
+ if(!document.getElementById('simBar')){
+  demoView.innerHTML='<div class="demo"><div class="panel"><h3>🔬 互動模擬</h3>'+
+   '<div class="d">五個模擬工具，對應宇宙太陽能、風力、地熱三大主題的核心物理關係。點下方切換。</div>'+
+   '<div id="simBar" style="display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 14px"></div>'+
+   '<div id="simBox"></div></div></div>';
+  const tools=[['space','太空 vs 地面日照'],['phased','賦相陣列波束'],['wind','風機功率 v³'],['vortex','渦流共振發電'],['geo','地熱溫度梯度']];
+  document.getElementById('simBar').innerHTML=tools.map(t=>'<button class="simtab" data-t="'+t[0]+'">'+t[1]+'</button>').join('');
+  document.getElementById('simBar').querySelectorAll('.simtab').forEach(b=>b.onclick=()=>{reTool=b.dataset.t;renderTool();});
+ }
+ renderTool();
+}
+function startMesh(){}
+function renderTool(){
+ document.querySelectorAll('.simtab').forEach(b=>b.classList.toggle('active',b.dataset.t===reTool));
+ const box=document.getElementById('simBox');
+ if(reTool==='space')toolSpace(box);
+ else if(reTool==='phased')toolPhased(box);
+ else if(reTool==='wind')toolWind(box);
+ else if(reTool==='vortex')toolVortex(box);
+ else if(reTool==='geo')toolGeo(box);
+}
+
+/* ---- 1. 太空 vs 地面日照 ---- */
+function toolSpace(box){
+ box.innerHTML='<div class="tool"><div class="row">'+
+  '<label>大氣散射損失 <span id="spAtmV">40</span>%<input id="spAtm" type="range" min="0" max="60" value="40"></label>'+
+  '<label>地面入射角效率 <span id="spAngV">70</span>%<input id="spAng" type="range" min="30" max="100" value="70"></label>'+
+  '<label>地面日照時數佔比 <span id="spDayV">45</span>%<input id="spDay" type="range" min="20" max="60" value="45"></label>'+
+  '</div><canvas id="spCanvas" width="640" height="320"></canvas>'+
+  '<div class="d" id="spNote"></div></div>';
+ ['spAtm','spAng','spDay'].forEach(id=>document.getElementById(id).oninput=drawSpace);
+ drawSpace();
+}
+function drawSpace(){
+ const atm=+document.getElementById('spAtm').value, ang=+document.getElementById('spAng').value, day=+document.getElementById('spDay').value;
+ document.getElementById('spAtmV').textContent=atm;
+ document.getElementById('spAngV').textContent=ang;
+ document.getElementById('spDayV').textContent=day;
+ const groundFactor=(day/100)*(ang/100)*(1-atm/100/2); // rough composite ground factor
+ const spaceFactor=1.0; // 24h, perpendicular, no atmosphere loss baseline
+ const ratio=spaceFactor/Math.max(groundFactor,0.02);
+ const cv=document.getElementById('spCanvas'), ctx=cv.getContext('2d');
+ ctx.clearRect(0,0,cv.width,cv.height);
+ const bars=[['地面(目前設定)',groundFactor,'#0891b2'],['太空(24h+垂直入射)',spaceFactor,'#e11d48']];
+ const maxV=1.1, baseY=270, plotH=200, x0=90, barW=160, gap=80;
+ ctx.strokeStyle='#8aa4ae';ctx.beginPath();ctx.moveTo(x0-20,baseY);ctx.lineTo(x0+2*(barW+gap),baseY);ctx.stroke();
+ bars.forEach((b,i)=>{
+  const x=x0+i*(barW+gap), h=plotH*(b[1]/maxV), y=baseY-h;
+  ctx.fillStyle=b[2]; ctx.fillRect(x,y,barW,h);
+  ctx.fillStyle='#123039'; ctx.font='bold 16px sans-serif'; ctx.textAlign='center';
+  ctx.fillText((b[1]*100).toFixed(0)+'%',x+barW/2,y-10);
+  ctx.font='13px sans-serif'; ctx.fillStyle='#4d6b76';
+  ctx.fillText(b[0],x+barW/2,baseY+22);
+ });
+ document.getElementById('spNote').innerHTML='在目前的滑桿設定下，太空的發電量大約是地面的 <b>'+ratio.toFixed(1)+' 倍</b>——這正是文中「約 4 倍」估算的由來：把大氣散射損失、入射角效率、日照時數三個因素疊乘起來，就是地面被壓低的效率上限。';
+}
+
+/* ---- 2. 賦相陣列波束發散 ---- */
+function toolPhased(box){
+ box.innerHTML='<div class="tool"><div class="row">'+
+  '<label>天線數量 <span id="phNV">8</span><input id="phN" type="range" min="2" max="24" value="8"></label>'+
+  '<label>發散角 <span id="phDivV">0.15</span>°<input id="phDiv" type="range" min="5" max="100" value="15"></label>'+
+  '<label>傳輸距離 <span id="phDistV">400</span> km（同步軌道=36000）<input id="phDist" type="range" min="200" max="36000" value="400" step="200"></label>'+
+  '</div><canvas id="phCanvas" width="640" height="320"></canvas>'+
+  '<div class="d" id="phNote"></div></div>';
+ ['phN','phDiv','phDist'].forEach(id=>document.getElementById(id).oninput=drawPhased);
+ drawPhased();
+}
+function drawPhased(){
+ const n=+document.getElementById('phN').value;
+ const divDeg=(+document.getElementById('phDiv').value)/100;
+ const dist=+document.getElementById('phDist').value;
+ document.getElementById('phNV').textContent=n;
+ document.getElementById('phDivV').textContent=divDeg.toFixed(2);
+ document.getElementById('phDistV').textContent=dist;
+ const spotDiam=2*dist*Math.tan(divDeg*Math.PI/180/2)*1000; // meters
+ const cv=document.getElementById('phCanvas'), ctx=cv.getContext('2d');
+ ctx.clearRect(0,0,cv.width,cv.height);
+ // draw antenna array on left
+ const ax=70, ay0=60, spacing=Math.max(6,190/n);
+ ctx.strokeStyle='#0891b2'; ctx.fillStyle='#0891b2';
+ for(let i=0;i<Math.min(n,24);i++){
+  const ay=ay0+i*spacing;
+  ctx.fillRect(ax-6,ay-4,12,8);
+ }
+ const cy=ay0+Math.min(n,24)*spacing/2;
+ // beam cone to right, width grows with divDeg
+ const tx=560;
+ const halfw=Math.min(140, 20+divDeg*12);
+ ctx.fillStyle='rgba(217,119,6,0.35)';
+ ctx.beginPath();
+ ctx.moveTo(ax+10,cy-4); ctx.lineTo(tx,cy-halfw); ctx.lineTo(tx,cy+halfw); ctx.lineTo(ax+10,cy+4);
+ ctx.closePath(); ctx.fill();
+ ctx.strokeStyle='#d97706'; ctx.lineWidth=2; ctx.stroke();
+ ctx.fillStyle='#e11d48';
+ ctx.beginPath(); ctx.ellipse(tx+30,cy,10,halfw,0,0,Math.PI*2); ctx.fill();
+ ctx.font='13px sans-serif'; ctx.fillStyle='#4d6b76'; ctx.textAlign='center';
+ ctx.fillText('接收站',tx+30,cy+halfw+22);
+ ctx.fillText('天線陣列',ax,ay0-20);
+ let spotText;
+ if(spotDiam<1000) spotText=spotDiam.toFixed(0)+' 公尺';
+ else spotText=(spotDiam/1000).toFixed(2)+' 公里';
+ document.getElementById('phNote').innerHTML='在傳輸距離 '+dist+' km、發散角 '+divDeg.toFixed(2)+'° 的設定下，地面波束光斑直徑約 <b>'+spotText+'</b>。把距離拉到地球同步軌道（36000km）就能感受到——再小的發散角，在這個距離也會被放大成巨大的接收範圍，這正是「操場打蚊子」的工程難題。';
+}
+
+/* ---- 3. 風力發電 P∝v³ ---- */
+function toolWind(box){
+ box.innerHTML='<div class="tool"><div class="row">'+
+  '<label>風速 v <span id="wdVV">8</span> m/s<input id="wdV" type="range" min="2" max="25" value="8"></label>'+
+  '<label>葉片半徑 R <span id="wdRV">60</span> m<input id="wdR" type="range" min="20" max="120" value="60"></label>'+
+  '<label>高度修正（越高風速越快） <span id="wdHV">100</span> m<input id="wdH" type="range" min="10" max="300" value="100"></label>'+
+  '</div><canvas id="wdCanvas" width="640" height="320"></canvas>'+
+  '<div class="d" id="wdNote"></div></div>';
+ ['wdV','wdR','wdH'].forEach(id=>document.getElementById(id).oninput=drawWind);
+ drawWind();
+}
+function drawWind(){
+ const v=+document.getElementById('wdV').value, R=+document.getElementById('wdR').value, h=+document.getElementById('wdH').value;
+ document.getElementById('wdVV').textContent=v;
+ document.getElementById('wdRV').textContent=R;
+ document.getElementById('wdHV').textContent=h;
+ const heightFactor=Math.pow(h/100,0.14); // simple wind shear power law
+ const vEff=v*heightFactor;
+ const rho=1.225, A=Math.PI*R*R;
+ const P=0.5*rho*A*Math.pow(vEff,3)/1e6; // MW (ignoring Cp for illustration)
+ const P2v=0.5*rho*A*Math.pow(vEff*2,3)/1e6;
+ const cv=document.getElementById('wdCanvas'), ctx=cv.getContext('2d');
+ ctx.clearRect(0,0,cv.width,cv.height);
+ const ox=80, oy=270, axw=500, axh=220;
+ ctx.strokeStyle='#8aa4ae'; ctx.beginPath(); ctx.moveTo(ox,oy); ctx.lineTo(ox+axw,oy); ctx.moveTo(ox,oy); ctx.lineTo(ox,oy-axh); ctx.stroke();
+ const vmax=Math.max(vEff*2.2,20);
+ const pmax=0.5*rho*A*Math.pow(vmax,3)/1e6;
+ ctx.strokeStyle='#0891b2'; ctx.lineWidth=3; ctx.beginPath();
+ for(let i=0;i<=60;i++){
+  const vv=vmax*i/60;
+  const pp=0.5*rho*A*Math.pow(vv,3)/1e6;
+  const x=ox+axw*(vv/vmax), y=oy-axh*Math.min(pp/pmax,1);
+  if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);
+ }
+ ctx.stroke();
+ function markPoint(vv,pp,color,label){
+  const x=ox+axw*(vv/vmax), y=oy-axh*Math.min(pp/pmax,1);
+  ctx.strokeStyle=color; ctx.setLineDash([4,4]);
+  ctx.beginPath();ctx.moveTo(x,oy);ctx.lineTo(x,y);ctx.lineTo(ox,y);ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle=color; ctx.beginPath(); ctx.arc(x,y,5,0,Math.PI*2); ctx.fill();
+  ctx.font='bold 12px sans-serif'; ctx.textAlign='center'; ctx.fillText(label,x,oy+18);
+ }
+ markPoint(vEff,P,'#d97706','v='+vEff.toFixed(1));
+ markPoint(vEff*2,P2v,'#e11d48','2v='+(vEff*2).toFixed(1));
+ ctx.textAlign='left'; ctx.fillStyle='#4d6b76'; ctx.font='13px sans-serif';
+ ctx.fillText('風速 →',ox+axw-40,oy+20); ctx.fillText('功率 P (MW)',ox-70,oy-axh-5);
+ document.getElementById('wdNote').innerHTML='高度 '+h+'m 修正後的等效風速約 <b>'+vEff.toFixed(1)+' m/s</b>，此時單機理論功率約 <b>'+P.toFixed(2)+' MW</b>；若風速加倍到 '+(vEff*2).toFixed(1)+' m/s，功率會變成 <b>'+P2v.toFixed(2)+' MW</b>，約 '+(P2v/Math.max(P,0.001)).toFixed(1)+' 倍——驗證了 P∝v³ 的立方關係。';
+}
+
+/* ---- 4. 渦流共振發電 ---- */
+function toolVortex(box){
+ box.innerHTML='<div class="tool"><div class="row">'+
+  '<label>風速（決定渦流激振頻率） <span id="vxWV">5</span> m/s<input id="vxW" type="range" min="1" max="15" value="5" step="0.5"></label>'+
+  '<label>桿體自然頻率 <span id="vxFV">1.0</span> Hz<input id="vxF" type="range" min="0.3" max="3" value="1.0" step="0.05"></label>'+
+  '<label>阻尼比 ζ <span id="vxZV">0.05</span><input id="vxZ" type="range" min="1" max="30" value="5"></label>'+
+  '</div><canvas id="vxCanvas" width="640" height="320"></canvas>'+
+  '<div class="d" id="vxNote"></div></div>';
+ ['vxW','vxF','vxZ'].forEach(id=>document.getElementById(id).oninput=drawVortex);
+ drawVortex();
+}
+function drawVortex(){
+ const wind=+document.getElementById('vxW').value;
+ const fn=+document.getElementById('vxF').value;
+ const zeta=(+document.getElementById('vxZ').value)/100;
+ document.getElementById('vxWV').textContent=wind;
+ document.getElementById('vxFV').textContent=fn.toFixed(2);
+ document.getElementById('vxZV').textContent=zeta.toFixed(2);
+ // Strouhal-like relation: vortex shedding freq roughly proportional to wind speed
+ const St=0.2, D=0.3; // Strouhal number, cylinder diameter (m), illustrative
+ const fs=St*wind/D;
+ const r=fs/fn; // frequency ratio
+ const cv=document.getElementById('vxCanvas'), ctx=cv.getContext('2d');
+ ctx.clearRect(0,0,cv.width,cv.height);
+ const ox=80, oy=270, axw=500, axh=220;
+ ctx.strokeStyle='#8aa4ae'; ctx.beginPath(); ctx.moveTo(ox,oy); ctx.lineTo(ox+axw,oy); ctx.moveTo(ox,oy); ctx.lineTo(ox,oy-axh); ctx.stroke();
+ const rmax=3;
+ let peakAmp=0;
+ const pts=[];
+ for(let i=0;i<=120;i++){
+  const rr=rmax*i/120;
+  const amp=1/Math.sqrt(Math.pow(1-rr*rr,2)+Math.pow(2*zeta*rr,2));
+  peakAmp=Math.max(peakAmp,amp);
+  pts.push([rr,amp]);
+ }
+ const ampCap=Math.min(peakAmp,1/(2*zeta)+2);
+ ctx.strokeStyle='#0891b2'; ctx.lineWidth=3; ctx.beginPath();
+ pts.forEach((p,i)=>{
+  const x=ox+axw*(p[0]/rmax), y=oy-axh*Math.min(p[1]/ampCap,1);
+  if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);
+ });
+ ctx.stroke();
+ // current operating point
+ const curAmp=1/Math.sqrt(Math.pow(1-r*r,2)+Math.pow(2*zeta*r,2));
+ const cx=ox+axw*Math.min(r,rmax)/rmax, cyy=oy-axh*Math.min(curAmp/ampCap,1);
+ ctx.fillStyle='#e11d48'; ctx.beginPath(); ctx.arc(cx,cyy,6,0,Math.PI*2); ctx.fill();
+ ctx.strokeStyle='#e11d48'; ctx.setLineDash([4,4]); ctx.beginPath(); ctx.moveTo(cx,oy); ctx.lineTo(cx,cyy); ctx.stroke(); ctx.setLineDash([]);
+ ctx.font='13px sans-serif'; ctx.fillStyle='#4d6b76'; ctx.textAlign='center';
+ ctx.fillText('頻率比 fs/fn →',ox+axw-60,oy+22);
+ ctx.save(); ctx.translate(ox-55,oy-axh/2); ctx.rotate(-Math.PI/2); ctx.fillText('震動振幅',0,0); ctx.restore();
+ ctx.fillText('r=1 共振點',ox+axw/rmax,oy+40);
+ document.getElementById('vxNote').innerHTML='目前渦流激振頻率約 <b>'+fs.toFixed(2)+' Hz</b>，桿體自然頻率 '+fn.toFixed(2)+' Hz，頻率比 r='+r.toFixed(2)+'。當 r 接近 1（激振頻率＝自然頻率）時發生共振，震動幅度會急遽放大——這正是 Vortex Bladeless 發電棒的設計目標：讓桿體的自然頻率剛好落在常見風速對應的渦流頻率範圍內，同時保留一點阻尼避免像 1940 年代塔科馬海峽吊橋那樣共振到結構損壞。';
+}
+
+/* ---- 5. 地熱溫度梯度與 EGS 開發深度 ---- */
+function toolGeo(box){
+ box.innerHTML='<div class="tool"><div class="row">'+
+  '<label>地溫梯度 <span id="geGV">35</span> °C/km<input id="geG" type="range" min="20" max="60" value="35"></label>'+
+  '<label>地表溫度 <span id="geSV">20</span> °C<input id="geS" type="range" min="10" max="30" value="20"></label>'+
+  '<label>目前開發深度 <span id="geDV">2</span> km<input id="geD" type="range" min="0.5" max="6" value="2" step="0.1"></label>'+
+  '</div><canvas id="geCanvas" width="640" height="340"></canvas>'+
+  '<div class="d" id="geNote"></div></div>';
+ ['geG','geS','geD'].forEach(id=>document.getElementById(id).oninput=drawGeo);
+ drawGeo();
+}
+function drawGeo(){
+ const grad=+document.getElementById('geG').value;
+ const surf=+document.getElementById('geS').value;
+ const depth=+document.getElementById('geD').value;
+ document.getElementById('geGV').textContent=grad;
+ document.getElementById('geSV').textContent=surf;
+ document.getElementById('geDV').textContent=depth.toFixed(1);
+ const T=surf+grad*depth;
+ const cv=document.getElementById('geCanvas'), ctx=cv.getContext('2d');
+ ctx.clearRect(0,0,cv.width,cv.height);
+ const ox=90, oy=20, axh=280, axw=480;
+ // vertical depth axis going down
+ ctx.strokeStyle='#8aa4ae'; ctx.beginPath(); ctx.moveTo(ox,oy); ctx.lineTo(ox,oy+axh); ctx.moveTo(ox,oy); ctx.lineTo(ox+axw,oy); ctx.stroke();
+ const maxDepth=6, maxT=surf+grad*maxDepth;
+ // shallow geothermal window 0-1.5km shaded
+ function yOf(d){return oy+axh*(d/maxDepth);}
+ function xOfT(t){return ox+axw*((t-surf)/(maxT-surf));}
+ ctx.fillStyle='rgba(5,150,105,0.12)';
+ ctx.fillRect(ox,yOf(0),axw,yOf(1.5)-yOf(0));
+ ctx.fillStyle='#059669'; ctx.font='12px sans-serif'; ctx.textAlign='left';
+ ctx.fillText('傳統淺層地熱可及範圍 (~1.5km)',ox+8,yOf(0.75));
+ ctx.fillStyle='rgba(217,119,6,0.12)';
+ ctx.fillRect(ox,yOf(3),axw,yOf(6)-yOf(3));
+ ctx.fillStyle='#d97706';
+ ctx.fillText('乾熱岩 / EGS 開發範圍 (3–6km)',ox+8,yOf(4.5));
+ // temperature line
+ ctx.strokeStyle='#e11d48'; ctx.lineWidth=3; ctx.beginPath();
+ ctx.moveTo(xOfT(surf),oy);
+ ctx.lineTo(xOfT(maxT),oy+axh);
+ ctx.stroke();
+ // current depth marker
+ const dy=yOf(depth), dx=xOfT(T);
+ ctx.fillStyle='#123039'; ctx.beginPath(); ctx.arc(dx,dy,6,0,Math.PI*2); ctx.fill();
+ ctx.strokeStyle='#123039'; ctx.setLineDash([4,4]); ctx.beginPath(); ctx.moveTo(ox,dy); ctx.lineTo(dx,dy); ctx.stroke(); ctx.setLineDash([]);
+ ctx.font='bold 13px sans-serif'; ctx.textAlign='left'; ctx.fillStyle='#123039';
+ ctx.fillText(depth.toFixed(1)+'km → '+T.toFixed(0)+'°C',dx+10,dy-8);
+ ctx.font='12px sans-serif'; ctx.fillStyle='#4d6b76';
+ ctx.fillText('溫度 (°C) →',ox+axw-70,oy+axh+18);
+ ctx.save(); ctx.translate(ox-30,oy+axh/2); ctx.rotate(-Math.PI/2); ctx.fillText('深度 (km)',0,0); ctx.restore();
+ let zone;
+ if(depth<1.5) zone='傳統地熱可及範圍——如果這裡剛好同時有熱源、裂隙、水，就能直接開發。';
+ else if(depth<3) zone='過渡帶——溫度已經不低，但通常裂隙與水源不穩定，開發風險較高。';
+ else zone='乾熱岩範圍——溫度夠高，但缺乏天然裂隙與水，需要 EGS 人工造隙（水力壓裂）或 AGS 封閉迴路才能取熱。';
+ document.getElementById('geNote').innerHTML='在地溫梯度 '+grad+'°C/km 之下，'+depth.toFixed(1)+'km 深處溫度約 <b>'+T.toFixed(0)+'°C</b>。'+zone;
+}
+
+buildSidebar();renderHome();
+</script>
+</body>
+</html>
