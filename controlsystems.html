@@ -324,7 +324,7 @@ function renderHome(){
   '<h3>建議閱讀路徑</h3>'+
   '<div class="pathrow">'+Object.keys(CATS).map((key,i)=>{const first=NOTES.find(n=>n.cat===key).id;
     return (i>0?'<span class="arrow">→</span>':'')+'<span class="stage" data-id="'+first+'"><span class="d" style="background:'+CATS[key].raw+'"></span>'+CATS[key].name+'</span>';}).join('')+'</div>'+
-  '<p style="color:var(--muted);font-size:14px">點上方階段可直接跳到該分區第一篇；或從下方各主題任選。建議從 '+L("電磁與平面波")+' 開始，一路讀到 '+L("微波系統與天線")+'。</p>'+
+  '<p style="color:var(--muted);font-size:14px">點上方階段可直接跳到該分區第一篇；或從下方各主題任選。建議從 '+L("導論與回授控制史")+' 開始，一路讀到 '+L("控制系統設計原則與案例研究")+'。</p>'+
   Object.keys(CATS).map(key=>{const items=NOTES.filter(n=>n.cat===key);
     return '<div class="catgroup"><div class="cl" style="color:'+CATS[key].raw+'"><span class="d" style="background:'+CATS[key].raw+'"></span>'+CATS[key].name+'</div><div class="chips">'+items.map(n=>'<span class="chip" data-id="'+n.id+'">'+n.id+'</span>').join('')+'</div></div>';}).join('')+
   '</div>';
