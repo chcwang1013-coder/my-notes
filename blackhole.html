@@ -212,6 +212,11 @@
     .search{max-width:none}
     header h1{font-size:15px}
   }
+  /* ===== MathML 公式排版 ===== */
+  .eq math{font-size:.92em;line-height:1.4}
+  math{font-family:'Cambria Math','Latin Modern Math','STIX Two Math',Georgia,serif}
+  math mfrac{padding:0 .12em}
+  .eqcard{overflow-x:auto}
 </style>
 </head>
 <body>
@@ -260,7 +265,7 @@ const NOTES = [
   '<li><b>質能等價</b>：質量與能量可以互換（見下方公式）。</li>'+
   '<li><b>時空一體</b>：時間與三維空間合併成四維「時空」。</li></ul>'+
   '<div class="eqcard"><div class="eqt">質能等價</div>'+
-   '<div class="eq"><i style="color:#7dd3fc">E</i> = <i style="color:#fbbf24">m</i><i style="color:#34d399">c</i><sup style="color:#34d399">2</sup></div>'+
+   '<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi mathcolor="#7dd3fc">E</mi><mo>=</mo><mi mathcolor="#fbbf24">m</mi><msup><mi mathcolor="#34d399">c</mi><mn mathcolor="#34d399">2</mn></msup></mrow></math></div>'+
    '<div class="lg">'+
     '<div class="row"><div class="s" style="color:#7dd3fc">E</div><div class="m"><b>能量</b>：物體蘊含的總能量<span class="u">焦耳 J</span></div></div>'+
     '<div class="row"><div class="s" style="color:#fbbf24">m</div><div class="m"><b>質量</b>：物體的靜質量<span class="u">公斤 kg</span></div></div>'+
@@ -368,7 +373,7 @@ const NOTES = [
   '<li>地球約 9 mm；太陽約 3 公里。</li>'+
   '<li>描述最簡單的黑洞；旋轉黑洞需用克爾（Kerr）解。</li></ul>'+
   '<div class="eqcard"><div class="eqt">史瓦西半徑</div>'+
-   '<div class="eq"><i style="color:#7dd3fc">r</i><sub style="color:#7dd3fc">s</sub> = 2<i style="color:#a78bfa">G</i><i style="color:#fbbf24">M</i> ⁄ <i style="color:#34d399">c</i><sup style="color:#34d399">2</sup></div>'+
+   '<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi mathcolor="#7dd3fc">r</mi><mi mathcolor="#7dd3fc">s</mi></msub><mo>=</mo><mfrac><mrow><mn>2</mn><mi mathcolor="#a78bfa">G</mi><mi mathcolor="#fbbf24">M</mi></mrow><msup><mi mathcolor="#34d399">c</mi><mn mathcolor="#34d399">2</mn></msup></mfrac></mrow></math></div>'+
    '<div class="lg">'+
     '<div class="row"><div class="s" style="color:#7dd3fc">r<sub>s</sub></div><div class="m"><b>史瓦西半徑</b>：事件視界的半徑；質量壓進此半徑內即成黑洞<span class="u">公尺 m</span></div></div>'+
     '<div class="row"><div class="s" style="color:#a78bfa">G</div><div class="m"><b>重力常數</b>：牛頓萬有引力常數，約 6.67×10⁻¹¹<span class="u">N·m²/kg²</span></div></div>'+
@@ -380,7 +385,7 @@ const NOTES = [
 {id:"愛因斯坦場方程式", en:"Einstein Field Equations", cat:"結構", html:
   '<div class="callout"><b>一句話：</b>'+L("廣義相對論")+' 的核心方程式，描述<b>物質與能量如何決定時空的彎曲</b>。物質告訴時空怎麼彎，時空告訴物質怎麼動。</div>'+
   '<div class="eqcard"><div class="eqt">愛因斯坦場方程式</div>'+
-   '<div class="eq"><i style="color:#7dd3fc">G</i><sub style="color:#7dd3fc">μν</sub> + <span style="color:#fb7185">Λ</span><i style="color:#34d399">g</i><sub style="color:#34d399">μν</sub> = <span style="color:#c9b06a">(8π<i>G</i> ⁄ <i>c</i>⁴)</span> <i style="color:#fbbf24">T</i><sub style="color:#fbbf24">μν</sub></div>'+
+   '<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi mathcolor="#7dd3fc">G</mi><mi mathcolor="#7dd3fc">μν</mi></msub><mo>+</mo><mi mathcolor="#fb7185">Λ</mi><msub><mi mathcolor="#34d399">g</mi><mi mathcolor="#34d399">μν</mi></msub><mo>=</mo><mfrac><mrow><mn mathcolor="#c9b06a">8</mn><mi mathcolor="#c9b06a">π</mi><mi mathcolor="#c9b06a">G</mi></mrow><msup><mi mathcolor="#c9b06a">c</mi><mn mathcolor="#c9b06a">4</mn></msup></mfrac><msub><mi mathcolor="#fbbf24">T</mi><mi mathcolor="#fbbf24">μν</mi></msub></mrow></math></div>'+
    '<div class="lg">'+
     '<div class="row"><div class="s" style="color:#7dd3fc">G<sub>μν</sub></div><div class="m"><b>愛因斯坦張量</b>：描述時空的<b>彎曲程度</b>（幾何）——方程式的「左邊＝幾何」</div></div>'+
     '<div class="row"><div class="s" style="color:#34d399">g<sub>μν</sub></div><div class="m"><b>度規張量</b>：定義時空中如何量測距離與時間，是時空幾何的基本描述</div></div>'+

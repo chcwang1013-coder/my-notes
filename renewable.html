@@ -165,6 +165,33 @@
   ::-webkit-scrollbar-thumb{background:#b7d3dd;border-radius:6px}
   @media(max-width:720px){aside{position:fixed;z-index:15;height:100%;transform:translateX(-100%);transition:.25s}
     aside.open{transform:none}main{padding:24px 18px 80px}.search{max-width:none}header h1{font-size:14px}}
+  /* ===== 模擬工具版面（補上缺漏的樣式） ===== */
+  main{min-width:0}
+  #demoView{min-width:0}
+  .simtab{padding:7px 14px;border-radius:9px;border:1px solid var(--line);
+    background:var(--panel);color:var(--muted);font-size:13px;cursor:pointer;
+    transition:.15s;font-family:inherit}
+  .simtab:hover{color:var(--text);border-color:var(--accent)}
+  .simtab.active{background:var(--accent);color:#fff;border-color:var(--accent);
+    font-weight:700;box-shadow:0 2px 10px rgba(14,155,196,.32)}
+  .tool{min-width:0}
+  .tool .row{display:flex;flex-wrap:wrap;gap:16px 22px;align-items:flex-start;margin:6px 0 16px}
+  .tool .row label{display:flex;flex-direction:column;gap:6px;flex:1 1 200px;min-width:0;
+    font-size:13px;color:var(--muted);line-height:1.5}
+  .tool .row label span{font-weight:700;color:var(--accent)}
+  .tool .row input[type=range]{width:100%;accent-color:var(--accent);margin:0}
+  .tool canvas{width:100%;height:auto;display:block;margin:8px 0 4px;
+    border-radius:12px;border:1px solid var(--line);
+    background:linear-gradient(180deg,#fbfeff,#eef7fa)}
+  .tool .d{color:var(--muted);font-size:13.5px;line-height:1.85;margin-top:12px}
+  .tool .d b{color:#0e5a6b}
+  /* ===== MathML 公式排版 ===== */
+  .formula math{font-size:1.18em;line-height:1.45}
+  .formula{overflow-x:auto;overflow-y:hidden}
+  math{font-family:'Cambria Math','Latin Modern Math','STIX Two Math',Georgia,serif}
+  math mfrac{padding:0 .12em}
+  math msqrt{padding-right:.1em}
+  math mtext{font-family:'PingFang TC','Microsoft JhengHei',system-ui,sans-serif;font-size:.86em}
 </style>
 </head>
 
