@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>無線通訊 · 互動知識庫</title>
+<style>
+  :root{
+    --bg:#eef6f9; --bg2:#ffffff; --panel:#ffffff; --panel2:#f1f8fb;
+    --line:#d5e5ec; --text:#123039; --muted:#4d6b76; --dim:#8aa4ae;
+    --cyan:#0891b2; --green:#059669; --amber:#d97706; --purple:#7c3aed; --pink:#e11d48;
+    --accent:#0e9bc4;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:
+      radial-gradient(1100px 420px at 50% -120px, rgba(14,155,196,.14), transparent 70%),
+      linear-gradient(180deg,#f6fbfd 0%,#e9f3f7 100%);
+    color:var(--text);font-family:'PingFang TC','Microsoft JhengHei','Helvetica Neue',system-ui,sans-serif;
+    line-height:1.75;overflow:hidden}
+  header{position:fixed;top:0;left:0;right:0;height:60px;z-index:20;
+    display:flex;align-items:center;gap:16px;padding:0 20px;
+    background:rgba(255,255,255,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  header::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;
+    background:linear-gradient(90deg,#e11d48,#d97706,#eab308,#059669,#0891b2,#4f46e5,#7c3aed);opacity:.85}
+  header h1{font-size:18px;margin:0;font-weight:800;letter-spacing:.5px;white-space:nowrap}
+  header h1 .em{color:var(--accent)}
+  .search{flex:1;max-width:340px;position:relative}
+  .search input{width:100%;padding:8px 12px 8px 34px;border-radius:10px;
+    border:1px solid var(--line);background:var(--panel);color:var(--text);font-size:14px;outline:none}
+  .search input:focus{border-color:var(--accent)}
+  .search svg{position:absolute;left:10px;top:9px;opacity:.6}
+  .tabs{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+  .tabs button{padding:8px 14px;border-radius:10px;border:1px solid var(--line);
+    background:var(--panel);color:var(--muted);font-size:13.5px;cursor:pointer;transition:.15s;font-family:inherit}
+  .tabs button:hover{color:var(--text);border-color:var(--accent)}
+  .tabs button.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700;box-shadow:0 2px 10px rgba(14,155,196,.35)}
+  .wrap{position:fixed;top:60px;left:0;right:0;bottom:0;display:flex}
+  aside{width:290px;flex:none;overflow-y:auto;padding:16px 10px 60px;
+    border-right:1px solid var(--line);background:rgba(255,255,255,.55)}
+  .cat{margin:10px 8px 4px;font-size:12px;font-weight:700;letter-spacing:1px;color:var(--dim)}
+  .navlink{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:8px;
+    color:var(--muted);cursor:pointer;font-size:14px;transition:.12s}
+  .navlink:hover{background:var(--panel);color:var(--text)}
+  .navlink.active{background:var(--panel2);color:#123039;font-weight:700;box-shadow:inset 3px 0 0 var(--accent)}
+  .navlink .dot{width:8px;height:8px;border-radius:50%;flex:none}
+  .navlink small{color:var(--dim);font-size:10.5px;margin-left:auto;text-align:right}
+  main{flex:1;overflow-y:auto;padding:38px 46px 90px;scroll-behavior:smooth}
+  .note{max-width:820px;margin:0 auto;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .crumbs{font-size:13px;color:var(--dim);margin-bottom:10px}
+  .crumbs .tag{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11.5px;font-weight:700;margin-right:6px}
+  h2.title{font-size:29px;margin:2px 0 4px;font-weight:800}
+  .en{color:var(--muted);font-size:15px;margin-bottom:18px;letter-spacing:.5px}
+  .callout{background:linear-gradient(180deg,rgba(34,211,238,.12),rgba(34,211,238,.03));
+    border-left:3px solid var(--accent);border-radius:8px;padding:12px 16px;margin:18px 0;color:#123039}
+  .callout b{color:#0e5a6b}
+  main h3{font-size:18px;margin:26px 0 8px;color:#123039;border-bottom:1px solid var(--line);padding-bottom:6px}
+  main p{margin:10px 0}
+  main ul{margin:10px 0;padding-left:22px}
+  main li{margin:5px 0}
+  .diagram{width:100%;border-radius:12px;border:1px solid var(--line);margin:16px 0;background:#fff;display:block;box-shadow:0 2px 12px rgba(18,48,57,.06)}
+  .formula{font-family:'Cambria Math',Georgia,serif;font-size:18px;text-align:center;
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin:16px 0;color:var(--text)}
+  .eqcard{background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid var(--line);border-radius:14px;
+    padding:18px 20px;margin:18px 0;box-shadow:0 3px 14px rgba(18,48,57,.06)}
+  .eqcard .eqt{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--accent);text-align:center;margin-bottom:2px}
+  .eqcard .eq{font-family:'Cambria Math','Times New Roman',Georgia,serif;font-size:32px;text-align:center;
+    color:#123039;margin:6px 0 16px;line-height:1.35}
+  .eqcard .eq i{font-style:italic}
+  .eqcard .eq sub{font-size:.6em;vertical-align:-.25em} .eqcard .eq sup{font-size:.6em;vertical-align:.5em}
+  .eqcard .lg{display:grid;gap:8px}
+  .eqcard .row{display:flex;gap:14px;align-items:baseline;padding:9px 14px;background:#fff;border:1px solid var(--line);border-radius:10px}
+  .eqcard .s{font-family:'Cambria Math','Times New Roman',Georgia,serif;font-style:italic;font-weight:800;
+    font-size:20px;min-width:58px;text-align:center;flex:none}
+  .eqcard .s sub{font-size:.6em;vertical-align:-.2em}
+  .eqcard .m{font-size:13.5px;color:#2b4a53;line-height:1.6}
+  .eqcard .m b{color:#123039}
+  .eqcard .u{display:inline-block;margin-left:8px;font-size:11.5px;color:#5b8090;background:#eef6f9;
+    border:1px solid var(--line);border-radius:20px;padding:1px 9px}
+  .eqcard .cap{font-size:12.5px;color:var(--dim);text-align:center;margin-top:12px}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 12px;text-align:left}
+  th{background:#e4f1f5;color:#123039;font-weight:700}
+  td{background:#fbfeff;color:#2b4a53}
+  tr:nth-child(even) td{background:#f2f8fb}
+  a.wl{color:var(--accent);cursor:pointer;text-decoration:none;border-bottom:1px dashed rgba(34,211,238,.5)}
+  a.wl:hover{color:#0b5566;background:rgba(14,155,196,.14);border-radius:3px}
+  .related{margin-top:34px;padding-top:16px;border-top:1px solid var(--line)}
+  .related .cat{margin-left:0}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .pathrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:16px 0 8px}
+  .stage{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:24px;background:#fff;
+    border:1px solid var(--line);cursor:pointer;font-weight:700;color:#123039;transition:.15s;box-shadow:0 1px 6px rgba(18,48,57,.05)}
+  .stage:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(18,48,57,.12);border-color:var(--accent)}
+  .stage .d{width:10px;height:10px;border-radius:50%;flex:none}
+  .pathrow .arrow{color:var(--dim);font-weight:800;font-size:16px}
+  .catgroup{margin:14px 0}
+  .catgroup .cl{font-size:12.5px;font-weight:800;letter-spacing:.5px;margin-bottom:7px;display:flex;align-items:center;gap:7px}
+  .catgroup .cl .d{width:9px;height:9px;border-radius:50%}
+  .chip{padding:6px 14px;border-radius:20px;background:var(--panel);border:1px solid var(--line);
+    color:var(--muted);cursor:pointer;font-size:13.5px;transition:.12s}
+  .chip:hover{background:var(--accent);color:#04222a;border-color:var(--accent)}
+  .nav-btns{display:flex;justify-content:space-between;margin-top:26px;gap:10px}
+  .nav-btns button{flex:1;padding:12px;border-radius:10px;border:1px solid var(--line);
+    background:var(--panel);color:var(--muted);cursor:pointer;text-align:left;font-family:inherit;transition:.12s}
+  .nav-btns button:hover{border-color:var(--accent);color:#0e5a6b;background:#f0f9fc}
+  .nav-btns small{display:block;color:var(--dim);font-size:11px}
+  .kbox{background:linear-gradient(180deg,rgba(52,211,153,.12),rgba(52,211,153,.03));
+    border:1px solid rgba(52,211,153,.35);border-radius:12px;padding:14px 18px;margin:22px 0}
+  .kbox .kt{font-weight:800;color:var(--green);font-size:14px;margin-bottom:6px}
+  .kbox ul{margin:4px 0 0;padding-left:20px} .kbox li{margin:3px 0}
+  .collap{border:1px solid var(--line);border-radius:10px;margin:12px 0;overflow:hidden;background:#f4fafc}
+  .collap>summary{cursor:pointer;padding:12px 16px;font-weight:700;color:#123039;list-style:none;display:flex;align-items:center;gap:8px}
+  .collap>summary::-webkit-details-marker{display:none}
+  .collap>summary::before{content:'▸';color:var(--accent);transition:.2s;display:inline-block}
+  .collap[open]>summary::before{transform:rotate(90deg)}
+  .collap>summary:hover{background:var(--panel)}
+  .collap .body{padding:2px 18px 16px;color:#2b4a53}
+  .collap.myth{background:#fff5f6}.collap.myth>summary{color:#be123c}.collap.myth>summary::before{color:var(--pink)}
+  .collap.fact{background:#f1fbf6}.collap.fact>summary{color:#047857}.collap.fact>summary::before{color:var(--green)}
+  .collap.deep{background:#f5f4fe}.collap.deep>summary{color:#3730a3}.collap.deep>summary::before{color:#4f46e5}
+  .collap>summary:hover{background:rgba(0,0,0,.03)}
+  .myth-row{display:flex;gap:10px;margin:10px 0}
+  .myth-row .x{color:var(--pink);font-weight:800;flex:none}.myth-row .o{color:var(--green);font-weight:800;flex:none}
+  .hero{text-align:center;padding:14px 0 10px}
+  .hero .big{font-size:40px;font-weight:800;margin:12px 0 4px}
+  .hero .sub{color:var(--muted);max-width:640px;margin:0 auto 8px}
+  .stats{display:flex;gap:12px;justify-content:center;margin:22px 0;flex-wrap:wrap}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 20px;text-align:center}
+  .stat b{font-size:24px;display:block;color:var(--accent)} .stat span{font-size:12px;color:var(--dim)}
+  #graphView,#demoView,#meshView{flex:1;position:relative;display:none}
+  #demoView,#meshView{overflow-y:auto;padding:24px 30px 80px}
+  #graph{width:100%;height:100%;display:block;cursor:grab}
+  .legend{position:absolute;top:16px;left:16px;background:rgba(255,255,255,.9);border:1px solid var(--line);
+    border-radius:10px;padding:12px 14px;font-size:13px;backdrop-filter:blur(6px);box-shadow:0 2px 12px rgba(18,48,57,.08)}
+  .legend div{display:flex;align-items:center;gap:8px;margin:4px 0;color:var(--muted)}
+  .legend i{width:11px;height:11px;border-radius:50%;display:inline-block}
+  .hint{position:absolute;bottom:16px;right:18px;color:var(--dim);font-size:12px}
+  .gnode{cursor:pointer}.gnode text{font-size:12px;fill:var(--text);pointer-events:none;font-family:inherit}
+  .gnode circle{transition:r .15s}
+  .gedge{stroke:#b7d3dd;stroke-width:1.4}.gedge.hl{stroke:var(--accent);stroke-width:2.6}
+  /* demo */
+  .demo{max-width:900px;margin:0 auto}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;margin:18px 0;box-shadow:0 4px 20px rgba(18,48,57,.06)}
+  .panel h3{margin:0 0 4px;color:#123039;font-size:18px;border:none}
+  .panel .d{color:var(--dim);font-size:13px;margin-bottom:12px}
+  .controls{display:flex;flex-wrap:wrap;gap:20px;align-items:center;margin-top:14px}
+  .controls label{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:6px;min-width:190px}
+  .controls input[type=range]{accent-color:var(--accent)}
+  .controls .val{color:var(--accent);font-weight:700}
+  .controls button{padding:9px 16px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);color:var(--text);cursor:pointer;font-family:inherit}
+  .controls button:hover{border-color:var(--accent)}
+  canvas.cv{width:100%;border-radius:12px;background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid var(--line);display:block}
+  .bars{display:flex;gap:18px;margin-top:14px}
+  .bar{flex:1;text-align:center}
+  .bar .track{height:120px;background:var(--panel2);border-radius:8px;position:relative;overflow:hidden;border:1px solid var(--line)}
+  .bar .fill{position:absolute;bottom:0;left:0;right:0;transition:height .08s}
+  .bar .lbl{font-size:13px;color:var(--muted);margin-top:6px}
+  .bar .pct{font-weight:800;color:#123039}
+  svg#mesh{width:100%;height:auto;background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid var(--line);border-radius:12px}
+  .cpl{cursor:pointer}
+  .chartbox{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;margin:16px 0;box-shadow:0 2px 12px rgba(18,48,57,.05)}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:#b7d3dd;border-radius:6px}
+  @media(max-width:720px){aside{position:fixed;z-index:15;height:100%;transform:translateX(-100%);transition:.25s}
+    aside.open{transform:none}main{padding:24px 18px 80px}.search{max-width:none}header h1{font-size:14px}}
+  /* ===== 模擬工具版面（補上缺漏的樣式） ===== */
+  main{min-width:0}
+  #demoView{min-width:0}
+  .simtab{padding:7px 14px;border-radius:9px;border:1px solid var(--line);
+    background:var(--panel);color:var(--muted);font-size:13px;cursor:pointer;
+    transition:.15s;font-family:inherit}
+  .simtab:hover{color:var(--text);border-color:var(--accent)}
+  .simtab.active{background:var(--accent);color:#fff;border-color:var(--accent);
+    font-weight:700;box-shadow:0 2px 10px rgba(14,155,196,.32)}
+  .tool{min-width:0}
+  .tool .row{display:flex;flex-wrap:wrap;gap:16px 22px;align-items:flex-start;margin:6px 0 16px}
+  .tool .row label{display:flex;flex-direction:column;gap:6px;flex:1 1 200px;min-width:0;
+    font-size:13px;color:var(--muted);line-height:1.5}
+  .tool .row label span{font-weight:700;color:var(--accent)}
+  .tool .row input[type=range]{width:100%;accent-color:var(--accent);margin:0}
+  .tool canvas{width:100%;height:auto;display:block;margin:8px 0 4px;
+    border-radius:12px;border:1px solid var(--line);
+    background:linear-gradient(180deg,#fbfeff,#eef7fa)}
+  .tool .d{color:var(--muted);font-size:13.5px;line-height:1.85;margin-top:12px}
+  .tool .d b{color:#0e5a6b}
+  /* ===== MathML 公式排版 ===== */
+  .formula math{font-size:1.18em;line-height:1.45}
+  .formula{overflow-x:auto;overflow-y:hidden}
+  math{font-family:'Cambria Math','Latin Modern Math','STIX Two Math',Georgia,serif}
+  math mfrac{padding:0 .12em}
+  math msqrt{padding-right:.1em}
+  math mtext{font-family:'PingFang TC','Microsoft JhengHei',system-ui,sans-serif;font-size:.86em}
+</style>
+</head>
+
+
+
+<body>
+<header>
+  <h1>📡 <span class="em">無線通訊</span>知識庫</h1>
+  <div class="search">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8fbccb" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input id="search" placeholder="搜尋知識點…（Enter 開啟）" autocomplete="off">
+  </div>
+  <div class="tabs">
+    <button id="tabNotes" class="active">📖 筆記</button>
+    <button id="tabGraph">🕸️ 關係圖譜</button>
+    <button id="tabDemo">🔬 模擬工具</button>
+  </div>
+</header>
+<div class="wrap">
+  <aside id="sidebar"></aside>
+  <main id="main"></main>
+  <div id="graphView"><svg id="graph"></svg><div class="legend" id="legend"></div>
+    <div class="hint">拖曳節點 · 點擊開啟筆記 · 移入高亮關聯</div></div>
+  <div id="demoView"></div>
+</div>
+<script>
+
+
+
+const CATS={
+ "物理":{name:"場與電磁波基礎",raw:"#0891b2"},
+ "工程":{name:"把資訊放進電磁波",raw:"#059669"},
+ "容量":{name:"容量危機與四次突破",raw:"#7c3aed"},
+ "極限":{name:"物理極限與現況",raw:"#e11d48"}
+};
+function L(id){return '<a class="wl" data-id="'+id+'">'+id+'</a>';}
+const NOTES=[
+{id:"場與靜電場",ch:"1",en:"Ch.1 · Fields & Electrostatic Field",cat:"物理",html:`<div class="callout"><b>這章的問題：</b>「場」到底是什麼？梳子梳過頭髮能吸起碎紙屑，這個小學實驗跟 WiFi 有什麼關係？</div>
+<h3>場是看不見但能量測的實體</h3><p>物理學裡的<b>場</b>是遍布空間、具備能量的實體，最熟悉的例子是決定行星軌道的重力場。無線通訊要用的是<b>電磁場</b>——它不是比喻或哲學概念，而是宇宙中無處不在、取之不盡的物理實體。後面所有技術本質上都是在「操弄場」，而不是傳送某種粒子。</p>
+<h3>電荷與靜電場</h3><p>電荷是物質的基本屬性，就像質量一樣。電荷<b>靜止</b>時在周圍產生一圈能量光環，稱為<b>靜電場（E 場）</b>。它固定、不可見，但會對其他電荷施加推力或引力——這正是我們間接證明它存在的方式。</p>
+<h3>梳子吸紙屑：把場的作用拆到微觀</h3><p><b>① 摩擦起電</b>：塑膠梳子對電子的束縛力比頭髮強，摩擦時從頭髮搶走自由電子。電子帶負電，所以頭髮帶正電、梳子帶負電。</p>
+<p><b>② 梳子周圍形成 E 場。</b></p>
+<p><b>③ 感應帶電</b>：碎紙屑本身中性，但在 E 場作用下內部電荷重新排列——帶正電的原子核被引力拉向梳子，帶負電的電子被斥力推離。結果紙屑靠近梳子那側帶正電、遠離那側帶負電。</p>
+<p><b>④ 為什麼淨力是吸引</b>（最關鍵、最常被跳過的一步）：紙屑同時受兩個力，<b>近端正電側距離近、場強大 → 引力強</b>；<b>遠端負電側距離遠、場強小 → 斥力弱</b>。強引力勝過弱斥力，合力指向梳子。</p>
+<p><b>為什麼值得完整走一遍</b>：它示範了電磁學反覆出現的思路——<b>場的強度隨距離變化，而這個「不均勻」正是產生淨效應的原因</b>。若場處處均勻，正負兩側受力完全抵消，紙屑不會動。</p>
+<h3>跟無線通訊的關係</h3><p>只需記住一件事：<b>電荷周圍有場，場能對遠處的電荷施力</b>——電荷之間可以「隔空互相影響」，不需任何實體連接。但靜止電荷只能產生靜態的場，傳不出資訊。要讓資訊跑起來，電荷必須動 → ${L("電流與磁場")}。</p>`},
+{id:"電流與磁場",ch:"2",en:"Ch.2 · Current & Magnetic Field",cat:"物理",html:`<div class="callout"><b>這章的問題：</b>電荷靜止產生電場，那電荷「動起來」會發生什麼？為什麼會冒出一種方向繞著電流轉圈的新東西？</div>
+<h3>電荷一動，第二種場就出現</h3><p>電荷運動形成<b>電流</b>，就會產生<b>磁場（B 場）</b>。這是故事裡的第一個轉折：自然界不只有一種場，而第二種場是由「運動」這件事本身激發出來的。</p>
+<h3>磁場的形狀：繞著電流打轉</h3><p>磁場最反直覺的是它的<b>方向</b>。靜電場從電荷向外輻射，是「徑向」的；磁場不是——<b>它繞著電流打轉</b>。可以想像電流周圍被畫上一圈圈看不見的跑道，小磁針放進去會順著跑道轉，許多小磁針的方向連起來就是<b>磁力線</b>。</p>
+<p><b>為什麼要強調這個垂直／繞圈的幾何</b>：電場與磁場方向互相垂直，而電磁波的傳播方向又同時垂直於兩者。這個三維垂直關係決定了天線該怎麼擺、極化是什麼意思、以及為什麼收發天線方向不對就收不到訊號。</p>
+<h3>一個幫助想像的比喻</h3><p>把電流想成通風管道裡的氣流，旁邊裝一個可自由旋轉的風扇：靜止的空氣（靜止電荷）不會讓風扇轉；空氣一流動（形成電流），與氣流垂直的風扇就轉起來，像有股「繞著氣流轉動的力」憑空出現。</p>
+<p><b>但必須強調這只是幫助想像</b>：磁場不是任何介質流動造成的，它是場本身的性質。這一點在談 ${L("馬克士威方程組與電磁波")} 時會變得極關鍵——那正是十九世紀物理學家最難跨過的坎。</p>
+<h3>目前的圖像</h3><p>靜止電荷 → 電場；運動電荷 → 磁場。看起來電與磁是兩件相關但獨立的事。直到有人反過來問：<b>磁能不能生電？</b> → ${L("法拉第電磁感應")}</p>`},
+{id:"法拉第電磁感應",ch:"3",en:"Ch.3 · Faraday Induction",cat:"物理",html:`<div class="callout"><b>這章的問題：</b>磁能不能反過來生電？為什麼把磁鐵靜靜放在導線旁什麼也不會發生？而且關鍵真的是「磁鐵在動」嗎？</div>
+<h3>關鍵發現：靜止的磁場什麼也不會發生</h3><p>法拉第做了實驗，結果出乎意料——把磁鐵放在導線旁邊，什麼事都沒有。<b>只有磁場發生變化時</b>，才能在導線中誘導出電流與電壓，這稱為<b>電磁感應</b>。</p>
+<p>線圈與磁鐵保持靜止 → 沒有電流；迅速把磁鐵推入線圈 → 立刻產生電流；再拉出來 → 產生<b>方向相反</b>的電流。</p>
+<div class="formula">ε ∝ dΦ_B/dt　（產生的電壓正比於磁場「變化的速率」）</div>
+<p><b>「變化率」三個字是整章的核心。</b> 不是磁場的大小決定電壓，而是磁場<b>改變得多快</b>決定電壓。這個看似技術性的細節，後面會直接決定為什麼無線通訊必須使用<b>高頻</b>（見 ${L("載波與調制")}）——頻率越高、變化越快、能激發的效應越強。</p>
+<h3>微觀上發生了什麼</h3><p>一句話：<b>磁場的變化推動導體裡的電子跑起來，電子一跑就形成電流。</b>金屬導體內有大量自由電子，像操場上四處奔跑的學生，平時各跑各的、沒有統一方向。磁場一掃過導體，就像操場旁突然推來一道欄杆，<b>給所有電子一個統一方向的推力</b>，原本雜亂的電子被推成整齊隊伍、開始有序移動。</p>
+<h3>一個常見的誤解</h3><p>很多人以為「必須是磁鐵在動」——<b>這是錯的</b>。核心是<b>磁場的變化</b>，不是磁鐵的運動。磁鐵不動而線圈在動、或兩者都不動但用電磁鐵改變磁場強度，效果都一樣。真正重要的是<b>導體所處位置的磁場有沒有隨時間改變</b>。</p>
+<h3>深層意義</h3><p>法拉第證明了電場與磁場<b>並非互相獨立，而是同一枚硬幣的兩面</b>。只要有人注意到「磁生電有了，那電生磁呢」這個不對稱，電磁波就呼之欲出 → ${L("馬克士威方程組與電磁波")}。</p>`},
+{id:"馬克士威方程組與電磁波",ch:"4",en:"Ch.4 · Maxwell & EM Waves",cat:"物理",html:`<div class="callout"><b>這章的問題：</b>補上「電生磁」這塊拼圖後，為什麼會憑空冒出一種<b>不需要介質</b>、能自己往前跑的波？「光就是電磁波」怎麼得出的？</div>
+<h3>一個對稱性的假設</h3><p>法拉第證明「變化的磁場 → 產生電場」。馬克士威收集所有已知電磁定律後，憑數學洞察提出關鍵假設：<b>為了保持物理定律的對稱性，變化的電場也應該能產生磁場。</b></p>
+<p><b>注意這個假設的來源</b>：它不是來自實驗，而是來自「物理應該對稱」的結構性直覺——這是理論物理最經典的思路：用對稱性補上缺失的一塊，再看能推導出什麼。</p>
+<h3>循環一旦閉合就停不下來</h3><p>① 某處有變化的電場 → ② 產生變化的磁場 → ③ 又在稍遠處產生變化的電場 → ④ 回到 ①，向外不斷推進。電場與磁場交替出現、互相推動、互相維持，形成一個<b>脫離源頭、以固定速度向外傳播的能量振動</b>——這就是<b>電磁波</b>。</p>
+<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNzYwIDM0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmb250LWZhbWlseT0iJ1BpbmdGYW5nIFRDJywnTWljcm9zb2Z0IEpoZW5nSGVpJywnSGVsdmV0aWNhIE5ldWUnLHNhbnMtc2VyaWYiPgo8dGV4dCB4PSIzODAuMCIgeT0iMjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTciIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMxMjMwMzkiPumbu+ejgeazou+8mumbu+WgtOiIh+ejgeWgtOS6kuebuOeUn+aIkOOAgeiEq+mboua6kOmgreWQkeWkluWCs+aSrTwvdGV4dD4KPGxpbmUgeDE9IjcwIiB5MT0iMTgwIiB4Mj0iNjkwIiB5Mj0iMTgwIiBzdHJva2U9IiM4YWE0YWUiIHN0cm9rZS13aWR0aD0iMS41Ii8+Cjx0ZXh0IHg9IjY5NiIgeT0iMTg1IiBmb250LXNpemU9IjEzIiBmaWxsPSIjNGQ2Yjc2Ij7lgrPmkq3mlrnlkJE8L3RleHQ+Cjxwb2x5bGluZSBwb2ludHM9IjcwLjAsMTgwLjAgNzIuNiwxNzQuNSA3NS4yLDE2OS4wIDc3LjgsMTYzLjcgODAuMywxNTguNCA4Mi45LDE1My4yIDg1LjUsMTQ4LjIgODguMSwxNDMuNCA5MC43LDEzOC45IDkzLjIsMTM0LjUgOTUuOCwxMzAuNSA5OC40LDEyNi44IDEwMS4wLDEyMy40IDEwMy42LDEyMC4zIDEwNi4yLDExNy42IDEwOC44LDExNS4zIDExMS4zLDExMy40IDExMy45LDExMS45IDExNi41LDExMC45IDExOS4xLDExMC4yIDEyMS43LDExMC4wIDEyNC4yLDExMC4yIDEyNi44LDExMC45IDEyOS40LDExMS45IDEzMi4wLDExMy40IDEzNC42LDExNS4zIDEzNy4yLDExNy42IDEzOS44LDEyMC4zIDE0Mi4zLDEyMy40IDE0NC45LDEyNi44IDE0Ny41LDEzMC41IDE1MC4xLDEzNC41IDE1Mi43LDEzOC45IDE1NS4yLDE0My40IDE1Ny44LDE0OC4yIDE2MC40LDE1My4yIDE2My4wLDE1OC40IDE2NS42LDE2My43IDE2OC4yLDE2OS4wIDE3MC44LDE3NC41IDE3My4zLDE4MC4wIDE3NS45LDE4NS41IDE3OC41LDE5MS4wIDE4MS4xLDE5Ni4zIDE4My43LDIwMS42IDE4Ni4yLDIwNi44IDE4OC44LDIxMS44IDE5MS40LDIxNi42IDE5NC4wLDIyMS4xIDE5Ni42LDIyNS41IDE5OS4yLDIyOS41IDIwMS44LDIzMy4yIDIwNC4zLDIzNi42IDIwNi45LDIzOS43IDIwOS41LDI0Mi40IDIxMi4xLDI0NC43IDIxNC43LDI0Ni42IDIxNy4yLDI0OC4xIDIxOS44LDI0OS4xIDIyMi40LDI0OS44IDIyNS4wLDI1MC4wIDIyNy42LDI0OS44IDIzMC4yLDI0OS4xIDIzMi44LDI0OC4xIDIzNS4zLDI0Ni42IDIzNy45LDI0NC43IDI0MC41LDI0Mi40IDI0My4xLDIzOS43IDI0NS43LDIzNi42IDI0OC4yLDIzMy4yIDI1MC44LDIyOS41IDI1My40LDIyNS41IDI1Ni4wLDIyMS4xIDI1OC42LDIxNi42IDI2MS4yLDIxMS44IDI2My44LDIwNi44IDI2Ni4zLDIwMS42IDI2OC45LDE5Ni4zIDI3MS41LDE5MS4wIDI3NC4xLDE4NS41IDI3Ni43LDE4MC4wIDI3OS4yLDE3NC41IDI4MS44LDE2OS4wIDI4NC40LDE2My43IDI4Ny4wLDE1OC40IDI4OS42LDE1My4yIDI5Mi4yLDE0OC4yIDI5NC44LDE0My40IDI5Ny4zLDEzOC45IDI5OS45LDEzNC41IDMwMi41LDEzMC41IDMwNS4xLDEyNi44IDMwNy43LDEyMy40IDMxMC4yLDEyMC4zIDMxMi44LDExNy42IDMxNS40LDExNS4zIDMxOC4wLDExMy40IDMyMC42LDExMS45IDMyMy4yLDExMC45IDMyNS44LDExMC4yIDMyOC4zLDExMC4wIDMzMC45LDExMC4yIDMzMy41LDExMC45IDMzNi4xLDExMS45IDMzOC43LDExMy40IDM0MS4yLDExNS4zIDM0My44LDExNy42IDM0Ni40LDEyMC4zIDM0OS4wLDEyMy40IDM1MS42LDEyNi44IDM1NC4yLDEzMC41IDM1Ni44LDEzNC41IDM1OS4zLDEzOC45IDM2MS45LDE0My40IDM2NC41LDE0OC4yIDM2Ny4xLDE1My4yIDM2OS43LDE1OC40IDM3Mi4yLDE2My43IDM3NC44LDE2OS4wIDM3Ny40LDE3NC41IDM4MC4wLDE4MC4wIDM4Mi42LDE4NS41IDM4NS4yLDE5MS4wIDM4Ny44LDE5Ni4zIDM5MC4zLDIwMS42IDM5Mi45LDIwNi44IDM5NS41LDIxMS44IDM5OC4xLDIxNi42IDQwMC43LDIyMS4xIDQwMy4yLDIyNS41IDQwNS44LDIyOS41IDQwOC40LDIzMy4yIDQxMS4wLDIzNi42IDQxMy42LDIzOS43IDQxNi4yLDI0Mi40IDQxOC44LDI0NC43IDQyMS4zLDI0Ni42IDQyMy45LDI0OC4xIDQyNi41LDI0OS4xIDQyOS4xLDI0OS44IDQzMS43LDI1MC4wIDQzNC4yLDI0OS44IDQzNi44LDI0OS4xIDQzOS40LDI0OC4xIDQ0Mi4wLDI0Ni42IDQ0NC42LDI0NC43IDQ0Ny4yLDI0Mi40IDQ0OS44LDIzOS43IDQ1Mi4zLDIzNi42IDQ1NC45LDIzMy4yIDQ1Ny41LDIyOS41IDQ2MC4xLDIyNS41IDQ2Mi43LDIyMS4xIDQ2NS4yLDIxNi42IDQ2Ny44LDIxMS44IDQ3MC40LDIwNi44IDQ3My4wLDIwMS42IDQ3NS42LDE5Ni4zIDQ3OC4yLDE5MS4wIDQ4MC44LDE4NS41IDQ4My4zLDE4MC4wIDQ4NS45LDE3NC41IDQ4OC41LDE2OS4wIDQ5MS4xLDE2My43IDQ5My43LDE1OC40IDQ5Ni4yLDE1My4yIDQ5OC44LDE0OC4yIDUwMS40LDE0My40IDUwNC4wLDEzOC45IDUwNi42LDEzNC41IDUwOS4yLDEzMC41IDUxMS44LDEyNi44IDUxNC4zLDEyMy40IDUxNi45LDEyMC4zIDUxOS41LDExNy42IDUyMi4xLDExNS4zIDUyNC43LDExMy40IDUyNy4yLDExMS45IDUyOS44LDExMC45IDUzMi40LDExMC4yIDUzNS4wLDExMC4wIDUzNy42LDExMC4yIDU0MC4yLDExMC45IDU0Mi44LDExMS45IDU0NS4zLDExMy40IDU0Ny45LDExNS4zIDU1MC41LDExNy42IDU1My4xLDEyMC4zIDU1NS43LDEyMy40IDU1OC4yLDEyNi44IDU2MC44LDEzMC41IDU2My40LDEzNC41IDU2Ni4wLDEzOC45IDU2OC42LDE0My40IDU3MS4yLDE0OC4yIDU3My44LDE1My4yIDU3Ni4zLDE1OC40IDU3OC45LDE2My43IDU4MS41LDE2OS4wIDU4NC4xLDE3NC41IDU4Ni43LDE4MC4wIDU4OS4yLDE4NS41IDU5MS44LDE5MS4wIDU5NC40LDE5Ni4zIDU5Ny4wLDIwMS42IDU5OS42LDIwNi44IDYwMi4yLDIxMS44IDYwNC44LDIxNi42IDYwNy4zLDIyMS4xIDYwOS45LDIyNS41IDYxMi41LDIyOS41IDYxNS4xLDIzMy4yIDYxNy43LDIzNi42IDYyMC4yLDIzOS43IDYyMi44LDI0Mi40IDYyNS40LDI0NC43IDYyOC4wLDI0Ni42IDYzMC42LDI0OC4xIDYzMy4yLDI0OS4xIDYzNS44LDI0OS44IDYzOC4zLDI1MC4wIDY0MC45LDI0OS44IDY0My41LDI0OS4xIDY0Ni4xLDI0OC4xIDY0OC43LDI0Ni42IDY1MS4yLDI0NC43IDY1My44LDI0Mi40IDY1Ni40LDIzOS43IDY1OS4wLDIzNi42IDY2MS42LDIzMy4yIDY2NC4yLDIyOS41IDY2Ni44LDIyNS41IDY2OS4zLDIyMS4xIDY3MS45LDIxNi42IDY3NC41LDIxMS44IDY3Ny4xLDIwNi44IDY3OS43LDIwMS42IDY4Mi4yLDE5Ni4zIDY4NC44LDE5MS4wIDY4Ny40LDE4NS41IDY5MC4wLDE4MC4wIiBmaWxsPSJub25lIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMi41Ii8+Cjxwb2x5bGluZSBwb2ludHM9IjcwLjAsMTgwLjAgNzIuNiwxNzcuOCA3NS4yLDE3NS42IDc3LjgsMTczLjUgODAuMywxNzEuMyA4Mi45LDE2OS4zIDg1LjUsMTY3LjMgODguMSwxNjUuNCA5MC43LDE2My41IDkzLjIsMTYxLjggOTUuOCwxNjAuMiA5OC40LDE1OC43IDEwMS4wLDE1Ny4zIDEwMy42LDE1Ni4xIDEwNi4yLDE1NS4xIDEwOC44LDE1NC4xIDExMS4zLDE1My40IDExMy45LDE1Mi44IDExNi41LDE1Mi4zIDExOS4xLDE1Mi4xIDEyMS43LDE1Mi4wIDEyNC4yLDE1Mi4xIDEyNi44LDE1Mi4zIDEyOS40LDE1Mi44IDEzMi4wLDE1My40IDEzNC42LDE1NC4xIDEzNy4yLDE1NS4xIDEzOS44LDE1Ni4xIDE0Mi4zLDE1Ny4zIDE0NC45LDE1OC43IDE0Ny41LDE2MC4yIDE1MC4xLDE2MS44IDE1Mi43LDE2My41IDE1NS4yLDE2NS40IDE1Ny44LDE2Ny4zIDE2MC40LDE2OS4zIDE2My4wLDE3MS4zIDE2NS42LDE3My41IDE2OC4yLDE3NS42IDE3MC44LDE3Ny44IDE3My4zLDE4MC4wIDE3NS45LDE4Mi4yIDE3OC41LDE4NC40IDE4MS4xLDE4Ni41IDE4My43LDE4OC43IDE4Ni4yLDE5MC43IDE4OC44LDE5Mi43IDE5MS40LDE5NC42IDE5NC4wLDE5Ni41IDE5Ni42LDE5OC4yIDE5OS4yLDE5OS44IDIwMS44LDIwMS4zIDIwNC4zLDIwMi43IDIwNi45LDIwMy45IDIwOS41LDIwNC45IDIxMi4xLDIwNS45IDIxNC43LDIwNi42IDIxNy4yLDIwNy4yIDIxOS44LDIwNy43IDIyMi40LDIwNy45IDIyNS4wLDIwOC4wIDIyNy42LDIwNy45IDIzMC4yLDIwNy43IDIzMi44LDIwNy4yIDIzNS4zLDIwNi42IDIzNy45LDIwNS45IDI0MC41LDIwNC45IDI0My4xLDIwMy45IDI0NS43LDIwMi43IDI0OC4yLDIwMS4zIDI1MC44LDE5OS44IDI1My40LDE5OC4yIDI1Ni4wLDE5Ni41IDI1OC42LDE5NC42IDI2MS4yLDE5Mi43IDI2My44LDE5MC43IDI2Ni4zLDE4OC43IDI2OC45LDE4Ni41IDI3MS41LDE4NC40IDI3NC4xLDE4Mi4yIDI3Ni43LDE4MC4wIDI3OS4yLDE3Ny44IDI4MS44LDE3NS42IDI4NC40LDE3My41IDI4Ny4wLDE3MS4zIDI4OS42LDE2OS4zIDI5Mi4yLDE2Ny4zIDI5NC44LDE2NS40IDI5Ny4zLDE2My41IDI5OS45LDE2MS44IDMwMi41LDE2MC4yIDMwNS4xLDE1OC43IDMwNy43LDE1Ny4zIDMxMC4yLDE1Ni4xIDMxMi44LDE1NS4xIDMxNS40LDE1NC4xIDMxOC4wLDE1My40IDMyMC42LDE1Mi44IDMyMy4yLDE1Mi4zIDMyNS44LDE1Mi4xIDMyOC4zLDE1Mi4wIDMzMC45LDE1Mi4xIDMzMy41LDE1Mi4zIDMzNi4xLDE1Mi44IDMzOC43LDE1My40IDM0MS4yLDE1NC4xIDM0My44LDE1NS4xIDM0Ni40LDE1Ni4xIDM0OS4wLDE1Ny4zIDM1MS42LDE1OC43IDM1NC4yLDE2MC4yIDM1Ni44LDE2MS44IDM1OS4zLDE2My41IDM2MS45LDE2NS40IDM2NC41LDE2Ny4zIDM2Ny4xLDE2OS4zIDM2OS43LDE3MS4zIDM3Mi4yLDE3My41IDM3NC44LDE3NS42IDM3Ny40LDE3Ny44IDM4MC4wLDE4MC4wIDM4Mi42LDE4Mi4yIDM4NS4yLDE4NC40IDM4Ny44LDE4Ni41IDM5MC4zLDE4OC43IDM5Mi45LDE5MC43IDM5NS41LDE5Mi43IDM5OC4xLDE5NC42IDQwMC43LDE5Ni41IDQwMy4yLDE5OC4yIDQwNS44LDE5OS44IDQwOC40LDIwMS4zIDQxMS4wLDIwMi43IDQxMy42LDIwMy45IDQxNi4yLDIwNC45IDQxOC44LDIwNS45IDQyMS4zLDIwNi42IDQyMy45LDIwNy4yIDQyNi41LDIwNy43IDQyOS4xLDIwNy45IDQzMS43LDIwOC4wIDQzNC4yLDIwNy45IDQzNi44LDIwNy43IDQzOS40LDIwNy4yIDQ0Mi4wLDIwNi42IDQ0NC42LDIwNS45IDQ0Ny4yLDIwNC45IDQ0OS44LDIwMy45IDQ1Mi4zLDIwMi43IDQ1NC45LDIwMS4zIDQ1Ny41LDE5OS44IDQ2MC4xLDE5OC4yIDQ2Mi43LDE5Ni41IDQ2NS4yLDE5NC42IDQ2Ny44LDE5Mi43IDQ3MC40LDE5MC43IDQ3My4wLDE4OC43IDQ3NS42LDE4Ni41IDQ3OC4yLDE4NC40IDQ4MC44LDE4Mi4yIDQ4My4zLDE4MC4wIDQ4NS45LDE3Ny44IDQ4OC41LDE3NS42IDQ5MS4xLDE3My41IDQ5My43LDE3MS4zIDQ5Ni4yLDE2OS4zIDQ5OC44LDE2Ny4zIDUwMS40LDE2NS40IDUwNC4wLDE2My41IDUwNi42LDE2MS44IDUwOS4yLDE2MC4yIDUxMS44LDE1OC43IDUxNC4zLDE1Ny4zIDUxNi45LDE1Ni4xIDUxOS41LDE1NS4xIDUyMi4xLDE1NC4xIDUyNC43LDE1My40IDUyNy4yLDE1Mi44IDUyOS44LDE1Mi4zIDUzMi40LDE1Mi4xIDUzNS4wLDE1Mi4wIDUzNy42LDE1Mi4xIDU0MC4yLDE1Mi4zIDU0Mi44LDE1Mi44IDU0NS4zLDE1My40IDU0Ny45LDE1NC4xIDU1MC41LDE1NS4xIDU1My4xLDE1Ni4xIDU1NS43LDE1Ny4zIDU1OC4yLDE1OC43IDU2MC44LDE2MC4yIDU2My40LDE2MS44IDU2Ni4wLDE2My41IDU2OC42LDE2NS40IDU3MS4yLDE2Ny4zIDU3My44LDE2OS4zIDU3Ni4zLDE3MS4zIDU3OC45LDE3My41IDU4MS41LDE3NS42IDU4NC4xLDE3Ny44IDU4Ni43LDE4MC4wIDU4OS4yLDE4Mi4yIDU5MS44LDE4NC40IDU5NC40LDE4Ni41IDU5Ny4wLDE4OC43IDU5OS42LDE5MC43IDYwMi4yLDE5Mi43IDYwNC44LDE5NC42IDYwNy4zLDE5Ni41IDYwOS45LDE5OC4yIDYxMi41LDE5OS44IDYxNS4xLDIwMS4zIDYxNy43LDIwMi43IDYyMC4yLDIwMy45IDYyMi44LDIwNC45IDYyNS40LDIwNS45IDYyOC4wLDIwNi42IDYzMC42LDIwNy4yIDYzMy4yLDIwNy43IDYzNS44LDIwNy45IDYzOC4zLDIwOC4wIDY0MC45LDIwNy45IDY0My41LDIwNy43IDY0Ni4xLDIwNy4yIDY0OC43LDIwNi42IDY1MS4yLDIwNS45IDY1My44LDIwNC45IDY1Ni40LDIwMy45IDY1OS4wLDIwMi43IDY2MS42LDIwMS4zIDY2NC4yLDE5OS44IDY2Ni44LDE5OC4yIDY2OS4zLDE5Ni41IDY3MS45LDE5NC42IDY3NC41LDE5Mi43IDY3Ny4xLDE5MC43IDY3OS43LDE4OC43IDY4Mi4yLDE4Ni41IDY4NC44LDE4NC40IDY4Ny40LDE4Mi4yIDY5MC4wLDE4MC4wIiBmaWxsPSJub25lIiBzdHJva2U9IiNlMTFkNDgiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtZGFzaGFycmF5PSI2IDQiLz4KPGxpbmUgeDE9IjcwLjAiIHkxPSIxODAiIHgyPSI3MC4wIiB5Mj0iMTgwLjAiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIxIiBvcGFjaXR5PSIwLjM1Ii8+CjxsaW5lIHgxPSI5NS44IiB5MT0iMTgwIiB4Mj0iOTUuOCIgeTI9IjEzMC41IiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4zNSIvPgo8bGluZSB4MT0iMTIxLjciIHkxPSIxODAiIHgyPSIxMjEuNyIgeTI9IjExMC4wIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4zNSIvPgo8bGluZSB4MT0iMTQ3LjUiIHkxPSIxODAiIHgyPSIxNDcuNSIgeTI9IjEzMC41IiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4zNSIvPgo8bGluZSB4MT0iMTczLjMiIHkxPSIxODAiIHgyPSIxNzMuMyIgeTI9IjE4MC4wIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4zNSIvPgo8bGluZSB4MT0iMTk5LjIiIHkxPSIxODAiIHgyPSIxOTkuMiIgeTI9IjIyOS41IiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4zNSIvPgo8bGluZSB4MT0iMjI1LjAiIHkxPSIxODAiIHgyPSIyMjUuMCIgeTI9IjI1MC4wIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4zNSIvPgo8bGluZSB4MT0iMjUwLjgiIHkxPSIxODAiIHgyPSIyNTAuOCIgeTI9IjIyOS41IiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4zNSIvPgo8bGluZSB4MT0iMjc2LjciIHkxPSIxODAiIHgyPSIyNzYuNyIgeTI9IjE4MC4wIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4zNSIvPgo8bGluZSB4MT0iMzAyLjUiIHkxPSIxODAiIHgyPSIzMDIuNSIgeTI9IjEzMC41IiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4zNSIvPgo8bGluZSB4MT0iMzI4LjMiIHkxPSIxODAiIHgyPSIzMjguMyIgeTI9IjExMC4wIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4zNSIvPgo8bGluZSB4MT0iMzU0LjIiIHkxPSIxODAiIHgyPSIzNTQuMiIgeTI9IjEzMC41IiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4zNSIvPgo8bGluZSB4MT0iMzgwLjAiIHkxPSIxODAiIHgyPSIzODAuMCIgeTI9IjE4MC4wIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4zNSIvPgo8bGluZSB4MT0iNDA1LjgiIHkxPSIxODAiIHgyPSI0MDUuOCIgeTI9IjIyOS41IiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4zNSIvPgo8bGluZSB4MT0iNDMxLjciIHkxPSIxODAiIHgyPSI0MzEuNyIgeTI9IjI1MC4wIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4zNSIvPgo8bGluZSB4MT0iNDU3LjUiIHkxPSIxODAiIHgyPSI0NTcuNSIgeTI9IjIyOS41IiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4zNSIvPgo8bGluZSB4MT0iNDgzLjMiIHkxPSIxODAiIHgyPSI0ODMuMyIgeTI9IjE4MC4wIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4zNSIvPgo8bGluZSB4MT0iNTA5LjIiIHkxPSIxODAiIHgyPSI1MDkuMiIgeTI9IjEzMC41IiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4zNSIvPgo8bGluZSB4MT0iNTM1LjAiIHkxPSIxODAiIHgyPSI1MzUuMCIgeTI9IjExMC4wIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4zNSIvPgo8bGluZSB4MT0iNTYwLjgiIHkxPSIxODAiIHgyPSI1NjAuOCIgeTI9IjEzMC41IiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4zNSIvPgo8bGluZSB4MT0iNTg2LjciIHkxPSIxODAiIHgyPSI1ODYuNyIgeTI9IjE4MC4wIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4zNSIvPgo8bGluZSB4MT0iNjEyLjUiIHkxPSIxODAiIHgyPSI2MTIuNSIgeTI9IjIyOS41IiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4zNSIvPgo8bGluZSB4MT0iNjM4LjMiIHkxPSIxODAiIHgyPSI2MzguMyIgeTI9IjI1MC4wIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4zNSIvPgo8bGluZSB4MT0iNjY0LjIiIHkxPSIxODAiIHgyPSI2NjQuMiIgeTI9IjIyOS41IiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4zNSIvPgo8bGluZSB4MT0iNjkwLjAiIHkxPSIxODAiIHgyPSI2OTAuMCIgeTI9IjE4MC4wIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4zNSIvPgo8dGV4dCB4PSI3OCIgeT0iOTIiIGZvbnQtc2l6ZT0iMTMuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzA4OTFiMiI+6Zu75aC0IEXvvIjlnoLnm7TvvIk8L3RleHQ+Cjx0ZXh0IHg9Ijc4IiB5PSIyMzIiIGZvbnQtc2l6ZT0iMTMuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2UxMWQ0OCI+56OB5aC0IELvvIjmsLTlubPjg7voiIcgRSDlnoLnm7TvvIk8L3RleHQ+CjxyZWN0IHg9IjE4MCIgeT0iMjcyIiB3aWR0aD0iNDIwIiBoZWlnaHQ9IjQ4IiByeD0iOCIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjZDVlNWVjIi8+Cjx0ZXh0IHg9IjM5MCIgeT0iMjkyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyLjUiIGZpbGw9IiM0ZDZiNzYiPuiuiuWMlueahOmbu+WgtCDihpIg55Si55Sf6K6K5YyW55qE56OB5aC0IOKGkiDlj4jnlKLnlJ/ororljJbnmoTpm7vloLQg4oaSIOKApjwvdGV4dD4KPHRleHQgeD0iMzkwIiB5PSIzMTEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2UxMWQ0OCI+5b6q55Kw5LiA5pem5ZWf5YuV5bCx6ISr6Zui5rqQ6aCt77yM5LiU5LiN6ZyA6KaB5Lu75L2V5LuL6LOqPC90ZXh0Pgo8L3N2Zz4=">
+<p><b>關鍵在「脫離源頭」四個字</b>：連鎖反應一旦啟動就不再需要原本振盪的電荷。源頭消失，已發出的波依然繼續傳播——這正是無線通訊得以成立的物理前提。</p>
+<h3>最反直覺的一點：不需要介質</h3><p>水波以水為介質、聲波以空氣為介質，所以當時的人自然問：電磁波在振動「什麼」？答案是——<b>什麼都不振動</b>。電磁波不是在介質中傳播的波，而是<b>「場自身的激發」在傳播</b>，就是「電生磁、磁生電」這個循環現象本身在向外擴散。（歷史上曾假設有「以太」，後被實驗否定。）</p>
+<p><b>這直接決定了無線通訊的可能性</b>：正因不需介質，電磁波才能穿越真空、跨越太空、在沒有任何實體連接下把資訊送到遠方。</p>
+<h3>那個偉大的巧合</h3><p>馬克士威計算這種波的傳播速度，結果與天文觀測的<b>光速</b>高度吻合。這不是巧合，是揭示：<b>光就是電磁波</b>。很久之後人類才發現無線電波、紅外線、可見光、紫外線、X 射線、伽馬射線<b>本質全是同一種現象</b>，唯一差別只在頻率與波長 → ${L("電磁波頻譜與波長頻率")}。</p>`},
+{id:"電磁波頻譜與波長頻率",ch:"5",en:"Ch.5 · Spectrum, λ & f",cat:"物理",html:`<div class="callout"><b>這章的問題：</b>名字差這麼多的射線為什麼是同一件事？「波長」對看不見的波是什麼意思？為什麼 c=λf 綁死了後面一百年的工程？</div>
+<h3>人類是「倒著」發現頻譜的</h3><p>人類幾十萬年只看得見可見光。後來用稜鏡分解陽光，做了兩個對稱的實驗：在<b>紅光外側</b>的陰影區放溫度計，溫度反而升更高（沒有光卻有強烈熱效應）→ 命名為<b>紅外線</b>，當時只當成「熱射線」；在<b>紫光外側</b>放浸過氯化銀的試紙，分解速度比在紫光下更快 → 發現<b>紫外線</b>，當時只當成「化學射線」。</p>
+<p><b>關鍵洞察</b>：這些名字是在<b>不知道它們本質相同</b>的年代隨手取的。站在今天回看，<b>本質上只是我們給不同頻率的電磁波分了段，再給每段一個人為命名而已</b>。真實情況是反過來的：不同頻率的電磁波一直存在，只是人眼剛好只對某一段有反應。</p>
+<h3>波長的本質</h3><p>頻率好理解，就是單位時間內電場與磁場互相生成的次數。波長比較不直觀——最本質的說法是：<b>波長就是波動在「空間上」的週期性</b>。沿傳播方向每前進一個波長，振動狀態重複一次。所以不一定要選波峰，<b>任意兩個振動狀態相同的相鄰點，距離就是波長</b>。例如紅光波長約 600nm，意思是路徑上每隔 600nm 電場的振動狀態就完全重複。</p>
+<h3>那條綁死一切的式子</h3><div class="formula">c = λ f　⟹　λ = c / f　（光速恆定）</div>
+<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNzYwIDMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmb250LWZhbWlseT0iJ1BpbmdGYW5nIFRDJywnTWljcm9zb2Z0IEpoZW5nSGVpJywnSGVsdmV0aWNhIE5ldWUnLHNhbnMtc2VyaWYiPgo8dGV4dCB4PSIzODAuMCIgeT0iMjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTciIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMxMjMwMzkiPumbu+ejgeazoumgu+itnO+8muWPquaYr+WQjOS4gOeoruePvuixoeeahOS4jeWQjOmgu+eOh+WIhuautTwvdGV4dD4KPHJlY3QgeD0iNjAiIHk9IjkwIiB3aWR0aD0iMTEwIiBoZWlnaHQ9IjU4IiBmaWxsPSIjN2MzYWVkIiBvcGFjaXR5PSIwLjgyIiByeD0iNCIvPgo8dGV4dCB4PSIxMTUuMCIgeT0iMTE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZmIj7kvL3ppqw8L3RleHQ+Cjx0ZXh0IHg9IjExNS4wIiB5PSIxMzUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiNmZmYiPjwwLjAxbm08L3RleHQ+CjxyZWN0IHg9IjE3MyIgeT0iOTAiIHdpZHRoPSIxMTAiIGhlaWdodD0iNTgiIGZpbGw9IiM2MzY2ZjEiIG9wYWNpdHk9IjAuODIiIHJ4PSI0Ii8+Cjx0ZXh0IHg9IjIyOC4wIiB5PSIxMTYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmYiPljlsITnt5o8L3RleHQ+Cjx0ZXh0IHg9IjIyOC4wIiB5PSIxMzUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiNmZmYiPjAuMDHigJMxMG5tPC90ZXh0Pgo8cmVjdCB4PSIyODYiIHk9IjkwIiB3aWR0aD0iMTEwIiBoZWlnaHQ9IjU4IiBmaWxsPSIjMDg5MWIyIiBvcGFjaXR5PSIwLjgyIiByeD0iNCIvPgo8dGV4dCB4PSIzNDEuMCIgeT0iMTE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZmIj7ntKvlpJY8L3RleHQ+Cjx0ZXh0IHg9IjM0MS4wIiB5PSIxMzUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiNmZmYiPjEw4oCTNDAwbm08L3RleHQ+CjxyZWN0IHg9IjM5OSIgeT0iOTAiIHdpZHRoPSIxMTAiIGhlaWdodD0iNTgiIGZpbGw9IiMwNTk2NjkiIG9wYWNpdHk9IjAuODIiIHJ4PSI0Ii8+Cjx0ZXh0IHg9IjQ1NC4wIiB5PSIxMTYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmYiPuWPr+imi+WFiTwvdGV4dD4KPHRleHQgeD0iNDU0LjAiIHk9IjEzNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMCIgZmlsbD0iI2ZmZiI+NDAw4oCTNzYwbm08L3RleHQ+CjxyZWN0IHg9IjUxMiIgeT0iOTAiIHdpZHRoPSIxMTAiIGhlaWdodD0iNTgiIGZpbGw9IiNkOTc3MDYiIG9wYWNpdHk9IjAuODIiIHJ4PSI0Ii8+Cjx0ZXh0IHg9IjU2Ny4wIiB5PSIxMTYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmYiPue0heWkljwvdGV4dD4KPHRleHQgeD0iNTY3LjAiIHk9IjEzNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMCIgZmlsbD0iI2ZmZiI+NzYwbm3igJMxbW08L3RleHQ+CjxyZWN0IHg9IjYyNSIgeT0iOTAiIHdpZHRoPSIxMTAiIGhlaWdodD0iNTgiIGZpbGw9IiNlMTFkNDgiIG9wYWNpdHk9IjAuODIiIHJ4PSI0Ii8+Cjx0ZXh0IHg9IjY4MC4wIiB5PSIxMTYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmYiPueEoee3mumbu+azojwvdGV4dD4KPHRleHQgeD0iNjgwLjAiIHk9IjEzNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMCIgZmlsbD0iI2ZmZiI+PjFtbTwvdGV4dD4KPHRleHQgeD0iNjAiIHk9IjE2NiIgZm9udC1zaXplPSIxMi41IiBmaWxsPSIjNGQ2Yjc2Ij7ihpAg5rOi6ZW355+t44O76aC7546H6auY44O76IO96YeP5aSnPC90ZXh0Pgo8dGV4dCB4PSI3MzIiIHk9IjE2NiIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1zaXplPSIxMi41IiBmaWxsPSIjNGQ2Yjc2Ij7ms6Lplbfplbfjg7vpoLvnjofkvY4g4oaSPC90ZXh0Pgo8cmVjdCB4PSI2MCIgeT0iMTkyIiB3aWR0aD0iNjQwIiBoZWlnaHQ9Ijg2IiByeD0iMTAiIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2Q1ZTVlYyIvPgo8dGV4dCB4PSIzODAiIHk9IjIxNyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzBlNWE2YiI+YyA9IM67IGbjgIDvvIjlhYnpgJ/mgYblrprvvIk8L3RleHQ+Cjx0ZXh0IHg9IjM4MCIgeT0iMjQwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyLjUiIGZpbGw9IiM0ZDZiNzYiPumgu+eOh+i2iumrmCDin7og5rOi6ZW35b+F54S26LaK55+t44CA6YCZ5piv5a+r5q275Zyo54mp55CG5a6a5b6L6KOh55qE77yM5bel56iL54Sh5rOV5pS56K6KPC90ZXh0Pgo8dGV4dCB4PSIzODAiIHk9IjI2MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMi41IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZTExZDQ4Ij7lvoDlvozkuIDnmb7lubTnmoTmiYDmnInlt6XnqIvpm6PpoYzvvIzpg73mmK/lnKjot5/pgJnmop3lvI/lrZDoqI7lg7npgoTlg7k8L3RleHQ+Cjwvc3ZnPg==">
+<p><b>波長越長 ⟺ 頻率越低；頻率越高 ⟺ 波長越短。這是寫死在物理定律裡的，工程無法改變。</b>你不可能設計出「頻率又高、波長又長」的電磁波。</p>
+<p><b>接下來一百多年人類駕馭電磁波的整部歷史，本質上都是在跟這條式子討價還價。</b>後面幾乎每個難題——為什麼需要載波（${L("載波與調制")}）、為什麼 5G 基站要蓋這麼多（${L("頻率的雙刃劍")}）——追根究柢都指回這裡。</p>
+<h3>頻譜分段</h3><p>伽馬射線（&lt;0.01nm，殺癌細胞）→ X 射線（0.01–10nm，醫學影像）→ 紫外線（10–400nm，殺菌）→ 可見光（400–760nm）→ 紅外線（760nm–1mm，熱效應）→ <b>無線電波（&gt;1mm，無線通訊使用）</b>。</p>
+<p><b>注意最後一段的跨度</b>：都叫無線電波，波長卻可以從幾毫米到幾公里。這個範圍內的差異極大，而差異的後果正是後面所有工程取捨的來源。</p>`},
+{id:"赫茲實驗與天線原理",ch:"6",en:"Ch.6 · Hertz & Antenna",cat:"工程",html:`<div class="callout"><b>這章的問題：</b>馬克士威的電磁波當初只是數學預言，怎麼被實驗證實？天線看起來只是一根金屬棒，它到底在做什麼？</div>
+<h3>從數學預言到實驗室的火花</h3><p>赫茲的裝置概念上很簡單：<b>發射端</b>是一個帶火花間隙的發射器，高壓電通過間隙產生火花——本質上是讓電荷<b>快速震盪</b>，因而製造出快速變化的電場與磁場、向外發射電磁波。<b>接收端</b>在幾公尺外放第二個帶接收天線的火花間隙，捕捉到能量後在間隙中產生<b>微小火花</b>。</p>
+<h3>火花之間，資訊已經誕生</h3><p>這個實驗已隱含通訊的雛形：兩個隔音房間事先約定「看到窗外有兔子就按下發射器」，對方看到接收器閃火花，就收到了這條資訊。<b>人類正式從理論進入無線通訊的實踐領域</b>——但只能發送最簡單的「有／沒有」，效率極低。</p>
+<h3>天線在做什麼：一個物理轉換器</h3><p>回想法拉第的結論——<b>變化率決定一切</b>。要有效產生電磁波，必須讓電荷進行<b>高頻率、有規律的快速運動</b>，這個裝置就是<b>天線</b>。</p>
+<p>沿導線輸入高頻交流電時：① 導線中自由電子沿長度方向<b>上下快速震盪</b> → ② 周圍產生<b>急劇變化的電場</b> → ③ 立即產生<b>變化的磁場</b> → ④ 兩場互相推動，以<b>電磁波形式從天線脫離</b>並向外輻射。</p>
+<div class="formula">天線 ＝ 把電訊號（電子運動）⟷ 無線電波（場的波動）的物理轉換器</div>
+<p>反過來接收時，入射電磁波推動天線中的電子運動，把場的波動轉回電訊號。<b>發射與接收是同一過程的兩個方向</b>，這也是同一根天線通常既能發也能收的原因。</p>
+<h3>為什麼天線尺寸不能隨便決定</h3><p>天線長度必須與所發射的<b>波長</b>同數量級（常見半波長或四分之一波長設計）。由 c=λf：<b>頻率越低 → 波長越長 → 天線必須越大</b>。地球上各種大小天線在原理上完全相同，尺寸差異純粹來自工作頻率。</p>
+<p>這個「天線尺寸被波長綁死」的限制，正是 ${L("載波與調制")} 要處理的核心矛盾——也是無線通訊史上最漂亮的一次繞道。</p>`},
+{id:"電報與摩斯電碼",ch:"7",en:"Ch.7 · Telegraph & Morse",cat:"工程",html:`<div class="callout"><b>這章的問題：</b>赫茲的火花只能傳「有／沒有」，怎麼變成跨越大西洋的系統？只用點與劃兩種訊號，為什麼能傳遞任意複雜的資訊？</div>
+<h3>兩個必須同時解決的挑戰</h3><p>馬可尼面對：① 怎麼把資訊「寫進」電磁波？② 怎麼讓訊號傳更遠？</p>
+<h3>挑戰一：用兩種訊號編碼任意資訊</h3><p>馬可尼只是從一種訊號變成<b>兩種</b>：短訊號（<b>點</b>）與長訊號（<b>劃</b>）。真正的突破來自<b>摩斯電碼</b>——利用兩者的不同組合建立編碼方式。例如 SOS 是「三短、三長、三短」，被選為國際通用正是因為節奏對稱、容易記憶辨識。</p>
+<p><b>這裡藏著極重要的思想</b>：資訊的複雜度不必來自訊號本身的複雜度，而可以來自<b>編碼</b>。兩種狀態就足以表達任意複雜的訊息——只要有夠好的編碼規則。這個思想幾十年後會以更徹底的形式回歸 → ${L("類比訊號與數位訊號")}。</p>
+<h3>通斷調制：所有數位調制的鼻祖</h3><p>操作員按下電鍵時振盪器工作、天線發射；鬆開則停止。於是<b>資訊被編碼成「電磁波的持續時間」</b>：短脈衝＝點，長脈衝＝劃。這稱為<b>通斷調制（On-Off Keying）</b>，是所有數位調制方式的鼻祖。電磁波至此不再只是物理現象，而是<b>被人類操控、成為資訊流的載體</b>。</p>
+<h3>挑戰二：怎麼傳得更遠</h3><p>提高發射功率確保衰減後仍可偵測；把天線一端接地、另一端接到高聳金屬結構上（後來甚至用風箏或氣球把天線吊到空中），最大限度提高輻射效率與覆蓋範圍。1901 年馬可尼在大西洋彼岸收到來自 3400 多公里外的摩斯電碼訊號。</p>
+<h3>檢波器：把電磁波變回訊號</h3><p>核心元件是裝滿鬆散金屬粉末的玻璃管：① <b>待機</b>時粉末鬆散、接觸不良，電路斷開（高電阻）→ ② 電磁波擊中天線，在兩端產生微弱脈衝 → ③ 粉末<b>凝聚在一起</b>形成低電阻通路 → ④ 電流通過，點亮燈或驅動記錄儀寫下點或劃 → ⑤ 小錘子自動敲打玻璃管把粉末<b>重新震鬆</b>，恢復待機。</p>
+<p><b>為什麼值得細看</b>：它示範了早期工程的核心思路——<b>用「電磁波能量引起物質狀態變化」來偵測訊號</b>。微弱能量無法直接驅動顯示裝置，但足以觸發一個狀態切換，而狀態切換可以接上更大的電源做放大。這個「用小訊號控制大能量」的概念，正是後來所有放大器與數位邏輯的雛形。</p>`},
+{id:"載波與調制",ch:"8",en:"Ch.8 · Carrier & Modulation",cat:"工程",html:`<div class="callout"><b>這章的問題：</b>人聲頻率換算成電磁波，波長是 300 公里——天線根本做不出來。那廣播是怎麼實現的？</div>
+<h3>先看清楚這個死結</h3><p>人聲頻率約 300–3400 Hz。取中位數 1000 Hz，由 λ=c/f：</p>
+<div class="formula">λ = 3×10⁸ / 1000 = 300,000 公尺 = 300 公里</div>
+<p>而天線尺寸必須與波長同數量級。要有效發射 1000 Hz，天線可能需要長達<b>上百公里</b>——物理與經濟上都不可行。<b>這就像你不能用一公尺長的砲管，去發射十公尺長的砲彈。</b></p>
+<h3>兩條走不通的路</h3><p><b>直接把人聲頻率提高？</b>不行。乘以 2 就變得非常尖銳，提高幾十倍會尖到人耳聽不見——<b>原始資訊徹底丟失</b>。而且真正需要的幅度遠不止如此：若要讓天線降到 1 公尺，頻率至少要 75 MHz，意味著把人聲提高<b>二十二萬倍以上</b>。</p>
+<h3>關鍵的繞道：載波</h3><p><b>載波</b>是一種非常高頻、純淨、恆定的正弦波，<b>本身不攜帶任何資訊</b>。因為它是極高頻的，波長很短，所以<b>可以用小而方便的天線高效發射</b>。載波就像一張<b>空白信紙</b>——只要改變它的某些物理屬性（在信紙上寫字），就能承載資訊。</p>
+<h3>調制：把低頻資訊寫進高頻載波</h3><p><b>調幅（AM）</b>：輸入訊號響度大時讓載波<b>振幅變高</b>、小時變低，頻率保持不變。接收端量測高度變化即可還原。</p>
+<p><b>調頻（FM）</b>：讓載波的<b>頻率發生微小偏移</b>，而強度保持不變。接收端根據頻率的細微變化解碼。</p>
+<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNzYwIDQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmb250LWZhbWlseT0iJ1BpbmdGYW5nIFRDJywnTWljcm9zb2Z0IEpoZW5nSGVpJywnSGVsdmV0aWNhIE5ldWUnLHNhbnMtc2VyaWYiPgo8dGV4dCB4PSIzODAuMCIgeT0iMjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTciIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMxMjMwMzkiPuiqv+WItu+8muaKiuS9jumgu+izh+ioiuWvq+mAsumrmOmgu+i8ieazojwvdGV4dD4KPHRleHQgeD0iNzgiIHk9Ijc4IiB0ZXh0LWFuY2hvcj0iZW5kIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDU5NjY5Ij7oqIrmga88L3RleHQ+Cjxwb2x5bGluZSBwb2ludHM9IjkwLjAsNzguMCA5Mi4wLDc3LjIgOTQuMCw3Ni41IDk2LjAsNzUuNyA5OC4wLDc1LjAgMTAwLjAsNzQuMiAxMDIuMCw3My41IDEwNC4wLDcyLjggMTA2LjAsNzIuMCAxMDguMCw3MS4zIDExMC4wLDcwLjYgMTEyLjAsNjkuOSAxMTQuMCw2OS4yIDExNi4wLDY4LjUgMTE4LjAsNjcuOCAxMjAuMCw2Ny4xIDEyMi4wLDY2LjQgMTI0LjAsNjUuOCAxMjYuMCw2NS4xIDEyOC4wLDY0LjUgMTMwLjAsNjMuOSAxMzIuMCw2My4zIDEzNC4wLDYyLjcgMTM2LjAsNjIuMSAxMzguMCw2MS42IDE0MC4wLDYxLjAgMTQyLjAsNjAuNSAxNDQuMCw2MC4wIDE0Ni4wLDU5LjUgMTQ4LjAsNTkuMCAxNTAuMCw1OC42IDE1Mi4wLDU4LjIgMTU0LjAsNTcuNyAxNTYuMCw1Ny4zIDE1OC4wLDU3LjAgMTYwLjAsNTYuNiAxNjIuMCw1Ni4zIDE2NC4wLDU2LjAgMTY2LjAsNTUuNyAxNjguMCw1NS40IDE3MC4wLDU1LjIgMTcyLjAsNTUuMCAxNzQuMCw1NC44IDE3Ni4wLDU0LjYgMTc4LjAsNTQuNCAxODAuMCw1NC4zIDE4Mi4wLDU0LjIgMTg0LjAsNTQuMSAxODYuMCw1NC4wIDE4OC4wLDU0LjAgMTkwLjAsNTQuMCAxOTIuMCw1NC4wIDE5NC4wLDU0LjAgMTk2LjAsNTQuMSAxOTguMCw1NC4yIDIwMC4wLDU0LjMgMjAyLjAsNTQuNCAyMDQuMCw1NC42IDIwNi4wLDU0LjggMjA4LjAsNTUuMCAyMTAuMCw1NS4yIDIxMi4wLDU1LjQgMjE0LjAsNTUuNyAyMTYuMCw1Ni4wIDIxOC4wLDU2LjMgMjIwLjAsNTYuNiAyMjIuMCw1Ny4wIDIyNC4wLDU3LjMgMjI2LjAsNTcuNyAyMjguMCw1OC4yIDIzMC4wLDU4LjYgMjMyLjAsNTkuMCAyMzQuMCw1OS41IDIzNi4wLDYwLjAgMjM4LjAsNjAuNSAyNDAuMCw2MS4wIDI0Mi4wLDYxLjYgMjQ0LjAsNjIuMSAyNDYuMCw2Mi43IDI0OC4wLDYzLjMgMjUwLjAsNjMuOSAyNTIuMCw2NC41IDI1NC4wLDY1LjEgMjU2LjAsNjUuOCAyNTguMCw2Ni40IDI2MC4wLDY3LjEgMjYyLjAsNjcuOCAyNjQuMCw2OC41IDI2Ni4wLDY5LjIgMjY4LjAsNjkuOSAyNzAuMCw3MC42IDI3Mi4wLDcxLjMgMjc0LjAsNzIuMCAyNzYuMCw3Mi44IDI3OC4wLDczLjUgMjgwLjAsNzQuMiAyODIuMCw3NS4wIDI4NC4wLDc1LjcgMjg2LjAsNzYuNSAyODguMCw3Ny4yIDI5MC4wLDc4LjAgMjkyLjAsNzguOCAyOTQuMCw3OS41IDI5Ni4wLDgwLjMgMjk4LjAsODEuMCAzMDAuMCw4MS44IDMwMi4wLDgyLjUgMzA0LjAsODMuMiAzMDYuMCw4NC4wIDMwOC4wLDg0LjcgMzEwLjAsODUuNCAzMTIuMCw4Ni4xIDMxNC4wLDg2LjggMzE2LjAsODcuNSAzMTguMCw4OC4yIDMyMC4wLDg4LjkgMzIyLjAsODkuNiAzMjQuMCw5MC4yIDMyNi4wLDkwLjkgMzI4LjAsOTEuNSAzMzAuMCw5Mi4xIDMzMi4wLDkyLjcgMzM0LjAsOTMuMyAzMzYuMCw5My45IDMzOC4wLDk0LjQgMzQwLjAsOTUuMCAzNDIuMCw5NS41IDM0NC4wLDk2LjAgMzQ2LjAsOTYuNSAzNDguMCw5Ny4wIDM1MC4wLDk3LjQgMzUyLjAsOTcuOCAzNTQuMCw5OC4zIDM1Ni4wLDk4LjcgMzU4LjAsOTkuMCAzNjAuMCw5OS40IDM2Mi4wLDk5LjcgMzY0LjAsMTAwLjAgMzY2LjAsMTAwLjMgMzY4LjAsMTAwLjYgMzcwLjAsMTAwLjggMzcyLjAsMTAxLjAgMzc0LjAsMTAxLjIgMzc2LjAsMTAxLjQgMzc4LjAsMTAxLjYgMzgwLjAsMTAxLjcgMzgyLjAsMTAxLjggMzg0LjAsMTAxLjkgMzg2LjAsMTAyLjAgMzg4LjAsMTAyLjAgMzkwLjAsMTAyLjAgMzkyLjAsMTAyLjAgMzk0LjAsMTAyLjAgMzk2LjAsMTAxLjkgMzk4LjAsMTAxLjggNDAwLjAsMTAxLjcgNDAyLjAsMTAxLjYgNDA0LjAsMTAxLjQgNDA2LjAsMTAxLjIgNDA4LjAsMTAxLjAgNDEwLjAsMTAwLjggNDEyLjAsMTAwLjYgNDE0LjAsMTAwLjMgNDE2LjAsMTAwLjAgNDE4LjAsOTkuNyA0MjAuMCw5OS40IDQyMi4wLDk5LjAgNDI0LjAsOTguNyA0MjYuMCw5OC4zIDQyOC4wLDk3LjggNDMwLjAsOTcuNCA0MzIuMCw5Ny4wIDQzNC4wLDk2LjUgNDM2LjAsOTYuMCA0MzguMCw5NS41IDQ0MC4wLDk1LjAgNDQyLjAsOTQuNCA0NDQuMCw5My45IDQ0Ni4wLDkzLjMgNDQ4LjAsOTIuNyA0NTAuMCw5Mi4xIDQ1Mi4wLDkxLjUgNDU0LjAsOTAuOSA0NTYuMCw5MC4yIDQ1OC4wLDg5LjYgNDYwLjAsODguOSA0NjIuMCw4OC4yIDQ2NC4wLDg3LjUgNDY2LjAsODYuOCA0NjguMCw4Ni4xIDQ3MC4wLDg1LjQgNDcyLjAsODQuNyA0NzQuMCw4NC4wIDQ3Ni4wLDgzLjIgNDc4LjAsODIuNSA0ODAuMCw4MS44IDQ4Mi4wLDgxLjAgNDg0LjAsODAuMyA0ODYuMCw3OS41IDQ4OC4wLDc4LjggNDkwLjAsNzguMCA0OTIuMCw3Ny4yIDQ5NC4wLDc2LjUgNDk2LjAsNzUuNyA0OTguMCw3NS4wIDUwMC4wLDc0LjIgNTAyLjAsNzMuNSA1MDQuMCw3Mi44IDUwNi4wLDcyLjAgNTA4LjAsNzEuMyA1MTAuMCw3MC42IDUxMi4wLDY5LjkgNTE0LjAsNjkuMiA1MTYuMCw2OC41IDUxOC4wLDY3LjggNTIwLjAsNjcuMSA1MjIuMCw2Ni40IDUyNC4wLDY1LjggNTI2LjAsNjUuMSA1MjguMCw2NC41IDUzMC4wLDYzLjkgNTMyLjAsNjMuMyA1MzQuMCw2Mi43IDUzNi4wLDYyLjEgNTM4LjAsNjEuNiA1NDAuMCw2MS4wIDU0Mi4wLDYwLjUgNTQ0LjAsNjAuMCA1NDYuMCw1OS41IDU0OC4wLDU5LjAgNTUwLjAsNTguNiA1NTIuMCw1OC4yIDU1NC4wLDU3LjcgNTU2LjAsNTcuMyA1NTguMCw1Ny4wIDU2MC4wLDU2LjYgNTYyLjAsNTYuMyA1NjQuMCw1Ni4wIDU2Ni4wLDU1LjcgNTY4LjAsNTUuNCA1NzAuMCw1NS4yIDU3Mi4wLDU1LjAgNTc0LjAsNTQuOCA1NzYuMCw1NC42IDU3OC4wLDU0LjQgNTgwLjAsNTQuMyA1ODIuMCw1NC4yIDU4NC4wLDU0LjEgNTg2LjAsNTQuMCA1ODguMCw1NC4wIDU5MC4wLDU0LjAgNTkyLjAsNTQuMCA1OTQuMCw1NC4wIDU5Ni4wLDU0LjEgNTk4LjAsNTQuMiA2MDAuMCw1NC4zIDYwMi4wLDU0LjQgNjA0LjAsNTQuNiA2MDYuMCw1NC44IDYwOC4wLDU1LjAgNjEwLjAsNTUuMiA2MTIuMCw1NS40IDYxNC4wLDU1LjcgNjE2LjAsNTYuMCA2MTguMCw1Ni4zIDYyMC4wLDU2LjYgNjIyLjAsNTcuMCA2MjQuMCw1Ny4zIDYyNi4wLDU3LjcgNjI4LjAsNTguMiA2MzAuMCw1OC42IDYzMi4wLDU5LjAgNjM0LjAsNTkuNSA2MzYuMCw2MC4wIDYzOC4wLDYwLjUgNjQwLjAsNjEuMCA2NDIuMCw2MS42IDY0NC4wLDYyLjEgNjQ2LjAsNjIuNyA2NDguMCw2My4zIDY1MC4wLDYzLjkgNjUyLjAsNjQuNSA2NTQuMCw2NS4xIDY1Ni4wLDY1LjggNjU4LjAsNjYuNCA2NjAuMCw2Ny4xIDY2Mi4wLDY3LjggNjY0LjAsNjguNSA2NjYuMCw2OS4yIDY2OC4wLDY5LjkgNjcwLjAsNzAuNiA2NzIuMCw3MS4zIDY3NC4wLDcyLjAgNjc2LjAsNzIuOCA2NzguMCw3My41IDY4MC4wLDc0LjIgNjgyLjAsNzUuMCA2ODQuMCw3NS43IDY4Ni4wLDc2LjUgNjg4LjAsNzcuMiA2OTAuMCw3OC4wIiBmaWxsPSJub25lIiBzdHJva2U9IiMwNTk2NjkiIHN0cm9rZS13aWR0aD0iMi40Ii8+Cjx0ZXh0IHg9Ijc4IiB5PSIxNzgiIHRleHQtYW5jaG9yPSJlbmQiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwODkxYjIiPkFNIOiqv+W5hTwvdGV4dD4KPHBvbHlsaW5lIHBvaW50cz0iOTAuMCwxNzEuMCA5MS43LDE2NS4xIDkzLjMsMTYxLjcgOTUuMCwxNjEuNiA5Ni43LDE2NC44IDk4LjMsMTcwLjkgMTAwLjAsMTc4LjYgMTAxLjcsMTg2LjUgMTAzLjMsMTkzLjAgMTA1LjAsMTk2LjUgMTA2LjcsMTk2LjQgMTA4LjMsMTkyLjQgMTEwLjAsMTg1LjQgMTExLjcsMTc2LjYgMTEzLjMsMTY3LjggMTE1LjAsMTYwLjkgMTE2LjcsMTU3LjMgMTE4LjMsMTU3LjkgMTIwLjAsMTYyLjYgMTIxLjcsMTcwLjYgMTIzLjMsMTgwLjMgMTI1LjAsMTg5LjggMTI2LjcsMTk3LjEgMTI4LjMsMjAwLjcgMTMwLjAsMTk5LjcgMTMxLjcsMTk0LjIgMTMzLjMsMTg1LjMgMTM1LjAsMTc0LjcgMTM2LjcsMTY0LjYgMTM4LjMsMTU3LjAgMTQwLjAsMTUzLjYgMTQxLjcsMTU1LjEgMTQzLjMsMTYxLjMgMTQ1LjAsMTcxLjEgMTQ2LjcsMTgyLjQgMTQ4LjMsMTkzLjAgMTUwLjAsMjAwLjcgMTUxLjcsMjAzLjkgMTUzLjMsMjAxLjggMTU1LjAsMTk0LjkgMTU2LjcsMTg0LjQgMTU4LjMsMTcyLjUgMTYwLjAsMTYxLjYgMTYxLjcsMTUzLjkgMTYzLjMsMTUxLjAgMTY1LjAsMTUzLjcgMTY2LjcsMTYxLjMgMTY4LjMsMTcyLjMgMTcwLjAsMTg0LjYgMTcxLjcsMTk1LjcgMTczLjMsMjAzLjIgMTc1LjAsMjA1LjcgMTc2LjcsMjAyLjUgMTc4LjMsMTk0LjMgMTgwLjAsMTgyLjggMTgxLjcsMTcwLjMgMTgzLjMsMTU5LjMgMTg1LjAsMTUyLjEgMTg2LjcsMTUwLjEgMTg4LjMsMTUzLjggMTkwLjAsMTYyLjMgMTkxLjcsMTc0LjEgMTkzLjMsMTg2LjYgMTk1LjAsMTk3LjQgMTk2LjcsMjA0LjIgMTk4LjMsMjA1LjcgMjAwLjAsMjAxLjYgMjAxLjcsMTkyLjcgMjAzLjMsMTgwLjkgMjA1LjAsMTY4LjUgMjA2LjcsMTU4LjIgMjA4LjMsMTUxLjggMjEwLjAsMTUwLjkgMjExLjcsMTU1LjQgMjEzLjMsMTY0LjQgMjE1LjAsMTc2LjEgMjE2LjcsMTg4LjEgMjE4LjMsMTk3LjkgMjIwLjAsMjAzLjcgMjIxLjcsMjA0LjEgMjIzLjMsMTk5LjQgMjI1LjAsMTkwLjMgMjI2LjcsMTc4LjkgMjI4LjMsMTY3LjUgMjMwLjAsMTU4LjMgMjMxLjcsMTUzLjIgMjMzLjMsMTUzLjIgMjM1LjAsMTU4LjIgMjM2LjcsMTY3LjEgMjM4LjMsMTc4LjAgMjQwLjAsMTg4LjcgMjQxLjcsMTk3LjEgMjQzLjMsMjAxLjUgMjQ1LjAsMjAxLjEgMjQ2LjcsMTk2LjAgMjQ4LjMsMTg3LjUgMjUwLjAsMTc3LjIgMjUxLjcsMTY3LjMgMjUzLjMsMTU5LjggMjU1LjAsMTU2LjEgMjU2LjcsMTU2LjkgMjU4LjMsMTYxLjkgMjYwLjAsMTcwLjAgMjYxLjcsMTc5LjUgMjYzLjMsMTg4LjQgMjY1LjAsMTk1LjEgMjY2LjcsMTk4LjEgMjY4LjMsMTk3LjAgMjcwLjAsMTkyLjIgMjcxLjcsMTg0LjYgMjczLjMsMTc2LjAgMjc1LjAsMTY4LjAgMjc2LjcsMTYyLjMgMjc4LjMsMTU5LjkgMjgwLjAsMTYxLjIgMjgxLjcsMTY1LjggMjgzLjMsMTcyLjcgMjg1LjAsMTgwLjQgMjg2LjcsMTg3LjMgMjg4LjMsMTkyLjEgMjkwLjAsMTk0LjAgMjkxLjcsMTkyLjUgMjkzLjMsMTg4LjMgMjk1LjAsMTgyLjIgMjk2LjcsMTc1LjQgMjk4LjMsMTY5LjUgMzAwLjAsMTY1LjUgMzAxLjcsMTY0LjIgMzAzLjMsMTY1LjcgMzA1LjAsMTY5LjUgMzA2LjcsMTc0LjkgMzA4LjMsMTgwLjYgMzEwLjAsMTg1LjYgMzExLjcsMTg4LjggMzEzLjMsMTg5LjcgMzE1LjAsMTg4LjMgMzE2LjcsMTg0LjggMzE4LjMsMTgwLjMgMzIwLjAsMTc1LjQgMzIxLjcsMTcxLjQgMzIzLjMsMTY4LjkgMzI1LjAsMTY4LjMgMzI2LjcsMTY5LjYgMzI4LjMsMTcyLjYgMzMwLjAsMTc2LjQgMzMxLjcsMTgwLjQgMzMzLjMsMTgzLjcgMzM1LjAsMTg1LjYgMzM2LjcsMTg2LjAgMzM4LjMsMTg0LjcgMzQwLjAsMTgyLjIgMzQxLjcsMTc5LjAgMzQzLjMsMTc1LjggMzQ1LjAsMTczLjIgMzQ2LjcsMTcxLjcgMzQ4LjMsMTcxLjYgMzUwLjAsMTcyLjcgMzUxLjcsMTc0LjggMzUzLjMsMTc3LjQgMzU1LjAsMTgwLjAgMzU2LjcsMTgyLjAgMzU4LjMsMTgzLjIgMzYwLjAsMTgzLjMgMzYxLjcsMTgyLjMgMzYzLjMsMTgwLjUgMzY1LjAsMTc4LjMgMzY2LjcsMTc2LjIgMzY4LjMsMTc0LjUgMzcwLjAsMTczLjYgMzcxLjcsMTczLjYgMzczLjMsMTc0LjQgMzc1LjAsMTc2LjAgMzc2LjcsMTc3LjkgMzc4LjMsMTc5LjcgMzgwLjAsMTgxLjIgMzgxLjcsMTgyLjAgMzgzLjMsMTgyLjAgMzg1LjAsMTgxLjIgMzg2LjcsMTc5LjggMzg4LjMsMTc4LjAgMzkwLjAsMTc2LjIgMzkxLjcsMTc0LjggMzkzLjMsMTc0LjEgMzk1LjAsMTc0LjEgMzk2LjcsMTc0LjkgMzk4LjMsMTc2LjMgNDAwLjAsMTc4LjEgNDAxLjcsMTgwLjAgNDAzLjMsMTgxLjQgNDA1LjAsMTgyLjMgNDA2LjcsMTgyLjIgNDA4LjMsMTgxLjMgNDEwLjAsMTc5LjcgNDExLjcsMTc3LjcgNDEzLjMsMTc1LjYgNDE1LjAsMTczLjkgNDE2LjcsMTczLjAgNDE4LjMsMTczLjEgNDIwLjAsMTc0LjIgNDIxLjcsMTc2LjEgNDIzLjMsMTc4LjYgNDI1LjAsMTgxLjEgNDI2LjcsMTgzLjAgNDI4LjMsMTg0LjEgNDMwLjAsMTgzLjkgNDMxLjcsMTgyLjUgNDMzLjMsMTgwLjEgNDM1LjAsMTc3LjAgNDM2LjcsMTc0LjAgNDM4LjMsMTcxLjcgNDQwLjAsMTcwLjUgNDQxLjcsMTcwLjggNDQzLjMsMTcyLjcgNDQ1LjAsMTc1LjcgNDQ2LjcsMTc5LjUgNDQ4LjMsMTgzLjEgNDUwLjAsMTg1LjkgNDUxLjcsMTg3LjIgNDUzLjMsMTg2LjYgNDU1LjAsMTg0LjMgNDU2LjcsMTgwLjQgNDU4LjMsMTc1LjkgNDYwLjAsMTcxLjUgNDYxLjcsMTY4LjMgNDYzLjMsMTY2LjkgNDY1LjAsMTY3LjcgNDY2LjcsMTcwLjggNDY4LjMsMTc1LjUgNDcwLjAsMTgxLjAgNDcxLjcsMTg2LjEgNDczLjMsMTg5LjggNDc1LjAsMTkxLjIgNDc2LjcsMTg5LjkgNDc4LjMsMTg2LjEgNDgwLjAsMTgwLjUgNDgxLjcsMTc0LjAgNDgzLjMsMTY4LjEgNDg1LjAsMTY0LjAgNDg2LjcsMTYyLjcgNDg4LjMsMTY0LjQgNDkwLjAsMTY5LjEgNDkxLjcsMTc1LjcgNDkzLjMsMTgzLjEgNDk1LjAsMTg5LjggNDk2LjcsMTk0LjIgNDk4LjMsMTk1LjUgNTAwLjAsMTkzLjIgNTAxLjcsMTg3LjYgNTAzLjMsMTc5LjkgNTA1LjAsMTcxLjYgNTA2LjcsMTY0LjMgNTA4LjMsMTU5LjUgNTEwLjAsMTU4LjUgNTExLjcsMTYxLjQgNTEzLjMsMTY3LjggNTE1LjAsMTc2LjYgNTE2LjcsMTg1LjggNTE4LjMsMTkzLjcgNTIwLjAsMTk4LjYgNTIxLjcsMTk5LjQgNTIzLjMsMTk1LjggNTI1LjAsMTg4LjUgNTI2LjcsMTc4LjggNTI4LjMsMTY4LjcgNTMwLjAsMTYwLjMgNTMxLjcsMTU1LjQgNTMzLjMsMTU1LjAgNTM1LjAsMTU5LjMgNTM2LjcsMTY3LjUgNTM4LjMsMTc4LjAgNTQwLjAsMTg4LjcgNTQxLjcsMTk3LjUgNTQzLjMsMjAyLjQgNTQ1LjAsMjAyLjQgNTQ2LjcsMTk3LjQgNTQ4LjMsMTg4LjQgNTUwLjAsMTc3LjEgNTUxLjcsMTY1LjggNTUzLjMsMTU2LjkgNTU1LjAsMTUyLjIgNTU2LjcsMTUyLjYgNTU4LjMsMTU4LjMgNTYwLjAsMTY4LjAgNTYxLjcsMTc5LjkgNTYzLjMsMTkxLjUgNTY1LjAsMjAwLjUgNTY2LjcsMjA0LjkgNTY4LjMsMjA0LjAgNTcwLjAsMTk3LjcgNTcxLjcsMTg3LjQgNTczLjMsMTc1LjEgNTc1LjAsMTYzLjMgNTc2LjcsMTU0LjUgNTc4LjMsMTUwLjQgNTgwLjAsMTUxLjggNTgxLjcsMTU4LjYgNTgzLjMsMTY5LjQgNTg1LjAsMTgxLjkgNTg2LjcsMTkzLjYgNTg4LjMsMjAyLjIgNTkwLjAsMjA1LjkgNTkxLjcsMjA0LjAgNTkzLjMsMTk2LjcgNTk1LjAsMTg1LjcgNTk2LjcsMTczLjEgNTk4LjMsMTYxLjYgNjAwLjAsMTUzLjQgNjAxLjcsMTUwLjIgNjAzLjMsMTUyLjcgNjA1LjAsMTYwLjIgNjA2LjcsMTcxLjMgNjA4LjMsMTgzLjcgNjEwLjAsMTk0LjkgNjExLjcsMjAyLjUgNjEzLjMsMjA1LjIgNjE1LjAsMjAyLjMgNjE2LjcsMTk0LjYgNjE4LjMsMTgzLjYgNjIwLjAsMTcxLjUgNjIxLjcsMTYwLjkgNjIzLjMsMTUzLjkgNjI1LjAsMTUxLjggNjI2LjcsMTU1LjAgNjI4LjMsMTYyLjggNjMwLjAsMTczLjUgNjMxLjcsMTg1LjAgNjMzLjMsMTk0LjkgNjM1LjAsMjAxLjMgNjM2LjcsMjAyLjkgNjM4LjMsMTk5LjQgNjQwLjAsMTkxLjcgNjQxLjcsMTgxLjQgNjQzLjMsMTcwLjYgNjQ1LjAsMTYxLjUgNjQ2LjcsMTU1LjkgNjQ4LjMsMTU0LjggNjUwLjAsMTU4LjQgNjUxLjcsMTY1LjkgNjUzLjMsMTc1LjYgNjU1LjAsMTg1LjYgNjU2LjcsMTkzLjggNjU4LjMsMTk4LjcgNjYwLjAsMTk5LjIgNjYxLjcsMTk1LjUgNjYzLjMsMTg4LjQgNjY1LjAsMTc5LjQgNjY2LjcsMTcwLjQgNjY4LjMsMTYzLjEgNjcwLjAsMTU5LjEgNjcxLjcsMTU4LjkgNjczLjMsMTYyLjUgNjc1LjAsMTY5LjIgNjc2LjcsMTc3LjQgNjc4LjMsMTg1LjQgNjgwLjAsMTkxLjcgNjgxLjcsMTk1LjAgNjgzLjMsMTk0LjkgNjg1LjAsMTkxLjQgNjg2LjcsMTg1LjMgNjg4LjMsMTc4LjAgNjkwLjAsMTcxLjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIyLjIiLz4KPHBvbHlsaW5lIHBvaW50cz0iOTAuMCwxNjIuMCA5Mi4wLDE2MS42IDk0LjAsMTYxLjIgOTYuMCwxNjAuOSA5OC4wLDE2MC41IDEwMC4wLDE2MC4xIDEwMi4wLDE1OS44IDEwNC4wLDE1OS40IDEwNi4wLDE1OS4wIDEwOC4wLDE1OC43IDExMC4wLDE1OC4zIDExMi4wLDE1Ny45IDExNC4wLDE1Ny42IDExNi4wLDE1Ny4yIDExOC4wLDE1Ni45IDEyMC4wLDE1Ni42IDEyMi4wLDE1Ni4yIDEyNC4wLDE1NS45IDEyNi4wLDE1NS42IDEyOC4wLDE1NS4zIDEzMC4wLDE1NC45IDEzMi4wLDE1NC42IDEzNC4wLDE1NC40IDEzNi4wLDE1NC4xIDEzOC4wLDE1My44IDE0MC4wLDE1My41IDE0Mi4wLDE1My4zIDE0NC4wLDE1My4wIDE0Ni4wLDE1Mi44IDE0OC4wLDE1Mi41IDE1MC4wLDE1Mi4zIDE1Mi4wLDE1Mi4xIDE1NC4wLDE1MS45IDE1Ni4wLDE1MS43IDE1OC4wLDE1MS41IDE2MC4wLDE1MS4zIDE2Mi4wLDE1MS4xIDE2NC4wLDE1MS4wIDE2Ni4wLDE1MC44IDE2OC4wLDE1MC43IDE3MC4wLDE1MC42IDE3Mi4wLDE1MC41IDE3NC4wLDE1MC40IDE3Ni4wLDE1MC4zIDE3OC4wLDE1MC4yIDE4MC4wLDE1MC4xIDE4Mi4wLDE1MC4xIDE4NC4wLDE1MC4xIDE4Ni4wLDE1MC4wIDE4OC4wLDE1MC4wIDE5MC4wLDE1MC4wIDE5Mi4wLDE1MC4wIDE5NC4wLDE1MC4wIDE5Ni4wLDE1MC4xIDE5OC4wLDE1MC4xIDIwMC4wLDE1MC4xIDIwMi4wLDE1MC4yIDIwNC4wLDE1MC4zIDIwNi4wLDE1MC40IDIwOC4wLDE1MC41IDIxMC4wLDE1MC42IDIxMi4wLDE1MC43IDIxNC4wLDE1MC44IDIxNi4wLDE1MS4wIDIxOC4wLDE1MS4xIDIyMC4wLDE1MS4zIDIyMi4wLDE1MS41IDIyNC4wLDE1MS43IDIyNi4wLDE1MS45IDIyOC4wLDE1Mi4xIDIzMC4wLDE1Mi4zIDIzMi4wLDE1Mi41IDIzNC4wLDE1Mi44IDIzNi4wLDE1My4wIDIzOC4wLDE1My4zIDI0MC4wLDE1My41IDI0Mi4wLDE1My44IDI0NC4wLDE1NC4xIDI0Ni4wLDE1NC40IDI0OC4wLDE1NC42IDI1MC4wLDE1NC45IDI1Mi4wLDE1NS4zIDI1NC4wLDE1NS42IDI1Ni4wLDE1NS45IDI1OC4wLDE1Ni4yIDI2MC4wLDE1Ni42IDI2Mi4wLDE1Ni45IDI2NC4wLDE1Ny4yIDI2Ni4wLDE1Ny42IDI2OC4wLDE1Ny45IDI3MC4wLDE1OC4zIDI3Mi4wLDE1OC43IDI3NC4wLDE1OS4wIDI3Ni4wLDE1OS40IDI3OC4wLDE1OS44IDI4MC4wLDE2MC4xIDI4Mi4wLDE2MC41IDI4NC4wLDE2MC45IDI4Ni4wLDE2MS4yIDI4OC4wLDE2MS42IDI5MC4wLDE2Mi4wIDI5Mi4wLDE2Mi40IDI5NC4wLDE2Mi44IDI5Ni4wLDE2My4xIDI5OC4wLDE2My41IDMwMC4wLDE2My45IDMwMi4wLDE2NC4yIDMwNC4wLDE2NC42IDMwNi4wLDE2NS4wIDMwOC4wLDE2NS4zIDMxMC4wLDE2NS43IDMxMi4wLDE2Ni4xIDMxNC4wLDE2Ni40IDMxNi4wLDE2Ni44IDMxOC4wLDE2Ny4xIDMyMC4wLDE2Ny40IDMyMi4wLDE2Ny44IDMyNC4wLDE2OC4xIDMyNi4wLDE2OC40IDMyOC4wLDE2OC43IDMzMC4wLDE2OS4xIDMzMi4wLDE2OS40IDMzNC4wLDE2OS42IDMzNi4wLDE2OS45IDMzOC4wLDE3MC4yIDM0MC4wLDE3MC41IDM0Mi4wLDE3MC43IDM0NC4wLDE3MS4wIDM0Ni4wLDE3MS4yIDM0OC4wLDE3MS41IDM1MC4wLDE3MS43IDM1Mi4wLDE3MS45IDM1NC4wLDE3Mi4xIDM1Ni4wLDE3Mi4zIDM1OC4wLDE3Mi41IDM2MC4wLDE3Mi43IDM2Mi4wLDE3Mi45IDM2NC4wLDE3My4wIDM2Ni4wLDE3My4yIDM2OC4wLDE3My4zIDM3MC4wLDE3My40IDM3Mi4wLDE3My41IDM3NC4wLDE3My42IDM3Ni4wLDE3My43IDM3OC4wLDE3My44IDM4MC4wLDE3My45IDM4Mi4wLDE3My45IDM4NC4wLDE3My45IDM4Ni4wLDE3NC4wIDM4OC4wLDE3NC4wIDM5MC4wLDE3NC4wIDM5Mi4wLDE3NC4wIDM5NC4wLDE3NC4wIDM5Ni4wLDE3My45IDM5OC4wLDE3My45IDQwMC4wLDE3My45IDQwMi4wLDE3My44IDQwNC4wLDE3My43IDQwNi4wLDE3My42IDQwOC4wLDE3My41IDQxMC4wLDE3My40IDQxMi4wLDE3My4zIDQxNC4wLDE3My4yIDQxNi4wLDE3My4wIDQxOC4wLDE3Mi45IDQyMC4wLDE3Mi43IDQyMi4wLDE3Mi41IDQyNC4wLDE3Mi4zIDQyNi4wLDE3Mi4xIDQyOC4wLDE3MS45IDQzMC4wLDE3MS43IDQzMi4wLDE3MS41IDQzNC4wLDE3MS4yIDQzNi4wLDE3MS4wIDQzOC4wLDE3MC43IDQ0MC4wLDE3MC41IDQ0Mi4wLDE3MC4yIDQ0NC4wLDE2OS45IDQ0Ni4wLDE2OS42IDQ0OC4wLDE2OS40IDQ1MC4wLDE2OS4xIDQ1Mi4wLDE2OC43IDQ1NC4wLDE2OC40IDQ1Ni4wLDE2OC4xIDQ1OC4wLDE2Ny44IDQ2MC4wLDE2Ny40IDQ2Mi4wLDE2Ny4xIDQ2NC4wLDE2Ni44IDQ2Ni4wLDE2Ni40IDQ2OC4wLDE2Ni4xIDQ3MC4wLDE2NS43IDQ3Mi4wLDE2NS4zIDQ3NC4wLDE2NS4wIDQ3Ni4wLDE2NC42IDQ3OC4wLDE2NC4yIDQ4MC4wLDE2My45IDQ4Mi4wLDE2My41IDQ4NC4wLDE2My4xIDQ4Ni4wLDE2Mi44IDQ4OC4wLDE2Mi40IDQ5MC4wLDE2Mi4wIDQ5Mi4wLDE2MS42IDQ5NC4wLDE2MS4yIDQ5Ni4wLDE2MC45IDQ5OC4wLDE2MC41IDUwMC4wLDE2MC4xIDUwMi4wLDE1OS44IDUwNC4wLDE1OS40IDUwNi4wLDE1OS4wIDUwOC4wLDE1OC43IDUxMC4wLDE1OC4zIDUxMi4wLDE1Ny45IDUxNC4wLDE1Ny42IDUxNi4wLDE1Ny4yIDUxOC4wLDE1Ni45IDUyMC4wLDE1Ni42IDUyMi4wLDE1Ni4yIDUyNC4wLDE1NS45IDUyNi4wLDE1NS42IDUyOC4wLDE1NS4zIDUzMC4wLDE1NC45IDUzMi4wLDE1NC42IDUzNC4wLDE1NC40IDUzNi4wLDE1NC4xIDUzOC4wLDE1My44IDU0MC4wLDE1My41IDU0Mi4wLDE1My4zIDU0NC4wLDE1My4wIDU0Ni4wLDE1Mi44IDU0OC4wLDE1Mi41IDU1MC4wLDE1Mi4zIDU1Mi4wLDE1Mi4xIDU1NC4wLDE1MS45IDU1Ni4wLDE1MS43IDU1OC4wLDE1MS41IDU2MC4wLDE1MS4zIDU2Mi4wLDE1MS4xIDU2NC4wLDE1MS4wIDU2Ni4wLDE1MC44IDU2OC4wLDE1MC43IDU3MC4wLDE1MC42IDU3Mi4wLDE1MC41IDU3NC4wLDE1MC40IDU3Ni4wLDE1MC4zIDU3OC4wLDE1MC4yIDU4MC4wLDE1MC4xIDU4Mi4wLDE1MC4xIDU4NC4wLDE1MC4xIDU4Ni4wLDE1MC4wIDU4OC4wLDE1MC4wIDU5MC4wLDE1MC4wIDU5Mi4wLDE1MC4wIDU5NC4wLDE1MC4wIDU5Ni4wLDE1MC4xIDU5OC4wLDE1MC4xIDYwMC4wLDE1MC4xIDYwMi4wLDE1MC4yIDYwNC4wLDE1MC4zIDYwNi4wLDE1MC40IDYwOC4wLDE1MC41IDYxMC4wLDE1MC42IDYxMi4wLDE1MC43IDYxNC4wLDE1MC44IDYxNi4wLDE1MS4wIDYxOC4wLDE1MS4xIDYyMC4wLDE1MS4zIDYyMi4wLDE1MS41IDYyNC4wLDE1MS43IDYyNi4wLDE1MS45IDYyOC4wLDE1Mi4xIDYzMC4wLDE1Mi4zIDYzMi4wLDE1Mi41IDYzNC4wLDE1Mi44IDYzNi4wLDE1My4wIDYzOC4wLDE1My4zIDY0MC4wLDE1My41IDY0Mi4wLDE1My44IDY0NC4wLDE1NC4xIDY0Ni4wLDE1NC40IDY0OC4wLDE1NC42IDY1MC4wLDE1NC45IDY1Mi4wLDE1NS4zIDY1NC4wLDE1NS42IDY1Ni4wLDE1NS45IDY1OC4wLDE1Ni4yIDY2MC4wLDE1Ni42IDY2Mi4wLDE1Ni45IDY2NC4wLDE1Ny4yIDY2Ni4wLDE1Ny42IDY2OC4wLDE1Ny45IDY3MC4wLDE1OC4zIDY3Mi4wLDE1OC43IDY3NC4wLDE1OS4wIDY3Ni4wLDE1OS40IDY3OC4wLDE1OS44IDY4MC4wLDE2MC4xIDY4Mi4wLDE2MC41IDY4NC4wLDE2MC45IDY4Ni4wLDE2MS4yIDY4OC4wLDE2MS42IDY5MC4wLDE2Mi4wIiBmaWxsPSJub25lIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWRhc2hhcnJheT0iNCAzIiBvcGFjaXR5PSIwLjY1Ii8+Cjx0ZXh0IHg9IjY5OCIgeT0iMTgyIiBmb250LXNpemU9IjExLjUiIGZpbGw9IiM0ZDZiNzYiPumrmOW6puiuijwvdGV4dD4KPHRleHQgeD0iNzgiIHk9IjI3OCIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2UxMWQ0OCI+Rk0g6Kq/6aC7PC90ZXh0Pgo8cG9seWxpbmUgcG9pbnRzPSI5MC4wLDI2Ni42IDkxLjcsMjU3LjQgOTMuMywyNTIuNSA5NS4wLDI1My4wIDk2LjcsMjU5LjEgOTguMywyNjkuNiAxMDAuMCwyODIuMSAxMDEuNywyOTMuOCAxMDMuMywzMDEuOCAxMDUuMCwzMDMuOSAxMDYuNywyOTkuNCAxMDguMywyODkuMyAxMTAuMCwyNzYuMCAxMTEuNywyNjMuMiAxMTMuMywyNTQuNCAxMTUuMCwyNTIuMiAxMTYuNywyNTcuNCAxMTguMywyNjguOCAxMjAuMCwyODMuMCAxMjEuNywyOTUuOCAxMjMuMywzMDMuMiAxMjUuMCwzMDIuNiAxMjYuNywyOTQuMSAxMjguMywyODAuMyAxMzAuMCwyNjUuNSAxMzEuNywyNTQuOSAxMzMuMywyNTIuMiAxMzUuMCwyNTguNCAxMzYuNywyNzEuNyAxMzguMywyODcuMiAxNDAuMCwyOTkuNiAxNDEuNywzMDQuMCAxNDMuMywyOTguNyAxNDUuMCwyODUuNiAxNDYuNywyNjkuNSAxNDguMywyNTYuNiAxNTAuMCwyNTIuMCAxNTEuNywyNTcuNyAxNTMuMywyNzEuNSAxNTUuMCwyODguMCAxNTYuNywzMDAuNSAxNTguMywzMDMuOCAxNjAuMCwyOTYuNCAxNjEuNywyODEuMyAxNjMuMywyNjQuOCAxNjUuMCwyNTMuOCAxNjYuNywyNTMuMSAxNjguMywyNjMuMSAxNzAuMCwyNzkuNSAxNzEuNywyOTUuMyAxNzMuMywzMDMuNiAxNzUuMCwzMDAuOCAxNzYuNywyODcuOSAxNzguMywyNzAuNiAxODAuMCwyNTYuNiAxODEuNywyNTIuMSAxODMuMywyNTkuMCAxODUuMCwyNzQuNCAxODYuNywyOTEuNCAxODguMywzMDIuNCAxOTAuMCwzMDIuNiAxOTEuNywyOTEuOCAxOTMuMywyNzQuOCAxOTUuMCwyNTkuMyAxOTYuNywyNTIuMSAxOTguMywyNTYuNCAyMDAuMCwyNzAuMiAyMDEuNywyODcuNSAyMDMuMywzMDAuNSAyMDUuMCwzMDMuNyAyMDYuNywyOTUuNiAyMDguMywyNzkuOSAyMTAuMCwyNjMuNCAyMTEuNywyNTMuMiAyMTMuMywyNTMuNyAyMTUuMCwyNjQuNCAyMTYuNywyODAuOSAyMTguMywyOTYuMSAyMjAuMCwzMDMuNyAyMjEuNywzMDAuNyAyMjMuMywyODguNCAyMjUuMCwyNzEuOSAyMjYuNywyNTguMCAyMjguMywyNTIuMCAyMzAuMCwyNTYuNCAyMzEuNywyNjkuMSAyMzMuMywyODUuMiAyMzUuMCwyOTguNSAyMzYuNywzMDQuMCAyMzguMywyOTkuOCAyNDAuMCwyODcuNiAyNDEuNywyNzIuMSAyNDMuMywyNTguNyAyNDUuMCwyNTIuMiAyNDYuNywyNTQuNyAyNDguMywyNjUuMiAyNTAuMCwyNzkuOCAyNTEuNywyOTMuOCAyNTMuMywzMDIuNSAyNTUuMCwzMDMuMyAyNTYuNywyOTYuMSAyNTguMywyODMuNCAyNjAuMCwyNjkuMSAyNjEuNywyNTcuNyAyNjMuMywyNTIuMiAyNjUuMCwyNTQuMiAyNjYuNywyNjIuOSAyNjguMywyNzUuNiAyNzAuMCwyODguOSAyNzEuNywyOTkuMiAyNzMuMywzMDMuOCAyNzUuMCwzMDIuMCAyNzYuNywyOTQuMiAyNzguMywyODIuNSAyODAuMCwyNzAuMCAyODEuNywyNTkuNCAyODMuMywyNTMuMSAyODUuMCwyNTIuNCAyODYuNywyNTcuMiAyODguMywyNjYuMiAyOTAuMCwyNzcuNiAyOTEuNywyODguOSAyOTMuMywyOTcuOSAyOTUuMCwzMDMuMSAyOTYuNywzMDMuNiAyOTguMywyOTkuNiAzMDAuMCwyOTEuOCAzMDEuNywyODEuOCAzMDMuMywyNzEuMyAzMDUuMCwyNjIuMSAzMDYuNywyNTUuNCAzMDguMywyNTIuMiAzMTAuMCwyNTIuOSAzMTEuNywyNTcuMSAzMTMuMywyNjQuMSAzMTUuMCwyNzIuOSAzMTYuNywyODIuMyAzMTguMywyOTEuMCAzMjAuMCwyOTcuOSAzMjEuNywzMDIuNCAzMjMuMywzMDQuMCAzMjUuMCwzMDIuNyAzMjYuNywyOTguNiAzMjguMywyOTIuNSAzMzAuMCwyODUuMCAzMzEuNywyNzYuOSAzMzMuMywyNjkuMCAzMzUuMCwyNjIuMCAzMzYuNywyNTYuNyAzMzguMywyNTMuMiAzNDAuMCwyNTIuMCAzNDEuNywyNTMuMCAzNDMuMywyNTUuOSAzNDUuMCwyNjAuNiAzNDYuNywyNjYuNiAzNDguMywyNzMuMyAzNTAuMCwyODAuMyAzNTEuNywyODcuMSAzNTMuMywyOTMuMSAzNTUuMCwyOTguMCAzNTYuNywzMDEuNiAzNTguMywzMDMuNiAzNjAuMCwzMDMuOSAzNjEuNywzMDIuNyAzNjMuMywyOTkuOSAzNjUuMCwyOTUuOSAzNjYuNywyOTAuOCAzNjguMywyODUuMSAzNzAuMCwyNzkuMCAzNzEuNywyNzIuOSAzNzMuMywyNjcuMSAzNzUuMCwyNjEuOSAzNzYuNywyNTcuNyAzNzguMywyNTQuNSAzODAuMCwyNTIuNiAzODEuNywyNTIuMCAzODMuMywyNTIuOCAzODUuMCwyNTQuOCAzODYuNywyNTguMSAzODguMywyNjIuNCAzOTAuMCwyNjcuNCAzOTEuNywyNzMuMSAzOTMuMywyNzguOSAzOTUuMCwyODQuOCAzOTYuNywyOTAuMyAzOTguMywyOTUuMiA0MDAuMCwyOTkuMiA0MDEuNywzMDIuMCA0MDMuMywzMDMuNyA0MDUuMCwzMDMuOSA0MDYuNywzMDIuOCA0MDguMywzMDAuMiA0MTAuMCwyOTYuNCA0MTEuNywyOTEuNSA0MTMuMywyODUuOCA0MTUuMCwyNzkuNiA0MTYuNywyNzMuMiA0MTguMywyNjcuMSA0MjAuMCwyNjEuNSA0MjEuNywyNTcuMCA0MjMuMywyNTMuOCA0MjUuMCwyNTIuMiA0MjYuNywyNTIuMyA0MjguMywyNTQuMiA0MzAuMCwyNTcuOSA0MzEuNywyNjMuMSA0MzMuMywyNjkuNSA0MzUuMCwyNzYuNyA0MzYuNywyODQuMSA0MzguMywyOTEuMCA0NDAuMCwyOTcuMCA0NDEuNywzMDEuMyA0NDMuMywzMDMuNyA0NDUuMCwzMDMuNyA0NDYuNywzMDEuMyA0NDguMywyOTYuNSA0NTAuMCwyODkuOCA0NTEuNywyODEuOCA0NTMuMywyNzMuMiA0NTUuMCwyNjUuMSA0NTYuNywyNTguMyA0NTguMywyNTMuNyA0NjAuMCwyNTIuMCA0NjEuNywyNTMuNSA0NjMuMywyNTguMiA0NjUuMCwyNjUuNSA0NjYuNywyNzQuNyA0NjguMywyODQuNCA0NzAuMCwyOTMuNCA0NzEuNywzMDAuMiA0NzMuMywzMDMuNyA0NzUuMCwzMDMuMiA0NzYuNywyOTguNiA0NzguMywyOTAuNiA0ODAuMCwyODAuMiA0ODEuNywyNjkuNCA0ODMuMywyNTkuOSA0ODUuMCwyNTMuNyA0ODYuNywyNTIuMSA0ODguMywyNTUuNSA0OTAuMCwyNjMuNSA0OTEuNywyNzQuNSA0OTMuMywyODYuNSA0OTUuMCwyOTYuNyA0OTYuNywzMDIuOSA0OTguMywzMDMuNSA1MDAuMCwyOTguMiA1MDEuNywyODguMCA1MDMuMywyNzUuMiA1MDUuMCwyNjMuMCA1MDYuNywyNTQuNSA1MDguMywyNTIuMSA1MTAuMCwyNTYuNSA1MTEuNywyNjYuOSA1MTMuMywyODAuNCA1MTUuMCwyOTMuNCA1MTYuNywzMDIuMCA1MTguMywzMDMuNyA1MjAuMCwyOTcuNiA1MjEuNywyODUuNSA1MjMuMywyNzAuOSA1MjUuMCwyNTguNSA1MjYuNywyNTIuMyA1MjguMywyNTQuNCA1MzAuMCwyNjQuNSA1MzEuNywyNzkuMiA1MzMuMywyOTMuNiA1MzUuMCwzMDIuNiA1MzYuNywzMDMuMCA1MzguMywyOTQuNCA1NDAuMCwyNzkuOCA1NDEuNywyNjQuNCA1NDMuMywyNTQuMCA1NDUuMCwyNTIuNyA1NDYuNywyNjEuMCA1NDguMywyNzUuOSA1NTAuMCwyOTEuOCA1NTEuNywzMDIuMiA1NTMuMywzMDMuMCA1NTUuMCwyOTMuOCA1NTYuNywyNzguMCA1NTguMywyNjIuMiA1NjAuMCwyNTIuOSA1NjEuNywyNTQuMCA1NjMuMywyNjUuMiA1NjUuMCwyODEuOSA1NjYuNywyOTYuOSA1NjguMywzMDMuOSA1NzAuMCwyOTkuNyA1NzEuNywyODYuMSA1NzMuMywyNjkuMCA1NzUuMCwyNTUuNyA1NzYuNywyNTIuMiA1NzguMywyNjAuMSA1ODAuMCwyNzUuOSA1ODEuNywyOTIuNiA1ODMuMywzMDIuOSA1ODUuMCwzMDIuMSA1ODYuNywyOTAuNiA1ODguMywyNzMuNSA1OTAuMCwyNTguNCA1OTEuNywyNTIuMCA1OTMuMywyNTcuMiA1OTUuMCwyNzEuNyA1OTYuNywyODguOSA1OTguMywzMDEuMyA2MDAuMCwzMDMuNCA2MDEuNywyOTQuMiA2MDMuMywyNzcuOSA2MDUuMCwyNjEuNyA2MDYuNywyNTIuNiA2MDguMywyNTQuNiA2MTAuMCwyNjYuNyA2MTEuNywyODMuNiA2MTMuMywyOTguMSA2MTUuMCwzMDQuMCA2MTYuNywyOTguOSA2MTguMywyODUuMSA2MjAuMCwyNjguNCA2MjEuNywyNTUuNyA2MjMuMywyNTIuMiA2MjUuMCwyNTkuMSA2MjYuNywyNzMuNyA2MjguMywyODkuOSA2MzAuMCwzMDEuMyA2MzEuNywzMDMuNiA2MzMuMywyOTYuMCA2MzUuMCwyODEuNiA2MzYuNywyNjUuOSA2MzguMywyNTQuOCA2NDAuMCwyNTIuMyA2NDEuNywyNTkuMCA2NDMuMywyNzIuNSA2NDUuMCwyODcuOSA2NDYuNywyOTkuNyA2NDguMywzMDQuMCA2NTAuMCwyOTkuNSA2NTEuNywyODguMCA2NTMuMywyNzMuMyA2NTUuMCwyNjAuMiA2NTYuNywyNTIuOCA2NTguMywyNTMuMyA2NjAuMCwyNjEuMyA2NjEuNywyNzQuMiA2NjMuMywyODguMSA2NjUuMCwyOTkuMCA2NjYuNywzMDMuOSA2NjguMywzMDEuNiA2NzAuMCwyOTMuMCA2NzEuNywyODAuNSA2NzMuMywyNjcuNSA2NzUuMCwyNTcuMyA2NzYuNywyNTIuMyA2NzguMywyNTMuNiA2ODAuMCwyNjAuNiA2ODEuNywyNzEuNiA2ODMuMywyODMuOSA2ODUuMCwyOTQuNyA2ODYuNywzMDEuOSA2ODguMywzMDQuMCA2OTAuMCwzMDAuNyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZTExZDQ4IiBzdHJva2Utd2lkdGg9IjIuMiIvPgo8dGV4dCB4PSI2OTgiIHk9IjI4MiIgZm9udC1zaXplPSIxMS41IiBmaWxsPSIjNGQ2Yjc2Ij7nlo/lr4boroo8L3RleHQ+CjxyZWN0IHg9IjkwIiB5PSIzMjYiIHdpZHRoPSI2MDAiIGhlaWdodD0iNTgiIHJ4PSI5IiBmaWxsPSIjZmZmIiBzdHJva2U9IiNkNWU1ZWMiLz4KPHRleHQgeD0iMzkwIiB5PSIzNDgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIuNSIgZmlsbD0iIzRkNmI3NiI+5Lq66IGyIH4xa0h6IOWwjeaHieazoumVtyAzMDAg5YWs6YeMIOKGkiDlpKnnt5rlgZrkuI3lh7rkvoY8L3RleHQ+Cjx0ZXh0IHg9IjM5MCIgeT0iMzcwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyLjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwZTVhNmIiPuaUueeZvOWwhOmrmOmgu+i8ieazou+8jOWGjeiuk+izh+ioiuWOu+mbleWhkeWug+eahOW9oueLgDwvdGV4dD4KPC9zdmc+">
+<p><b>FM 的巧妙之處</b>：我們不是「用頻率本身傳資訊」，而是<b>利用頻率的微小變化傳資訊</b>。因為載波頻率遠高於人聲，這些微小偏移不會影響載波的發射效率——<b>高頻的發射優勢被完整保留了</b>。</p>
+<div class="formula">不再直接發射資訊，而是發射一個容易發射的高頻載體，再讓資訊去雕塑它的形狀</div>
+<h3>現代：把一維雕塑變成二維</h3><p>WiFi/4G/5G 使用<b>正交振幅調制（QAM）</b>，<b>同時改變載波的振幅與相位</b>，相當於把「雕塑無線電波」從一維提升到二維，在二維平面上安排更多可區分的狀態，一個載波就能編碼更多資料。但原理上與百年前的廣播一脈相承。（分析這個編碼過程的數學工具正是<b>傅立葉變換</b>。）</p>`},
+{id:"頻譜帶寬與香農定理",ch:"9",en:"Ch.9 · Bandwidth & Shannon",cat:"工程",html:`<div class="callout"><b>這章的問題：</b>上網天天講「帶寬」，這詞從哪來？為什麼一個電台佔的是「一段頻率」而不是「一個頻率」？</div>
+<h3>帶寬的物理定義</h3><p><b>帶寬</b>是一個訊號佔用的<b>頻率範圍</b>。關鍵事實：無線訊號並非只佔一個固定頻率，而會覆蓋一段連續範圍，這段寬度就是<b>信道帶寬</b>。</p>
+<p><b>為什麼會佔一段而非一個點？</b>這是調制的必然結果——回想 FM：讓載波頻率隨資訊輕微變化，既然要變化，就必須為變化預留空間。例如載波 1000 kHz 經調頻後實際在 996.6–1003.4 kHz 間擺動，帶寬即 6.8 kHz。<b>所以帶寬不是工程師隨意選的，而是「用調制解決發射物理限制」必然付出的代價。</b></p>
+<h3>香農定理：帶寬為什麼等於速度</h3><div class="formula">C = B · log₂(1 + S/N)</div>
+<p>在相同訊號品質下，<b>帶寬越寬，單位時間可傳輸的資料量越大</b>——就像車道越寬，同時能通過的車越多。<b>注意帶寬 B 是線性項，而訊雜比在對數裡面</b>，這代表<b>加大帶寬比提升功率更有效</b>。這正是往後幾十年技術演進的主線都是「用到更寬的頻譜」的原因。</p>
+<h3>頻譜是有限且不可再生的</h3><p>電磁波頻譜像土地一樣總量固定、用掉就沒了，因此必須由政府劃分用途、避免互相干擾。以 FM 廣播為例：核心頻段 88–108 MHz，每台信道帶寬約 200 kHz、相鄰電台間隔也是 200 kHz。</p>
+<div class="formula">(108 − 88) MHz ÷ 200 kHz = 20 MHz ÷ 0.2 MHz = 100 個電台</div>
+<p>整個 FM 頻段最多只能容納約 <b>100 個電台</b>。用旋鈕式老收音機可親手驗證：慢慢調頻率會聽到聲音變糊、雜音變多，中間有一小段能<b>同時模糊聽到兩個電台</b>（互相干擾），繼續調就完成換台。</p>
+<h3>廣播夠用，手機不夠</h3><p>廣播以省市為單位覆蓋，相隔很遠的地區可用同一頻段（這已隱含後面「頻率複用」的思想）。但廣播是<b>一個電台佔固定頻段、單向發射</b>；手機則是<b>成千上萬用戶同時雙向交互</b>。沿用固定分配邏輯，即使用上整個頻段也只能容納極少數人同時通話。<b>頻譜有限而需求無限，這個矛盾將引爆四次技術突破</b> → ${L("蜂窩網路與頻率複用")}。</p>`},
+{id:"蜂窩網路與頻率複用",ch:"10",en:"Ch.10 · Cellular & Frequency Reuse",cat:"容量",html:`<div class="callout"><b>這章的問題：</b>第一個突破口在哪？為什麼「把大電台拆成無數小電台」反而能容納更多人？為什麼小區是六邊形？</div>
+<h3>問題重述</h3><p>關鍵在於——<b>不管大型基站覆蓋範圍多廣，它能用的頻段都是有限的</b>。覆蓋大並不會讓可用頻譜變多，反而是範圍內所有用戶都要擠在同一份有限頻譜裡。</p>
+<h3>蜂窩概念</h3><p>核心是反直覺的：<b>不用一個大基站覆蓋廣大範圍，而是切割成很多小型「蜂窩小區」，各由低功率基站負責。</b></p>
+<p><b>為什麼叫蜂窩</b>：小區以<b>六邊形</b>為模型——六邊形能<b>無間隙鋪滿平面</b>，且形狀最接近圓形（基站實際覆蓋是圓形），用最少小區覆蓋最大面積且不留空隙。</p>
+<h3>為什麼反而能容納更多人：頻率複用</h3><p><b>相鄰小區</b>用不同頻段避免干擾；但<b>相隔足夠遠的小區</b>訊號本來就不會互相干擾——<b>所以可以重複使用相同頻段</b>。這就是<b>頻率複用</b>，讓同一份頻譜在一座城市裡被使用幾十、幾百次。</p>
+<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNzYwIDM4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmb250LWZhbWlseT0iJ1BpbmdGYW5nIFRDJywnTWljcm9zb2Z0IEpoZW5nSGVpJywnSGVsdmV0aWNhIE5ldWUnLHNhbnMtc2VyaWYiPgo8dGV4dCB4PSIzODAuMCIgeT0iMjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTciIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMxMjMwMzkiPuicgueqqeiIh+mgu+eOh+ikh+eUqO+8muebuOmalOWkoOmBoOWwseiDvemHjeikh+eUqOWQjOS4gOmgu+autTwvdGV4dD4KPHBvbHlnb24gcG9pbnRzPSIxOTguMSw1My4wIDE5OC4xLDk1LjAgMTYxLjgsMTE2LjAgMTI1LjQsOTUuMCAxMjUuNCw1My4wIDE2MS44LDMyLjAiIGZpbGw9IiMwODkxYjIiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iMTYxLjgiIGN5PSI3NC4wIiByPSI0IiBmaWxsPSIjMDg5MWIyIi8+Cjx0ZXh0IHg9IjE2MS44IiB5PSI5MC4wIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExLjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwODkxYjIiPkYxPC90ZXh0Pgo8cG9seWdvbiBwb2ludHM9IjI3MC45LDUzLjAgMjcwLjksOTUuMCAyMzQuNSwxMTYuMCAxOTguMSw5NS4wIDE5OC4xLDUzLjAgMjM0LjUsMzIuMCIgZmlsbD0iIzdjM2FlZCIgb3BhY2l0eT0iMC4zMCIgc3Ryb2tlPSIjN2MzYWVkIiBzdHJva2Utd2lkdGg9IjEuNiIvPgo8Y2lyY2xlIGN4PSIyMzQuNSIgY3k9Ijc0LjAiIHI9IjQiIGZpbGw9IiM3YzNhZWQiLz4KPHRleHQgeD0iMjM0LjUiIHk9IjkwLjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzdjM2FlZCI+RjQ8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iMzQzLjYsNTMuMCAzNDMuNiw5NS4wIDMwNy4zLDExNi4wIDI3MC45LDk1LjAgMjcwLjksNTMuMCAzMDcuMywzMi4wIiBmaWxsPSIjNjM2NmYxIiBvcGFjaXR5PSIwLjMwIiBzdHJva2U9IiM2MzY2ZjEiIHN0cm9rZS13aWR0aD0iMS42Ii8+CjxjaXJjbGUgY3g9IjMwNy4zIiBjeT0iNzQuMCIgcj0iNCIgZmlsbD0iIzYzNjZmMSIvPgo8dGV4dCB4PSIzMDcuMyIgeT0iOTAuMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMS41IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjNjM2NmYxIj5GNzwvdGV4dD4KPHBvbHlnb24gcG9pbnRzPSI0MTYuNCw1My4wIDQxNi40LDk1LjAgMzgwLjAsMTE2LjAgMzQzLjYsOTUuMCAzNDMuNiw1My4wIDM4MC4wLDMyLjAiIGZpbGw9IiNkOTc3MDYiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iMzgwLjAiIGN5PSI3NC4wIiByPSI0IiBmaWxsPSIjZDk3NzA2Ii8+Cjx0ZXh0IHg9IjM4MC4wIiB5PSI5MC4wIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExLjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNkOTc3MDYiPkYzPC90ZXh0Pgo8cG9seWdvbiBwb2ludHM9IjQ4OS4xLDUzLjAgNDg5LjEsOTUuMCA0NTIuNywxMTYuMCA0MTYuNCw5NS4wIDQxNi40LDUzLjAgNDUyLjcsMzIuMCIgZmlsbD0iIzBlYTVhNCIgb3BhY2l0eT0iMC4zMCIgc3Ryb2tlPSIjMGVhNWE0IiBzdHJva2Utd2lkdGg9IjEuNiIvPgo8Y2lyY2xlIGN4PSI0NTIuNyIgY3k9Ijc0LjAiIHI9IjQiIGZpbGw9IiMwZWE1YTQiLz4KPHRleHQgeD0iNDUyLjciIHk9IjkwLjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzBlYTVhNCI+RjY8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iNTYxLjksNTMuMCA1NjEuOSw5NS4wIDUyNS41LDExNi4wIDQ4OS4xLDk1LjAgNDg5LjEsNTMuMCA1MjUuNSwzMi4wIiBmaWxsPSIjMDU5NjY5IiBvcGFjaXR5PSIwLjMwIiBzdHJva2U9IiMwNTk2NjkiIHN0cm9rZS13aWR0aD0iMS42Ii8+CjxjaXJjbGUgY3g9IjUyNS41IiBjeT0iNzQuMCIgcj0iNCIgZmlsbD0iIzA1OTY2OSIvPgo8dGV4dCB4PSI1MjUuNSIgeT0iOTAuMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMS41IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDU5NjY5Ij5GMjwvdGV4dD4KPHBvbHlnb24gcG9pbnRzPSI2MzQuNiw1My4wIDYzNC42LDk1LjAgNTk4LjIsMTE2LjAgNTYxLjksOTUuMCA1NjEuOSw1My4wIDU5OC4yLDMyLjAiIGZpbGw9IiNlMTFkNDgiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iI2UxMWQ0OCIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iNTk4LjIiIGN5PSI3NC4wIiByPSI0IiBmaWxsPSIjZTExZDQ4Ii8+Cjx0ZXh0IHg9IjU5OC4yIiB5PSI5MC4wIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExLjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNlMTFkNDgiPkY1PC90ZXh0Pgo8cG9seWdvbiBwb2ludHM9IjIzNC41LDExNi4wIDIzNC41LDE1OC4wIDE5OC4xLDE3OS4wIDE2MS44LDE1OC4wIDE2MS44LDExNi4wIDE5OC4xLDk1LjAiIGZpbGw9IiMwODkxYjIiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iMTk4LjEiIGN5PSIxMzcuMCIgcj0iNCIgZmlsbD0iIzA4OTFiMiIvPgo8dGV4dCB4PSIxOTguMSIgeT0iMTUzLjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzA4OTFiMiI+RjE8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iMzA3LjMsMTE2LjAgMzA3LjMsMTU4LjAgMjcwLjksMTc5LjAgMjM0LjUsMTU4LjAgMjM0LjUsMTE2LjAgMjcwLjksOTUuMCIgZmlsbD0iIzdjM2FlZCIgb3BhY2l0eT0iMC4zMCIgc3Ryb2tlPSIjN2MzYWVkIiBzdHJva2Utd2lkdGg9IjEuNiIvPgo8Y2lyY2xlIGN4PSIyNzAuOSIgY3k9IjEzNy4wIiByPSI0IiBmaWxsPSIjN2MzYWVkIi8+Cjx0ZXh0IHg9IjI3MC45IiB5PSIxNTMuMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMS41IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjN2MzYWVkIj5GNDwvdGV4dD4KPHBvbHlnb24gcG9pbnRzPSIzODAuMCwxMTYuMCAzODAuMCwxNTguMCAzNDMuNiwxNzkuMCAzMDcuMywxNTguMCAzMDcuMywxMTYuMCAzNDMuNiw5NS4wIiBmaWxsPSIjNjM2NmYxIiBvcGFjaXR5PSIwLjMwIiBzdHJva2U9IiM2MzY2ZjEiIHN0cm9rZS13aWR0aD0iMS42Ii8+CjxjaXJjbGUgY3g9IjM0My42IiBjeT0iMTM3LjAiIHI9IjQiIGZpbGw9IiM2MzY2ZjEiLz4KPHRleHQgeD0iMzQzLjYiIHk9IjE1My4wIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExLjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiM2MzY2ZjEiPkY3PC90ZXh0Pgo8cG9seWdvbiBwb2ludHM9IjQ1Mi43LDExNi4wIDQ1Mi43LDE1OC4wIDQxNi40LDE3OS4wIDM4MC4wLDE1OC4wIDM4MC4wLDExNi4wIDQxNi40LDk1LjAiIGZpbGw9IiNkOTc3MDYiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iNDE2LjQiIGN5PSIxMzcuMCIgcj0iNCIgZmlsbD0iI2Q5NzcwNiIvPgo8dGV4dCB4PSI0MTYuNCIgeT0iMTUzLjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2Q5NzcwNiI+RjM8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iNTI1LjUsMTE2LjAgNTI1LjUsMTU4LjAgNDg5LjEsMTc5LjAgNDUyLjcsMTU4LjAgNDUyLjcsMTE2LjAgNDg5LjEsOTUuMCIgZmlsbD0iIzBlYTVhNCIgb3BhY2l0eT0iMC4zMCIgc3Ryb2tlPSIjMGVhNWE0IiBzdHJva2Utd2lkdGg9IjEuNiIvPgo8Y2lyY2xlIGN4PSI0ODkuMSIgY3k9IjEzNy4wIiByPSI0IiBmaWxsPSIjMGVhNWE0Ii8+Cjx0ZXh0IHg9IjQ4OS4xIiB5PSIxNTMuMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMS41IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMGVhNWE0Ij5GNjwvdGV4dD4KPHBvbHlnb24gcG9pbnRzPSI1OTguMiwxMTYuMCA1OTguMiwxNTguMCA1NjEuOSwxNzkuMCA1MjUuNSwxNTguMCA1MjUuNSwxMTYuMCA1NjEuOSw5NS4wIiBmaWxsPSIjMDU5NjY5IiBvcGFjaXR5PSIwLjMwIiBzdHJva2U9IiMwNTk2NjkiIHN0cm9rZS13aWR0aD0iMS42Ii8+CjxjaXJjbGUgY3g9IjU2MS45IiBjeT0iMTM3LjAiIHI9IjQiIGZpbGw9IiMwNTk2NjkiLz4KPHRleHQgeD0iNTYxLjkiIHk9IjE1My4wIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExLjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwNTk2NjkiPkYyPC90ZXh0Pgo8cG9seWdvbiBwb2ludHM9IjY3MS4wLDExNi4wIDY3MS4wLDE1OC4wIDYzNC42LDE3OS4wIDU5OC4yLDE1OC4wIDU5OC4yLDExNi4wIDYzNC42LDk1LjAiIGZpbGw9IiNlMTFkNDgiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iI2UxMWQ0OCIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iNjM0LjYiIGN5PSIxMzcuMCIgcj0iNCIgZmlsbD0iI2UxMWQ0OCIvPgo8dGV4dCB4PSI2MzQuNiIgeT0iMTUzLjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2UxMWQ0OCI+RjU8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iMTk4LjEsMTc5LjAgMTk4LjEsMjIxLjAgMTYxLjgsMjQyLjAgMTI1LjQsMjIxLjAgMTI1LjQsMTc5LjAgMTYxLjgsMTU4LjAiIGZpbGw9IiMwODkxYjIiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iMTYxLjgiIGN5PSIyMDAuMCIgcj0iNCIgZmlsbD0iIzA4OTFiMiIvPgo8dGV4dCB4PSIxNjEuOCIgeT0iMjE2LjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzA4OTFiMiI+RjE8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iMjcwLjksMTc5LjAgMjcwLjksMjIxLjAgMjM0LjUsMjQyLjAgMTk4LjEsMjIxLjAgMTk4LjEsMTc5LjAgMjM0LjUsMTU4LjAiIGZpbGw9IiM3YzNhZWQiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iIzdjM2FlZCIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iMjM0LjUiIGN5PSIyMDAuMCIgcj0iNCIgZmlsbD0iIzdjM2FlZCIvPgo8dGV4dCB4PSIyMzQuNSIgeT0iMjE2LjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzdjM2FlZCI+RjQ8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iMzQzLjYsMTc5LjAgMzQzLjYsMjIxLjAgMzA3LjMsMjQyLjAgMjcwLjksMjIxLjAgMjcwLjksMTc5LjAgMzA3LjMsMTU4LjAiIGZpbGw9IiM2MzY2ZjEiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iIzYzNjZmMSIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iMzA3LjMiIGN5PSIyMDAuMCIgcj0iNCIgZmlsbD0iIzYzNjZmMSIvPgo8dGV4dCB4PSIzMDcuMyIgeT0iMjE2LjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzYzNjZmMSI+Rjc8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iNDE2LjQsMTc5LjAgNDE2LjQsMjIxLjAgMzgwLjAsMjQyLjAgMzQzLjYsMjIxLjAgMzQzLjYsMTc5LjAgMzgwLjAsMTU4LjAiIGZpbGw9IiNkOTc3MDYiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iMzgwLjAiIGN5PSIyMDAuMCIgcj0iNCIgZmlsbD0iI2Q5NzcwNiIvPgo8dGV4dCB4PSIzODAuMCIgeT0iMjE2LjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2Q5NzcwNiI+RjM8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iNDg5LjEsMTc5LjAgNDg5LjEsMjIxLjAgNDUyLjcsMjQyLjAgNDE2LjQsMjIxLjAgNDE2LjQsMTc5LjAgNDUyLjcsMTU4LjAiIGZpbGw9IiMwZWE1YTQiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iIzBlYTVhNCIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iNDUyLjciIGN5PSIyMDAuMCIgcj0iNCIgZmlsbD0iIzBlYTVhNCIvPgo8dGV4dCB4PSI0NTIuNyIgeT0iMjE2LjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzBlYTVhNCI+RjY8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iNTYxLjksMTc5LjAgNTYxLjksMjIxLjAgNTI1LjUsMjQyLjAgNDg5LjEsMjIxLjAgNDg5LjEsMTc5LjAgNTI1LjUsMTU4LjAiIGZpbGw9IiMwNTk2NjkiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iIzA1OTY2OSIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iNTI1LjUiIGN5PSIyMDAuMCIgcj0iNCIgZmlsbD0iIzA1OTY2OSIvPgo8dGV4dCB4PSI1MjUuNSIgeT0iMjE2LjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzA1OTY2OSI+RjI8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iNjM0LjYsMTc5LjAgNjM0LjYsMjIxLjAgNTk4LjIsMjQyLjAgNTYxLjksMjIxLjAgNTYxLjksMTc5LjAgNTk4LjIsMTU4LjAiIGZpbGw9IiNlMTFkNDgiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iI2UxMWQ0OCIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iNTk4LjIiIGN5PSIyMDAuMCIgcj0iNCIgZmlsbD0iI2UxMWQ0OCIvPgo8dGV4dCB4PSI1OTguMiIgeT0iMjE2LjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2UxMWQ0OCI+RjU8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iMjM0LjUsMjQyLjAgMjM0LjUsMjg0LjAgMTk4LjEsMzA1LjAgMTYxLjgsMjg0LjAgMTYxLjgsMjQyLjAgMTk4LjEsMjIxLjAiIGZpbGw9IiMwODkxYjIiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iMTk4LjEiIGN5PSIyNjMuMCIgcj0iNCIgZmlsbD0iIzA4OTFiMiIvPgo8dGV4dCB4PSIxOTguMSIgeT0iMjc5LjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzA4OTFiMiI+RjE8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iMzA3LjMsMjQyLjAgMzA3LjMsMjg0LjAgMjcwLjksMzA1LjAgMjM0LjUsMjg0LjAgMjM0LjUsMjQyLjAgMjcwLjksMjIxLjAiIGZpbGw9IiM3YzNhZWQiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iIzdjM2FlZCIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iMjcwLjkiIGN5PSIyNjMuMCIgcj0iNCIgZmlsbD0iIzdjM2FlZCIvPgo8dGV4dCB4PSIyNzAuOSIgeT0iMjc5LjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzdjM2FlZCI+RjQ8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iMzgwLjAsMjQyLjAgMzgwLjAsMjg0LjAgMzQzLjYsMzA1LjAgMzA3LjMsMjg0LjAgMzA3LjMsMjQyLjAgMzQzLjYsMjIxLjAiIGZpbGw9IiM2MzY2ZjEiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iIzYzNjZmMSIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iMzQzLjYiIGN5PSIyNjMuMCIgcj0iNCIgZmlsbD0iIzYzNjZmMSIvPgo8dGV4dCB4PSIzNDMuNiIgeT0iMjc5LjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzYzNjZmMSI+Rjc8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iNDUyLjcsMjQyLjAgNDUyLjcsMjg0LjAgNDE2LjQsMzA1LjAgMzgwLjAsMjg0LjAgMzgwLjAsMjQyLjAgNDE2LjQsMjIxLjAiIGZpbGw9IiNkOTc3MDYiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iNDE2LjQiIGN5PSIyNjMuMCIgcj0iNCIgZmlsbD0iI2Q5NzcwNiIvPgo8dGV4dCB4PSI0MTYuNCIgeT0iMjc5LjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2Q5NzcwNiI+RjM8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iNTI1LjUsMjQyLjAgNTI1LjUsMjg0LjAgNDg5LjEsMzA1LjAgNDUyLjcsMjg0LjAgNDUyLjcsMjQyLjAgNDg5LjEsMjIxLjAiIGZpbGw9IiMwZWE1YTQiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iIzBlYTVhNCIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iNDg5LjEiIGN5PSIyNjMuMCIgcj0iNCIgZmlsbD0iIzBlYTVhNCIvPgo8dGV4dCB4PSI0ODkuMSIgeT0iMjc5LjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzBlYTVhNCI+RjY8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iNTk4LjIsMjQyLjAgNTk4LjIsMjg0LjAgNTYxLjksMzA1LjAgNTI1LjUsMjg0LjAgNTI1LjUsMjQyLjAgNTYxLjksMjIxLjAiIGZpbGw9IiMwNTk2NjkiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iIzA1OTY2OSIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iNTYxLjkiIGN5PSIyNjMuMCIgcj0iNCIgZmlsbD0iIzA1OTY2OSIvPgo8dGV4dCB4PSI1NjEuOSIgeT0iMjc5LjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzA1OTY2OSI+RjI8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iNjcxLjAsMjQyLjAgNjcxLjAsMjg0LjAgNjM0LjYsMzA1LjAgNTk4LjIsMjg0LjAgNTk4LjIsMjQyLjAgNjM0LjYsMjIxLjAiIGZpbGw9IiNlMTFkNDgiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iI2UxMWQ0OCIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iNjM0LjYiIGN5PSIyNjMuMCIgcj0iNCIgZmlsbD0iI2UxMWQ0OCIvPgo8dGV4dCB4PSI2MzQuNiIgeT0iMjc5LjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2UxMWQ0OCI+RjU8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iMTk4LjEsMzA1LjAgMTk4LjEsMzQ3LjAgMTYxLjgsMzY4LjAgMTI1LjQsMzQ3LjAgMTI1LjQsMzA1LjAgMTYxLjgsMjg0LjAiIGZpbGw9IiMwODkxYjIiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iMTYxLjgiIGN5PSIzMjYuMCIgcj0iNCIgZmlsbD0iIzA4OTFiMiIvPgo8dGV4dCB4PSIxNjEuOCIgeT0iMzQyLjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzA4OTFiMiI+RjE8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iMjcwLjksMzA1LjAgMjcwLjksMzQ3LjAgMjM0LjUsMzY4LjAgMTk4LjEsMzQ3LjAgMTk4LjEsMzA1LjAgMjM0LjUsMjg0LjAiIGZpbGw9IiM3YzNhZWQiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iIzdjM2FlZCIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iMjM0LjUiIGN5PSIzMjYuMCIgcj0iNCIgZmlsbD0iIzdjM2FlZCIvPgo8dGV4dCB4PSIyMzQuNSIgeT0iMzQyLjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzdjM2FlZCI+RjQ8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iMzQzLjYsMzA1LjAgMzQzLjYsMzQ3LjAgMzA3LjMsMzY4LjAgMjcwLjksMzQ3LjAgMjcwLjksMzA1LjAgMzA3LjMsMjg0LjAiIGZpbGw9IiM2MzY2ZjEiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iIzYzNjZmMSIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iMzA3LjMiIGN5PSIzMjYuMCIgcj0iNCIgZmlsbD0iIzYzNjZmMSIvPgo8dGV4dCB4PSIzMDcuMyIgeT0iMzQyLjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzYzNjZmMSI+Rjc8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iNDE2LjQsMzA1LjAgNDE2LjQsMzQ3LjAgMzgwLjAsMzY4LjAgMzQzLjYsMzQ3LjAgMzQzLjYsMzA1LjAgMzgwLjAsMjg0LjAiIGZpbGw9IiNkOTc3MDYiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iMzgwLjAiIGN5PSIzMjYuMCIgcj0iNCIgZmlsbD0iI2Q5NzcwNiIvPgo8dGV4dCB4PSIzODAuMCIgeT0iMzQyLjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2Q5NzcwNiI+RjM8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iNDg5LjEsMzA1LjAgNDg5LjEsMzQ3LjAgNDUyLjcsMzY4LjAgNDE2LjQsMzQ3LjAgNDE2LjQsMzA1LjAgNDUyLjcsMjg0LjAiIGZpbGw9IiMwZWE1YTQiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iIzBlYTVhNCIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iNDUyLjciIGN5PSIzMjYuMCIgcj0iNCIgZmlsbD0iIzBlYTVhNCIvPgo8dGV4dCB4PSI0NTIuNyIgeT0iMzQyLjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzBlYTVhNCI+RjY8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iNTYxLjksMzA1LjAgNTYxLjksMzQ3LjAgNTI1LjUsMzY4LjAgNDg5LjEsMzQ3LjAgNDg5LjEsMzA1LjAgNTI1LjUsMjg0LjAiIGZpbGw9IiMwNTk2NjkiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iIzA1OTY2OSIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iNTI1LjUiIGN5PSIzMjYuMCIgcj0iNCIgZmlsbD0iIzA1OTY2OSIvPgo8dGV4dCB4PSI1MjUuNSIgeT0iMzQyLjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzA1OTY2OSI+RjI8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iNjM0LjYsMzA1LjAgNjM0LjYsMzQ3LjAgNTk4LjIsMzY4LjAgNTYxLjksMzQ3LjAgNTYxLjksMzA1LjAgNTk4LjIsMjg0LjAiIGZpbGw9IiNlMTFkNDgiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iI2UxMWQ0OCIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KPGNpcmNsZSBjeD0iNTk4LjIiIGN5PSIzMjYuMCIgcj0iNCIgZmlsbD0iI2UxMWQ0OCIvPgo8dGV4dCB4PSI1OTguMiIgeT0iMzQyLjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2UxMWQ0OCI+RjU8L3RleHQ+CjxyZWN0IHg9IjE1MCIgeT0iMzQyIiB3aWR0aD0iNDcwIiBoZWlnaHQ9IjMwIiByeD0iOCIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjZDVlNWVjIi8+Cjx0ZXh0IHg9IjM4NSIgeT0iMzYyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyLjUiIGZpbGw9IiM0ZDZiNzYiPuebuOmEsOWwj+WNgOeUqOS4jeWQjOmgu+autemBv+WFjeW5suaTvu+8m+ebuOmalOWkoOmBoOeahOWwj+WNgOWPr+mHjeikh+S9v+eUqCDihpIg6aC76K2c6KKr5Y+N6KaG5Yip55SoPC90ZXh0Pgo8L3N2Zz4=">
+<h3>容量不夠：微蜂窩</h3><p>把小區<b>再拆更小</b>（降低基站功率、縮小覆蓋）。效果是：<b>在完全不新增頻譜的情況下增加複用次數</b>。</p>
+<div class="formula">核心智慧：容量不是靠爭取更多頻譜，而是靠把同一份頻譜在空間上重複使用更多次</div>
+<p>這也解釋了為什麼都市基站密度遠高於郊區——不是訊號比較差，而是要用更密的小區換取更高容量。</p>
+<h3>移動中怎麼辦：越區切換</h3><p>基站<b>即時監測用戶訊號強度</b>，當用戶移到小區邊緣，系統自動把通話<b>切換到相鄰小區的空閒信道</b>，對用戶<b>無感</b>。這是整套系統中最易被忽略、工程上卻極精巧的一環：要求相鄰基站即時協調、毫秒等級完成交接、且不中斷傳輸。</p>`},
+{id:"類比訊號與數位訊號",ch:"11",en:"Ch.11 · Analog vs Digital",cat:"容量",html:`<div class="callout"><b>這章的問題：</b>類比與數位到底差在哪？為什麼改用 0 與 1 之後，不只解決失真，還順便解決了「怎麼傳圖片」？</div>
+<h3>類比：讓電磁波「模仿」原始訊號</h3><p>AM 與 FM 都屬類比——<b>用電磁波的變化直接模仿聲波的變化</b>。聲音響一點載波振幅就高一點，波形怎麼起伏載波就怎麼跟著起伏。但有兩個致命問題：</p>
+<p><b>① 失真無法修復</b>：既然是一一對應，傳輸中的任何干擾與衰減都會被<b>忠實地當成原始訊號的一部分</b>還原出來，接收端無法分辨。</p>
+<p><b>② 非波形的資訊怎麼辦</b>：聲音是波可以對應，但一張<b>圖片</b>不是波，很難找出它與電磁波變化之間的自然對應。</p>
+<h3>數位：先翻譯成 0 與 1</h3><p>思路完全不同且相當粗暴有效：<b>不管三七二十一，先把所有資訊（聲音、圖片、文字）全部轉成二進位的 0 和 1</b>，再用這串位元去調制載波。例如振幅<b>變化大＝1</b>、<b>變化小＝0</b>。接收端因此只需判斷訊號是「高」還是「低」。</p>
+<h3>為什麼就解決了失真</h3><p>即便訊號略微失真，只要接收端還能<b>大致區分變化是大是小</b>，就能正確判定 0 或 1。<b>一旦判定正確，資訊就是「完美還原」</b>——不是接近原始，而是與原始位元完全相同。</p>
+<p>對比：<b>類比</b>的雜訊直接疊加到結果、且每經一次中繼放大就累積一次；<b>數位</b>只要雜訊沒大到混淆兩種狀態就<b>零誤差</b>，中繼站還能重新判定並<b>產生乾淨訊號</b>，雜訊不累積。</p>
+<p><b>這個「門檻式判定」是數位壓倒類比的根本原因</b>：它把「連續、無限精度、無法修復」的問題，轉化成「離散、有限狀態、可以修復」的問題。</p>
+<h3>順便解決了「傳什麼都可以」</h3><p>不需要為每種媒體發明對應的物理調制方式，只要先編碼成位元流，傳輸系統就完全不必關心內容是什麼。<b>這是極重要的架構性突破</b>：把「資訊內容」與「資訊傳輸」徹底解耦，傳輸系統變成一條通用管道。今天手機能同時打電話、傳照片、看影片，根源就在這裡。而這個思想在 ${L("電報與摩斯電碼")} 的年代就已萌芽。</p>`},
+{id:"CDMA碼分多址",ch:"12",en:"Ch.12 · CDMA",cat:"容量",html:`<div class="callout"><b>這章的問題：</b>蜂窩已越切越小但用戶還在增加。有沒有辦法讓同一小區裡所有人<b>同時用同一個頻段</b>卻不互相干擾？</div>
+<h3>小區不能無限切下去</h3><p>基站不可能無限增加（成本、選址、越區切換複雜度都會爆炸），需要一個<b>在同一小區內部再擠出容量</b>的方法。</p>
+<h3>核心邏輯：用編碼區分，而非頻率或時間</h3><p><b>CDMA（碼分多址）</b>的作法相當大膽：<b>大家共享同一個頻段，靠「編碼」區分用戶。</b>同一小區裡允許所有人在同一時間、用同一頻段發送，基站把收到的所有訊號一起發給每個人。</p>
+<p>那怎麼避免干擾？<b>秘密在每台手機上</b>：每台裝置給自己的資訊<b>加上獨特的密碼</b>——像給箱子加上不同的密碼鎖，而接收端<b>只解得開自己認識的那套</b>，其他人的資訊被自動過濾。</p>
+<p><b>巧妙之處</b>：前面的技術都在「分配資源」——分頻段（廣播）、分空間（蜂窩）。CDMA 跳出這個框架，<b>不分配任何東西，讓所有人重疊在一起，改用數學上的「可分離性」還原各自訊號</b>。（這需要精心設計的正交碼組，使得用自己的碼去解讀別人訊號時結果會平均掉、趨近於零。）</p>
+<h3>代價：偽雜訊的頻寬浪費</h3><p>為了讓訊號能被密碼分開，CDMA <b>必須把原始訊號用很寬的偽隨機碼擴展</b>（擴頻）——一段本來只需窄頻寬的資訊，被刻意攤開到很寬的頻段上。這意味著傳輸了大量冗餘，術語稱為<b>偽雜訊的代價</b>。</p>
+<p>直接後果是<b>犧牲頻寬效率</b>：同樣的頻譜能承載的有用資料量下降，這正是那個年代手機上網速度很慢的原因。</p>
+<p><b>把這件事看清楚很重要</b>：CDMA 解決了「多人共存」，但它是<b>用頻寬效率換來的</b>——讓更多人能同時通話，卻沒讓每個人變快。這個未被滿足的需求，直接催生了 ${L("OFDM正交頻分複用")}。</p>`},
+{id:"OFDM正交頻分複用",ch:"13",en:"Ch.13 · OFDM",cat:"容量",html:`<div class="callout"><b>這章的問題：</b>有沒有辦法既讓多人共用、又讓每個人都變快？為什麼「把一條大車道拆成幾千條小車道」反而更有效率？</div>
+<h3>比蜂窩更徹底的分而治之</h3><p><b>OFDM（正交頻分複用）</b>延續蜂窩的「分而治之」智慧，但作用在<b>頻率</b>維度：<b>把一個載波的頻段再拆分成很多很多的子載波。</b>透過<b>傅立葉變換</b>（尤其離散形式）與<b>正交性</b>，把一個資訊含量很高的資料流拆成<b>幾千個資訊含量很低的子資料流</b>。因為每個子流資訊含量低，<b>只需要很窄的頻段就能傳輸</b>。</p>
+<h3>超級高速公路的比喻</h3><p><b>原本</b>是一條壅塞的寬單車道跑著一輛大貨車；<b>OFDM</b> 改造成幾千條並行窄車道組成的分層高速公路，同時把大貨車拆成很多小車。每個用戶可佔用幾條小車道，不同用戶也能輪流使用，因為車道彼此獨立（正交），只要分配好就不互相干擾。</p>
+<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNzYwIDM0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmb250LWZhbWlseT0iJ1BpbmdGYW5nIFRDJywnTWljcm9zb2Z0IEpoZW5nSGVpJywnSGVsdmV0aWNhIE5ldWUnLHNhbnMtc2VyaWYiPgo8dGV4dCB4PSIzODAuMCIgeT0iMjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTciIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMxMjMwMzkiPk9GRE3vvJrmiorkuIDmop3lr6zou4rpgZPmi4bmiJDlub7ljYPmop3kupLkuI3lubLmk77nmoTnqoTou4rpgZM8L3RleHQ+Cjx0ZXh0IHg9IjE0MCIgeT0iNjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzhhYTRhZSI+5Zau5LiA5a+s6LyJ5rOiPC90ZXh0Pgo8cmVjdCB4PSI2MCIgeT0iNzYiIHdpZHRoPSIxNjAiIGhlaWdodD0iNzAiIHJ4PSI2IiBmaWxsPSIjOGFhNGFlIiBvcGFjaXR5PSIwLjM1IiBzdHJva2U9IiM4YWE0YWUiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSIxNDAiIHk9IjExOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzRkNmI3NiI+5pW05q615LiA6LW35om/5Y+X5bmy5pO+PC90ZXh0Pgo8cGF0aCBkPSJNIDI0MCAxMTEgTCAyOTIgMTExIiBzdHJva2U9IiMxMjMwMzkiIHN0cm9rZS13aWR0aD0iMiIvPjxwYXRoIGQ9Ik0gMjg0IDEwNSBMIDI5NCAxMTEgTCAyODQgMTE3IFoiIGZpbGw9IiMxMjMwMzkiLz4KPHRleHQgeD0iNTIwIiB5PSI2MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMy41IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDg5MWIyIj7mi4bmiJDlpJrlgIvmraPkuqTlrZDovInms6I8L3RleHQ+CjxyZWN0IHg9IjMxMi4wIiB5PSI5NS4zIiB3aWR0aD0iMTIuMSIgaGVpZ2h0PSI1MC43IiBmaWxsPSIjZDk3NzA2IiBvcGFjaXR5PSIwLjgiIHJ4PSIyIi8+CjxyZWN0IHg9IjMyNi41IiB5PSIxMDAuMyIgd2lkdGg9IjEyLjEiIGhlaWdodD0iNDUuNyIgZmlsbD0iI2UxMWQ0OCIgb3BhY2l0eT0iMC44IiByeD0iMiIvPgo8cmVjdCB4PSIzNDEuMSIgeT0iODYuMCIgd2lkdGg9IjEyLjEiIGhlaWdodD0iNjAuMCIgZmlsbD0iIzA4OTFiMiIgb3BhY2l0eT0iMC44IiByeD0iMiIvPgo8cmVjdCB4PSIzNTUuNiIgeT0iMTAyLjUiIHdpZHRoPSIxMi4xIiBoZWlnaHQ9IjQzLjUiIGZpbGw9IiNlMTFkNDgiIG9wYWNpdHk9IjAuOCIgcng9IjIiLz4KPHJlY3QgeD0iMzcwLjIiIHk9Ijg5LjMiIHdpZHRoPSIxMi4xIiBoZWlnaHQ9IjU2LjciIGZpbGw9IiMwODkxYjIiIG9wYWNpdHk9IjAuOCIgcng9IjIiLz4KPHJlY3QgeD0iMzg0LjciIHk9Ijk0LjEiIHdpZHRoPSIxMi4xIiBoZWlnaHQ9IjUxLjkiIGZpbGw9IiMwODkxYjIiIG9wYWNpdHk9IjAuOCIgcng9IjIiLz4KPHJlY3QgeD0iMzk5LjIiIHk9IjEwMi45IiB3aWR0aD0iMTIuMSIgaGVpZ2h0PSI0My4xIiBmaWxsPSIjZTExZDQ4IiBvcGFjaXR5PSIwLjgiIHJ4PSIyIi8+CjxyZWN0IHg9IjQxMy44IiB5PSI5MC4xIiB3aWR0aD0iMTIuMSIgaGVpZ2h0PSI1NS45IiBmaWxsPSIjMDg5MWIyIiBvcGFjaXR5PSIwLjgiIHJ4PSIyIi8+CjxyZWN0IHg9IjQyOC4zIiB5PSIxMDMuNSIgd2lkdGg9IjEyLjEiIGhlaWdodD0iNDIuNSIgZmlsbD0iI2UxMWQ0OCIgb3BhY2l0eT0iMC44IiByeD0iMiIvPgo8cmVjdCB4PSI0NDIuOCIgeT0iOTIuMiIgd2lkdGg9IjEyLjEiIGhlaWdodD0iNTMuOCIgZmlsbD0iIzA4OTFiMiIgb3BhY2l0eT0iMC44IiByeD0iMiIvPgo8cmVjdCB4PSI0NTcuNCIgeT0iMTAyLjYiIHdpZHRoPSIxMi4xIiBoZWlnaHQ9IjQzLjQiIGZpbGw9IiNlMTFkNDgiIG9wYWNpdHk9IjAuOCIgcng9IjIiLz4KPHJlY3QgeD0iNDcxLjkiIHk9IjEwMi4wIiB3aWR0aD0iMTIuMSIgaGVpZ2h0PSI0NC4wIiBmaWxsPSIjZTExZDQ4IiBvcGFjaXR5PSIwLjgiIHJ4PSIyIi8+CjxyZWN0IHg9IjQ4Ni41IiB5PSI5Mi41IiB3aWR0aD0iMTIuMSIgaGVpZ2h0PSI1My41IiBmaWxsPSIjMDg5MWIyIiBvcGFjaXR5PSIwLjgiIHJ4PSIyIi8+CjxyZWN0IHg9IjUwMS4wIiB5PSI4MS4wIiB3aWR0aD0iMTIuMSIgaGVpZ2h0PSI2NS4wIiBmaWxsPSIjMDg5MWIyIiBvcGFjaXR5PSIwLjgiIHJ4PSIyIi8+CjxyZWN0IHg9IjUxNS41IiB5PSIxMDEuMSIgd2lkdGg9IjEyLjEiIGhlaWdodD0iNDQuOSIgZmlsbD0iI2UxMWQ0OCIgb3BhY2l0eT0iMC44IiByeD0iMiIvPgo8cmVjdCB4PSI1MzAuMSIgeT0iOTguMiIgd2lkdGg9IjEyLjEiIGhlaWdodD0iNDcuOCIgZmlsbD0iI2Q5NzcwNiIgb3BhY2l0eT0iMC44IiByeD0iMiIvPgo8cmVjdCB4PSI1NDQuNiIgeT0iODYuNyIgd2lkdGg9IjEyLjEiIGhlaWdodD0iNTkuMyIgZmlsbD0iIzA4OTFiMiIgb3BhY2l0eT0iMC44IiByeD0iMiIvPgo8cmVjdCB4PSI1NTkuMiIgeT0iNzcuNSIgd2lkdGg9IjEyLjEiIGhlaWdodD0iNjguNSIgZmlsbD0iIzA4OTFiMiIgb3BhY2l0eT0iMC44IiByeD0iMiIvPgo8cmVjdCB4PSI1NzMuNyIgeT0iODguMSIgd2lkdGg9IjEyLjEiIGhlaWdodD0iNTcuOSIgZmlsbD0iIzA4OTFiMiIgb3BhY2l0eT0iMC44IiByeD0iMiIvPgo8cmVjdCB4PSI1ODguMiIgeT0iOTMuMyIgd2lkdGg9IjEyLjEiIGhlaWdodD0iNTIuNyIgZmlsbD0iIzA4OTFiMiIgb3BhY2l0eT0iMC44IiByeD0iMiIvPgo8cmVjdCB4PSI2MDIuOCIgeT0iNzYuNyIgd2lkdGg9IjEyLjEiIGhlaWdodD0iNjkuMyIgZmlsbD0iIzA4OTFiMiIgb3BhY2l0eT0iMC44IiByeD0iMiIvPgo8cmVjdCB4PSI2MTcuMyIgeT0iMTAzLjMiIHdpZHRoPSIxMi4xIiBoZWlnaHQ9IjQyLjciIGZpbGw9IiNlMTFkNDgiIG9wYWNpdHk9IjAuOCIgcng9IjIiLz4KPHJlY3QgeD0iNjMxLjgiIHk9IjgwLjAiIHdpZHRoPSIxMi4xIiBoZWlnaHQ9IjY2LjAiIGZpbGw9IiMwODkxYjIiIG9wYWNpdHk9IjAuOCIgcng9IjIiLz4KPHJlY3QgeD0iNjQ2LjQiIHk9Ijk2LjMiIHdpZHRoPSIxMi4xIiBoZWlnaHQ9IjQ5LjciIGZpbGw9IiNkOTc3MDYiIG9wYWNpdHk9IjAuOCIgcng9IjIiLz4KPHJlY3QgeD0iNjYwLjkiIHk9IjEwMC41IiB3aWR0aD0iMTIuMSIgaGVpZ2h0PSI0NS41IiBmaWxsPSIjZTExZDQ4IiBvcGFjaXR5PSIwLjgiIHJ4PSIyIi8+CjxyZWN0IHg9IjY3NS41IiB5PSIxMDEuMiIgd2lkdGg9IjEyLjEiIGhlaWdodD0iNDQuOCIgZmlsbD0iI2UxMWQ0OCIgb3BhY2l0eT0iMC44IiByeD0iMiIvPgo8bGluZSB4MT0iMzEyIiB5MT0iMTQ2IiB4Mj0iNjkwIiB5Mj0iMTQ2IiBzdHJva2U9IiM4YWE0YWUiIHN0cm9rZS13aWR0aD0iMS40Ii8+CjxyZWN0IHg9IjMzMCIgeT0iMTY0IiB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIGZpbGw9IiMwODkxYjIiIHJ4PSIyIi8+Cjx0ZXh0IHg9IjM0OCIgeT0iMTc1IiBmb250LXNpemU9IjExLjUiIGZpbGw9IiM0ZDZiNzYiPuWTgeizquWlveODu+WEquWFiOmFjee1pjwvdGV4dD4KPHJlY3QgeD0iNDYwIiB5PSIxNjQiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0iI2Q5NzcwNiIgcng9IjIiLz4KPHRleHQgeD0iNDc4IiB5PSIxNzUiIGZvbnQtc2l6ZT0iMTEuNSIgZmlsbD0iIzRkNmI3NiI+5pmu6YCaPC90ZXh0Pgo8cmVjdCB4PSI1OTAiIHk9IjE2NCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBmaWxsPSIjZTExZDQ4IiByeD0iMiIvPgo8dGV4dCB4PSI2MDgiIHk9IjE3NSIgZm9udC1zaXplPSIxMS41IiBmaWxsPSIjNGQ2Yjc2Ij7lj5flubLmk77jg7vpgb/plos8L3RleHQ+CjxyZWN0IHg9IjYwIiB5PSIyMDQiIHdpZHRoPSI2MzAiIGhlaWdodD0iMTE4IiByeD0iMTAiIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2Q1ZTVlYyIvPgo8dGV4dCB4PSIzNzUiIHk9IjIyOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMy41IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMGU1YTZiIj7ngrrku4Dpurzmi4bmlaPlj43ogIzmm7Tlv6vvvJ88L3RleHQ+Cjx0ZXh0IHg9IjgwIiB5PSIyNTQiIGZvbnQtc2l6ZT0iMTIuNSIgZmlsbD0iIzRkNmI3NiI+4pGgIOWfuuermeWPr+avq+enkue0muWNs+aZguebo+a4rO+8jOaKiuizh+aWmTx0c3BhbiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDg5MWIyIj7lhKrlhYjliIbphY3liLDnlbbkuIvlk4Hos6rmnIDlpb3nmoTlrZDovInms6I8L3RzcGFuPjwvdGV4dD4KPHRleHQgeD0iODAiIHk9IjI3OCIgZm9udC1zaXplPSIxMi41IiBmaWxsPSIjNGQ2Yjc2Ij7ikaEg6LOH5paZPHRzcGFuIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwODkxYjIiPuS4jeW/heWQjOaZguWFqOmDqOaKtemBlDwvdHNwYW4+4oCU4oCU5YOP55yL5b2x54mH77yM5YWI5Yiw55qE5YWI5pKt77yM6YKK55yL6YKK5LiL6LyJPC90ZXh0Pgo8dGV4dCB4PSI4MCIgeT0iMzA0IiBmb250LXNpemU9IjEyLjUiIGZpbGw9IiM0ZDZiNzYiPuaVuOWtuOWfuuekju+8muWCheeri+iRieiuiuaPm++8iOmbouaVo+W9ouW8j++8ieiIh+ato+S6pOaAp++8jOeiuuS/neWtkOi8ieazouW9vOatpOS4jeW5suaTvjwvdGV4dD4KPC9zdmc+">
+<h3>為什麼拆散反而更快</h3><p><b>區別一：可動態挑選最好的車道。</b>無線環境中不同頻率受到的干擾與衰落程度不同。基站能以<b>毫秒級精確度即時監測</b>這幾千條窄車道，找出<b>干擾最小、最閒置</b>的，把資料<b>優先分配到最好的車道</b>。這是單一寬載波做不到的——寬載波只能整段一起承受最差那部分的干擾。</p>
+<p><b>區別二：資料不必同時全部抵達。</b>線上看影片只要最近一兩分鐘的內容到了就能播放，其餘邊看邊下載。就像把一大車廂食物分成很多小車運到家，<b>只要有一輛抵達就能開始吃</b>。</p>
+<h3>影響範圍</h3><p>OFDM 不只讓手機上網變快，也讓家庭上網質變——<b>WiFi 從第四代開始引入 OFDM</b>。WiFi 與基站的差異值得一提：小型 WiFi 只需覆蓋幾十台設備，不像基站要服務成千上萬台，因此每台能分到的帶寬更充裕、速度更快。這背後是兩種設計哲學 → ${L("WiFi與蜂窩網路")}。</p>`},
+{id:"頻率的雙刃劍",ch:"14",en:"Ch.14 · The Frequency Trade-off",cat:"極限",html:`<div class="callout"><b>這章的問題：</b>既然帶寬越寬越快，6G、7G 只要一直往更高頻率拿頻譜不就好了？答案是不行——擋住我們的是物理定律。</div>
+<h3>頻譜擴張的歷史軌跡</h3><p><b>3G</b>：約 2GHz 中頻，單載波帶寬約 5MHz。<b>4G</b>：約 2–2.6GHz，單載波約 20MHz，並引入<b>載波聚合</b>——把好幾個 20MHz 載波<b>捆綁在一起</b>達到上百 MHz。<b>5G</b>：最高擴展到 3.5GHz 以上，單載波帶寬再放大一個量級。</p>
+<p>趨勢很明顯：<b>每一代的主線都是「用到更寬的總帶寬」</b>，因為由香農定理，帶寬直接決定速度。自然的推論是繼續往更高頻率拿——<b>但這條路走不下去。</b></p>
+<h3>為什麼走不下去</h3><p>回到 c=λf：光速恆定，所以<b>頻率越高 ⟹ 波長越短</b>。而短波長的電磁波有兩個致命問題：<b>傳播距離短</b>、<b>穿透力差、繞不過障礙物</b>。</p>
+<p><b>用聲波類比最好懂</b>：打雷時我們總是只聽到低沉的隆隆聲；在水裡聽岸上的人說話也只聽得到低頻部分。因為<b>低頻聲波波長長、更容易穿透障礙、傳得更遠</b>；高頻則傳不遠、遇障礙就被擋住。電磁波面臨完全相同的問題。</p>
+<p><b>極限推演</b>：不斷提高頻率，電磁波最終會變成<b>可見光</b>——而可見光顯然無法穿過日常障礙物，隨便一個東西就擋住了。實際上根本不用到那麼高：5G 引入的 28GHz 波段波長已降到<b>只有幾毫米</b>，繞過障礙物的能力大幅減弱、傳播距離非常短，後果就是必須<b>建立非常多基站</b>並配套大量新技術。</p>
+<h3>兩對互相矛盾的雙刃劍</h3><div class="formula">頻率太低 → 波長太長 → 天線做不出來 → 發射不出去<br>頻率太高 → 波長太短 → 傳播距離短、繞射差 → 傳不遠</div>
+<p><b>物理定律把我們夾在一個不算太寬的範圍內。</b>整個電磁波頻譜很廣，但人類實際上只能使用其中<b>很窄的一小段</b>做無線通訊。這正是為什麼頻譜是不可再生的珍貴資源——不只總量固定，而是<b>其中真正「好用」的那一段特別窄</b>。</p>
+<h3>問題性質的轉變</h3><p>到這個階段，<b>現代通訊面臨的最本質挑戰已不再是純粹的物理學問題，而是頻譜資源的行政管理與經濟分配問題</b> → ${L("WiFi與蜂窩網路")}。</p>`},
+{id:"WiFi與蜂窩網路",ch:"15",en:"Ch.15 · WiFi vs Cellular",cat:"極限",html:`<div class="callout"><b>這章的問題：</b>兩套網路用的物理原理與技術幾乎相同，為什麼表現與使用方式差這麼多？為什麼公共場所的陌生 WiFi 不建議做重要的事？</div>
+<h3>同樣的物理，不同的哲學</h3><p>WiFi 與蜂窩網路都依賴前面講過的電磁波物理、調制、OFDM 等技術。<b>但服務哲學與頻譜策略截然不同，分歧的根源就是「頻譜怎麼取得」。</b></p>
+<h3>WiFi：自由接入</h3><p>運行在<b>不需要政府授權的頻譜</b>上（常見 2.4GHz 與 5GHz），<b>任何人都可以使用</b>。優點是設備<b>成本低廉、部署方便</b>、普及率極高，主要服務家庭或辦公室。</p>
+<p>但代價來自同一個原因：因為<b>沒有監管、任何人都能用同一段頻譜</b>，可靠性與安全性無法保障——這正是「做重要的事情時最好不要連陌生 WiFi」的由來。</p>
+<p><b>注意這個因果關係</b>：WiFi 的便宜方便與它的不可靠，<b>是同一個設計選擇的一體兩面</b>——開放頻譜必然意味著無人保證你不會被干擾、也無人保證同頻段上的其他人是善意的。</p>
+<h3>蜂窩網路：授權獨占</h3><p>運行在<b>政府授權的頻譜</b>上，運營商必須申請並支付費用取得<b>獨占使用權</b>。由於真正好用的頻段極稀缺（見 ${L("頻率的雙刃劍")}），這種授權往往極為昂貴。</p>
+<p>獨占帶來的好處是直接的：同區域內<b>沒有其他競爭者</b>使用相同頻段，因此能提供<b>更可靠、更安全</b>的服務，支撐更大範圍的使用者與移動性，同時形成投資基礎建設的商業循環。</p>
+<h3>為什麼 WiFi 感覺比較快</h3><p>關鍵在<b>服務對象的數量</b>：小型 WiFi 可能只覆蓋<b>幾十台設備</b>，基站要同時服務<b>成千上萬台</b>。因此 WiFi 分給每台設備的帶寬更充裕。<b>速度不只取決於技術世代，更取決於「這份頻譜要分給多少人用」。</b></p>
+<h3>互補而非競爭</h3><p>WiFi 負責<b>局部、密集、低成本</b>的接入（家庭、辦公室、室內）；蜂窩網路負責<b>廣域、移動性、高可靠</b>的連接。兩者用同一套物理原理，卻因頻譜取得方式不同而演化出完全不同的定位——<b>一個開放但無保證，一個昂貴但有保障。</b></p>`},
+];
+const EDGES=[
+ ["場與靜電場","電流與磁場"],
+ ["電流與磁場","法拉第電磁感應"],
+ ["法拉第電磁感應","馬克士威方程組與電磁波"],
+ ["馬克士威方程組與電磁波","電磁波頻譜與波長頻率"],
+ ["馬克士威方程組與電磁波","赫茲實驗與天線原理"],
+ ["法拉第電磁感應","赫茲實驗與天線原理"],
+ ["電磁波頻譜與波長頻率","赫茲實驗與天線原理"],
+ ["電磁波頻譜與波長頻率","載波與調制"],
+ ["電磁波頻譜與波長頻率","頻率的雙刃劍"],
+ ["赫茲實驗與天線原理","電報與摩斯電碼"],
+ ["赫茲實驗與天線原理","載波與調制"],
+ ["電報與摩斯電碼","載波與調制"],
+ ["電報與摩斯電碼","類比訊號與數位訊號"],
+ ["載波與調制","頻譜帶寬與香農定理"],
+ ["載波與調制","類比訊號與數位訊號"],
+ ["載波與調制","OFDM正交頻分複用"],
+ ["頻譜帶寬與香農定理","蜂窩網路與頻率複用"],
+ ["頻譜帶寬與香農定理","頻率的雙刃劍"],
+ ["頻譜帶寬與香農定理","OFDM正交頻分複用"],
+ ["頻譜帶寬與香農定理","WiFi與蜂窩網路"],
+ ["蜂窩網路與頻率複用","類比訊號與數位訊號"],
+ ["蜂窩網路與頻率複用","CDMA碼分多址"],
+ ["蜂窩網路與頻率複用","OFDM正交頻分複用"],
+ ["蜂窩網路與頻率複用","WiFi與蜂窩網路"],
+ ["類比訊號與數位訊號","CDMA碼分多址"],
+ ["CDMA碼分多址","OFDM正交頻分複用"],
+ ["OFDM正交頻分複用","WiFi與蜂窩網路"],
+ ["頻率的雙刃劍","WiFi與蜂窩網路"],
+ ["頻率的雙刃劍","蜂窩網路與頻率複用"]
+];
+const EXTRA={};
+const NById=Object.fromEntries(NOTES.map(n=>[n.id,n]));
+const sidebar=document.getElementById('sidebar');
+function buildSidebar(filter){
+ filter=(filter||'').trim();
+ let html='<div class="navlink" data-id="__home"><span class="dot" style="background:var(--accent)"></span>總覽首頁</div>';
+ for(const key of Object.keys(CATS)){
+  const items=NOTES.filter(n=>n.cat===key&&(!filter||n.id.includes(filter)||n.en.toLowerCase().includes(filter.toLowerCase())));
+  if(!items.length)continue;
+  html+='<div class="cat">'+CATS[key].name+'</div>';
+  for(const n of items)html+='<div class="navlink" data-id="'+n.id+'"><span class="dot" style="background:'+CATS[n.cat].raw+'"></span>'+(n.ch?'<b style="color:#0e9bc4;margin-right:5px">'+n.ch+'</b>':'')+n.id+'<small>'+n.en+'</small></div>';
+ }
+ sidebar.innerHTML=html;
+}
+/* ===== 筆記 ===== */
+const main=document.getElementById('main');
+let current=null;
+function neighborsOf(id){const s=new Set();EDGES.forEach(([a,b])=>{if(a===id)s.add(b);if(b===id)s.add(a);});return[...s];}
+function renderHome(){
+ current='__home';
+ main.innerHTML='<div class="note"><div class="hero"><div style="font-size:46px">📡</div>'+
+  '<div class="big">無線通訊知識庫</div>'+
+  '<p class="sub">依科學漫聊《外星人也聽得懂：一次說透無線通訊》整理，從電荷、靜電場一路推導到 5G 的物理極限，共 15 章，並附波長頻率換算、AM/FM 調制、蜂窩頻率複用、香農容量、頻譜配置等互動模擬工具。</p>'+
+  '<div class="stats"><div class="stat"><b>15</b><span>知識點</span></div><div class="stat"><b>26</b><span>關聯連結</span></div>'+
+  '<div class="stat"><b>5</b><span>互動模擬</span></div><div class="stat"><b>4</b><span>主題分區</span></div></div></div>'+
+  '<h3>建議閱讀路徑</h3>'+
+  '<div class="pathrow">'+Object.keys(CATS).map((key,i)=>{const first=NOTES.find(n=>n.cat===key).id;
+    return (i>0?'<span class="arrow">→</span>':'')+'<span class="stage" data-id="'+first+'"><span class="d" style="background:'+CATS[key].raw+'"></span>'+CATS[key].name+'</span>';}).join('')+'</div>'+
+  '<p style="color:var(--muted);font-size:14px">點上方階段可直接跳到該分區第一篇；或從下方各主題任選。建議從 '+L("場與靜電場")+' 開始，一路讀到 '+L("WiFi與蜂窩網路")+'。</p>'+
+  Object.keys(CATS).map(key=>{const items=NOTES.filter(n=>n.cat===key);
+    return '<div class="catgroup"><div class="cl" style="color:'+CATS[key].raw+'"><span class="d" style="background:'+CATS[key].raw+'"></span>'+CATS[key].name+'</div><div class="chips">'+items.map(n=>'<span class="chip" data-id="'+n.id+'">'+n.id+'</span>').join('')+'</div></div>';}).join('')+
+  '</div>';
+ syncActive();
+}
+function renderNote(id){
+ const n=NById[id];if(!n){renderHome();return;}
+ current=id;const idx=NOTES.findIndex(x=>x.id===id);const prev=NOTES[idx-1],next=NOTES[idx+1];const nb=neighborsOf(id);
+ let html='<div class="note"><div class="crumbs"><span class="tag" style="background:'+CATS[n.cat].raw+'33;color:'+CATS[n.cat].raw+'">'+CATS[n.cat].name+'</span></div>'+
+  '<h2 class="title">'+n.id+'</h2><div class="en">'+n.en+'</div>'+n.html;
+ const ex=EXTRA[id];
+ if(ex){
+  if(ex.take)html+='<div class="kbox"><div class="kt">🎯 重點回顧</div><ul>'+ex.take.map(t=>'<li>'+t+'</li>').join('')+'</ul></div>';
+  if(ex.myth)html+='<details class="collap myth"><summary>💡 常見誤解</summary><div class="body">'+ex.myth.map(m=>'<div class="myth-row"><span class="x">✗</span><div>'+m.q+'</div></div><div class="myth-row"><span class="o">✓</span><div>'+m.a+'</div></div>').join('')+'</div></details>';
+  if(ex.fact)html+='<details class="collap fact"><summary>🔎 冷知識</summary><div class="body"><p>'+ex.fact+'</p></div></details>';
+  if(ex.deep)html+='<details class="collap deep"><summary>📐 深入補充</summary><div class="body">'+ex.deep+'</div></details>';
+ }
+ if(nb.length)html+='<div class="related"><div class="cat">關聯概念</div><div class="chips">'+nb.map(x=>'<span class="chip" data-id="'+x+'">'+x+'</span>').join('')+'</div></div>';
+ html+='<div class="nav-btns">'+(prev?'<button data-id="'+prev.id+'"><small>← 上一篇</small>'+prev.id+'</button>':'<button disabled style="opacity:.3"><small>—</small>第一篇</button>')+
+  (next?'<button data-id="'+next.id+'" style="text-align:right"><small>下一篇 →</small>'+next.id+'</button>':'<button disabled style="opacity:.3;text-align:right"><small>—</small>最後一篇</button>')+'</div></div>';
+ main.innerHTML=html;main.scrollTop=0;
+ if(ex&&ex.chart)drawChart(ex.chart);
+ syncActive();
+}
+function open(id){if(id==='__home')renderHome();else renderNote(id);showNotes();}
+function syncActive(){document.querySelectorAll('.navlink').forEach(el=>el.classList.toggle('active',el.dataset.id===current));}
+document.body.addEventListener('click',e=>{const t=e.target.closest('[data-id]');if(t)open(t.dataset.id);});
+/* ===== 搜尋 ===== */
+const search=document.getElementById('search');
+search.addEventListener('input',()=>buildSidebar(search.value));
+search.addEventListener('keydown',e=>{if(e.key==='Enter'){const f=search.value.trim().toLowerCase();const hit=NOTES.find(n=>n.id.includes(search.value.trim())||n.en.toLowerCase().includes(f));if(hit)open(hit.id);}});
+/* ===== 分頁 ===== */
+const tabNotes=document.getElementById('tabNotes'),tabGraph=document.getElementById('tabGraph'),tabDemo=document.getElementById('tabDemo');
+const graphView=document.getElementById('graphView'),demoView=document.getElementById('demoView');
+const allTabs=[tabNotes,tabGraph,tabDemo];
+function setTab(b){allTabs.forEach(x=>x.classList.toggle('active',x===b));}
+function hideAll(){main.style.display='none';graphView.style.display='none';demoView.style.display='none';}
+function showNotes(){setTab(tabNotes);hideAll();main.style.display='';}
+function showGraph(){setTab(tabGraph);hideAll();graphView.style.display='block';startGraph();}
+function showDemo(){setTab(tabDemo);hideAll();demoView.style.display='block';startDemo();startMesh();}
+tabNotes.onclick=showNotes;tabGraph.onclick=showGraph;tabDemo.onclick=showDemo;
+/* ===== 圖表 ===== */
+
+function drawChart(kind){}
+function buildLegend(){document.getElementById('legend').innerHTML=Object.keys(CATS).map(k=>'<div><i style="background:'+CATS[k].raw+'"></i>'+CATS[k].name+'</div>').join('');}
+const svg=document.getElementById('graph');
+const SVGNS='http://www.w3.org/2000/svg';
+const G={started:false,nodes:[],edges:[],raf:null};
+function startGraph(){
+ if(G.started)return;G.started=true;buildLegend();
+ const W=svg.clientWidth||900,H=svg.clientHeight||600;
+ const deg={};EDGES.forEach(([a,b])=>{deg[a]=(deg[a]||0)+1;deg[b]=(deg[b]||0)+1;});
+ G.nodes=NOTES.map((n,i)=>({id:n.id,cat:n.cat,x:W/2+Math.cos(i/NOTES.length*6.283)*240+(Math.random()-.5)*40,y:H/2+Math.sin(i/NOTES.length*6.283)*190+(Math.random()-.5)*40,vx:0,vy:0,r:8+(deg[n.id]||1)*1.5}));
+ const pos=Object.fromEntries(G.nodes.map(n=>[n.id,n]));
+ while(svg.firstChild)svg.removeChild(svg.firstChild);
+ const gE=document.createElementNS(SVGNS,'g'),gN=document.createElementNS(SVGNS,'g');svg.appendChild(gE);svg.appendChild(gN);
+ G.edges=EDGES.map(([a,b])=>{const l=document.createElementNS(SVGNS,'line');l.setAttribute('class','gedge');gE.appendChild(l);return{a,b,el:l};});
+ G.nodes.forEach(n=>{
+  const g=document.createElementNS(SVGNS,'g');g.setAttribute('class','gnode');g.dataset.id=n.id;
+  const c=document.createElementNS(SVGNS,'circle');c.setAttribute('r',n.r);c.setAttribute('fill',CATS[n.cat].raw);c.setAttribute('stroke','#ffffff');c.setAttribute('stroke-width','2.5');
+  const t=document.createElementNS(SVGNS,'text');t.setAttribute('text-anchor','middle');t.setAttribute('dy',-n.r-6);t.textContent=n.id;
+  g.appendChild(c);g.appendChild(t);gN.appendChild(g);n.el=g;
+  g.addEventListener('mouseenter',()=>highlight(n.id,true));g.addEventListener('mouseleave',()=>highlight(n.id,false));
+  let moved=false,down=false,ox,oy;
+  g.addEventListener('pointerdown',ev=>{down=true;moved=false;n.fixed=true;const p=toSvg(ev);ox=p.x-n.x;oy=p.y-n.y;g.setPointerCapture(ev.pointerId);});
+  g.addEventListener('pointermove',ev=>{if(!down)return;const p=toSvg(ev);n.x=p.x-ox;n.y=p.y-oy;n.vx=0;n.vy=0;moved=true;});
+  g.addEventListener('pointerup',()=>{down=false;n.fixed=false;if(!moved)open(n.id);});
+ });
+ gloop(pos,W,H);
+}
+function toSvg(ev){const r=svg.getBoundingClientRect();return{x:ev.clientX-r.left,y:ev.clientY-r.top};}
+function highlight(id,on){const nb=new Set(neighborsOf(id));nb.add(id);
+ G.nodes.forEach(n=>{n.el.style.opacity=on?(nb.has(n.id)?1:.2):1;});
+ G.edges.forEach(e=>{const rel=(e.a===id||e.b===id);e.el.classList.toggle('hl',on&&rel);e.el.style.opacity=on?(rel?1:.12):1;});}
+function gloop(pos,W,H){const KR=5200,KS=0.012,L0=118,DA=0.86,GR=0.008;
+ function step(){const ns=G.nodes;
+  for(let i=0;i<ns.length;i++){const a=ns[i];if(a.fixed)continue;let fx=0,fy=0;
+   for(let j=0;j<ns.length;j++){if(i===j)continue;const b=ns[j];let dx=a.x-b.x,dy=a.y-b.y,d2=dx*dx+dy*dy+.01,d=Math.sqrt(d2);const f=KR/d2;fx+=dx/d*f;fy+=dy/d*f;}
+   fx+=(W/2-a.x)*GR;fy+=(H/2-a.y)*GR;a.vx=(a.vx+fx)*DA;a.vy=(a.vy+fy)*DA;}
+  EDGES.forEach(([ai,bi])=>{const a=pos[ai],b=pos[bi];let dx=b.x-a.x,dy=b.y-a.y,d=Math.sqrt(dx*dx+dy*dy)+.01;const f=(d-L0)*KS,ux=dx/d,uy=dy/d;if(!a.fixed){a.vx+=ux*f;a.vy+=uy*f;}if(!b.fixed){b.vx-=ux*f;b.vy-=uy*f;}});
+  ns.forEach(n=>{if(n.fixed)return;n.x+=n.vx;n.y+=n.vy;n.x=Math.max(n.r+40,Math.min(W-n.r-40,n.x));n.y=Math.max(n.r+30,Math.min(H-n.r-20,n.y));});
+  G.edges.forEach(e=>{const a=pos[e.a],b=pos[e.b];e.el.setAttribute('x1',a.x);e.el.setAttribute('y1',a.y);e.el.setAttribute('x2',b.x);e.el.setAttribute('y2',b.y);});
+  ns.forEach(n=>n.el.setAttribute('transform','translate('+n.x+','+n.y+')'));
+  G.raf=requestAnimationFrame(step);}
+ step();}
+
+
+
+
+/* ===== 模擬工具 ===== */
+let wcTool='wave';
+function startDemo(){
+ if(!document.getElementById('simBar')){
+  demoView.innerHTML='<div class="demo"><div class="panel"><h3>🔬 互動模擬</h3>'+
+   '<div class="d">五個模擬工具，對應波長頻率、調制、頻譜分配、蜂窩複用與香農容量五個核心關係。點下方切換。</div>'+
+   '<div id="simBar" style="display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 14px"></div>'+
+   '<div id="simBox"></div></div></div>';
+  const tools=[['wave','波長與頻率 c=λf'],['mod','AM / FM 調制'],['spec','頻譜分配與干擾'],['cell','蜂窩頻率複用'],['shannon','香農容量']];
+  document.getElementById('simBar').innerHTML=tools.map(t=>'<button class="simtab" data-t="'+t[0]+'">'+t[1]+'</button>').join('');
+  document.getElementById('simBar').querySelectorAll('.simtab').forEach(b=>b.onclick=()=>{wcTool=b.dataset.t;renderTool();});
+ }
+ renderTool();
+}
+function startMesh(){}
+function renderTool(){
+ document.querySelectorAll('.simtab').forEach(b=>b.classList.toggle('active',b.dataset.t===wcTool));
+ const box=document.getElementById('simBox');
+ if(wcTool==='wave')toolWave(box);
+ else if(wcTool==='mod')toolMod(box);
+ else if(wcTool==='spec')toolSpec(box);
+ else if(wcTool==='cell')toolCell(box);
+ else if(wcTool==='shannon')toolShannon(box);
+}
+function fmtHz(f){
+ if(f>=1e9)return (f/1e9).toFixed(2)+' GHz';
+ if(f>=1e6)return (f/1e6).toFixed(2)+' MHz';
+ if(f>=1e3)return (f/1e3).toFixed(2)+' kHz';
+ return f.toFixed(1)+' Hz';
+}
+function fmtM(m){
+ if(m>=1000)return (m/1000).toFixed(2)+' km';
+ if(m>=1)return m.toFixed(2)+' m';
+ if(m>=0.001)return (m*1000).toFixed(2)+' mm';
+ return (m*1e9).toFixed(1)+' nm';
+}
+
+/* ---- 1. 波長與頻率 ---- */
+function toolWave(box){
+ box.innerHTML='<div class="tool"><div class="row">'+
+  '<label>頻率（對數刻度） <span id="wvFV"></span><input id="wvF" type="range" min="0" max="1000" value="560"></label>'+
+  '<label>天線設計倍率（× 波長） <span id="wvKV">0.25</span><input id="wvK" type="range" min="5" max="100" value="25"></label>'+
+  '</div><canvas id="wvCanvas" width="640" height="300"></canvas>'+
+  '<div class="d" id="wvNote"></div></div>';
+ ['wvF','wvK'].forEach(id=>document.getElementById(id).oninput=drawWave);
+ drawWave();
+}
+function drawWave(){
+ const p=(+document.getElementById('wvF').value)/1000;
+ const f=Math.pow(10,2+p*10);           // 100 Hz ~ 1e12 Hz
+ const k=(+document.getElementById('wvK').value)/100;
+ const c=3e8, lam=c/f;
+ document.getElementById('wvFV').textContent=fmtHz(f);
+ document.getElementById('wvKV').textContent=k.toFixed(2);
+ const cv=document.getElementById('wvCanvas'),ctx=cv.getContext('2d');
+ ctx.clearRect(0,0,cv.width,cv.height);
+ const bands=[[1e2,3e4,'極低頻','#6366f1'],[3e4,3e6,'中／長波','#0891b2'],[3e6,3e8,'短波/FM','#059669'],
+              [3e8,3e9,'手機主力頻段','#d97706'],[3e9,3e10,'5G/微波','#e11d48'],[3e10,1e12,'毫米波以上','#7c3aed']];
+ const ox=40,oy=90,W=560;
+ function xOf(fr){return ox+W*(Math.log10(fr)-2)/10;}
+ bands.forEach(b=>{
+  const x1=Math.max(xOf(b[0]),ox),x2=Math.min(xOf(b[1]),ox+W);
+  ctx.fillStyle=b[3];ctx.globalAlpha=0.22;ctx.fillRect(x1,oy,x2-x1,34);ctx.globalAlpha=1;
+  ctx.fillStyle=b[3];ctx.font='10.5px sans-serif';ctx.textAlign='center';
+  if(x2-x1>52)ctx.fillText(b[2],(x1+x2)/2,oy+22);
+ });
+ ctx.strokeStyle='#8aa4ae';ctx.beginPath();ctx.moveTo(ox,oy+34);ctx.lineTo(ox+W,oy+34);ctx.stroke();
+ const px=xOf(f);
+ ctx.strokeStyle='#123039';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(px,oy-10);ctx.lineTo(px,oy+44);ctx.stroke();
+ ctx.fillStyle='#123039';ctx.beginPath();ctx.arc(px,oy-10,5,0,Math.PI*2);ctx.fill();
+ ctx.font='12px sans-serif';ctx.textAlign='left';ctx.fillStyle='#4d6b76';
+ ctx.fillText('100Hz',ox-8,oy+50);ctx.textAlign='right';ctx.fillText('1THz',ox+W+8,oy+50);
+ // 天線示意
+ const ant=k*lam;
+ const maxDraw=180, scale=Math.min(maxDraw/Math.max(ant,1e-6),260);
+ const drawLen=Math.max(Math.min(ant*scale,maxDraw),2);
+ const bx=320, by=210;
+ ctx.strokeStyle='#0891b2';ctx.lineWidth=5;ctx.lineCap='round';
+ ctx.beginPath();ctx.moveTo(bx,by-drawLen/2);ctx.lineTo(bx,by+drawLen/2);ctx.stroke();
+ ctx.lineWidth=1;
+ ctx.fillStyle='#4d6b76';ctx.font='12px sans-serif';ctx.textAlign='center';
+ ctx.fillText('天線示意（等比例縮放）',bx,by+drawLen/2+22);
+ let verdict;
+ if(ant>1000)verdict='<b style="color:#e11d48">天線需要數公里以上——物理與經濟上都不可行。</b>這正是為什麼人聲不能直接發射，必須改用載波。';
+ else if(ant>10)verdict='<b style="color:#d97706">天線需要數十公尺</b>，只有大型廣播電台才蓋得起。';
+ else if(ant>0.05)verdict='<b style="color:#059669">天線尺寸落在公分至公尺級</b>，正是手機、WiFi 這類設備的可行範圍。';
+ else verdict='<b style="color:#7c3aed">天線只有幾毫米</b>，做得很小，但波長短意味著傳播距離短、繞不過障礙物。';
+ document.getElementById('wvNote').innerHTML='頻率 <b>'+fmtHz(f)+'</b> → 波長 <b>'+fmtM(lam)+'</b>，'+
+  '以 '+k.toFixed(2)+'λ 設計的天線長度約 <b>'+fmtM(ant)+'</b>。'+verdict+
+  '<br><b>試試看</b>：把頻率拉到最低端，看天線長度如何爆炸——這就是「人聲波長 300 公里」那個死結；再拉到最高端，天線變得很小，但代價是傳播距離與穿透力。';
+}
+
+/* ---- 2. AM / FM 調制 ---- */
+function toolMod(box){
+ box.innerHTML='<div class="tool"><div class="row">'+
+  '<label>載波頻率（相對） <span id="mdCV">26</span><input id="mdC" type="range" min="8" max="50" value="26"></label>'+
+  '<label>訊息頻率 <span id="mdMV">1.5</span><input id="mdM" type="range" min="5" max="40" value="15"></label>'+
+  '<label>調制深度 <span id="mdDV">0.75</span><input id="mdD" type="range" min="0" max="95" value="75"></label>'+
+  '</div><canvas id="mdCanvas" width="640" height="330"></canvas>'+
+  '<div class="d" id="mdNote"></div></div>';
+ ['mdC','mdM','mdD'].forEach(id=>document.getElementById(id).oninput=drawMod);
+ drawMod();
+}
+function drawMod(){
+ const fc=+document.getElementById('mdC').value;
+ const fm=(+document.getElementById('mdM').value)/10;
+ const d=(+document.getElementById('mdD').value)/100;
+ document.getElementById('mdCV').textContent=fc;
+ document.getElementById('mdMV').textContent=fm.toFixed(1);
+ document.getElementById('mdDV').textContent=d.toFixed(2);
+ const cv=document.getElementById('mdCanvas'),ctx=cv.getContext('2d');
+ ctx.clearRect(0,0,cv.width,cv.height);
+ const ox=70,L=520;
+ function msg(t){return Math.sin(2*Math.PI*fm*t);}
+ function row(y,label,color,fn,env){
+  ctx.fillStyle=color;ctx.font='bold 12.5px sans-serif';ctx.textAlign='right';
+  ctx.fillText(label,ox-10,y+4);
+  ctx.strokeStyle=color;ctx.lineWidth=2;ctx.beginPath();
+  for(let i=0;i<=520;i++){const t=i/520;const x=ox+L*t;const v=fn(t);
+   if(i===0)ctx.moveTo(x,y-v);else ctx.lineTo(x,y-v);}
+  ctx.stroke();
+  if(env){ctx.strokeStyle=color;ctx.globalAlpha=0.45;ctx.setLineDash([4,3]);ctx.lineWidth=1;ctx.beginPath();
+   for(let i=0;i<=520;i++){const t=i/520;const x=ox+L*t;const v=env(t);
+    if(i===0)ctx.moveTo(x,y-v);else ctx.lineTo(x,y-v);}
+   ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1;ctx.lineWidth=2;}
+ }
+ row(58,'訊息','#059669',t=>24*msg(t));
+ row(150,'AM 調幅','#0891b2',t=>18*(1+d*msg(t))*Math.sin(2*Math.PI*fc*t),t=>18*(1+d*msg(t)));
+ let ph=0;const N=520;
+ const fmPts=[];
+ for(let i=0;i<=N;i++){const t=i/N;ph+=2*Math.PI*(fc+fc*0.5*d*msg(t))/N;fmPts.push(26*Math.sin(ph));}
+ ctx.fillStyle='#e11d48';ctx.font='bold 12.5px sans-serif';ctx.textAlign='right';ctx.fillText('FM 調頻',ox-10,254);
+ ctx.strokeStyle='#e11d48';ctx.lineWidth=2;ctx.beginPath();
+ fmPts.forEach((v,i)=>{const x=ox+L*i/N;if(i===0)ctx.moveTo(x,250-v);else ctx.lineTo(x,250-v);});
+ ctx.stroke();
+ ctx.fillStyle='#4d6b76';ctx.font='11.5px sans-serif';ctx.textAlign='left';
+ ctx.fillText('高度隨訊息變（頻率不變）',ox+L-190,124);
+ ctx.fillText('疏密隨訊息變（高度不變）',ox+L-190,300);
+ const bwAM=2*fm, bwFM=2*(fc*0.5*d+fm);
+ document.getElementById('mdNote').innerHTML='在此設定下，AM 佔用的頻寬約為訊息頻率的 2 倍（<b>'+bwAM.toFixed(1)+'</b> 相對單位），FM 約 <b>'+bwFM.toFixed(1)+'</b>。'+
+  '<b>調制深度拉到 0 會看到載波變回一條純淨的正弦波</b>——它本身不帶任何資訊，只是「一張空白信紙」。'+
+  '<br><b>關鍵觀念</b>：FM 不是用頻率本身傳資訊，而是用<b>頻率的微小變化</b>傳資訊，所以高頻載波的發射優勢被完整保留。也注意 FM 的頻寬明顯比 AM 寬——這就是「調制必然佔用一段頻率」的由來。';
+}
+
+/* ---- 3. 頻譜分配與干擾 ---- */
+function toolSpec(box){
+ box.innerHTML='<div class="tool"><div class="row">'+
+  '<label>頻段總寬度 <span id="spTV">20</span> MHz<input id="spT" type="range" min="5" max="100" value="20"></label>'+
+  '<label>每台信道帶寬 <span id="spBV">200</span> kHz<input id="spB" type="range" min="50" max="1000" value="200" step="50"></label>'+
+  '<label>相鄰間隔 <span id="spGV">200</span> kHz<input id="spG" type="range" min="0" max="1000" value="200" step="50"></label>'+
+  '</div><canvas id="spCanvas" width="640" height="260"></canvas>'+
+  '<div class="d" id="spNote"></div></div>';
+ ['spT','spB','spG'].forEach(id=>document.getElementById(id).oninput=drawSpec);
+ drawSpec();
+}
+function drawSpec(){
+ const T=+document.getElementById('spT').value;
+ const B=+document.getElementById('spB').value;
+ const G=+document.getElementById('spG').value;
+ document.getElementById('spTV').textContent=T;
+ document.getElementById('spBV').textContent=B;
+ document.getElementById('spGV').textContent=G;
+ const step=Math.max(B,G)/1000;
+ const n=Math.max(Math.floor(T/step),0);
+ const overlap=G<B;
+ const cv=document.getElementById('spCanvas'),ctx=cv.getContext('2d');
+ ctx.clearRect(0,0,cv.width,cv.height);
+ const ox=40,W=560,y=110;
+ ctx.strokeStyle='#8aa4ae';ctx.beginPath();ctx.moveTo(ox,y+56);ctx.lineTo(ox+W,y+56);ctx.stroke();
+ const show=Math.min(n,60);
+ for(let i=0;i<show;i++){
+  const cx=ox+W*(i*step+step/2)/T;
+  const halfw=Math.max(W*(B/1000)/T/2,1.2);
+  const col=overlap?'#e11d48':'#0891b2';
+  ctx.fillStyle=col;ctx.globalAlpha=overlap?0.42:0.62;
+  ctx.beginPath();
+  ctx.moveTo(cx-halfw,y+56);
+  ctx.quadraticCurveTo(cx,y-6,cx+halfw,y+56);
+  ctx.closePath();ctx.fill();ctx.globalAlpha=1;
+ }
+ ctx.fillStyle='#4d6b76';ctx.font='11.5px sans-serif';ctx.textAlign='center';
+ ctx.fillText('頻率 →',ox+W-30,y+76);
+ ctx.textAlign='left';ctx.fillText('0',ox,y+76);
+ ctx.textAlign='right';ctx.fillText(T+' MHz',ox+W,y+76);
+ ctx.fillStyle='#123039';ctx.font='bold 15px sans-serif';ctx.textAlign='left';
+ ctx.fillText('可容納電台數：'+n+(n>60?'（僅顯示前 60 個）':''),ox,y+118);
+ let msg='總寬度 '+T+' MHz ÷ 間隔 '+Math.max(B,G)+' kHz ⟹ 約可容納 <b>'+n+'</b> 個電台。';
+ if(overlap)msg+=' <b style="color:#e11d48">目前間隔小於信道帶寬，相鄰電台會重疊互相干擾</b>——這就是老式收音機調台時聽到兩個電台同時出聲的情況。';
+ else msg+=' 目前間隔 ≥ 信道帶寬，不會互相干擾。';
+ msg+='<br><b>試試看</b>：把總寬度設 20MHz、帶寬與間隔都設 200kHz，正好對應真實 FM 廣播的 88–108MHz 配置，答案是 100 個電台——這就是為什麼頻譜是不可再生的稀缺資源。';
+ document.getElementById('spNote').innerHTML=msg;
+}
+
+/* ---- 4. 蜂窩頻率複用 ---- */
+function toolCell(box){
+ box.innerHTML='<div class="tool"><div class="row">'+
+  '<label>小區半徑 <span id="clRV">40</span> px<input id="clR" type="range" min="18" max="70" value="40"></label>'+
+  '<label>複用群大小 N = <span id="clNV">7</span><input id="clN" type="range" min="3" max="12" value="7"></label>'+
+  '<label>總可用信道數 <span id="clCV">420</span><input id="clC" type="range" min="60" max="1200" value="420" step="30"></label>'+
+  '</div><canvas id="clCanvas" width="640" height="330"></canvas>'+
+  '<div class="d" id="clNote"></div></div>';
+ ['clR','clN','clC'].forEach(id=>document.getElementById(id).oninput=drawCell);
+ drawCell();
+}
+function drawCell(){
+ const R=+document.getElementById('clR').value;
+ const NG=+document.getElementById('clN').value;
+ const C=+document.getElementById('clC').value;
+ document.getElementById('clRV').textContent=R;
+ document.getElementById('clNV').textContent=NG;
+ document.getElementById('clCV').textContent=C;
+ const cv=document.getElementById('clCanvas'),ctx=cv.getContext('2d');
+ ctx.clearRect(0,0,cv.width,cv.height);
+ const cols=['#0891b2','#059669','#d97706','#7c3aed','#e11d48','#0ea5a4','#6366f1','#f59e0b','#10b981','#8b5cf6','#ef4444','#14b8a6'];
+ let cells=0;
+ const rows=Math.ceil(300/(R*1.5))+2, colsN=Math.ceil(600/(R*1.732))+2;
+ for(let r=-1;r<rows;r++){
+  for(let q=-1;q<colsN;q++){
+   const cx=40+q*R*1.732+(r%2?R*0.866:0);
+   const cy=40+r*R*1.5;
+   if(cx<10||cx>620||cy<20||cy>290)continue;
+   cells++;
+   const g=((q*2+r*3)%NG+NG)%NG;
+   ctx.beginPath();
+   for(let i=0;i<6;i++){
+    const a=Math.PI/180*(60*i-30);
+    const px=cx+R*Math.cos(a),py=cy+R*Math.sin(a);
+    if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
+   }
+   ctx.closePath();
+   ctx.fillStyle=cols[g%cols.length];ctx.globalAlpha=0.30;ctx.fill();ctx.globalAlpha=1;
+   ctx.strokeStyle=cols[g%cols.length];ctx.lineWidth=1.4;ctx.stroke();
+   if(R>26){ctx.fillStyle=cols[g%cols.length];ctx.font='bold 11px sans-serif';ctx.textAlign='center';
+    ctx.fillText('F'+(g+1),cx,cy+4);}
+  }
+ }
+ const perCell=Math.floor(C/NG);
+ const total=perCell*cells;
+ ctx.fillStyle='#123039';ctx.font='bold 14px sans-serif';ctx.textAlign='left';
+ ctx.fillText('小區數 '+cells+'　每小區信道 '+perCell+'　總容量 '+total,20,315);
+ document.getElementById('clNote').innerHTML='複用群 N='+NG+' 表示每 '+NG+' 個小區用完一輪頻段再重複。'+
+  '每小區可用 '+C+'÷'+NG+' = <b>'+perCell+'</b> 個信道，畫面中 '+cells+' 個小區合計 <b>'+total+'</b> 個同時通話。'+
+  '<br><b>試試看</b>：把小區半徑調小（等同微蜂窩），會看到小區數暴增、<b>總容量大幅上升——而且完全沒有新增任何頻譜</b>。這就是蜂窩系統的核心智慧。反之把 N 調大，干擾更安全但每小區信道變少，是可靠性與容量的取捨。';
+}
+
+/* ---- 5. 香農容量 ---- */
+function toolShannon(box){
+ box.innerHTML='<div class="tool"><div class="row">'+
+  '<label>頻寬 B = <span id="shBV">20</span> MHz<input id="shB" type="range" min="1" max="600" value="20"></label>'+
+  '<label>訊雜比 S/N = <span id="shSV">20</span> dB<input id="shS" type="range" min="0" max="40" value="20"></label>'+
+  '</div><canvas id="shCanvas" width="640" height="300"></canvas>'+
+  '<div class="d" id="shNote"></div></div>';
+ ['shB','shS'].forEach(id=>document.getElementById(id).oninput=drawShannon);
+ drawShannon();
+}
+function cap(Bmhz,snrdb){const snr=Math.pow(10,snrdb/10);return Bmhz*Math.log2(1+snr);}
+function drawShannon(){
+ const B=+document.getElementById('shB').value;
+ const S=+document.getElementById('shS').value;
+ document.getElementById('shBV').textContent=B;
+ document.getElementById('shSV').textContent=S;
+ const C=cap(B,S);
+ const cv=document.getElementById('shCanvas'),ctx=cv.getContext('2d');
+ ctx.clearRect(0,0,cv.width,cv.height);
+ const ox=70,oy=230,W=520,H=180;
+ ctx.strokeStyle='#8aa4ae';ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ox+W,oy);ctx.moveTo(ox,oy);ctx.lineTo(ox,oy-H);ctx.stroke();
+ const maxB=600, maxC=cap(maxB,40);
+ ctx.strokeStyle='#0891b2';ctx.lineWidth=3;ctx.beginPath();
+ for(let i=0;i<=200;i++){
+  const bb=maxB*i/200, cc=cap(bb,S);
+  const x=ox+W*bb/maxB, y=oy-H*Math.min(cc/maxC,1);
+  if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+ }
+ ctx.stroke();
+ const px=ox+W*B/maxB, py=oy-H*Math.min(C/maxC,1);
+ ctx.fillStyle='#e11d48';ctx.beginPath();ctx.arc(px,py,6,0,Math.PI*2);ctx.fill();
+ ctx.strokeStyle='#e11d48';ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(px,oy);ctx.lineTo(px,py);ctx.stroke();ctx.setLineDash([]);
+ ctx.fillStyle='#4d6b76';ctx.font='12px sans-serif';ctx.textAlign='center';
+ ctx.fillText('頻寬 B (MHz) →',ox+W-70,oy+22);
+ for(const b of [0,150,300,450,600]){ctx.fillText(b,ox+W*b/maxB,oy+18);}
+ ctx.save();ctx.translate(ox-42,oy-H/2);ctx.rotate(-Math.PI/2);ctx.fillText('容量 C (Mbps)',0,0);ctx.restore();
+ ctx.fillStyle='#123039';ctx.font='bold 15px sans-serif';ctx.textAlign='left';
+ ctx.fillText('C = '+C.toFixed(0)+' Mbps',ox+10,oy-H-4);
+ const dB=cap(B*2,S)-C, dS=cap(B,S+6)-C;
+ document.getElementById('shNote').innerHTML='在 B='+B+'MHz、S/N='+S+'dB 下，理論容量 <b>'+C.toFixed(0)+' Mbps</b>。'+
+  '<br><b>關鍵比較</b>：把<b>頻寬加倍</b>可增加 <b>'+dB.toFixed(0)+' Mbps</b>；把<b>訊雜比提升 6dB</b>（功率變 4 倍）只增加 <b>'+dS.toFixed(0)+' Mbps</b>。'+
+  '因為頻寬 B 是線性項、訊雜比在對數裡面，<b>加大頻寬遠比提升功率有效</b>——這正是每一代行動通訊都拼命往更寬頻譜走的根本原因，也因此撞上了頻率的雙刃劍。';
+}
+
+buildSidebar();renderHome();
+</script>
+</body>
+</html>
