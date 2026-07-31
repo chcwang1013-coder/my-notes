@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HBM 高頻寬記憶體 · 互動知識庫</title>
+<style>
+  :root{
+    --bg:#eef6f9; --bg2:#ffffff; --panel:#ffffff; --panel2:#f1f8fb;
+    --line:#d5e5ec; --text:#123039; --muted:#4d6b76; --dim:#8aa4ae;
+    --cyan:#0891b2; --green:#059669; --amber:#d97706; --purple:#7c3aed; --pink:#e11d48;
+    --accent:#0e9bc4;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:
+      radial-gradient(1100px 420px at 50% -120px, rgba(14,155,196,.14), transparent 70%),
+      linear-gradient(180deg,#f6fbfd 0%,#e9f3f7 100%);
+    color:var(--text);font-family:'PingFang TC','Microsoft JhengHei','Helvetica Neue',system-ui,sans-serif;
+    line-height:1.75;overflow:hidden}
+  header{position:fixed;top:0;left:0;right:0;height:60px;z-index:20;
+    display:flex;align-items:center;gap:16px;padding:0 20px;
+    background:rgba(255,255,255,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  header::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;
+    background:linear-gradient(90deg,#e11d48,#d97706,#eab308,#059669,#0891b2,#4f46e5,#7c3aed);opacity:.85}
+  header h1{font-size:18px;margin:0;font-weight:800;letter-spacing:.5px;white-space:nowrap}
+  header h1 .em{color:var(--accent)}
+  .search{flex:1;max-width:340px;position:relative}
+  .search input{width:100%;padding:8px 12px 8px 34px;border-radius:10px;
+    border:1px solid var(--line);background:var(--panel);color:var(--text);font-size:14px;outline:none}
+  .search input:focus{border-color:var(--accent)}
+  .search svg{position:absolute;left:10px;top:9px;opacity:.6}
+  .tabs{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+  .tabs button{padding:8px 14px;border-radius:10px;border:1px solid var(--line);
+    background:var(--panel);color:var(--muted);font-size:13.5px;cursor:pointer;transition:.15s;font-family:inherit}
+  .tabs button:hover{color:var(--text);border-color:var(--accent)}
+  .tabs button.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700;box-shadow:0 2px 10px rgba(14,155,196,.35)}
+  .wrap{position:fixed;top:60px;left:0;right:0;bottom:0;display:flex}
+  aside{width:290px;flex:none;overflow-y:auto;padding:16px 10px 60px;
+    border-right:1px solid var(--line);background:rgba(255,255,255,.55)}
+  .cat{margin:10px 8px 4px;font-size:12px;font-weight:700;letter-spacing:1px;color:var(--dim)}
+  .navlink{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:8px;
+    color:var(--muted);cursor:pointer;font-size:14px;transition:.12s}
+  .navlink:hover{background:var(--panel);color:var(--text)}
+  .navlink.active{background:var(--panel2);color:#123039;font-weight:700;box-shadow:inset 3px 0 0 var(--accent)}
+  .navlink .dot{width:8px;height:8px;border-radius:50%;flex:none}
+  .navlink small{color:var(--dim);font-size:10.5px;margin-left:auto;text-align:right}
+  main{flex:1;overflow-y:auto;padding:38px 46px 90px;scroll-behavior:smooth}
+  .note{max-width:820px;margin:0 auto;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .crumbs{font-size:13px;color:var(--dim);margin-bottom:10px}
+  .crumbs .tag{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11.5px;font-weight:700;margin-right:6px}
+  h2.title{font-size:29px;margin:2px 0 4px;font-weight:800}
+  .en{color:var(--muted);font-size:15px;margin-bottom:18px;letter-spacing:.5px}
+  .callout{background:linear-gradient(180deg,rgba(34,211,238,.12),rgba(34,211,238,.03));
+    border-left:3px solid var(--accent);border-radius:8px;padding:12px 16px;margin:18px 0;color:#123039}
+  .callout b{color:#0e5a6b}
+  main h3{font-size:18px;margin:26px 0 8px;color:#123039;border-bottom:1px solid var(--line);padding-bottom:6px}
+  main p{margin:10px 0}
+  main ul{margin:10px 0;padding-left:22px}
+  main li{margin:5px 0}
+  .diagram{width:100%;border-radius:12px;border:1px solid var(--line);margin:16px 0;background:#fff;display:block;box-shadow:0 2px 12px rgba(18,48,57,.06)}
+  .formula{font-family:'Cambria Math',Georgia,serif;font-size:18px;text-align:center;
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin:16px 0;color:var(--text)}
+  .eqcard{background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid var(--line);border-radius:14px;
+    padding:18px 20px;margin:18px 0;box-shadow:0 3px 14px rgba(18,48,57,.06)}
+  .eqcard .eqt{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--accent);text-align:center;margin-bottom:2px}
+  .eqcard .eq{font-family:'Cambria Math','Times New Roman',Georgia,serif;font-size:32px;text-align:center;
+    color:#123039;margin:6px 0 16px;line-height:1.35}
+  .eqcard .eq i{font-style:italic}
+  .eqcard .eq sub{font-size:.6em;vertical-align:-.25em} .eqcard .eq sup{font-size:.6em;vertical-align:.5em}
+  .eqcard .lg{display:grid;gap:8px}
+  .eqcard .row{display:flex;gap:14px;align-items:baseline;padding:9px 14px;background:#fff;border:1px solid var(--line);border-radius:10px}
+  .eqcard .s{font-family:'Cambria Math','Times New Roman',Georgia,serif;font-style:italic;font-weight:800;
+    font-size:20px;min-width:58px;text-align:center;flex:none}
+  .eqcard .s sub{font-size:.6em;vertical-align:-.2em}
+  .eqcard .m{font-size:13.5px;color:#2b4a53;line-height:1.6}
+  .eqcard .m b{color:#123039}
+  .eqcard .u{display:inline-block;margin-left:8px;font-size:11.5px;color:#5b8090;background:#eef6f9;
+    border:1px solid var(--line);border-radius:20px;padding:1px 9px}
+  .eqcard .cap{font-size:12.5px;color:var(--dim);text-align:center;margin-top:12px}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 12px;text-align:left}
+  th{background:#e4f1f5;color:#123039;font-weight:700}
+  td{background:#fbfeff;color:#2b4a53}
+  tr:nth-child(even) td{background:#f2f8fb}
+  a.wl{color:var(--accent);cursor:pointer;text-decoration:none;border-bottom:1px dashed rgba(34,211,238,.5)}
+  a.wl:hover{color:#0b5566;background:rgba(14,155,196,.14);border-radius:3px}
+  .related{margin-top:34px;padding-top:16px;border-top:1px solid var(--line)}
+  .related .cat{margin-left:0}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .pathrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:16px 0 8px}
+  .stage{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:24px;background:#fff;
+    border:1px solid var(--line);cursor:pointer;font-weight:700;color:#123039;transition:.15s;box-shadow:0 1px 6px rgba(18,48,57,.05)}
+  .stage:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(18,48,57,.12);border-color:var(--accent)}
+  .stage .d{width:10px;height:10px;border-radius:50%;flex:none}
+  .pathrow .arrow{color:var(--dim);font-weight:800;font-size:16px}
+  .catgroup{margin:14px 0}
+  .catgroup .cl{font-size:12.5px;font-weight:800;letter-spacing:.5px;margin-bottom:7px;display:flex;align-items:center;gap:7px}
+  .catgroup .cl .d{width:9px;height:9px;border-radius:50%}
+  .chip{padding:6px 14px;border-radius:20px;background:var(--panel);border:1px solid var(--line);
+    color:var(--muted);cursor:pointer;font-size:13.5px;transition:.12s}
+  .chip:hover{background:var(--accent);color:#04222a;border-color:var(--accent)}
+  .nav-btns{display:flex;justify-content:space-between;margin-top:26px;gap:10px}
+  .nav-btns button{flex:1;padding:12px;border-radius:10px;border:1px solid var(--line);
+    background:var(--panel);color:var(--muted);cursor:pointer;text-align:left;font-family:inherit;transition:.12s}
+  .nav-btns button:hover{border-color:var(--accent);color:#0e5a6b;background:#f0f9fc}
+  .nav-btns small{display:block;color:var(--dim);font-size:11px}
+  .kbox{background:linear-gradient(180deg,rgba(52,211,153,.12),rgba(52,211,153,.03));
+    border:1px solid rgba(52,211,153,.35);border-radius:12px;padding:14px 18px;margin:22px 0}
+  .kbox .kt{font-weight:800;color:var(--green);font-size:14px;margin-bottom:6px}
+  .kbox ul{margin:4px 0 0;padding-left:20px} .kbox li{margin:3px 0}
+  .collap{border:1px solid var(--line);border-radius:10px;margin:12px 0;overflow:hidden;background:#f4fafc}
+  .collap>summary{cursor:pointer;padding:12px 16px;font-weight:700;color:#123039;list-style:none;display:flex;align-items:center;gap:8px}
+  .collap>summary::-webkit-details-marker{display:none}
+  .collap>summary::before{content:'▸';color:var(--accent);transition:.2s;display:inline-block}
+  .collap[open]>summary::before{transform:rotate(90deg)}
+  .collap>summary:hover{background:var(--panel)}
+  .collap .body{padding:2px 18px 16px;color:#2b4a53}
+  .collap.myth{background:#fff5f6}.collap.myth>summary{color:#be123c}.collap.myth>summary::before{color:var(--pink)}
+  .collap.fact{background:#f1fbf6}.collap.fact>summary{color:#047857}.collap.fact>summary::before{color:var(--green)}
+  .collap.deep{background:#f5f4fe}.collap.deep>summary{color:#3730a3}.collap.deep>summary::before{color:#4f46e5}
+  .collap>summary:hover{background:rgba(0,0,0,.03)}
+  .myth-row{display:flex;gap:10px;margin:10px 0}
+  .myth-row .x{color:var(--pink);font-weight:800;flex:none}.myth-row .o{color:var(--green);font-weight:800;flex:none}
+  .hero{text-align:center;padding:14px 0 10px}
+  .hero .big{font-size:40px;font-weight:800;margin:12px 0 4px}
+  .hero .sub{color:var(--muted);max-width:640px;margin:0 auto 8px}
+  .stats{display:flex;gap:12px;justify-content:center;margin:22px 0;flex-wrap:wrap}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 20px;text-align:center}
+  .stat b{font-size:24px;display:block;color:var(--accent)} .stat span{font-size:12px;color:var(--dim)}
+  #graphView,#demoView,#meshView{flex:1;position:relative;display:none}
+  #demoView,#meshView{overflow-y:auto;padding:24px 30px 80px}
+  #graph{width:100%;height:100%;display:block;cursor:grab}
+  .legend{position:absolute;top:16px;left:16px;background:rgba(255,255,255,.9);border:1px solid var(--line);
+    border-radius:10px;padding:12px 14px;font-size:13px;backdrop-filter:blur(6px);box-shadow:0 2px 12px rgba(18,48,57,.08)}
+  .legend div{display:flex;align-items:center;gap:8px;margin:4px 0;color:var(--muted)}
+  .legend i{width:11px;height:11px;border-radius:50%;display:inline-block}
+  .hint{position:absolute;bottom:16px;right:18px;color:var(--dim);font-size:12px}
+  .gnode{cursor:pointer}.gnode text{font-size:12px;fill:var(--text);pointer-events:none;font-family:inherit}
+  .gnode circle{transition:r .15s}
+  .gedge{stroke:#b7d3dd;stroke-width:1.4}.gedge.hl{stroke:var(--accent);stroke-width:2.6}
+  /* demo */
+  .demo{max-width:900px;margin:0 auto}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;margin:18px 0;box-shadow:0 4px 20px rgba(18,48,57,.06)}
+  .panel h3{margin:0 0 4px;color:#123039;font-size:18px;border:none}
+  .panel .d{color:var(--dim);font-size:13px;margin-bottom:12px}
+  .controls{display:flex;flex-wrap:wrap;gap:20px;align-items:center;margin-top:14px}
+  .controls label{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:6px;min-width:190px}
+  .controls input[type=range]{accent-color:var(--accent)}
+  .controls .val{color:var(--accent);font-weight:700}
+  .controls button{padding:9px 16px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);color:var(--text);cursor:pointer;font-family:inherit}
+  .controls button:hover{border-color:var(--accent)}
+  canvas.cv{width:100%;border-radius:12px;background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid var(--line);display:block}
+  .bars{display:flex;gap:18px;margin-top:14px}
+  .bar{flex:1;text-align:center}
+  .bar .track{height:120px;background:var(--panel2);border-radius:8px;position:relative;overflow:hidden;border:1px solid var(--line)}
+  .bar .fill{position:absolute;bottom:0;left:0;right:0;transition:height .08s}
+  .bar .lbl{font-size:13px;color:var(--muted);margin-top:6px}
+  .bar .pct{font-weight:800;color:#123039}
+  svg#mesh{width:100%;height:auto;background:linear-gradient(180deg,#fbfeff,#eef7fa);border:1px solid var(--line);border-radius:12px}
+  .cpl{cursor:pointer}
+  .chartbox{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;margin:16px 0;box-shadow:0 2px 12px rgba(18,48,57,.05)}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:#b7d3dd;border-radius:6px}
+  @media(max-width:720px){aside{position:fixed;z-index:15;height:100%;transform:translateX(-100%);transition:.25s}
+    aside.open{transform:none}main{padding:24px 18px 80px}.search{max-width:none}header h1{font-size:14px}}
+  /* ===== 模擬工具版面（補上缺漏的樣式） ===== */
+  main{min-width:0}
+  #demoView{min-width:0}
+  .simtab{padding:7px 14px;border-radius:9px;border:1px solid var(--line);
+    background:var(--panel);color:var(--muted);font-size:13px;cursor:pointer;
+    transition:.15s;font-family:inherit}
+  .simtab:hover{color:var(--text);border-color:var(--accent)}
+  .simtab.active{background:var(--accent);color:#fff;border-color:var(--accent);
+    font-weight:700;box-shadow:0 2px 10px rgba(14,155,196,.32)}
+  .tool{min-width:0}
+  .tool .row{display:flex;flex-wrap:wrap;gap:16px 22px;align-items:flex-start;margin:6px 0 16px}
+  .tool .row label{display:flex;flex-direction:column;gap:6px;flex:1 1 200px;min-width:0;
+    font-size:13px;color:var(--muted);line-height:1.5}
+  .tool .row label span{font-weight:700;color:var(--accent)}
+  .tool .row input[type=range]{width:100%;accent-color:var(--accent);margin:0}
+  .tool canvas{width:100%;height:auto;display:block;margin:8px 0 4px;
+    border-radius:12px;border:1px solid var(--line);
+    background:linear-gradient(180deg,#fbfeff,#eef7fa)}
+  .tool .d{color:var(--muted);font-size:13.5px;line-height:1.85;margin-top:12px}
+  .tool .d b{color:#0e5a6b}
+  /* ===== MathML 公式排版 ===== */
+  .formula math{font-size:1.18em;line-height:1.45}
+  .formula{overflow-x:auto;overflow-y:hidden}
+  math{font-family:'Cambria Math','Latin Modern Math','STIX Two Math',Georgia,serif}
+  math mfrac{padding:0 .12em}
+  math msqrt{padding-right:.1em}
+  math mtext{font-family:'PingFang TC','Microsoft JhengHei',system-ui,sans-serif;font-size:.86em}
+</style>
+</head>
+
+
+
+<body>
+<header>
+  <h1>🧱 <span class="em">HBM</span>知識庫</h1>
+  <div class="search">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8fbccb" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input id="search" placeholder="搜尋知識點…（Enter 開啟）" autocomplete="off">
+  </div>
+  <div class="tabs">
+    <button id="tabNotes" class="active">📖 筆記</button>
+    <button id="tabGraph">🕸️ 關係圖譜</button>
+    <button id="tabDemo">🔬 模擬工具</button>
+  </div>
+</header>
+<div class="wrap">
+  <aside id="sidebar"></aside>
+  <main id="main"></main>
+  <div id="graphView"><svg id="graph"></svg><div class="legend" id="legend"></div>
+    <div class="hint">拖曳節點 · 點擊開啟筆記 · 移入高亮關聯</div></div>
+  <div id="demoView"></div>
+</div>
+<script>
+
+
+
+
+const CATS={
+ "動機":{name:"為什麼需要 HBM",raw:"#0891b2"},
+ "製程":{name:"垂直堆疊的關鍵製程",raw:"#059669"},
+ "封裝":{name:"封裝整合",raw:"#7c3aed"},
+ "系統":{name:"規格演進與系統",raw:"#e11d48"}
+};
+function L(id){return '<a class="wl" data-id="'+id+'">'+id+'</a>';}
+const NOTES=[
+{id:"記憶體牆",ch:"1",en:"Ch.1 · Memory Wall",cat:"動機",html:`<div class="callout"><b>這章的問題：</b>「記憶體牆」不是說記憶體慢，而是說它<b>成長得不夠快</b>。為什麼落差會越拉越大？為什麼 AI 晶片特別敏感？</div>
+<h3>問題不是「慢」，是「成長率不同」</h3><p>運算算力靠微縮與平行化快速成長；記憶體頻寬受限於接腳數、訊號完整性與功耗，成長慢得多。<b>兩條曲線斜率不同 ⟹ 差距隨時間單調擴大</b>。這才是「牆」的精確意思——不是撞到固定障礙，而是<b>你跑得越快，牆離你越遠也越高</b>。</p>
+<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNzYwIDM0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmb250LWZhbWlseT0iJ1BpbmdGYW5nIFRDJywnTWljcm9zb2Z0IEpoZW5nSGVpJywnSGVsdmV0aWNhIE5ldWUnLHNhbnMtc2VyaWYiPgo8dGV4dCB4PSIzODAuMCIgeT0iMjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTciIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMxMjMwMzkiPuiomOaGtumrlOeJhu+8muWVj+mhjOS4jeaYr+OAjOaFouOAje+8jOaYr+WFqeaineabsue3mueahOaWnOeOh+S4jeWQjDwvdGV4dD4KPGxpbmUgeDE9IjgwIiB5MT0iMjc1IiB4Mj0iNjgwIiB5Mj0iMjc1IiBzdHJva2U9IiM4YWE0YWUiIHN0cm9rZS13aWR0aD0iMS41Ii8+CjxsaW5lIHgxPSI4MCIgeTE9IjI3NSIgeDI9IjgwIiB5Mj0iNjAiIHN0cm9rZT0iIzhhYTRhZSIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KPHBvbHlsaW5lIHBvaW50cz0iODAuMCwyNjIuMSA4Ni4wLDI2MS43IDkyLjAsMjYxLjQgOTguMCwyNjEuMCAxMDQuMCwyNjAuNiAxMTAuMCwyNjAuMiAxMTYuMCwyNTkuOCAxMjIuMCwyNTkuNCAxMjguMCwyNTguOSAxMzQuMCwyNTguNSAxNDAuMCwyNTguMCAxNDYuMCwyNTcuNSAxNTIuMCwyNTcuMSAxNTguMCwyNTYuNiAxNjQuMCwyNTYuMCAxNzAuMCwyNTUuNSAxNzYuMCwyNTUuMCAxODIuMCwyNTQuNCAxODguMCwyNTMuOCAxOTQuMCwyNTMuMiAyMDAuMCwyNTIuNiAyMDYuMCwyNTIuMCAyMTIuMCwyNTEuNCAyMTguMCwyNTAuNyAyMjQuMCwyNTAuMCAyMzAuMCwyNDkuMyAyMzYuMCwyNDguNiAyNDIuMCwyNDcuOSAyNDguMCwyNDcuMSAyNTQuMCwyNDYuNCAyNjAuMCwyNDUuNiAyNjYuMCwyNDQuNyAyNzIuMCwyNDMuOSAyNzguMCwyNDMuMCAyODQuMCwyNDIuMSAyOTAuMCwyNDEuMiAyOTYuMCwyNDAuMyAzMDIuMCwyMzkuMyAzMDguMCwyMzguMyAzMTQuMCwyMzcuMyAzMjAuMCwyMzYuMiAzMjYuMCwyMzUuMiAzMzIuMCwyMzQuMSAzMzguMCwyMzIuOSAzNDQuMCwyMzEuNyAzNTAuMCwyMzAuNSAzNTYuMCwyMjkuMyAzNjIuMCwyMjguMCAzNjguMCwyMjYuNyAzNzQuMCwyMjUuNCAzODAuMCwyMjQuMCAzODYuMCwyMjIuNiAzOTIuMCwyMjEuMSAzOTguMCwyMTkuNiA0MDQuMCwyMTguMCA0MTAuMCwyMTYuNSA0MTYuMCwyMTQuOCA0MjIuMCwyMTMuMSA0MjguMCwyMTEuNCA0MzQuMCwyMDkuNyA0NDAuMCwyMDcuOCA0NDYuMCwyMDYuMCA0NTIuMCwyMDQuMCA0NTguMCwyMDIuMSA0NjQuMCwyMDAuMCA0NzAuMCwxOTcuOSA0NzYuMCwxOTUuOCA0ODIuMCwxOTMuNiA0ODguMCwxOTEuMyA0OTQuMCwxODkuMCA1MDAuMCwxODYuNiA1MDYuMCwxODQuMSA1MTIuMCwxODEuNiA1MTguMCwxNzkuMCA1MjQuMCwxNzYuMyA1MzAuMCwxNzMuNSA1MzYuMCwxNzAuNyA1NDIuMCwxNjcuOCA1NDguMCwxNjQuOCA1NTQuMCwxNjEuNyA1NjAuMCwxNTguNiA1NjYuMCwxNTUuMyA1NzIuMCwxNTIuMCA1NzguMCwxNDguNiA1ODQuMCwxNDUuMCA1OTAuMCwxNDEuNCA1OTYuMCwxMzcuNyA2MDIuMCwxMzMuOSA2MDguMCwxMjkuOSA2MTQuMCwxMjUuOSA2MjAuMCwxMjEuNyA2MjYuMCwxMTcuNSA2MzIuMCwxMTMuMSA2MzguMCwxMDguNSA2NDQuMCwxMDMuOSA2NTAuMCw5OS4xIDY1Ni4wLDk0LjIgNjYyLjAsODkuMiA2NjguMCw4NC4wIDY3NC4wLDc4LjcgNjgwLjAsNzMuMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZTExZDQ4IiBzdHJva2Utd2lkdGg9IjMiLz4KPHBvbHlsaW5lIHBvaW50cz0iODAuMCwyNjIuMSA4Ni4wLDI2Mi4wIDkyLjAsMjYxLjggOTguMCwyNjEuNiAxMDQuMCwyNjEuNSAxMTAuMCwyNjEuMyAxMTYuMCwyNjEuMiAxMjIuMCwyNjEuMCAxMjguMCwyNjAuOSAxMzQuMCwyNjAuNyAxNDAuMCwyNjAuNSAxNDYuMCwyNjAuNCAxNTIuMCwyNjAuMiAxNTguMCwyNjAuMCAxNjQuMCwyNTkuOCAxNzAuMCwyNTkuNyAxNzYuMCwyNTkuNSAxODIuMCwyNTkuMyAxODguMCwyNTkuMSAxOTQuMCwyNTguOSAyMDAuMCwyNTguOCAyMDYuMCwyNTguNiAyMTIuMCwyNTguNCAyMTguMCwyNTguMiAyMjQuMCwyNTguMCAyMzAuMCwyNTcuOCAyMzYuMCwyNTcuNiAyNDIuMCwyNTcuNCAyNDguMCwyNTcuMiAyNTQuMCwyNTcuMCAyNjAuMCwyNTYuOCAyNjYuMCwyNTYuNiAyNzIuMCwyNTYuNCAyNzguMCwyNTYuMSAyODQuMCwyNTUuOSAyOTAuMCwyNTUuNyAyOTYuMCwyNTUuNSAzMDIuMCwyNTUuMyAzMDguMCwyNTUuMCAzMTQuMCwyNTQuOCAzMjAuMCwyNTQuNiAzMjYuMCwyNTQuMyAzMzIuMCwyNTQuMSAzMzguMCwyNTMuOCAzNDQuMCwyNTMuNiAzNTAuMCwyNTMuNCAzNTYuMCwyNTMuMSAzNjIuMCwyNTIuOSAzNjguMCwyNTIuNiAzNzQuMCwyNTIuMyAzODAuMCwyNTIuMSAzODYuMCwyNTEuOCAzOTIuMCwyNTEuNSAzOTguMCwyNTEuMyA0MDQuMCwyNTEuMCA0MTAuMCwyNTAuNyA0MTYuMCwyNTAuNCA0MjIuMCwyNTAuMiA0MjguMCwyNDkuOSA0MzQuMCwyNDkuNiA0NDAuMCwyNDkuMyA0NDYuMCwyNDkuMCA0NTIuMCwyNDguNyA0NTguMCwyNDguNCA0NjQuMCwyNDguMSA0NzAuMCwyNDcuOCA0NzYuMCwyNDcuNCA0ODIuMCwyNDcuMSA0ODguMCwyNDYuOCA0OTQuMCwyNDYuNSA1MDAuMCwyNDYuMSA1MDYuMCwyNDUuOCA1MTIuMCwyNDUuNSA1MTguMCwyNDUuMSA1MjQuMCwyNDQuOCA1MzAuMCwyNDQuNCA1MzYuMCwyNDQuMSA1NDIuMCwyNDMuNyA1NDguMCwyNDMuNCA1NTQuMCwyNDMuMCA1NjAuMCwyNDIuNiA1NjYuMCwyNDIuMyA1NzIuMCwyNDEuOSA1NzguMCwyNDEuNSA1ODQuMCwyNDEuMSA1OTAuMCwyNDAuNyA1OTYuMCwyNDAuMyA2MDIuMCwyMzkuOSA2MDguMCwyMzkuNSA2MTQuMCwyMzkuMSA2MjAuMCwyMzguNyA2MjYuMCwyMzguMyA2MzIuMCwyMzcuOCA2MzguMCwyMzcuNCA2NDQuMCwyMzcuMCA2NTAuMCwyMzYuNSA2NTYuMCwyMzYuMSA2NjIuMCwyMzUuNiA2NjguMCwyMzUuMiA2NzQuMCwyMzQuNyA2ODAuMCwyMzQuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDg5MWIyIiBzdHJva2Utd2lkdGg9IjMiLz4KPHRleHQgeD0iNjc0IiB5PSI3MyIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1zaXplPSIxMy41IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZTExZDQ4Ij7pgYvnrpfnrpflips8L3RleHQ+Cjx0ZXh0IHg9IjY3NCIgeT0iMjI4IiB0ZXh0LWFuY2hvcj0iZW5kIiBmb250LXNpemU9IjEzLjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwODkxYjIiPuiomOaGtumrlOmgu+WvrDwvdGV4dD4KPGxpbmUgeDE9IjU3Mi4wIiB5MT0iMTUyLjAiIHgyPSI1NzIuMCIgeTI9IjI0MS45IiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtZGFzaGFycmF5PSI1IDMiLz4KPHRleHQgeD0iNTYyLjAiIHk9IjE5Ni45IiB0ZXh0LWFuY2hvcj0iZW5kIiBmb250LXNpemU9IjEyLjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNkOTc3MDYiPuiQveW3ruaMgee6jOaTtOWkpzwvdGV4dD4KPHRleHQgeD0iMzgwLjAiIHk9IjI5NyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMi41IiBmaWxsPSIjNGQ2Yjc2Ij7mmYLplpMg4oaSPC90ZXh0Pgo8dGV4dCB4PSI4OCIgeT0iNTYiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM0ZDZiNzYiPuaViOiDve+8iOWwjeaVuO+8iTwvdGV4dD4KPHRleHQgeD0iMzgwLjAiIHk9IjMyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMi41IiBmaWxsPSIjNGQ2Yjc2Ij7mlpznjofkuI3lkIwg4p+5IOW3rui3neWWruiqv+aTtOWkp++8mjx0c3BhbiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZTExZDQ4Ij7kvaDot5Hlvpfotorlv6vvvIzniYbpm6LkvaDotorpgaDkuZ/otorpq5g8L3RzcGFuPjwvdGV4dD4KPC9zdmc+">
+<h3>運算強度決定你卡在哪</h3><div class="formula">運算強度 ＝ 浮點運算次數 ÷ 記憶體搬移位元組數　[FLOP/Byte]</div>
+<p>運算強度<b>高</b>（大矩陣相乘、卷積）→ 算力受限，加強算力有用；運算強度<b>低</b>（逐元素運算、稀疏、小 batch 的矩陣-向量乘）→ <b>頻寬受限，算力再強也沒用</b>。這正是 Roofline 模型描述的事。</p>
+<h3>為什麼 AI 加速器特別痛</h3><p><b>①</b> 模型權重每次推論都要整份搬過，參數量動輒數十至數千億。<b>②</b> 許多操作運算強度天生就低，直接落在頻寬受限區。<b>③</b> 張量核心與低精度運算讓算力短期內成長數十倍，<b>但完全沒有加快資料搬移</b>。</p>
+<p><b>結果是相當違反直覺的：算力越強，頻寬受限的比例反而越高。</b></p>
+<h3>能量角度：搬資料比算還貴</h3><p>現代製程下，把資料從晶片外記憶體搬進來的能量，<b>比對它做一次運算高出一至二個數量級</b>，且大致隨傳輸距離增加。<b>這給了 HBM 第二個動機</b>：把記憶體搬進封裝，不只提升頻寬，還大幅降低每位元搬移能耗。</p>
+<p>問題因此被逼到一個很窄的出口：<b>必須大幅提升頻寬，且要在功耗可接受的前提下做到</b> → ${L("DRAM基礎與頻寬公式")}。</p>`},
+{id:"DRAM基礎與頻寬公式",ch:"2",en:"Ch.2 · DRAM & Bandwidth",cat:"動機",html:`<div class="callout"><b>這章的問題：</b>頻寬由哪些因素決定？公式裡有幾個旋鈕？為什麼 DRAM 核心其實一直很慢，我們卻拿到了高頻寬？</div>
+<h3>一個關鍵事實</h3><p>DRAM 儲存單元極簡單：<b>一個電晶體加一個電容</b>（1T1C）。因此密度高、成本低，但需要週期性刷新、且讀取是破壞性的。</p>
+<p><b>而這件事對理解 HBM 極為關鍵</b>：DRAM 記憶體陣列本身（核心）的存取速度，幾十年來進步非常有限。開列、感測放大、預充電這些內部動作的改善幅度，遠小於介面速度的成長。</p>
+<h3>預取：慢核心怎麼餵出快介面</h3><p>解法是<b>預取</b>：內部一次從陣列讀出很寬的一整排資料存進緩衝區，再由介面用高速時脈逐拍送出。就像<b>動作慢但一次搬很多的倉庫工人</b>配上<b>速度很快的輸送帶</b>——整體吞吐取決於輸送帶，不是工人。</p>
+<p><b>這解釋了一個常見困惑</b>：為什麼 DRAM 的<b>延遲</b>幾十年改善有限，<b>頻寬</b>卻成長好幾個數量級？因為預取只能提升頻寬，無法縮短「第一筆資料要等多久」。<b>延遲與頻寬是兩回事，而 HBM 解決的是頻寬。</b></p>
+<h3>頻寬公式：只有三個旋鈕</h3><div class="formula">頻寬 ＝ 位寬 × 時脈頻率 × 每週期傳輸次數</div>
+<p>實務上常把後兩項合併成<b>每支接腳的資料率</b>：</p>
+<div class="formula">頻寬 ＝ 位寬 × 每腳資料率 ÷ 8　[GB/s]</div>
+<p><b>關鍵推論：提升頻寬只有兩條路——把匯流排「加寬」，或把介面「加快」。</b>這個二選一是後面所有故事的起點。</p>
+<h3>數量級對照</h3><p>單顆 GDDR：32-bit × 極高速率（十幾 Gbps）→ 數十 GB/s。單堆疊 HBM：<b>1024-bit 以上</b> × 相對低速率（數 Gbps）→ <b>數百至 1000+ GB/s</b>。</p>
+<p><b>注意 HBM 的每腳速率其實明顯低於 GDDR</b>——它完全靠位寬碾壓取勝。好處是不必把單腳推到極限，因此<b>每位元能耗更低、訊號完整性壓力更小</b>。</p>`},
+{id:"為什麼時脈拉不上去",ch:"3",en:"Ch.3 · The Three Walls",cat:"動機",html:`<div class="callout"><b>這章的問題：</b>為什麼不乾脆一直提高時脈？擋住這條路的是製程做不出來，還是物理不允許？</div>
+<h3>三道牆，而且互相加乘</h3><p>提高每腳資料率會同時撞上<b>訊號完整性</b>、<b>功耗</b>、<b>接腳數量</b>三個問題，而且彼此惡化。</p>
+<h3>第一道牆：訊號完整性</h3><p>資料率提高後，PCB 走線不再是「一條電線」，必須當成傳輸線處理：<b>①</b> 介電與導體損耗隨頻率惡化（後者因集膚效應）。<b>②</b> 每個接頭、過孔、轉折都是阻抗不連續點，造成反射。<b>③</b> <b>串音</b>——而位寬越大、走線越密，串音越嚴重，這正是加寬與加快互相衝突之處。<b>④</b> 符號間干擾（ISI）。</p>
+<p>綜合表現為<b>眼圖閉合</b>，最終無法可靠分辨位元。等化器、預加重等補救手段確實有效，但<b>每一項都要付出額外面積與功耗</b>——直接連到第二道牆。</p>
+<h3>第二道牆：功耗</h3><div class="formula">P ≈ α C V² f</div>
+<p>功耗隨頻率上升，而真實情況更糟：高頻要維持雜訊容限所以電壓降不下去（功耗與 V² 成正比）、等化與時脈回復電路本身耗電、終端電阻持續耗電。結果<b>每位元傳輸能耗隨資料率上升</b>——這往往比「做不做得到」更早成為真正的限制。</p>
+<h3>第三道牆：接腳數量</h3><p>每增加一條資料線就需要對應接腳、走線層與回流路徑，而高速訊號往往要搭配數條電源/接地腳。封裝尺寸、板層數、佈線密度都有上限。</p>
+<div class="formula">想加寬 → 接腳不夠、串音惡化<br>想加快 → 訊號完整性崩潰、功耗爆炸</div>
+<h3>關鍵洞察：根源是「距離」</h3><p>三道牆有共同的根源——<b>記憶體離運算晶片太遠</b>。訊號要穿過封裝、走過 PCB 上十幾公分、再穿進記憶體封裝。這段路造成大部分衰減與反射、消耗大部分驅動功率、佔用大量接腳。</p>
+<p><b>一旦看清根源是距離，解法方向就浮現了</b>：不要在長距離上把訊號推得更快，而是<b>把距離大幅縮短，短到可以用「又慢又寬」的方式傳輸</b> → ${L("GDDR與HBM的路線分歧")}。</p>`},
+{id:"GDDR與HBM的路線分歧",ch:"4",en:"Ch.4 · Two Roads",cat:"動機",html:`<div class="callout"><b>這章的問題：</b>面對同一個頻寬需求，業界分裂成兩條路。為什麼 GDDR 沒被淘汰？什麼時候該選哪個？</div>
+<h3>同一個公式，兩種讀法</h3><p><b>GDDR</b>：位寬窄（32-bit 級）、每腳速率極高、記憶體放在 PCB 上。<b>HBM</b>：位寬極寬（1024-bit 起）、每腳速率相對保守、記憶體放進封裝內經中介層連接。</p>
+<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNzYwIDMzMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmb250LWZhbWlseT0iJ1BpbmdGYW5nIFRDJywnTWljcm9zb2Z0IEpoZW5nSGVpJywnSGVsdmV0aWNhIE5ldWUnLHNhbnMtc2VyaWYiPgo8dGV4dCB4PSIzODAuMCIgeT0iMjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTciIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMxMjMwMzkiPuWQjOS4gOWAi+mgu+WvrOWFrOW8j++8jOWFqeeoruiugOazlTwvdGV4dD4KPHJlY3QgeD0iNjAiIHk9IjUyIiB3aWR0aD0iNjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjZDVlNWVjIi8+Cjx0ZXh0IHg9IjM4MCIgeT0iNzgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwZTVhNmIiPumgu+WvrCDvvJ0g5L2N5a+sIMOXIOaZguiEiCDDlyDmr4/pgLHmnJ/lgrPovLjmrKHmlbg8L3RleHQ+Cjx0ZXh0IHg9IjIwMCIgeT0iMTIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE0LjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNkOTc3MDYiPkdERFLvvJrliqDlv6s8L3RleHQ+CjxsaW5lIHgxPSIxMjAiIHkxPSIxNDIiIHgyPSIyODAiIHkyPSIxNDIiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPGxpbmUgeDE9IjEyMCIgeTE9IjE1NyIgeDI9IjI4MCIgeTI9IjE1NyIgc3Ryb2tlPSIjZDk3NzA2IiBzdHJva2Utd2lkdGg9IjciIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8bGluZSB4MT0iMTIwIiB5MT0iMTcyIiB4Mj0iMjgwIiB5Mj0iMTcyIiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxsaW5lIHgxPSIxMjAiIHkxPSIxODciIHgyPSIyODAiIHkyPSIxODciIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPHRleHQgeD0iMjAwIiB5PSIyMjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM0ZDZiNzYiPuWwkeaVuOi7iumBkyDCtyDmr4/ovJvou4rplovliLDmpbXpgJ88L3RleHQ+Cjx0ZXh0IHg9IjIwMCIgeT0iMjQyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExLjUiIGZpbGw9IiM4YWE0YWUiPueqhOS9jeWvrCDDlyDmpbXpq5jmr4/ohbPpgJ/njoc8L3RleHQ+Cjx0ZXh0IHg9IjIwMCIgeT0iMjY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExLjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNlMTFkNDgiPuKGkiDoqIromZ/lrozmlbTmgKfjgIHlip/ogJfmkp7niYY8L3RleHQ+Cjx0ZXh0IHg9IjU2MCIgeT0iMTIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE0LjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwODkxYjIiPkhCTe+8muWKoOWvrDwvdGV4dD4KPGxpbmUgeDE9IjQ3MCIgeTE9IjEzOC4wIiB4Mj0iNjUwIiB5Mj0iMTM4LjAiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIyLjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC44NSIvPgo8bGluZSB4MT0iNDcwIiB5MT0iMTQyLjYiIHgyPSI2NTAiIHkyPSIxNDIuNiIgc3Ryb2tlPSIjMDg5MWIyIiBzdHJva2Utd2lkdGg9IjIuNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjg1Ii8+CjxsaW5lIHgxPSI0NzAiIHkxPSIxNDcuMiIgeDI9IjY1MCIgeTI9IjE0Ny4yIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMi40IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuODUiLz4KPGxpbmUgeDE9IjQ3MCIgeTE9IjE1MS44IiB4Mj0iNjUwIiB5Mj0iMTUxLjgiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIyLjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC44NSIvPgo8bGluZSB4MT0iNDcwIiB5MT0iMTU2LjQiIHgyPSI2NTAiIHkyPSIxNTYuNCIgc3Ryb2tlPSIjMDg5MWIyIiBzdHJva2Utd2lkdGg9IjIuNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjg1Ii8+CjxsaW5lIHgxPSI0NzAiIHkxPSIxNjEuMCIgeDI9IjY1MCIgeTI9IjE2MS4wIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMi40IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuODUiLz4KPGxpbmUgeDE9IjQ3MCIgeTE9IjE2NS42IiB4Mj0iNjUwIiB5Mj0iMTY1LjYiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIyLjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC44NSIvPgo8bGluZSB4MT0iNDcwIiB5MT0iMTcwLjIiIHgyPSI2NTAiIHkyPSIxNzAuMiIgc3Ryb2tlPSIjMDg5MWIyIiBzdHJva2Utd2lkdGg9IjIuNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjg1Ii8+CjxsaW5lIHgxPSI0NzAiIHkxPSIxNzQuOCIgeDI9IjY1MCIgeTI9IjE3NC44IiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMi40IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuODUiLz4KPGxpbmUgeDE9IjQ3MCIgeTE9IjE3OS40IiB4Mj0iNjUwIiB5Mj0iMTc5LjQiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIyLjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC44NSIvPgo8bGluZSB4MT0iNDcwIiB5MT0iMTg0LjAiIHgyPSI2NTAiIHkyPSIxODQuMCIgc3Ryb2tlPSIjMDg5MWIyIiBzdHJva2Utd2lkdGg9IjIuNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjg1Ii8+CjxsaW5lIHgxPSI0NzAiIHkxPSIxODguNiIgeDI9IjY1MCIgeTI9IjE4OC42IiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMi40IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuODUiLz4KPGxpbmUgeDE9IjQ3MCIgeTE9IjE5My4yIiB4Mj0iNjUwIiB5Mj0iMTkzLjIiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIyLjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC44NSIvPgo8bGluZSB4MT0iNDcwIiB5MT0iMTk3LjgiIHgyPSI2NTAiIHkyPSIxOTcuOCIgc3Ryb2tlPSIjMDg5MWIyIiBzdHJva2Utd2lkdGg9IjIuNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjg1Ii8+CjxsaW5lIHgxPSI0NzAiIHkxPSIyMDIuNCIgeDI9IjY1MCIgeTI9IjIwMi40IiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMi40IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuODUiLz4KPGxpbmUgeDE9IjQ3MCIgeTE9IjIwNy4wIiB4Mj0iNjUwIiB5Mj0iMjA3LjAiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIyLjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC44NSIvPgo8dGV4dCB4PSI1NjAiIHk9IjIyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzRkNmI3NiI+5LiK5Y2D5qKd6LuK6YGTIMK3IOavj+i8m+i7iuaFouaFoumWizwvdGV4dD4KPHRleHQgeD0iNTYwIiB5PSIyNDIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZmlsbD0iIzhhYTRhZSI+MTAyNC1iaXQg5Lul5LiKIMOXIOebuOWwjeS9jumAn+eOhzwvdGV4dD4KPHRleHQgeD0iNTYwIiB5PSIyNjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzA1OTY2OSI+4oaSIOe4veWQnuWQkOabtOmrmO+8jOS4lOavj+S9jeWFg+abtOecgembuzwvdGV4dD4KPHJlY3QgeD0iMTMwIiB5PSIyODQiIHdpZHRoPSI1MDAiIGhlaWdodD0iMzQiIHJ4PSI4IiBmaWxsPSIjZmZmIiBzdHJva2U9IiNkNWU1ZWMiLz4KPHRleHQgeD0iMzgwIiB5PSIzMDYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIuNSIgZmlsbD0iIzRkNmI3NiI+SEJNIOaVoueUqOaFouS7i+mdou+8jOaYr+WboOeCuuWFiOaKijx0c3BhbiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMGU1YTZiIj7ot53pm6LnuK7liLDmr6vnsbPntJo8L3RzcGFuPjwvdGV4dD4KPC9zdmc+">
+<h3>為什麼 HBM 敢用「慢」的介面</h3><p>這是理解 HBM 最關鍵的一步。三道牆的共同根源是距離，而 HBM 的整套設計本質上就是<b>用「縮短距離」換取「可以走慢速寬匯流排」的權利</b>。</p>
+<p>把記憶體搬進封裝、用中介層極短走線連接後：走線從公分級降到<b>毫米級</b>→ 衰減與反射大幅減少；不需極端等化 → 功耗下降；不需驅動長走線大電容 → <b>每位元能耗顯著降低</b>；中介層能做極細線 → 上千條才擺得下。</p>
+<p><b>於是「又慢又寬」變成可行，而且比「又快又窄」更省電。</b></p>
+<h3>代價：貴得很結構性</h3><p>需要 TSV、薄化、堆疊鍵合、矽中介層與先進封裝，還有嚴酷的堆疊良率與散熱問題——<b>全部來自「加寬」這個決定</b>。而 GDDR 的優勢正好對稱：標準封裝、標準組裝、成熟供應鏈、成本低得多。</p>
+<h3>判準</h3><p><b>當「每瓦頻寬」與「每平方毫米頻寬」比「每 GB 成本」更重要時，HBM 才划算。</b>前者是資料中心 AI 加速器與高階 HPC；後者是消費級顯示卡與遊戲主機。</p>
+<h3>容易被忽略的差異：容量彈性</h3><p>HBM 的容量在封裝時就固定，不能像 DIMM 插拔擴充。這造成記憶體階層分工：<b>封裝內 HBM</b>（頻寬極高、容量有限）配上<b>封裝外 DDR/CXL</b>（容量大、頻寬低）。這其實是同一個「距離換頻寬」邏輯的延伸——越近越快越貴越小。</p>`},
+{id:"TSV矽穿孔",ch:"5",en:"Ch.5 · Through-Silicon Via",cat:"製程",html:`<div class="callout"><b>這章的問題：</b>上千條線要怎麼接出來？為什麼答案是在矽晶片上直接打洞？這個洞為什麼是一百微米量級？</div>
+<h3>加寬之後的第一個難題</h3><p>決定加寬到 1024-bit 後立刻遇到物理問題：<b>一顆 DRAM 晶粒的邊緣根本擺不下這麼多接點</b>。傳統封裝從晶粒邊緣引出訊號，可用長度完全不夠。</p>
+<p><b>於是只剩一個方向可以找空間：垂直。</b>如果讓訊號<b>直接從晶粒正上方穿到正下方</b>，可用接點面積就從「邊緣一圈」變成「整片晶粒」——放大好幾個數量級。這就是 <b>TSV（矽穿孔）</b>。</p>
+<h3>製程步驟</h3><p><b>①蝕刻深孔</b>：用 DRIE（Bosch 製程）交替進行蝕刻與側壁鈍化，維持接近垂直的側壁。<b>②絕緣層</b>：孔壁沉積氧化矽，讓導體與導電的矽基板隔離。<b>③阻障層與晶種層</b>：防止<b>銅擴散進矽</b>（銅在矽中是致命污染物）。<b>④銅電鍍填孔</b>：最容易出問題的一步——若孔口先封住會留下空洞，需特殊添加劑讓孔底沉積快於孔口，達成「由下往上」填充。<b>⑤CMP 研磨</b>。<b>⑥背面薄化露出 TSV</b>。</p>
+<h3>為什麼是一百微米量級——深寬比才是關鍵</h3><div class="formula">深寬比 ＝ 孔深 ÷ 孔徑</div>
+<p><b>深寬比太高</b>（又深又細）：蝕刻困難、側壁絕緣與阻障層難以均勻覆蓋、電鍍容易產生空洞。<b>深寬比太低</b>（太粗）：單個 TSV 佔用面積變大，<b>而這些面積不能拿來放記憶體單元</b>，直接吃掉儲存密度。</p>
+<p>所以 TSV 尺寸是典型的工程最佳化：<b>在「製程做得出來」與「不要浪費太多矽面積」之間找平衡</b>。典型直徑數微米、深寬比約 10:1。<b>這也解釋了為什麼不能無限縮小</b>：縮孔徑而深度不變，深寬比就上升；要縮就得同時磨更薄，而更薄又帶來機械強度問題——每一步都是連鎖的。</p>
+<h3>三種製作時機</h3><p><b>Via-first</b>（電晶體之前）：後續高溫製程限制導體材料，實務少見。<b>Via-middle</b>（前段之後、金屬層之前）：<b>HBM 主要採用</b>，可用銅且能與後續金屬層自然整合。<b>Via-last</b>（全部完成後）：彈性高但對位精度要求高。</p>
+<h3>額外的電性代價</h3><p>TSV 與導電矽基板隔著薄絕緣層，形成不可忽略的<b>寄生電容</b>。而銅與矽熱膨脹係數差異大，TSV 周圍的矽承受應力、應力會改變載子遷移率，因此必須劃出<b>禁置區</b>不能放敏感元件——<b>又是一項面積成本</b>。</p>`},
+{id:"晶圓薄化與暫時鍵合",ch:"6",en:"Ch.6 · Thinning & Bonding",cat:"製程",html:`<div class="callout"><b>這章的問題：</b>為什麼疊之前一定要磨到極薄？磨到 50 微米以下薄得像保鮮膜，製程中要怎麼拿？</div>
+<h3>三個獨立的理由</h3><p><b>①讓 TSV 露出來</b>：TSV 是從正面往下的盲孔，必須磨掉背面直到底端露出。<b>②控制堆疊總高度</b>：要疊 8、12 層還得塞進封裝高度限制，每層 700 微米完全不可能。<b>③縮短 TSV、降低深寬比壓力</b>：晶粒越薄 TSV 越短，電阻與寄生電容越小、製程越容易。</p>
+<h3>薄化之後的災難</h3><p>300mm 晶圓磨到 50 微米，<b>厚度只有直徑的六千分之一</b>。它會極度易碎、<b>嚴重翹曲</b>（正面多層金屬與介電材料的內建應力原本靠厚基板壓住，基板一薄就像洋芋片捲起來）、且無法被標準設備搬運夾持。</p>
+<p>而薄化之後還有一堆事要做：TSV 露出、背面鈍化、背面金屬與凸塊、測試、切割——<b>全都需要一片拿得動的晶圓</b>。</p>
+<h3>解法：暫時鍵合／解鍵合</h3><p><b>①</b> 把元件晶圓正面用特殊黏著劑暫時貼到剛性<b>載板</b>（玻璃或矽）上。<b>②</b> 現在有正常厚度與剛性，可安全送進標準設備完成所有背面加工。<b>③解鍵合</b>後轉移到切割膠膜。</p>
+<p><b>最關鍵也最容易出問題的是黏著劑</b>，它必須同時滿足矛盾的要求：<b>夠強</b>撐過研磨應力與高溫化學環境全程不鬆脫，<b>夠弱</b>最後能乾淨分離且不傷到極薄的晶粒。常見解鍵合方式有雷射解鍵合、熱滑移、機械剝離，之後還必須徹底清除殘膠。</p>
+<h3>翹曲：貫穿整個先進封裝的幽靈</h3><p>根源是<b>熱膨脹係數不匹配</b>——堆疊裡有矽、銅、有機膠、焊料、模封材料，受熱膨脹幅度都不同，而製程中會反覆升降溫。後果非常實際：<b>對位失準</b>（下一層要對準時晶粒已不在預期位置）、<b>鍵合失敗</b>（接觸面不平整導致開路或短路）、<b>裂片與分層</b>。</p>
+<p><b>而堆疊層數越多、晶粒越薄，翹曲控制越困難</b>——這是 HBM 往更高層數發展時，除了良率之外最實際的工程阻力。</p>`},
+{id:"微凸塊與混合鍵合",ch:"7",en:"Ch.7 · Microbump & Hybrid Bonding",cat:"製程",html:`<div class="callout"><b>這章的問題：</b>薄化好的晶粒怎麼一層層接起來？為什麼銲錫凸塊做到某個尺寸就走不下去？「混合鍵合」把凸塊拿掉，靠什麼把兩片矽接在一起？</div>
+<h3>微凸塊為什麼走不下去</h3><p><b>①銲錫會橋接</b>：回焊時銲錫熔融並因表面張力變形，間距越小相鄰凸塊碰在一起造成短路的風險越高。<b>②金屬間化合物（IMC）</b>：銲錫與銅接觸面生成脆性 IMC，凸塊縮小後 IMC 佔比越來越高，接點又脆又高阻。<b>③凸塊高度</b>佔用堆疊高度，與薄化目標直接衝突。<b>④熱阻</b>：銲錫與填充膠導熱遠不如矽，每層都是一道熱阻。</p>
+<h3>混合鍵合：把凸塊整個拿掉</h3><p>不再使用任何銲錫，而是讓兩片表面直接接合。「混合」指的是<b>同時接合介電質對介電質（氧化矽）與金屬對金屬（銅）</b>。</p>
+<p><b>①極致平坦化</b>：用 CMP 磨到<b>奈米等級</b>平坦度，同時讓銅墊表面比周圍氧化層<b>略微凹陷</b>。<b>②表面活化與貼合</b>：室溫對位貼合，<b>氧化矽之間先靠分子間作用力自發黏合</b>。<b>③退火</b>：加熱使銅<b>熱膨脹</b>填補凹陷、與對面銅墊接觸並互相擴散形成金屬鍵結。</p>
+<p><b>那個「刻意凹陷」是整套製程最精妙的一點</b>：若銅一開始就凸出，貼合時銅會先接觸而讓氧化層無法貼緊；讓銅稍微凹陷，就能確保<b>先完成介電質貼合定位，再由熱膨脹補上金屬連接</b>。</p>
+<h3>帶來什麼</h3><p>間距從數十微米降到個位數微米甚至更小 → <b>接點密度提升一至兩個數量級</b>；沒有凸塊高度 → 可疊更多層；<b>熱阻大幅降低</b>；寄生電感電容更低。代價是對潔淨度與平坦度的要求極端嚴苛——奈米級平坦度意味著任何微小顆粒都可能造成大範圍鍵合失效。</p>
+<h3>為什麼這是往上發展的關鍵</h3><div class="formula">要提升頻寬 → 要更多接點與層數 → 微凸塊的間距與高度都擋住了 → 必須改用混合鍵合</div>
+<p>它一次解決了<b>密度、高度、散熱、電性</b>四個問題——而這四個正是前面幾章一路累積下來的。</p>`},
+{id:"堆疊結構與基底晶粒",ch:"8",en:"Ch.8 · Stack & Base Die",cat:"製程",html:`<div class="callout"><b>這章的問題：</b>一疊 HBM 從下到上是什麼？那顆藏在最底下、不存資料的晶粒在做什麼？1024-bit 怎麼被切開管理？</div>
+<h3>一疊 HBM 的剖面</h3><p>由下往上：<b>基底晶粒</b>（不儲存資料）→ 多層 <b>DRAM 核心晶粒</b>（4/8/12/16 層，各自以 TSV 貫通）→ <b>最上層晶粒</b>（通常不需 TSV，有時刻意做厚以增加強度與散熱面積）。</p>
+<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNzYwIDQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmb250LWZhbWlseT0iJ1BpbmdGYW5nIFRDJywnTWljcm9zb2Z0IEpoZW5nSGVpJywnSGVsdmV0aWNhIE5ldWUnLHNhbnMtc2VyaWYiPgo8dGV4dCB4PSIzODAuMCIgeT0iMjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTciIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMxMjMwMzkiPkhCTSDloIbnlorliZbpnaLvvJpUU1Yg5Z6C55u06LKr6YCa6IiHIDIuNUQg5bCB6KOdPC90ZXh0Pgo8cmVjdCB4PSIyNTAiIHk9IjU4IiB3aWR0aD0iMjUwIiBoZWlnaHQ9IjI0IiBmaWxsPSIjMDg5MWIyIiBvcGFjaXR5PSIwLjMwIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMS42IiByeD0iMyIvPgo8dGV4dCB4PSIzNzUuMCIgeT0iNzUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZmlsbD0iIzBlNWE2YiI+RFJBTSDmoLjlv4PmmbbnspIgKOacgOS4iuWxpCk8L3RleHQ+CjxsaW5lIHgxPSIyOTUiIHkxPSI4MiIgeDI9IjI5NSIgeTI9Ijg4IiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMyIvPgo8bGluZSB4MT0iMzU1IiB5MT0iODIiIHgyPSIzNTUiIHkyPSI4OCIgc3Ryb2tlPSIjZDk3NzA2IiBzdHJva2Utd2lkdGg9IjMiLz4KPGxpbmUgeDE9IjQxNSIgeTE9IjgyIiB4Mj0iNDE1IiB5Mj0iODgiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSIzIi8+CjxsaW5lIHgxPSI0NjUiIHkxPSI4MiIgeDI9IjQ2NSIgeTI9Ijg4IiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMyIvPgo8bGluZSB4MT0iMjk1IiB5MT0iNTgiIHgyPSIyOTUiIHkyPSI4MiIgc3Ryb2tlPSIjZDk3NzA2IiBzdHJva2Utd2lkdGg9IjIuNiIgb3BhY2l0eT0iMC45Ii8+CjxsaW5lIHgxPSIzNTUiIHkxPSI1OCIgeDI9IjM1NSIgeTI9IjgyIiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMi42IiBvcGFjaXR5PSIwLjkiLz4KPGxpbmUgeDE9IjQxNSIgeTE9IjU4IiB4Mj0iNDE1IiB5Mj0iODIiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSIyLjYiIG9wYWNpdHk9IjAuOSIvPgo8bGluZSB4MT0iNDY1IiB5MT0iNTgiIHgyPSI0NjUiIHkyPSI4MiIgc3Ryb2tlPSIjZDk3NzA2IiBzdHJva2Utd2lkdGg9IjIuNiIgb3BhY2l0eT0iMC45Ii8+CjxyZWN0IHg9IjI1MCIgeT0iODgiIHdpZHRoPSIyNTAiIGhlaWdodD0iMjQiIGZpbGw9IiMwODkxYjIiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIxLjYiIHJ4PSIzIi8+Cjx0ZXh0IHg9IjM3NS4wIiB5PSIxMDUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZmlsbD0iIzBlNWE2YiI+RFJBTSDmoLjlv4PmmbbnspI8L3RleHQ+CjxsaW5lIHgxPSIyOTUiIHkxPSIxMTIiIHgyPSIyOTUiIHkyPSIxMTgiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSIzIi8+CjxsaW5lIHgxPSIzNTUiIHkxPSIxMTIiIHgyPSIzNTUiIHkyPSIxMTgiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSIzIi8+CjxsaW5lIHgxPSI0MTUiIHkxPSIxMTIiIHgyPSI0MTUiIHkyPSIxMTgiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSIzIi8+CjxsaW5lIHgxPSI0NjUiIHkxPSIxMTIiIHgyPSI0NjUiIHkyPSIxMTgiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSIzIi8+CjxsaW5lIHgxPSIyOTUiIHkxPSI4OCIgeDI9IjI5NSIgeTI9IjExMiIgc3Ryb2tlPSIjZDk3NzA2IiBzdHJva2Utd2lkdGg9IjIuNiIgb3BhY2l0eT0iMC45Ii8+CjxsaW5lIHgxPSIzNTUiIHkxPSI4OCIgeDI9IjM1NSIgeTI9IjExMiIgc3Ryb2tlPSIjZDk3NzA2IiBzdHJva2Utd2lkdGg9IjIuNiIgb3BhY2l0eT0iMC45Ii8+CjxsaW5lIHgxPSI0MTUiIHkxPSI4OCIgeDI9IjQxNSIgeTI9IjExMiIgc3Ryb2tlPSIjZDk3NzA2IiBzdHJva2Utd2lkdGg9IjIuNiIgb3BhY2l0eT0iMC45Ii8+CjxsaW5lIHgxPSI0NjUiIHkxPSI4OCIgeDI9IjQ2NSIgeTI9IjExMiIgc3Ryb2tlPSIjZDk3NzA2IiBzdHJva2Utd2lkdGg9IjIuNiIgb3BhY2l0eT0iMC45Ii8+CjxyZWN0IHg9IjI1MCIgeT0iMTE4IiB3aWR0aD0iMjUwIiBoZWlnaHQ9IjI0IiBmaWxsPSIjMDg5MWIyIiBvcGFjaXR5PSIwLjMwIiBzdHJva2U9IiMwODkxYjIiIHN0cm9rZS13aWR0aD0iMS42IiByeD0iMyIvPgo8dGV4dCB4PSIzNzUuMCIgeT0iMTM1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExLjUiIGZpbGw9IiMwZTVhNmIiPkRSQU0g5qC45b+D5pm257KSPC90ZXh0Pgo8bGluZSB4MT0iMjk1IiB5MT0iMTQyIiB4Mj0iMjk1IiB5Mj0iMTQ4IiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMyIvPgo8bGluZSB4MT0iMzU1IiB5MT0iMTQyIiB4Mj0iMzU1IiB5Mj0iMTQ4IiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMyIvPgo8bGluZSB4MT0iNDE1IiB5MT0iMTQyIiB4Mj0iNDE1IiB5Mj0iMTQ4IiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMyIvPgo8bGluZSB4MT0iNDY1IiB5MT0iMTQyIiB4Mj0iNDY1IiB5Mj0iMTQ4IiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMyIvPgo8bGluZSB4MT0iMjk1IiB5MT0iMTE4IiB4Mj0iMjk1IiB5Mj0iMTQyIiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMi42IiBvcGFjaXR5PSIwLjkiLz4KPGxpbmUgeDE9IjM1NSIgeTE9IjExOCIgeDI9IjM1NSIgeTI9IjE0MiIgc3Ryb2tlPSIjZDk3NzA2IiBzdHJva2Utd2lkdGg9IjIuNiIgb3BhY2l0eT0iMC45Ii8+CjxsaW5lIHgxPSI0MTUiIHkxPSIxMTgiIHgyPSI0MTUiIHkyPSIxNDIiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSIyLjYiIG9wYWNpdHk9IjAuOSIvPgo8bGluZSB4MT0iNDY1IiB5MT0iMTE4IiB4Mj0iNDY1IiB5Mj0iMTQyIiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMi42IiBvcGFjaXR5PSIwLjkiLz4KPHJlY3QgeD0iMjUwIiB5PSIxNDgiIHdpZHRoPSIyNTAiIGhlaWdodD0iMjQiIGZpbGw9IiMwODkxYjIiIG9wYWNpdHk9IjAuMzAiIHN0cm9rZT0iIzA4OTFiMiIgc3Ryb2tlLXdpZHRoPSIxLjYiIHJ4PSIzIi8+Cjx0ZXh0IHg9IjM3NS4wIiB5PSIxNjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZmlsbD0iIzBlNWE2YiI+RFJBTSDmoLjlv4PmmbbnspI8L3RleHQ+CjxsaW5lIHgxPSIyOTUiIHkxPSIxNDgiIHgyPSIyOTUiIHkyPSIxNzIiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSIyLjYiIG9wYWNpdHk9IjAuOSIvPgo8bGluZSB4MT0iMzU1IiB5MT0iMTQ4IiB4Mj0iMzU1IiB5Mj0iMTcyIiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMi42IiBvcGFjaXR5PSIwLjkiLz4KPGxpbmUgeDE9IjQxNSIgeTE9IjE0OCIgeDI9IjQxNSIgeTI9IjE3MiIgc3Ryb2tlPSIjZDk3NzA2IiBzdHJva2Utd2lkdGg9IjIuNiIgb3BhY2l0eT0iMC45Ii8+CjxsaW5lIHgxPSI0NjUiIHkxPSIxNDgiIHgyPSI0NjUiIHkyPSIxNzIiIHN0cm9rZT0iI2Q5NzcwNiIgc3Ryb2tlLXdpZHRoPSIyLjYiIG9wYWNpdHk9IjAuOSIvPgo8cmVjdCB4PSIyNTAiIHk9IjE3OCIgd2lkdGg9IjI1MCIgaGVpZ2h0PSIzMCIgZmlsbD0iIzdjM2FlZCIgb3BhY2l0eT0iMC4zMCIgc3Ryb2tlPSIjN2MzYWVkIiBzdHJva2Utd2lkdGg9IjEuOCIgcng9IjMiLz4KPHRleHQgeD0iMzc1LjAiIHk9IjE5NyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzViMjFiNiI+5Z+65bqV5pm257KSIEJhc2UgRGll77yIUEhZ44O75ris6Kmm44O76YCa6YGT566h55CG77yJPC90ZXh0Pgo8dGV4dCB4PSIyNDAiIHk9IjEyMCIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1zaXplPSIxMiIgZmlsbD0iI2Q5NzcwNiIgZm9udC13ZWlnaHQ9IjcwMCI+VFNWPC90ZXh0Pgo8bGluZSB4MT0iMjQyIiB5MT0iMTE2IiB4Mj0iMjkwIiB5Mj0iMTE2IiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMS4yIi8+CjxyZWN0IHg9IjcwIiB5PSIxMjIiIHdpZHRoPSIxNTAiIGhlaWdodD0iODYiIGZpbGw9IiNlMTFkNDgiIG9wYWNpdHk9IjAuMjYiIHN0cm9rZT0iI2UxMWQ0OCIgc3Ryb2tlLXdpZHRoPSIxLjgiIHJ4PSI0Ii8+Cjx0ZXh0IHg9IjE0NSIgeT0iMTcwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyLjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiM5ZjEyMzkiPuS4u+aZtueJhzwvdGV4dD4KPHRleHQgeD0iMTQ1IiB5PSIxODgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiM5ZjEyMzkiPkdQVSAvIEFJIOWKoOmAn+WZqDwvdGV4dD4KPHJlY3QgeD0iNjAiIHk9IjIxNiIgd2lkdGg9IjY0MCIgaGVpZ2h0PSIzMCIgZmlsbD0iIzA1OTY2OSIgb3BhY2l0eT0iMC4yNiIgc3Ryb2tlPSIjMDU5NjY5IiBzdHJva2Utd2lkdGg9IjEuOCIgcng9IjMiLz4KPHRleHQgeD0iMzgwIiB5PSIyMzYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzA2NWY0NiI+55+95Lit5LuL5bGkIEludGVycG9zZXLvvIjlvq7nsbPntJrntLDlr4botbDnt5rvvIk8L3RleHQ+CjxwYXRoIGQ9Ik0gMjIwIDE2NCBMIDI1MCAxNjQiIHN0cm9rZT0iIzA1OTY2OSIgc3Ryb2tlLXdpZHRoPSIyLjUiLz4KPHRleHQgeD0iMjM1IiB5PSIxNTgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzA2NWY0NiI+5pW4IG1tPC90ZXh0Pgo8cmVjdCB4PSI2MCIgeT0iMjU2IiB3aWR0aD0iNjQwIiBoZWlnaHQ9IjI0IiBmaWxsPSIjOGFhNGFlIiBvcGFjaXR5PSIwLjI2IiBzdHJva2U9IiM4YWE0YWUiIHN0cm9rZS13aWR0aD0iMS41IiByeD0iMyIvPgo8dGV4dCB4PSIzODAiIHk9IjI3MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzRkNmI3NiI+5bCB6KOd5Z+65p2/IOKGkiBQQ0I8L3RleHQ+CjxyZWN0IHg9IjYwIiB5PSIyOTQiIHdpZHRoPSI2NDAiIGhlaWdodD0iNTIiIHJ4PSI5IiBmaWxsPSIjZmZmIiBzdHJva2U9IiNkNWU1ZWMiLz4KPHRleHQgeD0iMzgwIiB5PSIzMTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIuNSIgZmlsbD0iIzRkNmI3NiI+5aCG55aK5YWn6YOo77ydPHRzcGFuIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNkOTc3MDYiPjNEPC90c3Bhbj7vvIhUU1Yg5Z6C55u06LKr6YCa77yJ44CA5Li75pm254mH6IiH5aCG55aK5LmL6ZaT77ydPHRzcGFuIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwNTk2NjkiPjIuNUQ8L3RzcGFuPu+8iOS4puaOkiArIOS4reS7i+WxpO+8iTwvdGV4dD4KPHRleHQgeD0iMzgwIiB5PSIzMzQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM0ZDZiNzYiPuWkmueWiuW5vuWxpOWinuWKoOeahOaYrzx0c3BhbiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZTExZDQ4Ij7lrrnph488L3RzcGFuPu+8jOS4jeaYr+mgu+WvrOKAlOKAlOmgu+WvrOeUseWfuuW6leaZtueykuS4iueahOS7i+mdouaxuuWumjwvdGV4dD4KPC9zdmc+">
+<h3>基底晶粒為什麼「浪費」一層</h3><p>因為<b>核心 DRAM 晶粒用 DRAM 專用製程做，而 DRAM 製程極不擅長做邏輯電路</b>——它為高密度電容而最佳化，電晶體效能遠不如邏輯製程。硬塞控制邏輯進去不但慢，還會吃掉儲存面積。</p>
+<p>於是把所有「不是儲存」的工作集中到專門的晶粒：<b>實體介面 PHY</b>（驅動上千條訊號、時脈回復、等化——最需要好電晶體的類比電路）、<b>測試邏輯</b>（BIST 與修復）、<b>通道管理與位址解碼</b>、<b>溫度感測</b>。</p>
+<p><b>這是典型的異質整合思路</b>：讓每種製程只做它最擅長的事。<b>而這也預告了未來</b>——既然基底晶粒本來就是邏輯製程做的，能不能塞進更多功能？見 ${L("HBM世代演進")}。</p>
+<h3>1024-bit 不是一整塊：通道架構</h3><p>把 1024 條當單一巨大匯流排管理是災難。實際切成多個<b>獨立通道</b>（如 HBM2 的 8 通道 × 128-bit）。<b>為什麼要獨立</b>：DRAM 存取有大量時序限制，若整段是一個通道，任何操作都會卡住全部；<b>切成獨立通道後，某通道忙碌時其他通道仍可服務</b>，大幅提升實際頻寬利用率。後續世代再引入<b>偽通道</b>，在幾乎不增加接腳下提高並行度。</p>
+<h3>一個常見誤解</h3><div class="formula">增加堆疊層數會增加「容量」，但不會等比例增加「頻寬」</div>
+<p>因為<b>頻寬由介面決定</b>，而介面在基底晶粒上、位寬固定。多疊幾層只是讓同樣的介面背後掛更多容量。<b>這解釋了為什麼 AI 加速器旁邊會排一圈 HBM 堆疊</b>——要更高總頻寬只能增加堆疊數量，而這又受中介層面積限制。</p>`},
+{id:"中介層與2.5D封裝",ch:"9",en:"Ch.9 · Interposer & 2.5D",cat:"封裝",html:`<div class="callout"><b>這章的問題：</b>堆疊做好了怎麼跟主晶片連起來？為什麼不能直接放到 PCB 上？那片矽為什麼這麼貴又這麼稀缺？</div>
+<h3>為什麼不能直接放到 PCB 上</h3><p>HBM 有超過一千個訊號接點（加上大量電源接地更多），間距極小。<b>PCB 根本做不到這種佈線密度</b>——它的線寬線距在數十微米以上，而 HBM 需要<b>微米級</b>。硬用 PCB 的話上千條擠不下，走線被迫拉長，於是三道牆全部回來。</p>
+<h3>解法：矽中介層</h3><p><b>中介層</b>是一片矽，但通常<b>不含電晶體</b>，只用來佈線。它能做到 PCB 做不到的事，因為它用<b>半導體製程</b>製作：微米級細密走線（與晶片後段金屬層同樣的技術）、多層金屬佈線、並用 TSV 貫穿把訊號導到下方基板。</p>
+<p>主晶片與 HBM 都覆晶安裝在中介層上，訊號<b>只在中介層內走幾毫米</b>——這正是「用縮短距離換取慢速寬匯流排」的實體實現。</p>
+<h3>為什麼叫 2.5D</h3><p><b>2D</b>：晶片平放在 PCB 上。<b>3D</b>：晶片直接垂直堆疊、TSV 貫通。<b>2.5D</b>：晶片仍平放並排，但透過矽中介層高密度互連。<b>所以一個 HBM 系統同時包含兩者</b>：堆疊內部是 3D，堆疊與主晶片之間是 2.5D。</p>
+<h3>關鍵限制：光罩尺寸</h3><p>中介層用半導體製程曝光製作，受<b>光罩尺寸</b>限制——單次曝光最大約 26mm × 33mm，<b>約 858 平方毫米</b>。而現代 AI 加速器主晶片本身就已逼近光罩極限，旁邊還要放 6–8 個 HBM 堆疊。</p>
+<p>突破手段包括<b>多次曝光縫合</b>、<b>局部矽互連</b>（只在需要高密度處嵌入小片矽橋）、<b>有機中介層/RDL</b>。<b>而中介層面積上限直接決定一個封裝能放幾個堆疊，也就決定了單顆加速器的總頻寬上限</b>——這是非常實際的系統天花板。</p>
+<h3>為什麼先進封裝產能成為瓶頸</h3><p>要生產一個 HBM 系統需要 TSV、薄化與暫時鍵合、高精度堆疊鍵合、大面積中介層、主晶片與多堆疊的高精度覆晶接合、翹曲控制與底部填充。<b>這整條產線設備與良率門檻極高、擴產週期長，且與一般晶圓代工產能不可互換</b>——你不能把邏輯晶圓廠的產能拿來做中介層接合。這解釋了為什麼 AI 需求爆發時，瓶頸常常不在邏輯晶片而在先進封裝與 HBM。</p>`},
+{id:"訊號完整性與供電",ch:"10",en:"Ch.10 · SI & PDN",cat:"封裝",html:`<div class="callout"><b>這章的問題：</b>加寬到 1024-bit 後出現一個「加快」路線不會遇到的新問題：<b>上千條線同時翻轉會發生什麼事？</b></div>
+<h3>加寬帶來的新麻煩</h3><p>核心差異在於：<b>窄而快的介面，問題出在單一條線的品質；寬而慢的介面，問題出在上千條線的集體行為。</b></p>
+<h3>同時切換雜訊（SSN）</h3><p>當上千條輸出線在同一個時脈邊緣一起翻轉，瞬間電流需求劇變。而供電路徑不可避免存在寄生電感：</p>
+<div class="formula">V ＝ L · di/dt</div>
+<p>電流變化率越大、電感越大，雜訊電壓越高。這會讓晶片內部電源與接地電位瞬間偏移，造成<b>判定參考電位偏移導致誤判</b>、以及<b>時序偏移導致時序失敗</b>。</p>
+<p><b>關鍵在於</b>：式子裡的電流是<b>所有同時切換的線加總</b>，1024-bit 意味著最壞情況上千個驅動器同時動作——<b>這正是「加寬」獨有的代價</b>。</p>
+<p><b>緩解手段</b>：<b>資料匯流排反轉（DBI）</b>——若一組資料中要翻轉的位元超過半數，就整組反相後傳送、另用一條旗標線標示，<b>能把最壞情況的同時切換數壓到一半以下</b>，成本極低效果很好；此外還有交錯時序、以及降低寄生電感。</p>
+<h3>供電網路（PDN）：真正的瓶頸</h3><p>電感大致隨電流迴路面積與長度增加，所以方向很明確：<b>供電路徑越短、越粗、迴路越小越好</b>。做法包括：<b>大量電源與接地接點</b>（在 HBM 接點中佔比相當可觀，並聯能有效降低等效電感）、<b>中介層與基板中的電源/接地平面</b>、<b>去耦電容盡量靠近負載</b>（從 PCB、基板、中介層一路往晶片內推進）。</p>
+<p><b>重要觀念</b>：PDN 的目標不是「電阻小」，而是<b>在整個頻率範圍內阻抗都要夠低</b>——因為電流需求包含各種頻率成分，實務上用多種容值的電容組合各自負責不同頻段。</p>
+<h3>為什麼這仍比「加快」划算</h3><p>加快的瓶頸<b>隨頻率超線性惡化</b>，只能靠越來越耗電的等化電路補償；加寬的問題<b>隨位寬線性增加</b>，且可用 DBI 緩解。<b>最關鍵的差異是：SSN 與 PDN 可以用「更多接點與更好的平面」解決，而封裝內恰好有這些資源</b>——它把問題轉移到一個「花資源就能解決」的領域。</p>`},
+{id:"堆疊的散熱難題",ch:"11",en:"Ch.11 · Thermal",cat:"封裝",html:`<div class="callout"><b>這章的問題：</b>疊起來付出什麼熱代價？為什麼中間那層特別難導出？為什麼 DRAM 對溫度比邏輯晶片更敏感？</div>
+<h3>堆疊把散熱路徑變長了</h3><p>平面排列時每顆晶片都能各自接散熱器；一旦垂直堆疊，<b>只有最上層能直接接觸散熱器，中間各層的熱必須先穿過其他晶粒</b>。而且中間還夾著接合界面——若用微凸塊，就有銲錫、空隙與底部填充膠，<b>填充膠導熱率遠低於矽</b>。</p>
+<div class="formula">T(中間層) − T(散熱器) ＝ P × Σ R_th</div>
+<p><b>層數越多，串聯的熱阻越多</b>，同樣功耗下溫升越高。<b>這正是混合鍵合的重要價值之一</b>：拿掉銲錫與填充膠改成矽對矽、銅對銅直接接觸，大幅降低層間熱阻——它不只是為了密度，也是為了散熱。</p>
+<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNzYwIDM0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmb250LWZhbWlseT0iJ1BpbmdGYW5nIFRDJywnTWljcm9zb2Z0IEpoZW5nSGVpJywnSGVsdmV0aWNhIE5ldWUnLHNhbnMtc2VyaWYiPgo8dGV4dCB4PSIzODAuMCIgeT0iMjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTciIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMxMjMwMzkiPuWghueWiuaVo+eGse+8muS4remWk+WxpOeahOeGseW/hemgiOepv+mBjuaJgOacieS4iuWxpOaJjeiDveWHuuWOuzwvdGV4dD4KPHJlY3QgeD0iMjcwIiB5PSIzOCIgd2lkdGg9IjI1MCIgaGVpZ2h0PSIyMCIgZmlsbD0iIzA4OTFiMiIgb3BhY2l0eT0iMC4zNSIgcng9IjMiLz4KPHRleHQgeD0iMzk1LjAiIHk9IjUyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExLjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwZTVhNmIiPuaVo+eGseWZqDwvdGV4dD4KPHJlY3QgeD0iMzAwIiB5PSI2NCIgd2lkdGg9IjE5MCIgaGVpZ2h0PSIyOCIgZmlsbD0iI2ZjYTVhNSIgb3BhY2l0eT0iMC43NSIgc3Ryb2tlPSIjYjkxYzFjIiBzdHJva2Utd2lkdGg9IjEuMiIgcng9IjMiLz4KPHRleHQgeD0iMzEyIiB5PSI4MiIgZm9udC1zaXplPSIxMS41IiBmaWxsPSIjN2YxZDFkIj7nrKwgNCDlsaQ8L3RleHQ+Cjx0ZXh0IHg9IjQ3OCIgeT0iODIiIHRleHQtYW5jaG9yPSJlbmQiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzdmMWQxZCI+NjjCsEM8L3RleHQ+CjxsaW5lIHgxPSIzMDAiIHkxPSI5MiIgeDI9IjQ5MCIgeTI9IjkyIiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMyIgb3BhY2l0eT0iMC44NSIvPgo8cmVjdCB4PSIzMDAiIHk9Ijk4IiB3aWR0aD0iMTkwIiBoZWlnaHQ9IjI4IiBmaWxsPSIjZjg3MTcxIiBvcGFjaXR5PSIwLjc1IiBzdHJva2U9IiNiOTFjMWMiIHN0cm9rZS13aWR0aD0iMS4yIiByeD0iMyIvPgo8dGV4dCB4PSIzMTIiIHk9IjExNiIgZm9udC1zaXplPSIxMS41IiBmaWxsPSIjN2YxZDFkIj7nrKwgMyDlsaQ8L3RleHQ+Cjx0ZXh0IHg9IjQ3OCIgeT0iMTE2IiB0ZXh0LWFuY2hvcj0iZW5kIiBmb250LXNpemU9IjExLjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiM3ZjFkMWQiPjgywrBDPC90ZXh0Pgo8bGluZSB4MT0iMzAwIiB5MT0iMTI2IiB4Mj0iNDkwIiB5Mj0iMTI2IiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMyIgb3BhY2l0eT0iMC44NSIvPgo8cmVjdCB4PSIzMDAiIHk9IjEzMiIgd2lkdGg9IjE5MCIgaGVpZ2h0PSIyOCIgZmlsbD0iI2VmNDQ0NCIgb3BhY2l0eT0iMC43NSIgc3Ryb2tlPSIjYjkxYzFjIiBzdHJva2Utd2lkdGg9IjEuMiIgcng9IjMiLz4KPHRleHQgeD0iMzEyIiB5PSIxNTAiIGZvbnQtc2l6ZT0iMTEuNSIgZmlsbD0iIzdmMWQxZCI+56ysIDIg5bGkPC90ZXh0Pgo8dGV4dCB4PSI0NzgiIHk9IjE1MCIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1zaXplPSIxMS41IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjN2YxZDFkIj45NcKwQzwvdGV4dD4KPGxpbmUgeDE9IjMwMCIgeTE9IjE2MCIgeDI9IjQ5MCIgeTI9IjE2MCIgc3Ryb2tlPSIjZDk3NzA2IiBzdHJva2Utd2lkdGg9IjMiIG9wYWNpdHk9IjAuODUiLz4KPHJlY3QgeD0iMzAwIiB5PSIxNjYiIHdpZHRoPSIxOTAiIGhlaWdodD0iMjgiIGZpbGw9IiNmODcxNzEiIG9wYWNpdHk9IjAuNzUiIHN0cm9rZT0iI2I5MWMxYyIgc3Ryb2tlLXdpZHRoPSIxLjIiIHJ4PSIzIi8+Cjx0ZXh0IHg9IjMxMiIgeT0iMTg0IiBmb250LXNpemU9IjExLjUiIGZpbGw9IiM3ZjFkMWQiPuesrCAxIOWxpDwvdGV4dD4KPHRleHQgeD0iNDc4IiB5PSIxODQiIHRleHQtYW5jaG9yPSJlbmQiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzdmMWQxZCI+ODjCsEM8L3RleHQ+Cjx0ZXh0IHg9IjUwNiIgeT0iMTM4IiBmb250LXNpemU9IjExLjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNkOTc3MDYiPuKGkCDmr4/lsaTnlYzpnaI8L3RleHQ+Cjx0ZXh0IHg9IjUwNiIgeT0iMTU0IiBmb250LXNpemU9IjExLjUiIGZpbGw9IiNkOTc3MDYiPumDveaYr+S4gOmBk+eGsemYuzwvdGV4dD4KPHJlY3QgeD0iMzAwIiB5PSIyMDAiIHdpZHRoPSIxOTAiIGhlaWdodD0iMjYiIGZpbGw9IiM3YzNhZWQiIG9wYWNpdHk9IjAuMjgiIHN0cm9rZT0iIzdjM2FlZCIgcng9IjMiLz4KPHRleHQgeD0iMzk1LjAiIHk9IjIxNyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMS41IiBmaWxsPSIjNWIyMWI2Ij7ln7rlupXmmbbnspI8L3RleHQ+CjxyZWN0IHg9IjkwIiB5PSI5NCIgd2lkdGg9IjE1MCIgaGVpZ2h0PSI4MCIgZmlsbD0iI2UxMWQ0OCIgb3BhY2l0eT0iMC4zIiBzdHJva2U9IiNlMTFkNDgiIHN0cm9rZS13aWR0aD0iMS42IiByeD0iNCIvPgo8dGV4dCB4PSIxNjUiIHk9IjEyNiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzlmMTIzOSI+5Li75pm254mHPC90ZXh0Pgo8dGV4dCB4PSIxNjUiIHk9IjE0NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzlmMTIzOSI+5pW455m+55Om54ax5rqQPC90ZXh0Pgo8cGF0aCBkPSJNIDI0NSAxMzQgTCAyOTIgMTM0IiBzdHJva2U9IiNlMTFkNDgiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtZGFzaGFycmF5PSI0IDMiLz4KPHRleHQgeD0iMjY4IiB5PSIxMjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iI2UxMWQ0OCI+54OY54OkPC90ZXh0Pgo8cmVjdCB4PSI2MCIgeT0iMjM2IiB3aWR0aD0iNjQwIiBoZWlnaHQ9IjgyIiByeD0iOSIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjZDVlNWVjIi8+Cjx0ZXh0IHg9IjM4MCIgeT0iMjU4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMGU1YTZiIj7ngrrku4DpurwgRFJBTSDlsI3muqvluqbnibnliKXmlY/mhJ88L3RleHQ+Cjx0ZXh0IHg9IjgwIiB5PSIyODIiIGZvbnQtc2l6ZT0iMTIuNSIgZmlsbD0iIzRkNmI3NiI+6LOH5paZ5a2Y5Zyo6Zu75a656KOh77yM6ICMPHRzcGFuIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNlMTFkNDgiPua8j+mbu+a1gemaqOa6q+W6puaMh+aVuOS4iuWNhzwvdHNwYW4+IOKGkiDkv53mjIHmmYLplpPorornn60g4oaSIOW/hemgiOabtOmgu+e5geWIt+aWsDwvdGV4dD4KPHRleHQgeD0iODAiIHk9IjMwNCIgZm9udC1zaXplPSIxMi41IiBmaWxsPSIjNGQ2Yjc2Ij7ogIzliLfmlrA8dHNwYW4gZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2UxMWQ0OCI+5pei6ICX6Zu744CB5Y+I55u05o6l5L2U55So6aC75a+sPC90c3Bhbj7vvIjliLfmlrDkuK3nmoQgYmFuayDnhKHms5XlrZjlj5bvvInihpIg5rqr5bqm5YaN5LiK5Y2H77yM5b2i5oiQ5oOh5oCn5b6q55KwPC90ZXh0Pgo8L3N2Zz4=">
+<h3>更麻煩的是主晶片就在旁邊</h3><p>HBM 與主晶片並排放置，而主晶片是系統中<b>功耗最高的元件</b>，動輒數百瓦。於是 HBM 面臨雙重夾擊：自己的熱不易導出，旁邊還有超大熱源在烘烤。</p>
+<h3>為什麼 DRAM 對溫度特別敏感</h3><p>資料存在<b>電容</b>裡，而<b>漏電流隨溫度上升而急遽增加</b>（大致呈指數關係）。溫度越高電荷漏得越快、保持時間越短，就必須<b>更頻繁刷新</b>。</p>
+<div class="formula">溫度↑ → 漏電加劇 → 刷新更頻繁 → 耗電且該區塊無法服務存取 → 有效頻寬↓、功耗↑ → 溫度再↑</div>
+<p><b>注意雙重損失</b>：不只多耗電，而是<b>刷新直接吃掉可用頻寬</b>——正在刷新的 bank 不能被存取。對一個存在理由就是「提供極高頻寬」的元件而言格外諷刺。因此規格會定義溫度相關的刷新率調整，基底晶粒上的溫度感測器就是為此存在。</p>
+<h3>系統後果：熱節流</h3><p>溫度持續升高時系統只能降低記憶體頻率、增加刷新率、主晶片降頻。<b>結果是：一個為了頻寬而生的系統，最後被熱限制住了頻寬。</b>這正是液冷在 AI 資料中心快速普及的原因。</p>
+<p><b>緩解手段</b>：混合鍵合降低層間熱阻、導熱假晶粒、最上層做厚、<b>熱 TSV</b>（銅導熱遠優於矽，密集 TSV 本身就是垂直導熱通道）、配置最佳化、直接液冷與微流道冷卻。</p>`},
+{id:"HBM世代演進",ch:"12",en:"Ch.12 · Generations",cat:"系統",html:`<div class="callout"><b>這章的問題：</b>從 HBM1 到 HBM4，頻寬怎麼一步步堆上去？每一代主要轉了哪個旋鈕？為什麼 HBM4 的「客製化基底晶粒」是轉折？</div>
+<h3>用頻寬公式讀懂每一代</h3><p>世代演進基本上就是在轉<b>位寬</b>與<b>每腳資料率</b>兩個旋鈕（外加疊更多層來增加容量）。看清這點，規格就不再是需要死背的數字表。</p>
+<p><b>HBM1→HBM3E</b>：位寬維持 1024-bit，主要靠<b>提高每腳資料率</b>（約 1 Gbps 一路推到 8–9 Gbps 級），同時增加層數與容量。<b>HBM4</b>：改為<b>位寬直接翻倍到 2048-bit</b>，每腳速率相對保守。</p>
+<h3>為什麼 HBM4 改回去加寬</h3><p>HBM 原本就是選「加寬」路線的，但中間幾代其實一直在偷偷走「加快」——因為加快比較容易，不需改變介面的實體結構。然而推到每腳 9 Gbps 以上後，<b>即使在中介層的短走線上，同樣那三道牆又回來了</b>。</p>
+<p><b>於是回到原點的邏輯：與其把單腳推到極限，不如再加寬一次。</b>位寬翻倍意味著接點數翻倍，需要更高密度的堆疊接合（<b>混合鍵合成為關鍵</b>）、更高密度的中介層佈線、以及更嚴重的同時切換雜訊與供電挑戰。<b>這完美示範了本知識庫的主軸</b>：每一次提升頻寬的決定，都沿著同一條因果鏈把壓力傳遞到製程與封裝。</p>
+<h3>更具結構性的轉折：客製化基底晶粒</h3><p>既然基底晶粒本來就是邏輯製程做的，自然的問題是：<b>能不能在上面放更多東西？</b>HBM4 世代的方向正是<b>基底晶粒可由客戶客製化</b>，甚至由邏輯代工廠用先進製程製造，可能整合客製化記憶體控制器、部分運算功能（<b>近記憶體運算</b>）、客製介面協定。</p>
+<p><b>為什麼這是方向上的轉折</b>：HBM 從一個「標準化記憶體零件」，往「與特定加速器共同設計的子系統」移動。這也呼應了最初的邏輯——<b>如果搬資料的能耗遠高於運算，那把部分運算搬到資料旁邊做，就是繞過記憶體牆最直接的思路</b>。</p>
+<h3>讀規格時的陷阱</h3><p><b>①</b>「頻寬」要問清楚是每堆疊還是整個系統（系統總頻寬＝每堆疊 × 堆疊數，而堆疊數受中介層面積限制）。<b>②</b> 理論頻寬 ≠ 實際可達（會被刷新、匯流排週轉、存取樣式、熱節流吃掉）。<b>③</b> 容量與頻寬要分開看——12-Hi 比 8-Hi 容量大，但頻寬相同。</p>`},
+{id:"良率KGSD與測試",ch:"13",en:"Ch.13 · Yield & KGSD",cat:"系統",html:`<div class="callout"><b>這章的問題：</b>為什麼「疊起來」讓良率問題特別嚴酷？疊 12 層跟 8 層的風險差多少？業界怎麼讓它在經濟上可行？</div>
+<h3>堆疊良率的殘酷數學</h3><div class="formula">Y(stack) ＝ y ⁿ　（y：單顆良率，n：層數）</div>
+<p>單顆 99% → 8 層 92.3%、12 層 88.6%、16 層 85.1%。<b>單顆 95% → 8 層 66.3%、12 層 54.0%、16 層 44.0%</b>。單顆 90% → 16 層只剩 18.5%。</p>
+<img class="diagram" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNzYwIDM1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmb250LWZhbWlseT0iJ1BpbmdGYW5nIFRDJywnTWljcm9zb2Z0IEpoZW5nSGVpJywnSGVsdmV0aWNhIE5ldWUnLHNhbnMtc2VyaWYiPgo8dGV4dCB4PSIzODAuMCIgeT0iMjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTciIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMxMjMwMzkiPuWghueWiuiJr+eOh+eahOaMh+aVuOaumOmFt++8mlkgPSB5IOKBvzwvdGV4dD4KPGxpbmUgeDE9IjgwIiB5MT0iMjcwIiB4Mj0iNjgwIiB5Mj0iMjcwIiBzdHJva2U9IiM4YWE0YWUiIHN0cm9rZS13aWR0aD0iMS41Ii8+CjxsaW5lIHgxPSI4MCIgeTE9IjI3MCIgeDI9IjgwIiB5Mj0iNjUiIHN0cm9rZT0iIzhhYTRhZSIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KPHBvbHlsaW5lIHBvaW50cz0iODAuMCw2Ny4xIDEyMC4wLDY5LjEgMTYwLjAsNzEuMSAyMDAuMCw3My4xIDI0MC4wLDc1LjAgMjgwLjAsNzcuMCAzMjAuMCw3OC45IDM2MC4wLDgwLjggNDAwLjAsODIuNyA0NDAuMCw4NC42IDQ4MC4wLDg2LjUgNTIwLjAsODguMyA1NjAuMCw5MC4xIDYwMC4wLDkxLjkgNjQwLjAsOTMuNyA2ODAuMCw5NS41IiBmaWxsPSJub25lIiBzdHJva2U9IiMwNTk2NjkiIHN0cm9rZS13aWR0aD0iMi44Ii8+Cjx0ZXh0IHg9IjY4NiIgeT0iOTkuNSIgZm9udC1zaXplPSIxMS41IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDU5NjY5Ij7llq7poYYgOTklPC90ZXh0Pgo8cG9seWxpbmUgcG9pbnRzPSI4MC4wLDc1LjIgMTIwLjAsODUuMCAxNjAuMCw5NC4yIDIwMC4wLDEwMy4wIDI0MC4wLDExMS40IDI4MC4wLDExOS4zIDMyMC4wLDEyNi44IDM2MC4wLDEzNC4wIDQwMC4wLDE0MC44IDQ0MC4wLDE0Ny4zIDQ4MC4wLDE1My40IDUyMC4wLDE1OS4yIDU2MC4wLDE2NC44IDYwMC4wLDE3MC4wIDY0MC4wLDE3NS4wIDY4MC4wLDE3OS44IiBmaWxsPSJub25lIiBzdHJva2U9IiNkOTc3MDYiIHN0cm9rZS13aWR0aD0iMi44Ii8+Cjx0ZXh0IHg9IjY4NiIgeT0iMTgzLjgiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2Q5NzcwNiI+5Zau6aGGIDk1JTwvdGV4dD4KPHBvbHlsaW5lIHBvaW50cz0iODAuMCw4NS41IDEyMC4wLDEwMy45IDE2MC4wLDEyMC42IDIwMC4wLDEzNS41IDI0MC4wLDE0OC45IDI4MC4wLDE2MS4xIDMyMC4wLDE3MS45IDM2MC4wLDE4MS44IDQwMC4wLDE5MC42IDQ0MC4wLDE5OC41IDQ4MC4wLDIwNS43IDUyMC4wLDIxMi4xIDU2MC4wLDIxNy45IDYwMC4wLDIyMy4xIDY0MC4wLDIyNy44IDY4MC4wLDIzMi4wIiBmaWxsPSJub25lIiBzdHJva2U9IiNlMTFkNDgiIHN0cm9rZS13aWR0aD0iMi44Ii8+Cjx0ZXh0IHg9IjY4NiIgeT0iMjM2LjAiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2UxMWQ0OCI+5Zau6aGGIDkwJTwvdGV4dD4KPHRleHQgeD0iODAuMCIgeT0iMjg4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExLjUiIGZpbGw9IiM0ZDZiNzYiPjE8L3RleHQ+CjxsaW5lIHgxPSI4MC4wIiB5MT0iMjcwIiB4Mj0iODAuMCIgeTI9IjI3NCIgc3Ryb2tlPSIjOGFhNGFlIi8+Cjx0ZXh0IHg9IjIwMC4wIiB5PSIyODgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZmlsbD0iIzRkNmI3NiI+NDwvdGV4dD4KPGxpbmUgeDE9IjIwMC4wIiB5MT0iMjcwIiB4Mj0iMjAwLjAiIHkyPSIyNzQiIHN0cm9rZT0iIzhhYTRhZSIvPgo8dGV4dCB4PSIzNjAuMCIgeT0iMjg4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExLjUiIGZpbGw9IiM0ZDZiNzYiPjg8L3RleHQ+CjxsaW5lIHgxPSIzNjAuMCIgeTE9IjI3MCIgeDI9IjM2MC4wIiB5Mj0iMjc0IiBzdHJva2U9IiM4YWE0YWUiLz4KPHRleHQgeD0iNTIwLjAiIHk9IjI4OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMS41IiBmaWxsPSIjNGQ2Yjc2Ij4xMjwvdGV4dD4KPGxpbmUgeDE9IjUyMC4wIiB5MT0iMjcwIiB4Mj0iNTIwLjAiIHkyPSIyNzQiIHN0cm9rZT0iIzhhYTRhZSIvPgo8dGV4dCB4PSI2ODAuMCIgeT0iMjg4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExLjUiIGZpbGw9IiM0ZDZiNzYiPjE2PC90ZXh0Pgo8bGluZSB4MT0iNjgwLjAiIHkxPSIyNzAiIHgyPSI2ODAuMCIgeTI9IjI3NCIgc3Ryb2tlPSIjOGFhNGFlIi8+CjxsaW5lIHgxPSI4MCIgeTE9IjI3MC4wIiB4Mj0iNjgwIiB5Mj0iMjcwLjAiIHN0cm9rZT0iI2VlZjRmNyIgc3Ryb2tlLXdpZHRoPSIxIi8+Cjx0ZXh0IHg9IjcyIiB5PSIyNzQuMCIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzRkNmI3NiI+MCU8L3RleHQ+CjxsaW5lIHgxPSI4MCIgeTE9IjIxOC44IiB4Mj0iNjgwIiB5Mj0iMjE4LjgiIHN0cm9rZT0iI2VlZjRmNyIgc3Ryb2tlLXdpZHRoPSIxIi8+Cjx0ZXh0IHg9IjcyIiB5PSIyMjIuOCIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzRkNmI3NiI+MjUlPC90ZXh0Pgo8bGluZSB4MT0iODAiIHkxPSIxNjcuNSIgeDI9IjY4MCIgeTI9IjE2Ny41IiBzdHJva2U9IiNlZWY0ZjciIHN0cm9rZS13aWR0aD0iMSIvPgo8dGV4dCB4PSI3MiIgeT0iMTcxLjUiIHRleHQtYW5jaG9yPSJlbmQiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiM0ZDZiNzYiPjUwJTwvdGV4dD4KPGxpbmUgeDE9IjgwIiB5MT0iMTE2LjIiIHgyPSI2ODAiIHkyPSIxMTYuMiIgc3Ryb2tlPSIjZWVmNGY3IiBzdHJva2Utd2lkdGg9IjEiLz4KPHRleHQgeD0iNzIiIHk9IjEyMC4yIiB0ZXh0LWFuY2hvcj0iZW5kIiBmb250LXNpemU9IjExIiBmaWxsPSIjNGQ2Yjc2Ij43NSU8L3RleHQ+CjxsaW5lIHgxPSI4MCIgeTE9IjY1LjAiIHgyPSI2ODAiIHkyPSI2NS4wIiBzdHJva2U9IiNlZWY0ZjciIHN0cm9rZS13aWR0aD0iMSIvPgo8dGV4dCB4PSI3MiIgeT0iNjkuMCIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzRkNmI3NiI+MTAwJTwvdGV4dD4KPHRleHQgeD0iMzgwLjAiIHk9IjMwOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMi41IiBmaWxsPSIjNGQ2Yjc2Ij7loIbnlorlsaTmlbggbiDihpI8L3RleHQ+Cjx0ZXh0IHg9IjM4MC4wIiB5PSIzMzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIuNSIgZmlsbD0iIzRkNmI3NiI+5Zau6aGGIDk1JSDnlorliLAgMTIg5bGk5Y+q5Ymp57SEIDx0c3BhbiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZDk3NzA2Ij41NCU8L3RzcGFuPuOAgOKfueOAgEtHU0Qg56+p6YG46IiH5YaX6aSY5L+u5b6p5piv57aT5r+f5Y+v6KGM55qE5YmN5o+QPC90ZXh0Pgo8L3N2Zz4=">
+<p><b>注意 95% 那一列</b>：單顆看起來相當不錯的良率，疊到 12 層只剩一半。<b>這就是指數的威力，也是堆疊技術最根本的經濟障礙。</b>而且這還沒算進 TSV、鍵合、薄化與翹曲的良率——每多一道製程就多一個乘上去的因子。<b>這也解釋了為什麼 HBM 這麼貴</b>：成本不只來自製程複雜度，更來自指數式的良率損失。</p>
+<h3>第一道防線：KGSD</h3><p>核心思想是<b>在每個階段結束前就測試篩選，不要把不良品帶到下一階段</b>。實作困難之處：薄化後的晶粒極度脆弱、探針接觸有損傷風險；測試接點極小極密；有些缺陷（如層間鍵合問題）只有堆疊完成後才顯現。因此需要<b>內建自我測試（BIST）</b>——把測試能力做進晶片，透過少數接點就能啟動大規模內部測試。</p>
+<h3>第二道防線：冗餘與修復</h3><p>不要求完美，而是<b>允許帶著小缺陷但可以被修好</b>。DRAM 天生適合，因為它是<b>高度規則的陣列</b>：製造時多做備用列與行，測試時找出缺陷位址，用熔絲把缺陷位址<b>重新映射</b>到備用單元。</p>
+<p><b>這個機制價值極大</b>：它把「一個位元壞掉就整顆報廢」變成「少量缺陷仍可修復」，等於直接把 y 往上推——<b>而因為 y 被 n 次方，y 的小幅提升會被指數放大成堆疊良率的大幅改善</b>。HBM 進一步延伸出<b>冗餘 TSV</b> 與層級修復。</p>
+<h3>為什麼測試是核心環節而非事後品管</h3><p>因為<b>越晚發現缺陷，損失越大</b>：單顆階段發現只損失一顆；堆疊完成後發現損失整疊（8–16 顆＋所有堆疊製程成本）；<b>2.5D 封裝完成後才發現，可能連價值極高的主晶片與中介層一起報廢</b>。最後這項尤其可怕——若因旁邊一個堆疊有問題而整個封裝報廢，損失是災難性的。這就是為什麼<b>可修復性設計是第一級的設計考量</b>。</p>`},
+{id:"HBM在AI系統中的角色",ch:"14",en:"Ch.14 · Role in AI Systems",cat:"系統",html:`<div class="callout"><b>這章的問題：</b>把前面所有技術放回系統來看：HBM 究竟解決了什麼、沒解決什麼？為什麼它同時是標配又是瓶頸？</div>
+<h3>它解決了什麼——完整的因果鏈</h3><div class="formula">頻寬只有加寬與加快兩條路 → 加快撞上三道牆，根源是距離 → 把距離縮到毫米級，換取走「慢而寬」的權利 → 要加寬就得往垂直找空間（TSV） → 薄化、鍵合、中介層、良率、散熱一連串代價跟著來</div>
+<p><b>成果是雙重的</b>：頻寬大幅提升，<b>同時每位元能耗顯著下降</b>。對功耗受限的資料中心而言，後者往往和前者一樣重要。</p>
+<h3>它沒有解決什麼</h3><p><b>①延遲沒有明顯改善</b>：DRAM 核心存取延遲進步有限，HBM 改善的是頻寬。<b>如果瓶頸是延遲敏感的隨機存取，HBM 幫助有限。</b><b>②容量受限且不可擴充</b>：封裝時就固定，中介層面積限制堆疊數、散熱與良率限制層數——<b>這正是大模型常常「裝不下」的原因</b>。<b>③成本結構性地高</b>：來自製程複雜度與指數式良率損失，不會因量大而大幅下降。</p>
+<h3>由此形成的記憶體階層</h3><p>晶片內 SRAM（極快極小極貴）→ <b>封裝內 HBM</b>（極高頻寬、容量有限）→ 封裝外 DDR/CXL（頻寬低、容量大）→ SSD/網路儲存。<b>本質仍是同一條原則</b>：越近越快越貴越小。而模型太大裝不進 HBM 時，瓶頸又轉移到卡間互連與網路——<b>瓶頸從來不會消失，只會移動</b>。</p>
+<h3>為什麼同時是供應瓶頸</h3><p>受限於三個彼此獨立且都難以速成的環節：<b>①</b> 具 TSV 能力的先進 DRAM 產能（投資與建置週期長）。<b>②</b> 先進封裝產能（設備與良率門檻極高，<b>且與一般邏輯晶圓產能不可互換</b>）。<b>③</b> 良率爬坡（每代新品都需要時間）。<b>三者必須同時到位才能出貨</b>，任一環卡住整體就卡住——這解釋了為什麼限制加速器出貨的往往不是邏輯晶片本身。</p>
+<h3>未來方向</h3><p>繼續加寬（HBM4 的 2048-bit，依賴混合鍵合）、客製化基底晶粒（從標準零件變成共同設計的子系統）、<b>近記憶體／記憶體內運算</b>（既然搬資料比運算貴，就把運算搬到資料旁邊）、更好的冷卻（液冷、微流道）、記憶體階層重組（CXL）。<b>全都指向同一個目標：繼續縮短資料與運算之間的距離。</b></p>`},
+];
+const EDGES=[
+ ["記憶體牆","DRAM基礎與頻寬公式"],
+ ["記憶體牆","為什麼時脈拉不上去"],
+ ["記憶體牆","HBM在AI系統中的角色"],
+ ["DRAM基礎與頻寬公式","為什麼時脈拉不上去"],
+ ["DRAM基礎與頻寬公式","GDDR與HBM的路線分歧"],
+ ["DRAM基礎與頻寬公式","HBM世代演進"],
+ ["DRAM基礎與頻寬公式","堆疊結構與基底晶粒"],
+ ["DRAM基礎與頻寬公式","堆疊的散熱難題"],
+ ["為什麼時脈拉不上去","GDDR與HBM的路線分歧"],
+ ["為什麼時脈拉不上去","中介層與2.5D封裝"],
+ ["為什麼時脈拉不上去","訊號完整性與供電"],
+ ["為什麼時脈拉不上去","HBM世代演進"],
+ ["GDDR與HBM的路線分歧","TSV矽穿孔"],
+ ["GDDR與HBM的路線分歧","中介層與2.5D封裝"],
+ ["GDDR與HBM的路線分歧","訊號完整性與供電"],
+ ["GDDR與HBM的路線分歧","HBM在AI系統中的角色"],
+ ["TSV矽穿孔","晶圓薄化與暫時鍵合"],
+ ["TSV矽穿孔","微凸塊與混合鍵合"],
+ ["TSV矽穿孔","堆疊結構與基底晶粒"],
+ ["TSV矽穿孔","良率KGSD與測試"],
+ ["晶圓薄化與暫時鍵合","微凸塊與混合鍵合"],
+ ["晶圓薄化與暫時鍵合","良率KGSD與測試"],
+ ["微凸塊與混合鍵合","堆疊結構與基底晶粒"],
+ ["微凸塊與混合鍵合","堆疊的散熱難題"],
+ ["微凸塊與混合鍵合","HBM世代演進"],
+ ["堆疊結構與基底晶粒","中介層與2.5D封裝"],
+ ["堆疊結構與基底晶粒","訊號完整性與供電"],
+ ["堆疊結構與基底晶粒","良率KGSD與測試"],
+ ["堆疊結構與基底晶粒","HBM世代演進"],
+ ["中介層與2.5D封裝","訊號完整性與供電"],
+ ["中介層與2.5D封裝","堆疊的散熱難題"],
+ ["中介層與2.5D封裝","良率KGSD與測試"],
+ ["中介層與2.5D封裝","HBM在AI系統中的角色"],
+ ["訊號完整性與供電","堆疊的散熱難題"],
+ ["堆疊的散熱難題","HBM在AI系統中的角色"],
+ ["良率KGSD與測試","HBM世代演進"],
+ ["良率KGSD與測試","HBM在AI系統中的角色"],
+ ["HBM世代演進","HBM在AI系統中的角色"]
+];
+const EXTRA={};
+const NById=Object.fromEntries(NOTES.map(n=>[n.id,n]));
+const sidebar=document.getElementById('sidebar');
+function buildSidebar(filter){
+ filter=(filter||'').trim();
+ let html='<div class="navlink" data-id="__home"><span class="dot" style="background:var(--accent)"></span>總覽首頁</div>';
+ for(const key of Object.keys(CATS)){
+  const items=NOTES.filter(n=>n.cat===key&&(!filter||n.id.includes(filter)||n.en.toLowerCase().includes(filter.toLowerCase())));
+  if(!items.length)continue;
+  html+='<div class="cat">'+CATS[key].name+'</div>';
+  for(const n of items)html+='<div class="navlink" data-id="'+n.id+'"><span class="dot" style="background:'+CATS[n.cat].raw+'"></span>'+(n.ch?'<b style="color:#0e9bc4;margin-right:5px">'+n.ch+'</b>':'')+n.id+'<small>'+n.en+'</small></div>';
+ }
+ sidebar.innerHTML=html;
+}
+/* ===== 筆記 ===== */
+const main=document.getElementById('main');
+let current=null;
+function neighborsOf(id){const s=new Set();EDGES.forEach(([a,b])=>{if(a===id)s.add(b);if(b===id)s.add(a);});return[...s];}
+function renderHome(){
+ current='__home';
+ main.innerHTML='<div class="note"><div class="hero"><div style="font-size:46px">🧱</div>'+
+  '<div class="big">HBM 高頻寬記憶體知識庫</div>'+
+  '<p class="sub">從記憶體牆、頻寬公式一路推導到 TSV、混合鍵合、2.5D 封裝、堆疊良率與散熱，共 14 章完整技術鏈，並附頻寬計算、堆疊良率、TSV 深寬比、世代比較、散熱路徑等互動模擬工具。</p>'+
+  '<div class="stats"><div class="stat"><b>14</b><span>知識點</span></div><div class="stat"><b>28</b><span>關聯連結</span></div>'+
+  '<div class="stat"><b>5</b><span>互動模擬</span></div><div class="stat"><b>4</b><span>主題分區</span></div></div></div>'+
+  '<h3>建議閱讀路徑</h3>'+
+  '<div class="pathrow">'+Object.keys(CATS).map((key,i)=>{const first=NOTES.find(n=>n.cat===key).id;
+    return (i>0?'<span class="arrow">→</span>':'')+'<span class="stage" data-id="'+first+'"><span class="d" style="background:'+CATS[key].raw+'"></span>'+CATS[key].name+'</span>';}).join('')+'</div>'+
+  '<p style="color:var(--muted);font-size:14px">點上方階段可直接跳到該分區第一篇；或從下方各主題任選。建議從 '+L("記憶體牆")+' 開始，一路讀到 '+L("HBM在AI系統中的角色")+'。</p>'+
+  Object.keys(CATS).map(key=>{const items=NOTES.filter(n=>n.cat===key);
+    return '<div class="catgroup"><div class="cl" style="color:'+CATS[key].raw+'"><span class="d" style="background:'+CATS[key].raw+'"></span>'+CATS[key].name+'</div><div class="chips">'+items.map(n=>'<span class="chip" data-id="'+n.id+'">'+n.id+'</span>').join('')+'</div></div>';}).join('')+
+  '</div>';
+ syncActive();
+}
+function renderNote(id){
+ const n=NById[id];if(!n){renderHome();return;}
+ current=id;const idx=NOTES.findIndex(x=>x.id===id);const prev=NOTES[idx-1],next=NOTES[idx+1];const nb=neighborsOf(id);
+ let html='<div class="note"><div class="crumbs"><span class="tag" style="background:'+CATS[n.cat].raw+'33;color:'+CATS[n.cat].raw+'">'+CATS[n.cat].name+'</span></div>'+
+  '<h2 class="title">'+n.id+'</h2><div class="en">'+n.en+'</div>'+n.html;
+ const ex=EXTRA[id];
+ if(ex){
+  if(ex.take)html+='<div class="kbox"><div class="kt">🎯 重點回顧</div><ul>'+ex.take.map(t=>'<li>'+t+'</li>').join('')+'</ul></div>';
+  if(ex.myth)html+='<details class="collap myth"><summary>💡 常見誤解</summary><div class="body">'+ex.myth.map(m=>'<div class="myth-row"><span class="x">✗</span><div>'+m.q+'</div></div><div class="myth-row"><span class="o">✓</span><div>'+m.a+'</div></div>').join('')+'</div></details>';
+  if(ex.fact)html+='<details class="collap fact"><summary>🔎 冷知識</summary><div class="body"><p>'+ex.fact+'</p></div></details>';
+  if(ex.deep)html+='<details class="collap deep"><summary>📐 深入補充</summary><div class="body">'+ex.deep+'</div></details>';
+ }
+ if(nb.length)html+='<div class="related"><div class="cat">關聯概念</div><div class="chips">'+nb.map(x=>'<span class="chip" data-id="'+x+'">'+x+'</span>').join('')+'</div></div>';
+ html+='<div class="nav-btns">'+(prev?'<button data-id="'+prev.id+'"><small>← 上一篇</small>'+prev.id+'</button>':'<button disabled style="opacity:.3"><small>—</small>第一篇</button>')+
+  (next?'<button data-id="'+next.id+'" style="text-align:right"><small>下一篇 →</small>'+next.id+'</button>':'<button disabled style="opacity:.3;text-align:right"><small>—</small>最後一篇</button>')+'</div></div>';
+ main.innerHTML=html;main.scrollTop=0;
+ if(ex&&ex.chart)drawChart(ex.chart);
+ syncActive();
+}
+function open(id){if(id==='__home')renderHome();else renderNote(id);showNotes();}
+function syncActive(){document.querySelectorAll('.navlink').forEach(el=>el.classList.toggle('active',el.dataset.id===current));}
+document.body.addEventListener('click',e=>{const t=e.target.closest('[data-id]');if(t)open(t.dataset.id);});
+/* ===== 搜尋 ===== */
+const search=document.getElementById('search');
+search.addEventListener('input',()=>buildSidebar(search.value));
+search.addEventListener('keydown',e=>{if(e.key==='Enter'){const f=search.value.trim().toLowerCase();const hit=NOTES.find(n=>n.id.includes(search.value.trim())||n.en.toLowerCase().includes(f));if(hit)open(hit.id);}});
+/* ===== 分頁 ===== */
+const tabNotes=document.getElementById('tabNotes'),tabGraph=document.getElementById('tabGraph'),tabDemo=document.getElementById('tabDemo');
+const graphView=document.getElementById('graphView'),demoView=document.getElementById('demoView');
+const allTabs=[tabNotes,tabGraph,tabDemo];
+function setTab(b){allTabs.forEach(x=>x.classList.toggle('active',x===b));}
+function hideAll(){main.style.display='none';graphView.style.display='none';demoView.style.display='none';}
+function showNotes(){setTab(tabNotes);hideAll();main.style.display='';}
+function showGraph(){setTab(tabGraph);hideAll();graphView.style.display='block';startGraph();}
+function showDemo(){setTab(tabDemo);hideAll();demoView.style.display='block';startDemo();startMesh();}
+tabNotes.onclick=showNotes;tabGraph.onclick=showGraph;tabDemo.onclick=showDemo;
+/* ===== 圖表 ===== */
+
+function drawChart(kind){}
+function buildLegend(){document.getElementById('legend').innerHTML=Object.keys(CATS).map(k=>'<div><i style="background:'+CATS[k].raw+'"></i>'+CATS[k].name+'</div>').join('');}
+const svg=document.getElementById('graph');
+const SVGNS='http://www.w3.org/2000/svg';
+const G={started:false,nodes:[],edges:[],raf:null};
+function startGraph(){
+ if(G.started)return;G.started=true;buildLegend();
+ const W=svg.clientWidth||900,H=svg.clientHeight||600;
+ const deg={};EDGES.forEach(([a,b])=>{deg[a]=(deg[a]||0)+1;deg[b]=(deg[b]||0)+1;});
+ G.nodes=NOTES.map((n,i)=>({id:n.id,cat:n.cat,x:W/2+Math.cos(i/NOTES.length*6.283)*240+(Math.random()-.5)*40,y:H/2+Math.sin(i/NOTES.length*6.283)*190+(Math.random()-.5)*40,vx:0,vy:0,r:8+(deg[n.id]||1)*1.5}));
+ const pos=Object.fromEntries(G.nodes.map(n=>[n.id,n]));
+ while(svg.firstChild)svg.removeChild(svg.firstChild);
+ const gE=document.createElementNS(SVGNS,'g'),gN=document.createElementNS(SVGNS,'g');svg.appendChild(gE);svg.appendChild(gN);
+ G.edges=EDGES.map(([a,b])=>{const l=document.createElementNS(SVGNS,'line');l.setAttribute('class','gedge');gE.appendChild(l);return{a,b,el:l};});
+ G.nodes.forEach(n=>{
+  const g=document.createElementNS(SVGNS,'g');g.setAttribute('class','gnode');g.dataset.id=n.id;
+  const c=document.createElementNS(SVGNS,'circle');c.setAttribute('r',n.r);c.setAttribute('fill',CATS[n.cat].raw);c.setAttribute('stroke','#ffffff');c.setAttribute('stroke-width','2.5');
+  const t=document.createElementNS(SVGNS,'text');t.setAttribute('text-anchor','middle');t.setAttribute('dy',-n.r-6);t.textContent=n.id;
+  g.appendChild(c);g.appendChild(t);gN.appendChild(g);n.el=g;
+  g.addEventListener('mouseenter',()=>highlight(n.id,true));g.addEventListener('mouseleave',()=>highlight(n.id,false));
+  let moved=false,down=false,ox,oy;
+  g.addEventListener('pointerdown',ev=>{down=true;moved=false;n.fixed=true;const p=toSvg(ev);ox=p.x-n.x;oy=p.y-n.y;g.setPointerCapture(ev.pointerId);});
+  g.addEventListener('pointermove',ev=>{if(!down)return;const p=toSvg(ev);n.x=p.x-ox;n.y=p.y-oy;n.vx=0;n.vy=0;moved=true;});
+  g.addEventListener('pointerup',()=>{down=false;n.fixed=false;if(!moved)open(n.id);});
+ });
+ gloop(pos,W,H);
+}
+function toSvg(ev){const r=svg.getBoundingClientRect();return{x:ev.clientX-r.left,y:ev.clientY-r.top};}
+function highlight(id,on){const nb=new Set(neighborsOf(id));nb.add(id);
+ G.nodes.forEach(n=>{n.el.style.opacity=on?(nb.has(n.id)?1:.2):1;});
+ G.edges.forEach(e=>{const rel=(e.a===id||e.b===id);e.el.classList.toggle('hl',on&&rel);e.el.style.opacity=on?(rel?1:.12):1;});}
+function gloop(pos,W,H){const KR=5200,KS=0.012,L0=118,DA=0.86,GR=0.008;
+ function step(){const ns=G.nodes;
+  for(let i=0;i<ns.length;i++){const a=ns[i];if(a.fixed)continue;let fx=0,fy=0;
+   for(let j=0;j<ns.length;j++){if(i===j)continue;const b=ns[j];let dx=a.x-b.x,dy=a.y-b.y,d2=dx*dx+dy*dy+.01,d=Math.sqrt(d2);const f=KR/d2;fx+=dx/d*f;fy+=dy/d*f;}
+   fx+=(W/2-a.x)*GR;fy+=(H/2-a.y)*GR;a.vx=(a.vx+fx)*DA;a.vy=(a.vy+fy)*DA;}
+  EDGES.forEach(([ai,bi])=>{const a=pos[ai],b=pos[bi];let dx=b.x-a.x,dy=b.y-a.y,d=Math.sqrt(dx*dx+dy*dy)+.01;const f=(d-L0)*KS,ux=dx/d,uy=dy/d;if(!a.fixed){a.vx+=ux*f;a.vy+=uy*f;}if(!b.fixed){b.vx-=ux*f;b.vy-=uy*f;}});
+  ns.forEach(n=>{if(n.fixed)return;n.x+=n.vx;n.y+=n.vy;n.x=Math.max(n.r+40,Math.min(W-n.r-40,n.x));n.y=Math.max(n.r+30,Math.min(H-n.r-20,n.y));});
+  G.edges.forEach(e=>{const a=pos[e.a],b=pos[e.b];e.el.setAttribute('x1',a.x);e.el.setAttribute('y1',a.y);e.el.setAttribute('x2',b.x);e.el.setAttribute('y2',b.y);});
+  ns.forEach(n=>n.el.setAttribute('transform','translate('+n.x+','+n.y+')'));
+  G.raf=requestAnimationFrame(step);}
+ step();}
+
+
+
+
+
+/* ===== 模擬工具 ===== */
+let hbmTool='bw';
+function startDemo(){
+ if(!document.getElementById('simBar')){
+  demoView.innerHTML='<div class="demo"><div class="panel"><h3>🔬 互動模擬</h3>'+
+   '<div class="d">五個模擬工具，對應頻寬公式、堆疊良率、TSV 深寬比、世代演進與散熱五個核心關係。點下方切換。</div>'+
+   '<div id="simBar" style="display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 14px"></div>'+
+   '<div id="simBox"></div></div></div>';
+  const tools=[['bw','頻寬：加寬 vs 加快'],['yield','堆疊良率'],['tsv','TSV 深寬比'],['gen','世代演進'],['therm','堆疊散熱']];
+  document.getElementById('simBar').innerHTML=tools.map(t=>'<button class="simtab" data-t="'+t[0]+'">'+t[1]+'</button>').join('');
+  document.getElementById('simBar').querySelectorAll('.simtab').forEach(b=>b.onclick=()=>{hbmTool=b.dataset.t;renderTool();});
+ }
+ renderTool();
+}
+function startMesh(){}
+function renderTool(){
+ document.querySelectorAll('.simtab').forEach(b=>b.classList.toggle('active',b.dataset.t===hbmTool));
+ const box=document.getElementById('simBox');
+ if(hbmTool==='bw')toolBW(box);
+ else if(hbmTool==='yield')toolYield(box);
+ else if(hbmTool==='tsv')toolTSV(box);
+ else if(hbmTool==='gen')toolGen(box);
+ else if(hbmTool==='therm')toolTherm(box);
+}
+
+/* ---- 1. 頻寬：加寬 vs 加快 ---- */
+function toolBW(box){
+ box.innerHTML='<div class="tool"><div class="row">'+
+  '<label>位寬 <span id="bwWV">1024</span> bit<input id="bwW" type="range" min="32" max="2048" value="1024" step="32"></label>'+
+  '<label>每腳資料率 <span id="bwRV">6.0</span> Gbps<input id="bwR" type="range" min="10" max="200" value="60"></label>'+
+  '<label>堆疊數量 <span id="bwSV">6</span><input id="bwS" type="range" min="1" max="12" value="6"></label>'+
+  '</div><canvas id="bwCanvas" width="640" height="300"></canvas>'+
+  '<div class="d" id="bwNote"></div></div>';
+ ['bwW','bwR','bwS'].forEach(id=>document.getElementById(id).oninput=drawBW);
+ drawBW();
+}
+function drawBW(){
+ const W=+document.getElementById('bwW').value;
+ const R=(+document.getElementById('bwR').value)/10;
+ const S=+document.getElementById('bwS').value;
+ document.getElementById('bwWV').textContent=W;
+ document.getElementById('bwRV').textContent=R.toFixed(1);
+ document.getElementById('bwSV').textContent=S;
+ const perStack=W*R/8;         // GB/s
+ const total=perStack*S;
+ const gddr=32*R/8;
+ const cv=document.getElementById('bwCanvas'),ctx=cv.getContext('2d');
+ ctx.clearRect(0,0,cv.width,cv.height);
+ const bars=[['單顆 GDDR (32-bit)',gddr,'#d97706'],['單堆疊 HBM',perStack,'#0891b2'],['系統總頻寬',total,'#e11d48']];
+ const maxV=Math.max(total,1);
+ const ox=110,oy=228,bw=110,gap=64;
+ ctx.strokeStyle='#8aa4ae';ctx.beginPath();ctx.moveTo(ox-30,oy);ctx.lineTo(ox+3*(bw+gap),oy);ctx.stroke();
+ bars.forEach((b,i)=>{
+  const x=ox+i*(bw+gap), h=Math.max(170*b[1]/maxV,2), y=oy-h;
+  ctx.fillStyle=b[2];ctx.globalAlpha=0.85;ctx.fillRect(x,y,bw,h);ctx.globalAlpha=1;
+  ctx.fillStyle='#123039';ctx.font='bold 13px sans-serif';ctx.textAlign='center';
+  ctx.fillText(b[1].toFixed(0)+' GB/s',x+bw/2,y-8);
+  ctx.fillStyle='#4d6b76';ctx.font='12px sans-serif';
+  ctx.fillText(b[0],x+bw/2,oy+20);
+ });
+ ctx.fillStyle='#0e5a6b';ctx.font='bold 14px sans-serif';ctx.textAlign='left';
+ ctx.fillText('頻寬 = 位寬 × 每腳資料率 ÷ 8',ox-30,oy+58);
+ const ratio=perStack/gddr;
+ document.getElementById('bwNote').innerHTML='單堆疊 <b>'+perStack.toFixed(0)+' GB/s</b>，是同樣速率下單顆 GDDR 的 <b>'+ratio.toFixed(0)+' 倍</b>——差距完全來自位寬。'+
+  '系統總頻寬 <b>'+total.toFixed(0)+' GB/s</b>。'+
+  '<br><b>試試這個關鍵實驗</b>：把位寬固定在 1024、只調速率，會發現要達到同樣頻寬所需的速率<b>低得多</b>——這就是 HBM「敢用慢介面」的底氣。再把位寬拉到 2048（HBM4），看不必提高速率就能翻倍。而堆疊數量受<b>中介層面積</b>限制，這是系統頻寬的實際天花板。';
+}
+
+/* ---- 2. 堆疊良率 ---- */
+function toolYield(box){
+ box.innerHTML='<div class="tool"><div class="row">'+
+  '<label>單顆晶粒良率 <span id="ydYV">95</span> %<input id="ydY" type="range" min="70" max="999" value="950"></label>'+
+  '<label>堆疊層數 <span id="ydNV">12</span><input id="ydN" type="range" min="2" max="16" value="12"></label>'+
+  '<label>冗餘修復提升 <span id="ydRV">0</span> %<input id="ydR" type="range" min="0" max="90" value="0"></label>'+
+  '</div><canvas id="ydCanvas" width="640" height="300"></canvas>'+
+  '<div class="d" id="ydNote"></div></div>';
+ ['ydY','ydN','ydR'].forEach(id=>document.getElementById(id).oninput=drawYield);
+ drawYield();
+}
+function drawYield(){
+ const y0=(+document.getElementById('ydY').value)/1000;
+ const n=+document.getElementById('ydN').value;
+ const rep=(+document.getElementById('ydR').value)/100;
+ const y=y0+(1-y0)*rep;
+ document.getElementById('ydYV').textContent=(y0*100).toFixed(1);
+ document.getElementById('ydNV').textContent=n;
+ document.getElementById('ydRV').textContent=(rep*100).toFixed(0);
+ const cv=document.getElementById('ydCanvas'),ctx=cv.getContext('2d');
+ ctx.clearRect(0,0,cv.width,cv.height);
+ const ox=70,oy=240,aw=520,ah=190;
+ ctx.strokeStyle='#8aa4ae';ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ox+aw,oy);ctx.moveTo(ox,oy);ctx.lineTo(ox,oy-ah);ctx.stroke();
+ for(const p of [0,25,50,75,100]){
+  const yy=oy-ah*p/100;
+  ctx.strokeStyle='#eef4f7';ctx.beginPath();ctx.moveTo(ox,yy);ctx.lineTo(ox+aw,yy);ctx.stroke();
+  ctx.fillStyle='#4d6b76';ctx.font='11px sans-serif';ctx.textAlign='right';ctx.fillText(p+'%',ox-6,yy+4);
+ }
+ [[y0,'#8aa4ae','無修復'],[y,'#0891b2','含修復']].forEach(([yv,col,lab],idx)=>{
+  ctx.strokeStyle=col;ctx.lineWidth=idx?3:2;if(!idx)ctx.setLineDash([5,4]);
+  ctx.beginPath();
+  for(let k=1;k<=16;k++){
+   const x=ox+aw*(k-1)/15, yy=oy-ah*Math.pow(yv,k);
+   if(k===1)ctx.moveTo(x,yy);else ctx.lineTo(x,yy);
+  }
+  ctx.stroke();ctx.setLineDash([]);
+ });
+ const px=ox+aw*(n-1)/15, py=oy-ah*Math.pow(y,n);
+ ctx.fillStyle='#e11d48';ctx.beginPath();ctx.arc(px,py,6,0,Math.PI*2);ctx.fill();
+ ctx.strokeStyle='#e11d48';ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(px,oy);ctx.lineTo(px,py);ctx.stroke();ctx.setLineDash([]);
+ for(const k of [1,4,8,12,16]){
+  ctx.fillStyle='#4d6b76';ctx.font='11px sans-serif';ctx.textAlign='center';
+  ctx.fillText(k,ox+aw*(k-1)/15,oy+18);
+ }
+ ctx.fillText('堆疊層數 →',ox+aw-40,oy+38);
+ const Y=Math.pow(y,n), Y0=Math.pow(y0,n);
+ ctx.fillStyle='#123039';ctx.font='bold 15px sans-serif';ctx.textAlign='left';
+ ctx.fillText('堆疊良率 = '+(Y*100).toFixed(1)+'%',ox+10,oy-ah-2);
+ document.getElementById('hbmY')&&0;
+ document.getElementById('ydNote').innerHTML='單顆 '+(y0*100).toFixed(1)+'% 疊 '+n+' 層 → 堆疊良率 <b>'+(Y0*100).toFixed(1)+'%</b>'+
+  (rep>0?('，加入冗餘修復後有效良率升到 '+(y*100).toFixed(1)+'%，堆疊良率變成 <b style="color:#0891b2">'+(Y*100).toFixed(1)+'%</b>'):'')+'。'+
+  '<br><b>試試看</b>：把單顆良率設 95%、層數 12，會得到約 54%——這就是為什麼 HBM 這麼貴。然後拉動「冗餘修復」滑桿，你會看到 <b>y 的小幅提升被 n 次方指數放大</b>，堆疊良率大幅改善。這正是 DRAM 用備用列行做修復的價值所在。';
+}
+
+/* ---- 3. TSV 深寬比 ---- */
+function toolTSV(box){
+ box.innerHTML='<div class="tool"><div class="row">'+
+  '<label>晶粒厚度（TSV 深度） <span id="tvDV">50</span> μm<input id="tvD" type="range" min="20" max="150" value="50" step="5"></label>'+
+  '<label>TSV 直徑 <span id="tvWV">5.0</span> μm<input id="tvW" type="range" min="10" max="120" value="50"></label>'+
+  '<label>TSV 間距 <span id="tvPV">40</span> μm<input id="tvP" type="range" min="10" max="120" value="40" step="5"></label>'+
+  '</div><canvas id="tvCanvas" width="640" height="290"></canvas>'+
+  '<div class="d" id="tvNote"></div></div>';
+ ['tvD','tvW','tvP'].forEach(id=>document.getElementById(id).oninput=drawTSV);
+ drawTSV();
+}
+function drawTSV(){
+ const d=+document.getElementById('tvD').value;
+ const w=(+document.getElementById('tvW').value)/10;
+ const p=+document.getElementById('tvP').value;
+ document.getElementById('tvDV').textContent=d;
+ document.getElementById('tvWV').textContent=w.toFixed(1);
+ document.getElementById('tvPV').textContent=p;
+ const ar=d/w;
+ const areaFrac=Math.PI*Math.pow(w/2,2)/Math.pow(p,2)*100;
+ const cv=document.getElementById('tvCanvas'),ctx=cv.getContext('2d');
+ ctx.clearRect(0,0,cv.width,cv.height);
+ const cx=200, top=40, scale=Math.min(180/d, 26);
+ const hh=d*scale, ww=Math.max(w*scale,3);
+ ctx.fillStyle='#8aa4ae';ctx.globalAlpha=0.18;ctx.fillRect(cx-110,top,220,hh);ctx.globalAlpha=1;
+ ctx.strokeStyle='#8aa4ae';ctx.strokeRect(cx-110,top,220,hh);
+ ctx.fillStyle='#4d6b76';ctx.font='11.5px sans-serif';ctx.textAlign='center';
+ ctx.fillText('矽晶粒剖面',cx,top-10);
+ const col = ar>15?'#e11d48':(ar>12?'#d97706':'#0891b2');
+ [-1,0,1].forEach(k=>{
+  const x=cx+k*Math.max(p*scale,ww*1.8);
+  if(x<cx-105||x>cx+105)return;
+  ctx.fillStyle=col;ctx.globalAlpha=0.85;
+  ctx.fillRect(x-ww/2,top,ww,hh);ctx.globalAlpha=1;
+ });
+ ctx.strokeStyle='#123039';ctx.beginPath();
+ ctx.moveTo(cx+125,top);ctx.lineTo(cx+125,top+hh);ctx.stroke();
+ ctx.fillStyle='#123039';ctx.font='11.5px sans-serif';ctx.textAlign='left';
+ ctx.fillText(d+' μm',cx+132,top+hh/2);
+ ctx.font='bold 14px sans-serif';ctx.fillStyle=col;ctx.textAlign='left';
+ ctx.fillText('深寬比 = '+ar.toFixed(1)+' : 1',420,90);
+ ctx.font='13px sans-serif';ctx.fillStyle='#4d6b76';
+ ctx.fillText('TSV 佔用面積 '+areaFrac.toFixed(2)+'%',420,118);
+ let v;
+ if(ar>15)v='<b style="color:#e11d48">深寬比過高</b>——側壁絕緣與阻障層難以均勻覆蓋（越深越薄）、電鍍容易產生空洞，製程難度與良率風險急遽上升。';
+ else if(ar>12)v='<b style="color:#d97706">深寬比偏高</b>，製程可行但填孔與覆蓋的窗口變窄。';
+ else if(ar<5)v='<b style="color:#d97706">深寬比偏低</b>——製程容易，但孔太粗會吃掉寶貴的矽面積，直接壓縮儲存密度。';
+ else v='<b style="color:#059669">深寬比落在典型可行區間</b>（約 10:1 上下），是製程難度與面積成本的平衡點。';
+ document.getElementById('tvNote').innerHTML=v+
+  '<br><b>試試這個連鎖關係</b>：把直徑調小想省面積，深寬比立刻上升、製程變困難；要救回來就得<b>把晶粒磨得更薄</b>——但更薄又帶來翹曲與機械強度問題。<b>每一步都是連鎖的</b>，這正是 TSV 尺寸無法自由選擇的原因。';
+}
+
+/* ---- 4. 世代演進 ---- */
+function toolGen(box){
+ box.innerHTML='<div class="tool"><div class="row">'+
+  '<label>檢視世代 <span id="gnV"></span><input id="gn" type="range" min="0" max="5" value="3"></label>'+
+  '</div><canvas id="gnCanvas" width="640" height="310"></canvas>'+
+  '<div class="d" id="gnNote"></div></div>';
+ document.getElementById('gn').oninput=drawGen;
+ drawGen();
+}
+const GENS=[
+ {n:'HBM1', w:1024, r:1.0, hi:4,  note:'建立架構：1024-bit 寬匯流排 + TSV 堆疊，確立「加寬」路線。'},
+ {n:'HBM2', w:1024, r:2.0, hi:8,  note:'主要轉「資料率」旋鈕，同時把層數推到 8-Hi 增加容量。'},
+ {n:'HBM2E',w:1024, r:3.2, hi:8,  note:'繼續提高資料率。位寬始終沒動——這幾代其實一直在偷偷走「加快」。'},
+ {n:'HBM3', w:1024, r:6.4, hi:12, note:'資料率再翻倍，通道進一步細分以提升利用率，層數推進到 12-Hi。'},
+ {n:'HBM3E',w:1024, r:9.2, hi:12, note:'資料率推到 9 Gbps 級——此時即使在中介層的短走線上，三道牆也開始回來了。'},
+ {n:'HBM4', w:2048, r:8.0, hi:16, note:'方向改變：位寬直接翻倍到 2048-bit。接點數翻倍使「混合鍵合」成為關鍵，同時基底晶粒開始走向客製化。'}
+];
+function drawGen(){
+ const i=+document.getElementById('gn').value;
+ const g=GENS[i];
+ document.getElementById('gnV').textContent=g.n;
+ const cv=document.getElementById('gnCanvas'),ctx=cv.getContext('2d');
+ ctx.clearRect(0,0,cv.width,cv.height);
+ const ox=60,oy=210,aw=540,ah=160;
+ ctx.strokeStyle='#8aa4ae';ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ox+aw,oy);ctx.stroke();
+ const maxBW=Math.max.apply(null,GENS.map(x=>x.w*x.r/8));
+ GENS.forEach((x,k)=>{
+  const bw=x.w*x.r/8;
+  const bx=ox+k*(aw/GENS.length)+12, bwid=aw/GENS.length-24;
+  const h=ah*bw/maxBW;
+  const sel=(k===i);
+  ctx.fillStyle = x.w>1024 ? '#7c3aed' : '#0891b2';
+  ctx.globalAlpha = sel?0.92:0.32;
+  ctx.fillRect(bx,oy-h,bwid,h);ctx.globalAlpha=1;
+  if(sel){ctx.strokeStyle='#123039';ctx.lineWidth=2;ctx.strokeRect(bx,oy-h,bwid,h);ctx.lineWidth=1;}
+  ctx.fillStyle=sel?'#123039':'#8aa4ae';ctx.font=(sel?'bold ':'')+'12px sans-serif';ctx.textAlign='center';
+  ctx.fillText(x.n,bx+bwid/2,oy+18);
+  ctx.font='11px sans-serif';
+  ctx.fillText(bw.toFixed(0),bx+bwid/2,oy-h-6);
+ });
+ ctx.fillStyle='#4d6b76';ctx.font='11.5px sans-serif';ctx.textAlign='left';
+ ctx.fillText('每堆疊頻寬 (GB/s)',ox,oy-ah-6);
+ ctx.fillStyle='#0e5a6b';ctx.font='bold 14px sans-serif';
+ ctx.fillText(g.n+'：'+g.w+'-bit × '+g.r.toFixed(1)+' Gbps → '+(g.w*g.r/8).toFixed(0)+' GB/s　（'+g.hi+'-Hi）',ox,oy+48);
+ ctx.font='12px sans-serif';ctx.fillStyle='#8aa4ae';
+ ctx.fillText('紫色 = 位寬翻倍的世代',ox,oy+70);
+ document.getElementById('gnNote').innerHTML='<b>'+g.n+'</b>：'+g.note+
+  '<br><b>拉動滑桿觀察</b>：HBM1→HBM3E 柱子長高靠的都是<b>資料率</b>（位寬始終 1024-bit），到 HBM4 才改成<b>位寬翻倍</b>。這正是「加快撞牆後回頭加寬」的循環。也注意 <b>Hi 數增加的是容量不是頻寬</b>——頻寬由介面決定。';
+}
+
+/* ---- 5. 堆疊散熱 ---- */
+function toolTherm(box){
+ box.innerHTML='<div class="tool"><div class="row">'+
+  '<label>堆疊層數 <span id="thNV">12</span><input id="thN" type="range" min="4" max="16" value="12"></label>'+
+  '<label>每層功耗 <span id="thPV">0.5</span> W<input id="thP" type="range" min="1" max="30" value="5"></label>'+
+  '<label>層間熱阻 <span id="thRV">0.40</span> K/W<input id="thR" type="range" min="5" max="120" value="40"></label>'+
+  '<label>散熱器溫度 <span id="thTV">60</span> °C<input id="thT" type="range" min="30" max="85" value="60"></label>'+
+  '</div><canvas id="thCanvas" width="640" height="320"></canvas>'+
+  '<div class="d" id="thNote"></div></div>';
+ ['thN','thP','thR','thT'].forEach(id=>document.getElementById(id).oninput=drawTherm);
+ drawTherm();
+}
+function drawTherm(){
+ const n=+document.getElementById('thN').value;
+ const P=(+document.getElementById('thP').value)/10;
+ const Rth=(+document.getElementById('thR').value)/100;
+ const T0=+document.getElementById('thT').value;
+ document.getElementById('thNV').textContent=n;
+ document.getElementById('thPV').textContent=P.toFixed(1);
+ document.getElementById('thRV').textContent=Rth.toFixed(2);
+ document.getElementById('thTV').textContent=T0;
+ // 第 k 層(自頂1..n)：其下方各層的熱都要往上穿過它
+ const temps=[];
+ let acc=0;
+ for(let k=1;k<=n;k++){
+  acc += Rth * (P*k);   // 通過第 k 個界面的累積功率
+  temps.push(T0+acc);
+ }
+ const Tmax=Math.max.apply(null,temps);
+ const cv=document.getElementById('thCanvas'),ctx=cv.getContext('2d');
+ ctx.clearRect(0,0,cv.width,cv.height);
+ const sx=210,sw=200,top=30;
+ const lh=Math.max(Math.min(230/n,26),8);
+ ctx.fillStyle='#0891b2';ctx.globalAlpha=0.35;ctx.fillRect(sx-24,top-16,sw+48,12);ctx.globalAlpha=1;
+ ctx.fillStyle='#0e5a6b';ctx.font='11px sans-serif';ctx.textAlign='center';
+ ctx.fillText('散熱器 '+T0+'°C',sx+sw/2,top-6);
+ temps.forEach((t,k)=>{
+  const y=top+k*lh;
+  const f=Math.min(Math.max((t-T0)/Math.max(Tmax-T0,1),0),1);
+  const r=Math.round(252-60*(1-f)), g=Math.round(165-120*f), b=Math.round(165-120*f);
+  ctx.fillStyle='rgb('+r+','+g+','+b+')';ctx.globalAlpha=0.85;
+  ctx.fillRect(sx,y,sw,lh-2);ctx.globalAlpha=1;
+  if(lh>13){
+   ctx.fillStyle='#7f1d1d';ctx.font='10.5px sans-serif';ctx.textAlign='left';
+   ctx.fillText('層'+(k+1),sx+6,y+lh-6);
+   ctx.textAlign='right';ctx.fillText(t.toFixed(0)+'°C',sx+sw-6,y+lh-6);
+  }
+ });
+ ctx.fillStyle='#123039';ctx.font='bold 14px sans-serif';ctx.textAlign='left';
+ ctx.fillText('最熱層：'+Tmax.toFixed(0)+'°C',450,70);
+ ctx.font='12px sans-serif';ctx.fillStyle='#4d6b76';
+ ctx.fillText('總功耗 '+(P*n).toFixed(1)+' W',450,94);
+ const over=Tmax>85;
+ ctx.fillStyle=over?'#e11d48':'#059669';ctx.font='bold 12.5px sans-serif';
+ ctx.fillText(over?'⚠ 超過 85°C 門檻':'✓ 低於 85°C 門檻',450,120);
+ document.getElementById('thNote').innerHTML='最熱層溫度 <b>'+Tmax.toFixed(0)+'°C</b>（總功耗 '+(P*n).toFixed(1)+' W）。'+
+  (over?' <b style="color:#e11d48">已超過 85°C</b>——此時規格要求刷新頻率加倍，而刷新既耗電、又直接佔用頻寬，於是形成「越熱越慢、越慢越熱」的惡性循環。':' 目前在門檻內。')+
+  '<br><b>試試看</b>：把層數往上加，會發現最熱層溫度<b>比線性還快地上升</b>——因為下層的熱要穿過越來越多道界面。然後把「層間熱阻」調到最小（模擬<b>混合鍵合</b>取代微凸塊與填充膠），溫度立刻下降——這就是為什麼混合鍵合不只是為了密度，也是為了散熱。';
+}
+
+buildSidebar();renderHome();
+</script>
+</body>
+</html>
